@@ -1,0 +1,15 @@
+{
+  "Metadata": {
+    "title": "InviteFlow — Digital Invitations & Event Tickets",
+    "description": "A platform for digital invitations, RSVP tracking, and event ticketing."
+  },
+  "HomePage": {
+    "title": "InviteFlow",
+    "subtitle": "Create your digital invitation, track responses, and issue tickets — all in one place.",
+    "cta": "Get started",
+    "login": "Log in"
+  },
+  "Common": {
+    "languageSwitcher": "Language"
+  }
+}
