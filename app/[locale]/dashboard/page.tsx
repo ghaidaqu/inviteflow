@@ -4,6 +4,17 @@ import { getCurrentOrganizationId } from '@/lib/services/events.service';
 import { getDashboardStats } from '@/lib/services/dashboard.service';
 import { RsvpBreakdownChart } from '@/components/dashboard/rsvp-breakdown-chart';
 import { Badge } from '@/components/ui/badge';
+import {
+  CalendarIcon,
+  UsersIcon,
+  CheckCircle2Icon,
+  XCircleIcon,
+  HelpCircleIcon,
+  TicketIcon,
+  TicketsIcon,
+  WalletIcon,
+  QrCodeIcon,
+} from 'lucide-react';
 
 const RESPONSE_STATUS_VARIANT = {
   attending: 'default',
@@ -40,31 +51,84 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       };
 
   const statCards = [
-    { label: t('totalEvents'), value: stats.totalEvents },
-    { label: t('totalGuests'), value: stats.totalGuests },
-    { label: t('attending'), value: stats.attendingCount },
-    { label: t('notAttending'), value: stats.notAttendingCount },
-    { label: t('noResponse'), value: stats.noResponseCount },
-    { label: t('ticketsSold'), value: stats.ticketsSold },
-    { label: t('ticketsRemaining'), value: stats.ticketsRemaining },
-    { label: t('totalRevenue'), value: stats.totalRevenue },
-    { label: t('checkedIn'), value: stats.checkedInCount },
+    {
+      label: t('totalEvents'),
+      value: stats.totalEvents,
+      icon: CalendarIcon,
+      tone: 'text-primary bg-primary/10',
+    },
+    {
+      label: t('totalGuests'),
+      value: stats.totalGuests,
+      icon: UsersIcon,
+      tone: 'text-primary bg-primary/10',
+    },
+    {
+      label: t('attending'),
+      value: stats.attendingCount,
+      icon: CheckCircle2Icon,
+      tone: 'text-chart-1 bg-chart-1/10',
+    },
+    {
+      label: t('notAttending'),
+      value: stats.notAttendingCount,
+      icon: XCircleIcon,
+      tone: 'text-destructive bg-destructive/10',
+    },
+    {
+      label: t('noResponse'),
+      value: stats.noResponseCount,
+      icon: HelpCircleIcon,
+      tone: 'text-muted-foreground bg-muted',
+    },
+    {
+      label: t('ticketsSold'),
+      value: stats.ticketsSold,
+      icon: TicketIcon,
+      tone: 'text-accent-foreground bg-accent/25',
+    },
+    {
+      label: t('ticketsRemaining'),
+      value: stats.ticketsRemaining,
+      icon: TicketsIcon,
+      tone: 'text-accent-foreground bg-accent/25',
+    },
+    {
+      label: t('totalRevenue'),
+      value: stats.totalRevenue,
+      icon: WalletIcon,
+      tone: 'text-chart-1 bg-chart-1/10',
+    },
+    {
+      label: t('checkedIn'),
+      value: stats.checkedInCount,
+      icon: QrCodeIcon,
+      tone: 'text-primary bg-primary/10',
+    },
   ];
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
-      <h1 className="text-2xl font-bold tracking-tight">{t('title')}</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight">{t('title')}</h1>
 
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="animate-in fade-in slide-in-from-bottom-1 mt-6 grid grid-cols-2 gap-3 duration-300 ease-out sm:grid-cols-3 lg:grid-cols-4">
         {statCards.map((card) => (
-          <div key={card.label} className="bg-card rounded-xl border p-4 text-center">
-            <div className="text-2xl font-bold">{card.value}</div>
-            <div className="text-muted-foreground text-sm">{card.label}</div>
+          <div
+            key={card.label}
+            className="bg-card hover:border-primary/30 flex flex-col gap-3 rounded-2xl border p-4 transition-colors"
+          >
+            <div className={`flex size-9 items-center justify-center rounded-full ${card.tone}`}>
+              <card.icon className="size-4.5" />
+            </div>
+            <div>
+              <div className="text-2xl font-bold tabular-nums">{card.value}</div>
+              <div className="text-muted-foreground text-sm">{card.label}</div>
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-8">
         <h2 className="mb-3 text-lg font-bold tracking-tight">{t('rsvpBreakdown')}</h2>
         <RsvpBreakdownChart
           attending={stats.attendingCount}
@@ -74,7 +138,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         />
       </div>
 
-      <div className="mt-6 grid gap-6 sm:grid-cols-2">
+      <div className="mt-8 grid gap-6 sm:grid-cols-2">
         <div>
           <h2 className="mb-3 text-lg font-bold tracking-tight">{t('latestResponses')}</h2>
           {stats.latestResponses.length === 0 ? (
@@ -84,7 +148,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
               {stats.latestResponses.map((r) => (
                 <li
                   key={r.id}
-                  className="bg-card flex items-center justify-between rounded-lg border px-3 py-2 text-sm"
+                  className="bg-card hover:border-primary/30 flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm transition-colors"
                 >
                   <div>
                     <div className="font-medium">{r.guestName || '—'}</div>
@@ -108,7 +172,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
               {stats.latestCheckIns.map((c) => (
                 <li
                   key={c.id}
-                  className="bg-card flex items-center justify-between rounded-lg border px-3 py-2 text-sm"
+                  className="bg-card hover:border-primary/30 flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm transition-colors"
                 >
                   <div>
                     <div className="font-medium">{c.holderName}</div>
