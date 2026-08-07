@@ -9,6 +9,8 @@ import { EventPasswordGate } from '@/components/public/event-password-gate';
 import { PurchaseForm } from '@/components/public/purchase-form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { isMoyasarConfigured } from '@/lib/payments';
+import { PublicFormShell } from '@/components/public/public-form-shell';
+import { TicketIcon } from 'lucide-react';
 
 export default async function EventTicketsPage({
   params,
@@ -38,10 +40,11 @@ export default async function EventTicketsPage({
   const t = await getTranslations('PublicTickets');
 
   return (
-    <main className="mx-auto w-full max-w-xl px-4 py-8 sm:px-6">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">{event.name}</h1>
-      <p className="text-muted-foreground mb-6">{t('pageSubtitle')}</p>
-
+    <PublicFormShell
+      icon={<TicketIcon className="size-6" />}
+      title={event.name}
+      subtitle={t('pageSubtitle')}
+    >
       {ticketTypes.length === 0 ? (
         <Alert>
           <AlertDescription>{t('noTicketsAvailable')}</AlertDescription>
@@ -53,6 +56,6 @@ export default async function EventTicketsPage({
           isMockPayment={!isMoyasarConfigured()}
         />
       )}
-    </main>
+    </PublicFormShell>
   );
 }

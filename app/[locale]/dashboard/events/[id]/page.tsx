@@ -7,6 +7,14 @@ import { Button } from '@/components/ui/button';
 import { EventDetailActions } from '@/components/dashboard/event-detail-actions';
 import { CopyLinkButton } from '@/components/dashboard/copy-link-button';
 import { Link } from '@/i18n/navigation';
+import {
+  UsersIcon,
+  MailIcon,
+  CheckCircle2Icon,
+  TicketIcon,
+  QrCodeIcon,
+  type LucideIcon,
+} from 'lucide-react';
 
 const STATUS_VARIANT = {
   draft: 'secondary',
@@ -62,48 +70,36 @@ export default async function EventDetailPage({
         </Button>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-2">
+      <div className="mt-6">
         <EventDetailActions eventId={event.id} status={event.status} />
-        <Button
-          variant="outline"
-          size="sm"
-          nativeButton={false}
-          render={<Link href={`/dashboard/events/${event.id}/guests`} />}
-        >
-          {t('detail.guestsButton')}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          nativeButton={false}
-          render={<Link href={`/dashboard/events/${event.id}/invitation`} />}
-        >
-          {t('detail.invitationButton')}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          nativeButton={false}
-          render={<Link href={`/dashboard/events/${event.id}/rsvp`} />}
-        >
-          {t('detail.rsvpSettingsButton')}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          nativeButton={false}
-          render={<Link href={`/dashboard/events/${event.id}/tickets`} />}
-        >
-          {t('detail.ticketsButton')}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          nativeButton={false}
-          render={<Link href={`/dashboard/events/${event.id}/check-in`} />}
-        >
-          {t('detail.checkInButton')}
-        </Button>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <ToolCard
+          href={`/dashboard/events/${event.id}/guests`}
+          icon={UsersIcon}
+          label={t('detail.guestsButton')}
+        />
+        <ToolCard
+          href={`/dashboard/events/${event.id}/invitation`}
+          icon={MailIcon}
+          label={t('detail.invitationButton')}
+        />
+        <ToolCard
+          href={`/dashboard/events/${event.id}/rsvp`}
+          icon={CheckCircle2Icon}
+          label={t('detail.rsvpSettingsButton')}
+        />
+        <ToolCard
+          href={`/dashboard/events/${event.id}/tickets`}
+          icon={TicketIcon}
+          label={t('detail.ticketsButton')}
+        />
+        <ToolCard
+          href={`/dashboard/events/${event.id}/check-in`}
+          icon={QrCodeIcon}
+          label={t('detail.checkInButton')}
+        />
       </div>
 
       {event.status === 'published' && event.visibility === 'public' && (
@@ -121,7 +117,7 @@ export default async function EventDetailPage({
         </div>
       )}
 
-      <dl className="bg-card mt-6 grid gap-4 rounded-xl border p-5 sm:grid-cols-2">
+      <dl className="bg-card mt-6 grid gap-4 rounded-2xl border p-5 sm:grid-cols-2">
         {event.description && (
           <div className="sm:col-span-2">
             <dt className="text-muted-foreground text-sm">{t('form.descriptionLabel')}</dt>
@@ -148,5 +144,19 @@ export default async function EventDetailPage({
         )}
       </dl>
     </main>
+  );
+}
+
+function ToolCard({ href, icon: Icon, label }: { href: string; icon: LucideIcon; label: string }) {
+  return (
+    <Link
+      href={href}
+      className="bg-card hover:border-primary/40 group flex flex-col items-center gap-2 rounded-2xl border p-4 text-center transition-[color,background-color,border-color,transform] duration-150 ease-out hover:-translate-y-0.5"
+    >
+      <div className="bg-primary/10 text-primary group-hover:bg-primary/15 flex size-10 items-center justify-center rounded-full transition-colors">
+        <Icon className="size-4.5" />
+      </div>
+      <span className="text-sm font-medium">{label}</span>
+    </Link>
   );
 }

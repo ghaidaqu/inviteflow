@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select';
 import { submitRsvpAction, type RsvpActionState } from '@/lib/actions/rsvp';
 import { Link } from '@/i18n/navigation';
-import { Trash2Icon, PlusIcon } from 'lucide-react';
+import { Trash2Icon, PlusIcon, CheckCircle2Icon, MessageCircleIcon } from 'lucide-react';
 
 type EventSettings = {
   allow_attending: boolean;
@@ -109,26 +109,36 @@ export function RsvpForm({
     }
 
     return (
-      <div className="flex flex-col gap-4">
-        <div className="bg-card flex flex-col gap-4 rounded-xl border p-6 text-center">
-          <p className="text-lg font-medium">{t('thankYouTitle')}</p>
+      <div className="animate-in fade-in zoom-in-95 flex flex-col gap-4 duration-500 ease-out">
+        <div className="bg-card flex flex-col items-center gap-3 rounded-2xl border p-6 text-center">
+          <div className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-full">
+            <CheckCircle2Icon className="size-6" />
+          </div>
+          <p className="text-lg font-bold">{t('thankYouTitle')}</p>
           <p className="text-muted-foreground">{t('thankYouDescription')}</p>
           <Link
             href={`/rsvp/${secureToken}`}
-            className="text-primary font-medium underline-offset-4 hover:underline"
+            className="text-primary text-sm font-medium underline-offset-4 hover:underline"
           >
             {t('editLinkLabel')}
           </Link>
-          <Button variant="outline" onClick={handleShareWhatsapp}>
+          <Button variant="outline" onClick={handleShareWhatsapp} className="w-full">
             {t('whatsappShareButton')}
           </Button>
         </div>
 
         {hasQuestions && (
-          <div className="bg-card flex flex-col gap-3 rounded-xl border p-6 text-center">
-            <p className="text-lg font-medium">{t('questionsFollowUpTitle')}</p>
+          <div className="bg-card border-primary/20 flex flex-col items-center gap-3 rounded-2xl border p-6 text-center">
+            <div className="bg-accent/25 text-accent-foreground flex size-12 items-center justify-center rounded-full">
+              <MessageCircleIcon className="size-6" />
+            </div>
+            <p className="text-lg font-bold">{t('questionsFollowUpTitle')}</p>
             <p className="text-muted-foreground">{t('questionsFollowUpDescription')}</p>
-            <Button nativeButton={false} render={<Link href={`/rsvp/${secureToken}/questions`} />}>
+            <Button
+              className="w-full"
+              nativeButton={false}
+              render={<Link href={`/rsvp/${secureToken}/questions`} />}
+            >
               {t('questionsFollowUpButton')}
             </Button>
           </div>

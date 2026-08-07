@@ -12,7 +12,18 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
-    ignores: ['.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
+    ignores: [
+      '.next/**',
+      'out/**',
+      'build/**',
+      'next-env.d.ts',
+      // Third-party skill/tool packages installed via `npx skills add` /
+      // `npx impeccable install` — not our app code, don't lint them.
+      '.agents/**',
+      '.claude/skills/**',
+      '.github/skills/**',
+      '.github/agents/**',
+    ],
   },
 ];
 

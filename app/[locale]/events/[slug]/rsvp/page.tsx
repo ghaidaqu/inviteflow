@@ -7,6 +7,8 @@ import { getPublicEventBySlug } from '@/lib/services/events.service';
 import { listQuestions } from '@/lib/services/questions.service';
 import { EventPasswordGate } from '@/components/public/event-password-gate';
 import { RsvpForm } from '@/components/public/rsvp-form';
+import { PublicFormShell } from '@/components/public/public-form-shell';
+import { MailIcon } from 'lucide-react';
 
 export default async function EventRsvpPage({
   params,
@@ -36,15 +38,17 @@ export default async function EventRsvpPage({
   const t = await getTranslations('Rsvp');
 
   return (
-    <main className="mx-auto w-full max-w-xl px-4 py-8 sm:px-6">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">{event.name}</h1>
-      <p className="text-muted-foreground mb-6">{t('pageSubtitle')}</p>
+    <PublicFormShell
+      icon={<MailIcon className="size-6" />}
+      title={event.name}
+      subtitle={t('pageSubtitle')}
+    >
       <RsvpForm
         eventSlug={slug}
         eventName={event.name}
         settings={settings}
         hasQuestions={questions.length > 0}
       />
-    </main>
+    </PublicFormShell>
   );
 }
