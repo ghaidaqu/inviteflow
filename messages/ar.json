@@ -7,11 +7,11 @@
     "badge": "منصة عربية بالكامل",
     "title": "InviteFlow",
     "subtitle": "أنشئ دعوتك الرقمية، تابع الردود، وأصدر التذاكر — في مكان واحد.",
-    "feature1": "💌 دعوة رقمية",
-    "feature2": "✅ RSVP / استفتاء",
-    "feature3": "🎫 فعالية بتذاكر",
+    "feature1": "دعوة رقمية",
+    "feature2": "RSVP / استفتاء",
+    "feature3": "فعالية بتذاكر",
     "publicEvents": {
-      "title": "🎫 فعاليات مفتوحة للحجز الآن",
+      "title": "فعاليات مفتوحة للحجز الآن",
       "subtitle": "احجز تذكرتك مباشرة — بدون تسجيل دخول.",
       "viewButton": "عرض التفاصيل والحجز ←"
     },
@@ -24,12 +24,12 @@
     "title": "جرّب InviteFlow كضيف",
     "subtitle": "اختر أي تجربة تبي تجربها — كل شي هنا حقيقي وشغّال، بدون تسجيل أو حساب.",
     "rsvp": {
-      "title": "💌 دعوة وتأكيد حضور (RSVP)",
+      "title": "دعوة وتأكيد حضور (RSVP)",
       "description": "دعوة زفاف حقيقية — رد بالحضور/الاعتذار وشوف كيف يوصل ردك للمنظّم فورًا.",
       "cta": "افتح الدعوة"
     },
     "tickets": {
-      "title": "🎟️ شراء تذاكر",
+      "title": "شراء تذاكر",
       "description": "مؤتمر تجريبي فيه باقات تذاكر حقيقية — جرّب اختيار باقة وإتمام الشراء (تجريبي).",
       "cta": "شوف الباقات"
     },
@@ -170,9 +170,9 @@
       "submitEdit": "حفظ التعديلات",
       "submitting": "جارٍ الحفظ...",
       "trackBadge": {
-        "invitation": "💌 دعوة رقمية",
-        "event": "🎫 فعالية بتذاكر",
-        "rsvp": "✅ RSVP / استفتاء"
+        "invitation": "دعوة رقمية",
+        "event": "فعالية بتذاكر",
+        "rsvp": "RSVP / استفتاء"
       }
     },
     "list": {
@@ -186,15 +186,15 @@
       "subtitle": "اختر المسار المناسب — كل مسار منفصل تمامًا عن الثاني.",
       "startButton": "ابدأ",
       "invitation": {
-        "title": "💌 دعوة رقمية",
+        "title": "دعوة رقمية",
         "description": "دعوة شخصية بسيطة لمناسبة (زفاف، تخرج...) — قبول/اعتذار اختياري، بدون أسئلة إضافية."
       },
       "event": {
-        "title": "🎫 فعالية بتذاكر",
+        "title": "فعالية بتذاكر",
         "description": "معارض، مؤتمرات، فعاليات — حدد السعر وعدد التذاكر وابدأ البيع."
       },
       "rsvp": {
-        "title": "✅ RSVP / استفتاء",
+        "title": "RSVP / استفتاء",
         "description": "نظّم فعالية أو لقاء عبر أسئلتك الخاصة، وأرسلها لأرقام محددة."
       }
     },
@@ -213,8 +213,8 @@
       "linkCopied": "تم نسخ الرابط",
       "backToList": "العودة إلى المناسبات",
       "guestsButton": "الضيوف",
-      "invitationButton": "💌 الدعوة الرقمية",
-      "rsvpSettingsButton": "✅ أسئلة RSVP",
+      "invitationButton": "الدعوة الرقمية",
+      "rsvpSettingsButton": "أسئلة RSVP",
       "ticketsButton": "التذاكر",
       "checkInButton": "مسح QR وتسجيل الحضور"
     },
@@ -253,7 +253,7 @@
     "copyLinkButton": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط",
     "shareMessage": "دعوة: {name}",
-    "rsvpButton": "💌 الرد على الدعوة",
+    "rsvpButton": "الرد على الدعوة",
     "ticketsButton": "شراء تذكرة"
   },
   "Rsvp": {
@@ -281,11 +281,11 @@
     "thankYouDescription": "تم استلام ردك بنجاح. احتفظ بالرابط التالي لتعديل ردك لاحقًا إذا احتجت.",
     "editLinkLabel": "رابط تعديل الرد",
     "whatsappShareButton": "شارك ردك عبر واتساب",
-    "whatsappShareMessage": "أكّدت ردي على دعوة \"{eventName}\": {status} 🎉",
+    "whatsappShareMessage": "أكّدت ردي على دعوة \"{eventName}\": {status}",
     "editingClosed": "لم يعد بالإمكان تعديل الرد (انتهى الموعد أو تم إيقاف التعديل).",
     "yes": "نعم",
     "no": "لا",
-    "questionsFollowUpTitle": "✅ فيه أسئلة RSVP من المنظّم",
+    "questionsFollowUpTitle": "فيه أسئلة RSVP من المنظّم",
     "questionsFollowUpDescription": "هذا مسار منفصل عن دعوتك — المنظّم يحب يعرف رأيك ببعض الأسئلة الإضافية.",
     "questionsFollowUpButton": "الإجابة على الأسئلة",
     "rsvpQuestionsPageSubtitle": "أسئلة من المنظّم — منفصلة تمامًا عن ردك على الدعوة.",
@@ -299,7 +299,7 @@
     }
   },
   "EventSettings": {
-    "invitationPageTitle": "💌 الدعوة الرقمية",
+    "invitationPageTitle": "الدعوة الرقمية",
     "invitationPageSubtitle": "دعوة شخصية بسيطة — أنت تعزم، وتقرر هل تبي تعرف عدد الموافقين ولا بس توصل التفاصيل بدون انتظار رد. هذا مسار منفصل تمامًا عن أسئلة RSVP.",
     "allowMaybeLabel": "السماح بخيار \"ربما\"",
     "allowMaybeHint": "أطفئه لدعوة بسيطة (قبول أو اعتذار فقط، بدون خيار ثالث).",

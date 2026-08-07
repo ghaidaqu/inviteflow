@@ -7,11 +7,11 @@
     "badge": "Built Arabic-first",
     "title": "InviteFlow",
     "subtitle": "Create your digital invitation, track responses, and issue tickets — all in one place.",
-    "feature1": "💌 Digital invitation",
-    "feature2": "✅ RSVP / poll",
-    "feature3": "🎫 Ticketed event",
+    "feature1": "Digital invitation",
+    "feature2": "RSVP / poll",
+    "feature3": "Ticketed event",
     "publicEvents": {
-      "title": "🎫 Events open for booking now",
+      "title": "Events open for booking now",
       "subtitle": "Book your ticket directly — no sign-up needed.",
       "viewButton": "View details & book →"
     },
@@ -24,12 +24,12 @@
     "title": "Try InviteFlow as a guest",
     "subtitle": "Pick an experience to try — everything here is real and working, no sign-up needed.",
     "rsvp": {
-      "title": "💌 Invitation & RSVP",
+      "title": "Invitation & RSVP",
       "description": "A real wedding invitation — respond attending/not attending and see it reach the organizer instantly.",
       "cta": "Open the invitation"
     },
     "tickets": {
-      "title": "🎟️ Buy tickets",
+      "title": "Buy tickets",
       "description": "A demo conference with real ticket tiers — try picking one and completing a (mock) purchase.",
       "cta": "See ticket tiers"
     },
@@ -170,9 +170,9 @@
       "submitEdit": "Save changes",
       "submitting": "Saving...",
       "trackBadge": {
-        "invitation": "💌 Digital invitation",
-        "event": "🎫 Ticketed event",
-        "rsvp": "✅ RSVP / poll"
+        "invitation": "Digital invitation",
+        "event": "Ticketed event",
+        "rsvp": "RSVP / poll"
       }
     },
     "list": {
@@ -186,15 +186,15 @@
       "subtitle": "Choose the right track — each one is completely separate from the others.",
       "startButton": "Start",
       "invitation": {
-        "title": "💌 Digital invitation",
+        "title": "Digital invitation",
         "description": "A simple personal invitation to an occasion (wedding, graduation...) — optional accept/decline, no extra questions."
       },
       "event": {
-        "title": "🎫 Ticketed event",
+        "title": "Ticketed event",
         "description": "Exhibitions, conferences, events — set a price and ticket count, and start selling."
       },
       "rsvp": {
-        "title": "✅ RSVP / poll",
+        "title": "RSVP / poll",
         "description": "Organize an event or meetup around your own questions, and send it to specific phone numbers."
       }
     },
@@ -213,8 +213,8 @@
       "linkCopied": "Link copied",
       "backToList": "Back to events",
       "guestsButton": "Guests",
-      "invitationButton": "💌 Digital invitation",
-      "rsvpSettingsButton": "✅ RSVP questions",
+      "invitationButton": "Digital invitation",
+      "rsvpSettingsButton": "RSVP questions",
       "ticketsButton": "Tickets",
       "checkInButton": "QR Check-in"
     },
@@ -253,7 +253,7 @@
     "copyLinkButton": "Copy link",
     "linkCopied": "Link copied",
     "shareMessage": "Invitation: {name}",
-    "rsvpButton": "💌 Respond to invitation",
+    "rsvpButton": "Respond to invitation",
     "ticketsButton": "Buy tickets"
   },
   "Rsvp": {
@@ -281,11 +281,11 @@
     "thankYouDescription": "Your response was received. Keep the link below to edit your response later if needed.",
     "editLinkLabel": "Edit response link",
     "whatsappShareButton": "Share your response on WhatsApp",
-    "whatsappShareMessage": "I just responded to \"{eventName}\": {status} 🎉",
+    "whatsappShareMessage": "I just responded to \"{eventName}\": {status}",
     "editingClosed": "Editing is no longer available (deadline passed or disabled by the organizer).",
     "yes": "Yes",
     "no": "No",
-    "questionsFollowUpTitle": "✅ The organizer has RSVP questions",
+    "questionsFollowUpTitle": "The organizer has RSVP questions",
     "questionsFollowUpDescription": "A separate track from your invitation — the organizer would like your input on a few extra questions.",
     "questionsFollowUpButton": "Answer the questions",
     "rsvpQuestionsPageSubtitle": "Questions from the organizer — completely separate from your invitation response.",
@@ -299,7 +299,7 @@
     }
   },
   "EventSettings": {
-    "invitationPageTitle": "💌 Digital Invitation",
+    "invitationPageTitle": "Digital Invitation",
     "invitationPageSubtitle": "A simple personal invitation — you're hosting, and you decide whether you want a headcount of who's coming, or just to share the details without waiting on a response. This is a separate track from RSVP questions.",
     "allowMaybeLabel": "Allow a \"Maybe\" option",
     "allowMaybeHint": "Turn off for a simple invitation (accept or decline only), no third option.",

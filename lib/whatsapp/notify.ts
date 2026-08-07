@@ -103,26 +103,26 @@ export async function sendInvitationWhatsApp(
   if (settings?.allow_attending !== false) {
     buttons.push({
       id: `rsvp_accept:${guestId}`,
-      title: locale === 'ar' ? 'موافق ✅' : 'Accept ✅',
+      title: locale === 'ar' ? 'موافق' : 'Accept',
     });
   }
   if (settings?.allow_not_attending !== false) {
     buttons.push({
       id: `rsvp_decline:${guestId}`,
-      title: locale === 'ar' ? 'اعتذار ❌' : 'Decline ❌',
+      title: locale === 'ar' ? 'اعتذار' : 'Decline',
     });
   }
   if (settings?.allow_maybe && buttons.length < 3) {
     buttons.push({
       id: `rsvp_maybe:${guestId}`,
-      title: locale === 'ar' ? 'ربما 🤔' : 'Maybe 🤔',
+      title: locale === 'ar' ? 'ربما' : 'Maybe',
     });
   }
 
   const text =
     locale === 'ar'
-      ? `مرحبًا ${guestName}! أنت مدعو لـ "${event.name}". رد على الدعوة مباشرة من هنا 👇\n\nالتفاصيل: ${link}`
-      : `Hi ${guestName}! You're invited to "${event.name}". Respond right here 👇\n\nDetails: ${link}`;
+      ? `مرحبًا ${guestName}! أنت مدعو لـ "${event.name}". رد على الدعوة مباشرة من هنا:\n\nالتفاصيل: ${link}`
+      : `Hi ${guestName}! You're invited to "${event.name}". Respond right here:\n\nDetails: ${link}`;
 
   try {
     await whatsAppProvider.send({ to: phone, text, buttons });

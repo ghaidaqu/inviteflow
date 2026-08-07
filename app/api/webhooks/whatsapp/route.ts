@@ -123,10 +123,10 @@ export async function POST(request: NextRequest) {
 
     const confirmText =
       status === 'attending'
-        ? 'تم تسجيل ردك: موافق ✅ شكرًا لك!'
+        ? 'تم تسجيل ردك: موافق. شكرًا لك!'
         : status === 'not_attending'
-          ? 'تم تسجيل ردك: اعتذار ❌ شكرًا لإخبارنا.'
-          : 'تم تسجيل ردك: ربما 🤔 شكرًا لك!';
+          ? 'تم تسجيل ردك: اعتذار. شكرًا لإخبارنا.'
+          : 'تم تسجيل ردك: ربما. شكرًا لك!';
 
     if (message.from) {
       try {
