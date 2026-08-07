@@ -10,6 +10,7 @@ import { InviteActions } from '@/components/public/invite-actions';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
+import { CalendarIcon, MapPinIcon, ClockIcon } from 'lucide-react';
 
 export default async function PublicEventPage({
   params,
@@ -43,85 +44,130 @@ export default async function PublicEventPage({
   const qrDataUrl = event.is_qr_enabled ? await QRCode.toDataURL(publicLink, { margin: 1 }) : null;
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
-      {event.cover_image_url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={event.cover_image_url}
-          alt={event.name}
-          className="mb-6 aspect-video w-full rounded-xl object-cover"
-        />
-      )}
-
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">{event.name}</h1>
-        <Badge>{tTypes(event.type)}</Badge>
+    <main className="relative flex-1 overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="bg-primary/15 absolute start-[-15%] top-[-10%] size-[30rem] rounded-full blur-3xl" />
+        <div className="bg-accent/25 absolute end-[-10%] top-[20%] size-[22rem] rounded-full blur-3xl" />
       </div>
 
-      {event.description && (
-        <p className="text-muted-foreground mt-4 whitespace-pre-line">{event.description}</p>
-      )}
-
-      <dl className="bg-card mt-6 grid gap-4 rounded-xl border p-5 sm:grid-cols-2">
-        {event.event_date && (
-          <div>
-            <dt className="text-muted-foreground text-sm">{t('dateLabel')}</dt>
-            <dd className="mt-1">{new Date(event.event_date).toLocaleString(locale)}</dd>
+      <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-2xl px-4 py-10 duration-700 sm:px-6">
+        {event.cover_image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={event.cover_image_url}
+            alt={event.name}
+            className="mb-6 aspect-video w-full rounded-2xl object-cover shadow-lg"
+          />
+        ) : (
+          <div className="from-primary/15 via-accent/20 to-primary/10 mb-6 flex aspect-[2/1] w-full flex-col items-center justify-center rounded-2xl bg-gradient-to-br p-6 text-center shadow-sm">
+            <Badge className="mb-3">{tTypes(event.type)}</Badge>
+            <h1 className="text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
+              {event.name}
+            </h1>
           </div>
         )}
-        {event.location_text && (
-          <div>
-            <dt className="text-muted-foreground text-sm">{t('locationLabel')}</dt>
-            <dd className="mt-1">{event.location_text}</dd>
+
+        {event.cover_image_url && (
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <h1 className="text-3xl font-extrabold tracking-tight">{event.name}</h1>
+            <Badge>{tTypes(event.type)}</Badge>
           </div>
         )}
-        {event.rsvp_deadline && (
-          <div>
-            <dt className="text-muted-foreground text-sm">{t('rsvpDeadlineLabel')}</dt>
-            <dd className="mt-1">{new Date(event.rsvp_deadline).toLocaleString(locale)}</dd>
-          </div>
-        )}
-      </dl>
 
-      <div className="mt-6 flex flex-wrap gap-2">
-        {event.is_rsvp_enabled && (
-          <Button
-            className="w-full sm:w-fit"
-            nativeButton={false}
-            render={<Link href={`/events/${event.slug}/rsvp`} />}
-          >
-            {t('rsvpButton')}
-          </Button>
+        {event.description && (
+          <p className="text-muted-foreground mt-4 text-center whitespace-pre-line sm:text-start">
+            {event.description}
+          </p>
         )}
-        {event.is_ticketing_enabled && (
-          <Button
-            className="w-full sm:w-fit"
-            variant="outline"
-            nativeButton={false}
-            render={<Link href={`/events/${event.slug}/tickets`} />}
-          >
-            {t('ticketsButton')}
-          </Button>
-        )}
-      </div>
 
-      <div className="mt-6">
-        <InviteActions
-          eventName={event.name}
-          description={event.description}
-          locationText={event.location_text}
-          locationMapUrl={event.location_map_url}
-          eventDate={event.event_date}
-          publicLink={publicLink}
-        />
-      </div>
+        <dl className="mt-6 grid gap-3 sm:grid-cols-2">
+          {event.event_date && (
+            <DetailCard
+              icon={<CalendarIcon className="size-5" />}
+              label={t('dateLabel')}
+              value={new Date(event.event_date).toLocaleString(locale)}
+            />
+          )}
+          {event.location_text && (
+            <DetailCard
+              icon={<MapPinIcon className="size-5" />}
+              label={t('locationLabel')}
+              value={event.location_text}
+            />
+          )}
+          {event.rsvp_deadline && (
+            <DetailCard
+              icon={<ClockIcon className="size-5" />}
+              label={t('rsvpDeadlineLabel')}
+              value={new Date(event.rsvp_deadline).toLocaleString(locale)}
+            />
+          )}
+        </dl>
 
-      {qrDataUrl && (
-        <div className="bg-card mt-6 flex flex-col items-center gap-2 rounded-xl border p-5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={qrDataUrl} alt={event.name} width={160} height={160} />
+        <div className="mt-6 flex flex-wrap gap-2">
+          {event.is_rsvp_enabled && (
+            <Button
+              size="lg"
+              className="shadow-primary/20 w-full shadow-lg transition-transform hover:-translate-y-0.5 sm:w-fit"
+              nativeButton={false}
+              render={<Link href={`/events/${event.slug}/rsvp`} />}
+            >
+              {t('rsvpButton')}
+            </Button>
+          )}
+          {event.is_ticketing_enabled && (
+            <Button
+              size="lg"
+              className="w-full transition-transform hover:-translate-y-0.5 sm:w-fit"
+              variant="outline"
+              nativeButton={false}
+              render={<Link href={`/events/${event.slug}/tickets`} />}
+            >
+              {t('ticketsButton')}
+            </Button>
+          )}
         </div>
-      )}
+
+        <div className="mt-6">
+          <InviteActions
+            eventName={event.name}
+            description={event.description}
+            locationText={event.location_text}
+            locationMapUrl={event.location_map_url}
+            eventDate={event.event_date}
+            publicLink={publicLink}
+          />
+        </div>
+
+        {qrDataUrl && (
+          <div className="bg-card mt-6 flex flex-col items-center gap-2 rounded-2xl border p-5 shadow-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={qrDataUrl} alt={event.name} width={160} height={160} />
+          </div>
+        )}
+      </div>
     </main>
+  );
+}
+
+function DetailCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="bg-card flex items-start gap-3 rounded-xl border p-4 shadow-sm">
+      <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full">
+        {icon}
+      </div>
+      <div>
+        <dt className="text-muted-foreground text-xs">{label}</dt>
+        <dd className="mt-0.5 text-sm font-medium">{value}</dd>
+      </div>
+    </div>
   );
 }

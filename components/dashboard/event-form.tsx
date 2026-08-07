@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/select';
 import { Field, FieldLabel, FieldError, FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import type { Database } from '@/types/supabase';
 
 type EventRow = Database['public']['Tables']['events']['Row'];
@@ -43,12 +44,26 @@ function toIso(value?: string): string {
   return Number.isNaN(date.getTime()) ? '' : date.toISOString();
 }
 
+type Track = 'invitation' | 'event' | 'rsvp';
+
+// Presets for the three separate creation tracks (see the /dashboard/events/new
+// chooser page) — each track pre-selects the flags that make sense for it,
+// but the toggles stay visible/editable in case an organizer genuinely wants
+// a mix (e.g. an invitation that also sells tickets).
+const TRACK_DEFAULTS: Record<Track, { isRsvpEnabled: boolean; isTicketingEnabled: boolean }> = {
+  invitation: { isRsvpEnabled: true, isTicketingEnabled: false },
+  event: { isRsvpEnabled: false, isTicketingEnabled: true },
+  rsvp: { isRsvpEnabled: true, isTicketingEnabled: false },
+};
+
 export function EventForm({
   event,
   action,
+  track,
 }: {
   event?: EventRow;
   action: (prevState: EventActionState, formData: FormData) => Promise<EventActionState>;
+  track?: Track;
 }) {
   const t = useTranslations('Events.form');
   const tTypes = useTranslations('Events.types');
@@ -75,8 +90,9 @@ export function EventForm({
       coverImageUrl: event?.cover_image_url ?? '',
       primaryLocale: event?.primary_locale ?? 'ar',
       visibility: event?.visibility ?? 'private',
-      isRsvpEnabled: event?.is_rsvp_enabled ?? true,
-      isTicketingEnabled: event?.is_ticketing_enabled ?? false,
+      isRsvpEnabled: event?.is_rsvp_enabled ?? TRACK_DEFAULTS[track ?? 'invitation'].isRsvpEnabled,
+      isTicketingEnabled:
+        event?.is_ticketing_enabled ?? TRACK_DEFAULTS[track ?? 'invitation'].isTicketingEnabled,
       isQrEnabled: event?.is_qr_enabled ?? false,
       isPasswordProtected: Boolean(event?.password_hash),
       password: '',
@@ -117,6 +133,8 @@ export function EventForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
+      {track && !event && <Badge className="w-fit">{t(`trackBadge.${track}`)}</Badge>}
+
       {serverError && (
         <Alert variant="destructive">
           <AlertDescription>{tErrors(serverError)}</AlertDescription>

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useFieldArray, useForm, Controller } from 'react-hook-form';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,11 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { submitRsvpAction, type RsvpActionState } from '@/lib/actions/rsvp';
 import { Link } from '@/i18n/navigation';
 import { Trash2Icon, PlusIcon } from 'lucide-react';
-import type { QuestionWithOptions } from '@/lib/services/questions.service';
 
 type EventSettings = {
   allow_attending: boolean;
@@ -37,19 +35,24 @@ type FormValues = {
   status: 'attending' | 'not_attending' | 'maybe' | '';
   companionsNames: { name: string }[];
   message: string;
-  answers: Record<string, string | string[] | boolean>;
 };
 
+// This form is deliberately "الدعوة الرقمية" only — a simple accept/decline
+// with no custom questions. If the event also has RSVP questions (a
+// separate, poll-style track — see components/public/rsvp-questions-form.tsx
+// and the /rsvp/[token]/questions page), the thank-you screen below offers
+// a distinct, clearly separate follow-up step rather than bundling them
+// into one form.
 export function RsvpForm({
   eventSlug,
   eventName,
   settings,
-  questions,
+  hasQuestions,
 }: {
   eventSlug: string;
   eventName: string;
   settings: EventSettings;
-  questions: QuestionWithOptions[];
+  hasQuestions: boolean;
 }) {
   const t = useTranslations('Rsvp');
   const tErrors = useTranslations('Rsvp.errors');
@@ -66,7 +69,6 @@ export function RsvpForm({
       status: '',
       companionsNames: [],
       message: '',
-      answers: {},
     },
   });
 
@@ -79,12 +81,6 @@ export function RsvpForm({
       return;
     }
 
-    const missingRequired = questions.some((q) => q.is_required && !values.answers[q.id]);
-    if (missingRequired) {
-      setServerError('answerRequired');
-      return;
-    }
-
     const formData = new FormData();
     formData.set('guestName', values.guestName);
     formData.set('phone', values.phone);
@@ -92,14 +88,7 @@ export function RsvpForm({
     formData.set('status', values.status);
     formData.set('message', values.message);
     formData.set('companionsNames', JSON.stringify(values.companionsNames.map((c) => c.name)));
-    formData.set(
-      'answers',
-      JSON.stringify(
-        questions
-          .filter((q) => values.answers[q.id] !== undefined)
-          .map((q) => ({ question_id: q.id, answer_value: values.answers[q.id] })),
-      ),
-    );
+    formData.set('answers', '[]');
 
     startTransition(async () => {
       const result: RsvpActionState = await submitRsvpAction(eventSlug, {}, formData);
@@ -120,18 +109,30 @@ export function RsvpForm({
     }
 
     return (
-      <div className="bg-card flex flex-col gap-4 rounded-xl border p-6 text-center">
-        <p className="text-lg font-medium">{t('thankYouTitle')}</p>
-        <p className="text-muted-foreground">{t('thankYouDescription')}</p>
-        <Link
-          href={`/rsvp/${secureToken}`}
-          className="text-primary font-medium underline-offset-4 hover:underline"
-        >
-          {t('editLinkLabel')}
-        </Link>
-        <Button variant="outline" onClick={handleShareWhatsapp}>
-          {t('whatsappShareButton')}
-        </Button>
+      <div className="flex flex-col gap-4">
+        <div className="bg-card flex flex-col gap-4 rounded-xl border p-6 text-center">
+          <p className="text-lg font-medium">{t('thankYouTitle')}</p>
+          <p className="text-muted-foreground">{t('thankYouDescription')}</p>
+          <Link
+            href={`/rsvp/${secureToken}`}
+            className="text-primary font-medium underline-offset-4 hover:underline"
+          >
+            {t('editLinkLabel')}
+          </Link>
+          <Button variant="outline" onClick={handleShareWhatsapp}>
+            {t('whatsappShareButton')}
+          </Button>
+        </div>
+
+        {hasQuestions && (
+          <div className="bg-card flex flex-col gap-3 rounded-xl border p-6 text-center">
+            <p className="text-lg font-medium">{t('questionsFollowUpTitle')}</p>
+            <p className="text-muted-foreground">{t('questionsFollowUpDescription')}</p>
+            <Button nativeButton={false} render={<Link href={`/rsvp/${secureToken}/questions`} />}>
+              {t('questionsFollowUpButton')}
+            </Button>
+          </div>
+        )}
       </div>
     );
   }
@@ -220,10 +221,6 @@ export function RsvpForm({
           </div>
         )}
 
-        {questions.map((question) => (
-          <CustomQuestionField key={question.id} question={question} control={control} />
-        ))}
-
         {settings.collect_message && (
           <Field>
             <FieldLabel htmlFor="message">{t('messageLabel')}</FieldLabel>
@@ -236,140 +233,5 @@ export function RsvpForm({
         </Button>
       </FieldGroup>
     </form>
-  );
-}
-
-function CustomQuestionField({
-  question,
-  control,
-}: {
-  question: QuestionWithOptions;
-  control: ReturnType<typeof useForm<FormValues>>['control'];
-}) {
-  const locale = useLocale();
-  const label =
-    locale === 'ar'
-      ? question.question_text_ar
-      : (question.question_text_en ?? question.question_text_ar);
-
-  if (question.type === 'yes_no') {
-    return (
-      <Field orientation="horizontal">
-        <FieldLabel className="flex-1 font-normal">
-          {label}
-          {question.is_required && ' *'}
-        </FieldLabel>
-        <Controller
-          control={control}
-          name={`answers.${question.id}`}
-          render={({ field }) => (
-            <Switch checked={field.value === true} onCheckedChange={field.onChange} />
-          )}
-        />
-      </Field>
-    );
-  }
-
-  if (question.type === 'single_choice') {
-    return (
-      <Field>
-        <FieldLabel>
-          {label}
-          {question.is_required && ' *'}
-        </FieldLabel>
-        <Controller
-          control={control}
-          name={`answers.${question.id}`}
-          render={({ field }) => (
-            <Select value={field.value as string} onValueChange={field.onChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue>
-                  {(value: string | null) => {
-                    const selected = question.options.find((o) => o.id === value);
-                    if (!selected) return '';
-                    return locale === 'ar'
-                      ? selected.option_text_ar
-                      : (selected.option_text_en ?? selected.option_text_ar);
-                  }}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {question.options.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
-                    {locale === 'ar'
-                      ? option.option_text_ar
-                      : (option.option_text_en ?? option.option_text_ar)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </Field>
-    );
-  }
-
-  if (question.type === 'number') {
-    return (
-      <Field>
-        <FieldLabel>
-          {label}
-          {question.is_required && ' *'}
-        </FieldLabel>
-        <Controller
-          control={control}
-          name={`answers.${question.id}`}
-          render={({ field }) => (
-            <Input
-              type="number"
-              value={(field.value as string) ?? ''}
-              onChange={(e) => field.onChange(e.target.value)}
-            />
-          )}
-        />
-      </Field>
-    );
-  }
-
-  if (question.type === 'long_text') {
-    return (
-      <Field>
-        <FieldLabel>
-          {label}
-          {question.is_required && ' *'}
-        </FieldLabel>
-        <Controller
-          control={control}
-          name={`answers.${question.id}`}
-          render={({ field }) => (
-            <Textarea
-              rows={3}
-              value={(field.value as string) ?? ''}
-              onChange={(e) => field.onChange(e.target.value)}
-            />
-          )}
-        />
-      </Field>
-    );
-  }
-
-  // short_text and multi_choice fall back to a simple text input for MVP.
-  return (
-    <Field>
-      <FieldLabel>
-        {label}
-        {question.is_required && ' *'}
-      </FieldLabel>
-      <Controller
-        control={control}
-        name={`answers.${question.id}`}
-        render={({ field }) => (
-          <Input
-            value={(field.value as string) ?? ''}
-            onChange={(e) => field.onChange(e.target.value)}
-          />
-        )}
-      />
-    </Field>
   );
 }

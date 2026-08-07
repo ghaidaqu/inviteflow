@@ -210,6 +210,26 @@ export async function updateEventSettings(
   return data;
 }
 
+/**
+ * Public, ticketed events for the homepage — anonymous visitors should be
+ * able to discover and buy tickets without logging in or knowing a direct
+ * link, not just organizers who already have their event's URL.
+ */
+export async function listPublicTicketedEvents(supabase: Client, limit = 6): Promise<EventRow[]> {
+  const { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .eq('status', 'published')
+    .eq('visibility', 'public')
+    .eq('is_ticketing_enabled', true)
+    .is('deleted_at', null)
+    .order('event_date', { ascending: true, nullsFirst: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return data ?? [];
+}
+
 export async function getPublicEventBySlug(
   supabase: Client,
   slug: string,

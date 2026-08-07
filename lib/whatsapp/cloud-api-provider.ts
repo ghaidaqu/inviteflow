@@ -24,7 +24,31 @@ export function createWhatsAppCloudApiProvider(
   phoneNumberId: string,
 ): WhatsAppProvider {
   return {
-    async send({ to, text }: WhatsAppMessage) {
+    async send({ to, text, buttons }: WhatsAppMessage) {
+      const body =
+        buttons && buttons.length > 0
+          ? {
+              messaging_product: 'whatsapp',
+              to: normalizeNumber(to),
+              type: 'interactive',
+              interactive: {
+                type: 'button',
+                body: { text },
+                action: {
+                  buttons: buttons.slice(0, 3).map((b) => ({
+                    type: 'reply',
+                    reply: { id: b.id, title: b.title },
+                  })),
+                },
+              },
+            }
+          : {
+              messaging_product: 'whatsapp',
+              to: normalizeNumber(to),
+              type: 'text',
+              text: { body: text },
+            };
+
       const res = await fetch(
         `https://graph.facebook.com/${GRAPH_API_VERSION}/${phoneNumberId}/messages`,
         {
@@ -33,18 +57,13 @@ export function createWhatsAppCloudApiProvider(
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            messaging_product: 'whatsapp',
-            to: normalizeNumber(to),
-            type: 'text',
-            text: { body: text },
-          }),
+          body: JSON.stringify(body),
         },
       );
 
       if (!res.ok) {
-        const body = await res.text().catch(() => '');
-        throw new Error(`WhatsApp Cloud API send failed (${res.status}): ${body}`);
+        const responseBody = await res.text().catch(() => '');
+        throw new Error(`WhatsApp Cloud API send failed (${res.status}): ${responseBody}`);
       }
     },
   };

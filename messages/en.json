@@ -4,8 +4,17 @@
     "description": "A platform for digital invitations, RSVP tracking, and event ticketing."
   },
   "HomePage": {
+    "badge": "Built Arabic-first",
     "title": "InviteFlow",
     "subtitle": "Create your digital invitation, track responses, and issue tickets — all in one place.",
+    "feature1": "Elegant digital invitations",
+    "feature2": "One-tap reply, right inside WhatsApp",
+    "feature3": "Tickets & QR entry",
+    "publicEvents": {
+      "title": "🎫 Events open for booking now",
+      "subtitle": "Book your ticket directly — no sign-up needed.",
+      "viewButton": "View details & book →"
+    },
     "cta": "Get started",
     "login": "Log in",
     "guestCta": "Browse as a guest (no sign-up)",
@@ -159,13 +168,35 @@
       "passwordKeepPlaceholder": "Leave empty to keep the current password",
       "submitCreate": "Create event",
       "submitEdit": "Save changes",
-      "submitting": "Saving..."
+      "submitting": "Saving...",
+      "trackBadge": {
+        "invitation": "💌 Digital invitation",
+        "event": "🎫 Ticketed event",
+        "rsvp": "✅ RSVP / poll"
+      }
     },
     "list": {
       "title": "Events",
       "newButton": "New event",
       "empty": "No events yet. Create your first event.",
       "viewButton": "View"
+    },
+    "newChooser": {
+      "title": "Create new",
+      "subtitle": "Choose the right track — each one is completely separate from the others.",
+      "startButton": "Start",
+      "invitation": {
+        "title": "💌 Digital invitation",
+        "description": "A simple personal invitation to an occasion (wedding, graduation...) — optional accept/decline, no extra questions."
+      },
+      "event": {
+        "title": "🎫 Ticketed event",
+        "description": "Exhibitions, conferences, events — set a price and ticket count, and start selling."
+      },
+      "rsvp": {
+        "title": "✅ RSVP / poll",
+        "description": "Organize an event or meetup around your own questions, and send it to specific phone numbers."
+      }
     },
     "detail": {
       "editButton": "Edit",
@@ -222,7 +253,7 @@
     "copyLinkButton": "Copy link",
     "linkCopied": "Link copied",
     "shareMessage": "Invitation: {name}",
-    "rsvpButton": "RSVP",
+    "rsvpButton": "💌 Respond to invitation",
     "ticketsButton": "Buy tickets"
   },
   "Rsvp": {
@@ -254,6 +285,11 @@
     "editingClosed": "Editing is no longer available (deadline passed or disabled by the organizer).",
     "yes": "Yes",
     "no": "No",
+    "questionsFollowUpTitle": "✅ The organizer has RSVP questions",
+    "questionsFollowUpDescription": "A separate track from your invitation — the organizer would like your input on a few extra questions.",
+    "questionsFollowUpButton": "Answer the questions",
+    "rsvpQuestionsPageSubtitle": "Questions from the organizer — completely separate from your invitation response.",
+    "noQuestions": "No questions for this event yet.",
     "errors": {
       "invalidInput": "Please check the information you entered.",
       "answerRequired": "Please answer all required questions.",

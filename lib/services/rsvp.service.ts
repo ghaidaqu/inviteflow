@@ -63,7 +63,13 @@ export async function updateRsvpByToken(
     companionsCount: number;
     companionsNames: string[];
     message: string | null;
-    answers: AnswerInput[];
+    /**
+     * `null` means "leave existing question answers untouched" — the RPC
+     * only deletes+replaces answers when this is non-null. Pass an actual
+     * array (even `[]`) only when the caller genuinely means to replace the
+     * full answer set (see components/public/rsvp-questions-form.tsx).
+     */
+    answers: AnswerInput[] | null;
   },
 ) {
   const { error } = await supabase.rpc('update_rsvp_by_token', {

@@ -47,27 +47,85 @@ export async function sendGuestRsvpConfirmationWhatsApp(
  * other notify* functions here (best-effort, fire-and-forget from a public
  * action), this is an explicit click from the dashboard, so it reports
  * back whether it actually sent instead of silently swallowing failures.
+ *
+ * This is "الدعوة الرقمية" (digital invitation) done right per how guests
+ * actually behave: nobody visits a website just to tap "accept" — when the
+ * event has RSVP enabled, the message carries tappable reply buttons
+ * (Accept/Decline/Maybe) so the guest can respond without ever leaving
+ * WhatsApp. The tap comes back via app/api/webhooks/whatsapp/route.ts. If
+ * RSVP is off (a pure announcement, per the organizer's choice), this is
+ * just an informational message with the event link and no buttons.
  */
 export async function sendInvitationWhatsApp(
   eventSlug: string,
+  guestId: string,
   guestName: string,
   phone: string,
   locale: Locale,
 ): Promise<{ ok: boolean; configured: boolean }> {
   if (!isWhatsAppConfigured()) return { ok: false, configured: false };
 
-  const eventName = await getEventName(eventSlug);
-  if (!eventName) return { ok: false, configured: true };
+  const admin = createAdminClient();
+  const { data: event } = await admin
+    .from('events')
+    .select(
+      'name, is_rsvp_enabled, event_settings(allow_attending, allow_not_attending, allow_maybe)',
+    )
+    .eq('slug', eventSlug)
+    .single();
+  if (!event) return { ok: false, configured: true };
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
   const link = `${appUrl}/${locale}/events/${eventSlug}`;
+
+  if (!event.is_rsvp_enabled) {
+    // Pure announcement — no response expected, so no buttons.
+    const text =
+      locale === 'ar'
+        ? `مرحبًا ${guestName}! أنت مدعو لـ "${event.name}". التفاصيل: ${link}`
+        : `Hi ${guestName}! You're invited to "${event.name}". Details: ${link}`;
+    try {
+      await whatsAppProvider.send({ to: phone, text });
+      return { ok: true, configured: true };
+    } catch (error) {
+      console.error('[whatsapp] invitation send failed', error);
+      return { ok: false, configured: true };
+    }
+  }
+
+  const settings = event.event_settings as unknown as {
+    allow_attending: boolean;
+    allow_not_attending: boolean;
+    allow_maybe: boolean;
+  } | null;
+
+  const buttons: { id: string; title: string }[] = [];
+  if (settings?.allow_attending !== false) {
+    buttons.push({
+      id: `rsvp_accept:${guestId}`,
+      title: locale === 'ar' ? 'موافق ✅' : 'Accept ✅',
+    });
+  }
+  if (settings?.allow_not_attending !== false) {
+    buttons.push({
+      id: `rsvp_decline:${guestId}`,
+      title: locale === 'ar' ? 'اعتذار ❌' : 'Decline ❌',
+    });
+  }
+  if (settings?.allow_maybe && buttons.length < 3) {
+    buttons.push({
+      id: `rsvp_maybe:${guestId}`,
+      title: locale === 'ar' ? 'ربما 🤔' : 'Maybe 🤔',
+    });
+  }
+
   const text =
     locale === 'ar'
-      ? `مرحبًا ${guestName}! أنت مدعو لـ "${eventName}". شوف التفاصيل ورد على الدعوة من هنا: ${link}`
-      : `Hi ${guestName}! You're invited to "${eventName}". See the details and respond here: ${link}`;
+      ? `مرحبًا ${guestName}! أنت مدعو لـ "${event.name}". رد على الدعوة مباشرة من هنا 👇\n\nالتفاصيل: ${link}`
+      : `Hi ${guestName}! You're invited to "${event.name}". Respond right here 👇\n\nDetails: ${link}`;
 
   try {
-    await whatsAppProvider.send({ to: phone, text });
+    await whatsAppProvider.send({ to: phone, text, buttons });
     return { ok: true, configured: true };
   } catch (error) {
     console.error('[whatsapp] invitation send failed', error);

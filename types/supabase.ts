@@ -559,6 +559,10 @@ export interface Database {
         Args: { p_order_id: string };
         Returns: Json;
       };
+      respond_via_whatsapp: {
+        Args: { p_guest_id: string; p_status: string };
+        Returns: Json;
+      };
     };
     Enums: Record<string, never>;
   };

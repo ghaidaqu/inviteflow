@@ -16,7 +16,12 @@ export type RsvpActionState = {
   success?: boolean;
 };
 
-function readAnswers(formData: FormData): { question_id: string; answer_value: Json }[] {
+// `null` (the field wasn't included in the form at all) means "don't touch
+// existing question answers" — distinct from `[]` (field present but
+// empty), which means "replace with no answers". See
+// updateRsvpByToken()'s doc comment for why this distinction matters.
+function readAnswers(formData: FormData): { question_id: string; answer_value: Json }[] | null {
+  if (!formData.has('answers')) return null;
   const raw = formData.get('answers');
   if (typeof raw !== 'string' || !raw) return [];
   try {
@@ -80,7 +85,10 @@ export async function submitRsvpAction(
       companionsCount: parsed.data.companionsNames.length,
       companionsNames: parsed.data.companionsNames.map((c) => c.name),
       message: parsed.data.message ?? null,
-      answers: readAnswers(formData),
+      // A brand-new response has no existing answers to preserve, so null
+      // vs [] doesn't matter here — normalize for the (non-nullable)
+      // submitRsvp() signature.
+      answers: readAnswers(formData) ?? [],
     });
 
     // Best-effort notifications (internally swallow their own errors) — we

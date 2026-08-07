@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useFieldArray, useForm, Controller } from 'react-hook-form';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,8 +16,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { updateRsvpAction, type RsvpActionState } from '@/lib/actions/rsvp';
+import { Link } from '@/i18n/navigation';
 import { Trash2Icon, PlusIcon } from 'lucide-react';
-import type { QuestionWithOptions } from '@/lib/services/questions.service';
 import type { RsvpByToken } from '@/lib/services/rsvp.service';
 
 type EventSettings = {
@@ -33,37 +33,34 @@ type FormValues = {
   status: 'attending' | 'not_attending' | 'maybe';
   companionsNames: { name: string }[];
   message: string;
-  answers: Record<string, string | boolean>;
 };
 
+// Edits the invitation accept/decline response only — the RSVP questions
+// track lives on its own separate page (/rsvp/[token]/questions), linked
+// below rather than folded into this form. See rsvp-form.tsx for the same
+// separation on first submission.
 export function RsvpEditForm({
   token,
   data,
   settings,
-  questions,
+  hasQuestions,
 }: {
   token: string;
   data: RsvpByToken;
   settings: EventSettings;
-  questions: QuestionWithOptions[];
+  hasQuestions: boolean;
 }) {
   const t = useTranslations('Rsvp');
   const tErrors = useTranslations('Rsvp.errors');
-  const locale = useLocale();
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
-
-  const existingAnswers = Object.fromEntries(
-    data.answers.map((a) => [a.question_id, a.answer_value as string | boolean]),
-  );
 
   const { register, handleSubmit, control } = useForm<FormValues>({
     defaultValues: {
       status: data.response.status,
       companionsNames: data.response.companions_names.map((name) => ({ name })),
       message: data.response.message ?? '',
-      answers: existingAnswers,
     },
   });
 
@@ -76,14 +73,10 @@ export function RsvpEditForm({
     formData.set('status', values.status);
     formData.set('message', values.message);
     formData.set('companionsNames', JSON.stringify(values.companionsNames.map((c) => c.name)));
-    formData.set(
-      'answers',
-      JSON.stringify(
-        questions
-          .filter((q) => values.answers[q.id] !== undefined)
-          .map((q) => ({ question_id: q.id, answer_value: values.answers[q.id] })),
-      ),
-    );
+    // Deliberately not setting 'answers' — this form never touches question
+    // answers, which live on their own page. See readAnswers() in
+    // lib/actions/rsvp.ts for why omitting the field (vs sending `[]`)
+    // matters here.
 
     startTransition(async () => {
       const result: RsvpActionState = await updateRsvpAction(token, {}, formData);
@@ -164,48 +157,6 @@ export function RsvpEditForm({
           </div>
         )}
 
-        {questions.map((question) => {
-          const label =
-            locale === 'ar'
-              ? question.question_text_ar
-              : (question.question_text_en ?? question.question_text_ar);
-          return (
-            <Field key={question.id}>
-              <FieldLabel>
-                {label}
-                {question.is_required && ' *'}
-              </FieldLabel>
-              <Controller
-                control={control}
-                name={`answers.${question.id}`}
-                render={({ field }) =>
-                  question.type === 'yes_no' ? (
-                    <Select
-                      value={field.value ? 'true' : 'false'}
-                      onValueChange={(v) => field.onChange(v === 'true')}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue>
-                          {(value: string | null) => (value === 'true' ? t('yes') : t('no'))}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="true">{t('yes')}</SelectItem>
-                        <SelectItem value="false">{t('no')}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <Input
-                      value={(field.value as string) ?? ''}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
-                  )
-                }
-              />
-            </Field>
-          );
-        })}
-
         {settings.collect_message && (
           <Field>
             <FieldLabel htmlFor="message">{t('messageLabel')}</FieldLabel>
@@ -217,6 +168,21 @@ export function RsvpEditForm({
           {isPending ? t('submitting') : t('saveChanges')}
         </Button>
       </FieldGroup>
+
+      {hasQuestions && (
+        <div className="bg-card flex flex-col gap-3 rounded-xl border p-5 text-center">
+          <p className="font-medium">{t('questionsFollowUpTitle')}</p>
+          <p className="text-muted-foreground text-sm">{t('questionsFollowUpDescription')}</p>
+          <Button
+            type="button"
+            variant="outline"
+            nativeButton={false}
+            render={<Link href={`/rsvp/${token}/questions`} />}
+          >
+            {t('questionsFollowUpButton')}
+          </Button>
+        </div>
+      )}
     </form>
   );
 }

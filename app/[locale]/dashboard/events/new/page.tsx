@@ -1,16 +1,77 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { EventForm } from '@/components/dashboard/event-form';
-import { createEventAction } from '@/lib/actions/events';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Link } from '@/i18n/navigation';
 
-export default async function NewEventPage({ params }: { params: Promise<{ locale: string }> }) {
+// Three genuinely separate creation tracks, chosen up front — not three
+// checkboxes on one giant form. See EventForm's `track` prop and the
+// invitation/RSVP dashboard page split for the same principle applied to
+// managing an existing event.
+export default async function NewEventChooserPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations('Events.list');
+  const t = await getTranslations('Events.newChooser');
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('newButton')}</h1>
-      <EventForm action={createEventAction} />
+    <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
+      <h1 className="text-2xl font-bold tracking-tight">{t('title')}</h1>
+      <p className="text-muted-foreground mt-1 mb-8">{t('subtitle')}</p>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('invitation.title')}</CardTitle>
+            <CardDescription>{t('invitation.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              className="w-full"
+              nativeButton={false}
+              render={<Link href="/dashboard/events/new/invitation" />}
+            >
+              {t('startButton')}
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('event.title')}</CardTitle>
+            <CardDescription>{t('event.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              className="w-full"
+              variant="outline"
+              nativeButton={false}
+              render={<Link href="/dashboard/events/new/event" />}
+            >
+              {t('startButton')}
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('rsvp.title')}</CardTitle>
+            <CardDescription>{t('rsvp.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              className="w-full"
+              variant="outline"
+              nativeButton={false}
+              render={<Link href="/dashboard/events/new/rsvp" />}
+            >
+              {t('startButton')}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </main>
   );
 }

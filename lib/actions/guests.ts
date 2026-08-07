@@ -115,7 +115,13 @@ export async function sendGuestInviteAction(
   if (!guest?.phone) return { error: 'noPhone' };
 
   const locale = (await getLocale()) as 'ar' | 'en';
-  const result = await sendInvitationWhatsApp(event.slug, guest.name ?? '', guest.phone, locale);
+  const result = await sendInvitationWhatsApp(
+    event.slug,
+    guestId,
+    guest.name ?? '',
+    guest.phone,
+    locale,
+  );
 
   if (!result.configured) return { notConfigured: true };
   if (!result.ok) return { error: 'sendFailed' };
