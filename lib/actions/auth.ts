@@ -18,6 +18,17 @@ export type AuthActionState = {
 
 const NOT_CONFIGURED: AuthActionState = { error: 'notConfigured' };
 
+// Only ever redirect to a path we generated ourselves (middleware sets
+// `next` to the page the user was headed to before the auth gate). Reject
+// anything that isn't a same-site, locale-prefixed path to rule out this
+// becoming an open redirect via a crafted `next` value.
+function safeNextPath(value: FormDataEntryValue | null, locale: string): string | null {
+  if (typeof value !== 'string') return null;
+  if (!value.startsWith(`/${locale}/`) && value !== `/${locale}`) return null;
+  if (value.startsWith('//') || value.includes('://')) return null;
+  return value;
+}
+
 export async function registerAction(
   _prevState: AuthActionState,
   formData: FormData,
@@ -50,7 +61,7 @@ export async function registerAction(
     return { error: error.code === 'user_already_exists' ? 'emailAlreadyExists' : 'unknown' };
   }
 
-  redirect(`/${locale}/dashboard`);
+  redirect(safeNextPath(formData.get('next'), locale) ?? `/${locale}/dashboard`);
 }
 
 export async function loginAction(
@@ -80,7 +91,7 @@ export async function loginAction(
     return { error: 'invalidCredentials' };
   }
 
-  redirect(`/${locale}/dashboard`);
+  redirect(safeNextPath(formData.get('next'), locale) ?? `/${locale}/dashboard`);
 }
 
 export async function logoutAction() {

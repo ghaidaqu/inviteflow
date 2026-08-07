@@ -12,7 +12,7 @@ import { Field, FieldLabel, FieldError, FieldGroup } from '@/components/ui/field
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Link } from '@/i18n/navigation';
 
-export function RegisterForm() {
+export function RegisterForm({ next }: { next?: string }) {
   const t = useTranslations('Auth.register');
   const tErrors = useTranslations('Auth.errors');
   const tValidation = useTranslations('Auth.validation');
@@ -40,6 +40,7 @@ export function RegisterForm() {
     formData.set('email', values.email);
     formData.set('password', values.password);
     formData.set('confirmPassword', values.confirmPassword);
+    if (next) formData.set('next', next);
 
     startTransition(async () => {
       const result = await registerAction({}, formData);
@@ -97,7 +98,7 @@ export function RegisterForm() {
         <p className="text-muted-foreground text-center text-sm">
           {t('haveAccount')}{' '}
           <Link
-            href="/login"
+            href={next ? `/login?next=${encodeURIComponent(next)}` : '/login'}
             className="text-primary font-medium underline-offset-4 hover:underline"
           >
             {t('loginLink')}

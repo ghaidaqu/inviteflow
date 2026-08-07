@@ -30,7 +30,16 @@ export default async function middleware(request: NextRequest) {
   const locale = request.nextUrl.pathname.split('/')[1] || routing.defaultLocale;
 
   if (!user && pathname.startsWith(PROTECTED_PREFIX)) {
-    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+    // Preserve the page they were headed to (e.g. a specific "create new
+    // event" track from the homepage) so login/register can send them
+    // straight there instead of dropping them on the generic dashboard.
+    const loginUrl = new URL(`/${locale}/login`, request.url);
+    // Use the locale-prefixed pathname here (not the stripped one above) —
+    // safeNextPath() in lib/actions/auth.ts only accepts same-locale,
+    // locale-prefixed paths, matching how every other redirect() in the app
+    // is built.
+    loginUrl.searchParams.set('next', request.nextUrl.pathname + request.nextUrl.search);
+    return NextResponse.redirect(loginUrl);
   }
 
   if (user && AUTH_ONLY_PAGES.includes(pathname)) {

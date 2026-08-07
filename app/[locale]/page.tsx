@@ -83,9 +83,21 @@ function HomeContent() {
         </div>
 
         <div className="animate-in fade-in mt-6 grid w-full max-w-3xl gap-4 delay-500 duration-700 sm:grid-cols-3">
-          <FeatureCard icon={<MailIcon className="size-5" />} label={t('feature1')} />
-          <FeatureCard icon={<ListChecksIcon className="size-5" />} label={t('feature2')} />
-          <FeatureCard icon={<TicketIcon className="size-5" />} label={t('feature3')} />
+          <FeatureCard
+            href="/dashboard/events/new/invitation"
+            icon={<MailIcon className="size-5" />}
+            label={t('feature1')}
+          />
+          <FeatureCard
+            href="/dashboard/events/new/rsvp"
+            icon={<ListChecksIcon className="size-5" />}
+            label={t('feature2')}
+          />
+          <FeatureCard
+            href="/dashboard/events/new/event"
+            icon={<TicketIcon className="size-5" />}
+            label={t('feature3')}
+          />
         </div>
       </div>
     </main>
@@ -93,12 +105,23 @@ function HomeContent() {
 }
 
 // Each card mirrors one of the three fully-separate creation tracks
-// (Digital Invitation / RSVP-poll / Ticketed Event — see dashboard/events/new)
-// and links straight into starting one, instead of sitting as inert copy.
-function FeatureCard({ icon, label }: { icon: React.ReactNode; label: string }) {
+// (Digital Invitation / RSVP-poll / Ticketed Event) and links straight to
+// starting one. Anonymous visitors get bounced through login/register by
+// the dashboard auth guard, which preserves this exact destination via a
+// `next` param — so signing up still lands them on the track they picked,
+// not a generic empty dashboard.
+function FeatureCard({
+  href,
+  icon,
+  label,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+}) {
   return (
     <Link
-      href="/register"
+      href={href}
       className="bg-card/70 hover:border-primary/40 group flex flex-col items-center gap-2 rounded-2xl border p-5 backdrop-blur-sm transition-[color,background-color,border-color,transform] duration-150 ease-out hover:-translate-y-0.5 active:scale-[0.98]"
     >
       <div className="bg-primary/10 text-primary group-hover:bg-primary/15 flex size-10 items-center justify-center rounded-full transition-colors">
