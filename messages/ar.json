@@ -344,7 +344,30 @@
     "deleteConfirmTitle": "حذف الضيف",
     "deleteConfirmDescription": "سيتم حذف هذا الضيف وردّه نهائيًا.",
     "deleteConfirmCancel": "إلغاء",
-    "deleteConfirmAction": "تأكيد الحذف"
+    "deleteConfirmAction": "تأكيد الحذف",
+    "addGuests": {
+      "trigger": "إضافة ضيوف",
+      "title": "إضافة ضيوف يدويًا",
+      "description": "ضيف واحد في كل سطر — الاسم، ثم رقم الجوال بعد فاصلة (اختياري). مثال: خالد العتيبي, 0501234567",
+      "placeholder": "خالد العتيبي, 0501234567\nمنى الدوسري",
+      "submit": "إضافة",
+      "submitting": "جارٍ الإضافة...",
+      "success": "تمت إضافة {count} ضيف بنجاح.",
+      "cancel": "إلغاء"
+    },
+    "sendInvite": {
+      "button": "إرسال دعوة عبر واتساب",
+      "sending": "جارٍ الإرسال...",
+      "sent": "تم إرسال الدعوة.",
+      "notConfigured": "واتساب غير مربوط بعد — راجع الإعدادات لتفعيله.",
+      "noPhone": "هذا الضيف بدون رقم جوال.",
+      "failed": "تعذّر إرسال الدعوة."
+    },
+    "errors": {
+      "invalidInput": "يرجى إدخال اسم ضيف واحد على الأقل.",
+      "unauthorized": "يجب تسجيل الدخول للقيام بهذا.",
+      "unknown": "حدث خطأ ما، يرجى المحاولة مرة أخرى."
+    }
   },
   "Tickets": {
     "title": "التذاكر",

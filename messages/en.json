@@ -344,7 +344,30 @@
     "deleteConfirmTitle": "Delete guest",
     "deleteConfirmDescription": "This guest and their response will be permanently deleted.",
     "deleteConfirmCancel": "Cancel",
-    "deleteConfirmAction": "Confirm delete"
+    "deleteConfirmAction": "Confirm delete",
+    "addGuests": {
+      "trigger": "Add guests",
+      "title": "Add guests manually",
+      "description": "One guest per line — name, then phone after a comma (optional). Example: Khaled Alotaibi, 0501234567",
+      "placeholder": "Khaled Alotaibi, 0501234567\nMona Aldosari",
+      "submit": "Add",
+      "submitting": "Adding...",
+      "success": "{count} guest(s) added successfully.",
+      "cancel": "Cancel"
+    },
+    "sendInvite": {
+      "button": "Send invite via WhatsApp",
+      "sending": "Sending...",
+      "sent": "Invite sent.",
+      "notConfigured": "WhatsApp isn't connected yet — check settings to enable it.",
+      "noPhone": "This guest has no phone number.",
+      "failed": "Couldn't send the invite."
+    },
+    "errors": {
+      "invalidInput": "Please enter at least one guest name.",
+      "unauthorized": "You must be logged in to do this.",
+      "unknown": "Something went wrong, please try again."
+    }
   },
   "Tickets": {
     "title": "Tickets",

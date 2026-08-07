@@ -37,6 +37,33 @@ export async function listGuestsWithResponses(
   }));
 }
 
+/**
+ * Organizer-initiated guest creation — distinct from the public
+ * `submit_rsvp` RPC (which creates a guest *and* their response together
+ * when they respond themselves). A manually-added guest has no response
+ * yet; they show up as "no response" in the guest list until they use
+ * their invite link, exactly like a guest who hasn't replied yet.
+ */
+export async function createGuestManually(
+  supabase: Client,
+  eventId: string,
+  input: { name: string; phone: string | null; email: string | null },
+): Promise<GuestRow> {
+  const { data, error } = await supabase
+    .from('guests')
+    .insert({
+      event_id: eventId,
+      name: input.name,
+      phone: input.phone,
+      email: input.email,
+    })
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
 export async function deleteGuest(supabase: Client, guestId: string): Promise<void> {
   // RLS on `guests` already restricts this update to members of the event's
   // organization, so no extra organization check is needed here.
