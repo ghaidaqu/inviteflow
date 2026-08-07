@@ -1,4 +1,26 @@
+import type { ResultsSummary } from '@/lib/services/results.service';
+
 type Locale = 'ar' | 'en';
+
+function summaryHtml(locale: Locale, summary: ResultsSummary): string {
+  const rsvpLines =
+    locale === 'ar'
+      ? `<p>سيحضر: <strong>${summary.attendingCount}</strong> — لن يحضر: <strong>${summary.notAttendingCount}</strong> — ربما: <strong>${summary.maybeCount}</strong></p>`
+      : `<p>Attending: <strong>${summary.attendingCount}</strong> — Not attending: <strong>${summary.notAttendingCount}</strong> — Maybe: <strong>${summary.maybeCount}</strong></p>`;
+
+  const questionsHtml = summary.questions
+    .filter((q) => q.tally)
+    .map((q) => {
+      const text = locale === 'ar' ? q.questionTextAr : (q.questionTextEn ?? q.questionTextAr);
+      const options = q
+        .tally!.map((t) => `<li>${locale === 'ar' ? t.labelAr : t.labelEn}: ${t.count}</li>`)
+        .join('');
+      return `<p><strong>${text}</strong></p><ul>${options}</ul>`;
+    })
+    .join('');
+
+  return rsvpLines + questionsHtml;
+}
 
 const RSVP_STATUS_LABEL: Record<Locale, Record<'attending' | 'not_attending' | 'maybe', string>> = {
   ar: { attending: 'سيحضر', not_attending: 'لن يحضر', maybe: 'ربما' },
@@ -137,6 +159,36 @@ export function buyerTicketsEmail(
       `
       <p>Thanks for buying tickets to <strong>${params.eventName}</strong>. Keep these ticket links:</p>
       ${links}
+    `,
+    ),
+  };
+}
+
+export function resultsBroadcastEmail(
+  locale: Locale,
+  params: { eventName: string; summary: ResultsSummary },
+) {
+  const body = summaryHtml(locale, params.summary);
+
+  if (locale === 'ar') {
+    return {
+      subject: `نتيجة الردود — ${params.eventName}`,
+      html: wrap(
+        locale,
+        `
+        <p>هذي نتيجة الردود على <strong>${params.eventName}</strong>:</p>
+        ${body}
+      `,
+      ),
+    };
+  }
+  return {
+    subject: `Response results — ${params.eventName}`,
+    html: wrap(
+      locale,
+      `
+      <p>Here are the results for <strong>${params.eventName}</strong>:</p>
+      ${body}
     `,
     ),
   };

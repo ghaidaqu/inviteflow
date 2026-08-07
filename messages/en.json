@@ -311,6 +311,19 @@
       "invalidInput": "Please check the information you entered.",
       "unauthorized": "You must be logged in to do this.",
       "unknown": "Something went wrong, please try again."
+    },
+    "broadcast": {
+      "trigger": "Broadcast results to guests",
+      "title": "Broadcast response results",
+      "description": "Sends a summary of the results (attendance + question answers) to every guest with an email or phone number on file.",
+      "confirm": "Send now",
+      "cancel": "Cancel",
+      "sending": "Sending...",
+      "sentSummary": "Sent to {sent} of {total} guests.",
+      "errors": {
+        "unauthorized": "You must be logged in to do this.",
+        "unknown": "Something went wrong, please try again."
+      }
     }
   },
   "Guests": {

@@ -1,12 +1,14 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { emailProvider } from './index';
+import { emailProvider, isEmailConfigured } from './index';
 import {
   organizerNewRsvpEmail,
   guestRsvpConfirmationEmail,
   organizerTicketPurchasedEmail,
   buyerTicketsEmail,
+  resultsBroadcastEmail,
 } from './templates';
+import type { ResultsSummary } from '@/lib/services/results.service';
 
 type Locale = 'ar' | 'en';
 
@@ -99,6 +101,27 @@ export async function notifyOrganizerTicketPurchase(
     quantity,
   });
   await safeSend(contact.email, subject, html);
+}
+
+/** Organizer-triggered broadcast — reports success so the dashboard can
+ * show an accurate "sent to N of M guests" count instead of a blind
+ * best-effort fire-and-forget. */
+export async function sendResultsBroadcastEmail(
+  eventName: string,
+  guestEmail: string,
+  summary: ResultsSummary,
+  locale: Locale,
+): Promise<boolean> {
+  if (!isEmailConfigured()) return false;
+
+  const { subject, html } = resultsBroadcastEmail(locale, { eventName, summary });
+  try {
+    await emailProvider.send({ to: guestEmail, subject, html });
+    return true;
+  } catch (error) {
+    console.error('[email] results broadcast failed', error);
+    return false;
+  }
 }
 
 export async function sendBuyerTickets(

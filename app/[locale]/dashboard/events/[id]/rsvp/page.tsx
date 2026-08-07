@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { listQuestions } from '@/lib/services/questions.service';
 import { QuestionsEditor } from '@/components/dashboard/questions-editor';
+import { BroadcastResultsButton } from '@/components/dashboard/broadcast-results-button';
 import { Link } from '@/i18n/navigation';
 
 // "RSVP" — a separate track from the invitation itself (see /invitation):
@@ -39,8 +40,13 @@ export default async function EventRsvpSettingsPage({
       >
         {event.name}
       </Link>
-      <h1 className="mt-2 mb-1 text-2xl font-bold tracking-tight">{t('title')}</h1>
-      <p className="text-muted-foreground mb-6">{t('rsvpPageSubtitle')}</p>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="mb-1 text-2xl font-bold tracking-tight">{t('title')}</h1>
+          <p className="text-muted-foreground">{t('rsvpPageSubtitle')}</p>
+        </div>
+        <BroadcastResultsButton eventId={id} />
+      </div>
       <QuestionsEditor eventId={id} initialQuestions={questions} />
     </main>
   );

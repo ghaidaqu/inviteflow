@@ -1,6 +1,7 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider, isWhatsAppConfigured } from './index';
+import type { ResultsSummary } from '@/lib/services/results.service';
 
 type Locale = 'ar' | 'en';
 
@@ -71,6 +72,52 @@ export async function sendInvitationWhatsApp(
   } catch (error) {
     console.error('[whatsapp] invitation send failed', error);
     return { ok: false, configured: true };
+  }
+}
+
+function summaryText(locale: Locale, summary: ResultsSummary): string {
+  const rsvpLine =
+    locale === 'ar'
+      ? `سيحضر: ${summary.attendingCount} — لن يحضر: ${summary.notAttendingCount} — ربما: ${summary.maybeCount}`
+      : `Attending: ${summary.attendingCount} — Not attending: ${summary.notAttendingCount} — Maybe: ${summary.maybeCount}`;
+
+  const questionLines = summary.questions
+    .filter((q) => q.tally)
+    .map((q) => {
+      const text = locale === 'ar' ? q.questionTextAr : (q.questionTextEn ?? q.questionTextAr);
+      const options = q
+        .tally!.map((t) => `  - ${locale === 'ar' ? t.labelAr : t.labelEn}: ${t.count}`)
+        .join('\n');
+      return `${text}\n${options}`;
+    })
+    .join('\n\n');
+
+  return questionLines ? `${rsvpLine}\n\n${questionLines}` : rsvpLine;
+}
+
+/** Organizer-triggered broadcast of aggregate results to a guest. Reports
+ * success/failure back — see sendInvitationWhatsApp for why. */
+export async function sendResultsBroadcastWhatsApp(
+  eventSlug: string,
+  phone: string,
+  summary: ResultsSummary,
+  locale: Locale,
+): Promise<boolean> {
+  if (!isWhatsAppConfigured()) return false;
+  const eventName = await getEventName(eventSlug);
+  if (!eventName) return false;
+
+  const text =
+    locale === 'ar'
+      ? `نتيجة الردود على "${eventName}":\n\n${summaryText(locale, summary)}`
+      : `Results for "${eventName}":\n\n${summaryText(locale, summary)}`;
+
+  try {
+    await whatsAppProvider.send({ to: phone, text });
+    return true;
+  } catch (error) {
+    console.error('[whatsapp] results broadcast failed', error);
+    return false;
   }
 }
 
