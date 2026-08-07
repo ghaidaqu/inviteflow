@@ -26,6 +26,7 @@ export const mockPaymentProvider: PaymentProvider = {
     };
 
     return {
+      status: 'confirmed',
       orderId: result.order_id,
       totalAmount: result.total_amount,
       tickets: result.tickets.map((t) => ({ id: t.id, qrToken: t.qr_token })),

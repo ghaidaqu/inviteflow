@@ -39,7 +39,7 @@ export default async function EventRsvpPage({
     <main className="mx-auto w-full max-w-xl px-4 py-8 sm:px-6">
       <h1 className="mb-1 text-2xl font-bold tracking-tight">{event.name}</h1>
       <p className="text-muted-foreground mb-6">{t('pageSubtitle')}</p>
-      <RsvpForm eventSlug={slug} settings={settings} questions={questions} />
+      <RsvpForm eventSlug={slug} eventName={event.name} settings={settings} questions={questions} />
     </main>
   );
 }

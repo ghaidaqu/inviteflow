@@ -42,10 +42,12 @@ type FormValues = {
 
 export function RsvpForm({
   eventSlug,
+  eventName,
   settings,
   questions,
 }: {
   eventSlug: string;
+  eventName: string;
   settings: EventSettings;
   questions: QuestionWithOptions[];
 }) {
@@ -54,6 +56,7 @@ export function RsvpForm({
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
   const [secureToken, setSecureToken] = useState<string | null>(null);
+  const [submittedStatus, setSubmittedStatus] = useState<FormValues['status']>('');
 
   const { register, handleSubmit, control } = useForm<FormValues>({
     defaultValues: {
@@ -103,12 +106,19 @@ export function RsvpForm({
       if (result.error) {
         setServerError(result.error);
       } else if (result.secureToken) {
+        setSubmittedStatus(values.status);
         setSecureToken(result.secureToken);
       }
     });
   }
 
   if (secureToken) {
+    function handleShareWhatsapp() {
+      const statusLabel = submittedStatus ? t(`status.${submittedStatus}`) : '';
+      const message = t('whatsappShareMessage', { eventName, status: statusLabel });
+      window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+    }
+
     return (
       <div className="bg-card flex flex-col gap-4 rounded-xl border p-6 text-center">
         <p className="text-lg font-medium">{t('thankYouTitle')}</p>
@@ -119,6 +129,9 @@ export function RsvpForm({
         >
           {t('editLinkLabel')}
         </Link>
+        <Button variant="outline" onClick={handleShareWhatsapp}>
+          {t('whatsappShareButton')}
+        </Button>
       </div>
     );
   }

@@ -1,9 +1,13 @@
 'use server';
 
+import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { rsvpFormSchema, rsvpStatuses } from '@/lib/validations/rsvp';
 import { submitRsvp, updateRsvpByToken } from '@/lib/services/rsvp.service';
+import { checkRateLimit } from '@/lib/utils/rate-limit';
+import { notifyOrganizerNewRsvp, sendGuestRsvpConfirmation } from '@/lib/email/notify';
+import { sendGuestRsvpConfirmationWhatsApp } from '@/lib/whatsapp/notify';
 import type { Json } from '@/types/supabase';
 
 export type RsvpActionState = {
@@ -58,6 +62,14 @@ export async function submitRsvpAction(
 
   const supabase = await createClient();
 
+  const allowed = await checkRateLimit(supabase, {
+    action: 'rsvp',
+    scope: eventSlug,
+    maxHits: 5,
+    windowSeconds: 60,
+  });
+  if (!allowed) return { error: 'rateLimited' };
+
   try {
     const result = await submitRsvp(supabase, {
       eventSlug,
@@ -70,6 +82,29 @@ export async function submitRsvpAction(
       message: parsed.data.message ?? null,
       answers: readAnswers(formData),
     });
+
+    // Best-effort notifications (internally swallow their own errors) — we
+    // still `await` them because serverless functions can be frozen the
+    // instant the response is returned, which would kill a fire-and-forget
+    // promise before it finishes.
+    await notifyOrganizerNewRsvp(eventSlug, parsed.data.guestName, parsed.data.status);
+    if (parsed.data.email || parsed.data.phone) {
+      const locale = (await getLocale()) as 'ar' | 'en';
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+      const editUrl = `${appUrl}/${locale}/rsvp/${result.secure_token}`;
+      if (parsed.data.email) {
+        await sendGuestRsvpConfirmation(eventSlug, parsed.data.email, editUrl, locale);
+      }
+      if (parsed.data.phone) {
+        await sendGuestRsvpConfirmationWhatsApp(
+          eventSlug,
+          parsed.data.phone,
+          parsed.data.status,
+          editUrl,
+          locale,
+        );
+      }
+    }
 
     return { success: true, secureToken: result.secure_token };
   } catch {
@@ -96,6 +131,14 @@ export async function updateRsvpAction(
   }
 
   const supabase = await createClient();
+
+  const allowed = await checkRateLimit(supabase, {
+    action: 'rsvp-edit',
+    scope: token,
+    maxHits: 10,
+    windowSeconds: 60,
+  });
+  if (!allowed) return { error: 'rateLimited' };
 
   try {
     await updateRsvpByToken(supabase, {

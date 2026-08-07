@@ -29,9 +29,11 @@ type TicketTypeRow = Database['public']['Tables']['ticket_types']['Row'];
 export function PurchaseForm({
   eventSlug,
   ticketTypes,
+  isMockPayment,
 }: {
   eventSlug: string;
   ticketTypes: TicketTypeRow[];
+  isMockPayment: boolean;
 }) {
   const t = useTranslations('PublicTickets');
   const tErrors = useTranslations('PublicTickets.errors');
@@ -168,6 +170,10 @@ export function PurchaseForm({
             <Input id="buyerPhone" type="tel" {...register('buyerPhone')} />
           </Field>
         </div>
+
+        {isMockPayment && (
+          <p className="text-muted-foreground text-center text-xs">{t('mockPaymentNotice')}</p>
+        )}
 
         <Button type="submit" disabled={isPending} className="w-full">
           {isPending ? t('purchasing') : t('purchaseButton')}

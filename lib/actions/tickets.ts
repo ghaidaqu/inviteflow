@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
@@ -12,6 +13,9 @@ import {
   softDeleteTicketType,
 } from '@/lib/services/tickets.service';
 import { paymentProvider } from '@/lib/payments';
+import { checkRateLimit } from '@/lib/utils/rate-limit';
+import { notifyOrganizerTicketPurchase, sendBuyerTickets } from '@/lib/email/notify';
+import { sendBuyerTicketsWhatsApp } from '@/lib/whatsapp/notify';
 
 export type TicketTypeActionState = {
   error?: string;
@@ -135,6 +139,14 @@ export async function purchaseTicketsAction(
 
   const supabase = await createClient();
 
+  const allowed = await checkRateLimit(supabase, {
+    action: 'tickets',
+    scope: eventSlug,
+    maxHits: 3,
+    windowSeconds: 60,
+  });
+  if (!allowed) return { error: 'rateLimited' };
+
   try {
     const result = await paymentProvider.purchaseTickets(supabase, {
       eventSlug,
@@ -145,8 +157,32 @@ export async function purchaseTicketsAction(
       buyerPhone: parsed.data.buyerPhone ?? null,
     });
 
+    if (result.status === 'pending') {
+      // Real gateway (Moyasar): send the buyer to hosted checkout. Tickets
+      // are only issued once the webhook confirms payment — see
+      // app/api/webhooks/moyasar/route.ts.
+      redirect(result.redirectUrl);
+    }
+
+    // Mock provider confirms instantly — notify right away.
+    await notifyOrganizerTicketPurchase(eventSlug, parsed.data.buyerName, parsed.data.quantity);
+    if (parsed.data.buyerEmail || parsed.data.buyerPhone) {
+      const locale = (await getLocale()) as 'ar' | 'en';
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+      const ticketUrls = result.tickets.map((t) => `${appUrl}/${locale}/tickets/${t.qrToken}`);
+      if (parsed.data.buyerEmail) {
+        await sendBuyerTickets(eventSlug, parsed.data.buyerEmail, ticketUrls, locale);
+      }
+      if (parsed.data.buyerPhone) {
+        await sendBuyerTicketsWhatsApp(eventSlug, parsed.data.buyerPhone, ticketUrls, locale);
+      }
+    }
+
     return { orderId: result.orderId, tickets: result.tickets };
-  } catch {
+  } catch (error) {
+    // `redirect()` throws internally by design — let that propagate instead
+    // of turning it into a "purchase failed" error state.
+    if (error instanceof Error && error.message === 'NEXT_REDIRECT') throw error;
     return { error: 'purchaseFailed' };
   }
 }

@@ -11,6 +11,21 @@
     "guestCta": "Browse as a guest (no sign-up)",
     "guestHint": "Try a real invitation and send your RSVP — no account needed"
   },
+  "GuestHub": {
+    "title": "Try InviteFlow as a guest",
+    "subtitle": "Pick an experience to try — everything here is real and working, no sign-up needed.",
+    "rsvp": {
+      "title": "💌 Invitation & RSVP",
+      "description": "A real wedding invitation — respond attending/not attending and see it reach the organizer instantly.",
+      "cta": "Open the invitation"
+    },
+    "tickets": {
+      "title": "🎟️ Buy tickets",
+      "description": "A demo conference with real ticket tiers — try picking one and completing a (mock) purchase.",
+      "cta": "See ticket tiers"
+    },
+    "note": "Note: purchases here use Mock Payment — no real money is charged."
+  },
   "Common": {
     "languageSwitcher": "Language",
     "loading": "Loading..."
@@ -233,6 +248,8 @@
     "thankYouTitle": "Thank you!",
     "thankYouDescription": "Your response was received. Keep the link below to edit your response later if needed.",
     "editLinkLabel": "Edit response link",
+    "whatsappShareButton": "Share your response on WhatsApp",
+    "whatsappShareMessage": "I just responded to \"{eventName}\": {status} 🎉",
     "editingClosed": "Editing is no longer available (deadline passed or disabled by the organizer).",
     "yes": "Yes",
     "no": "No",
@@ -240,7 +257,8 @@
       "invalidInput": "Please check the information you entered.",
       "answerRequired": "Please answer all required questions.",
       "notConfigured": "This project isn't connected to a Supabase database yet.",
-      "submitFailed": "Couldn't submit your response, please try again."
+      "submitFailed": "Couldn't submit your response, please try again.",
+      "rateLimited": "Too many attempts in a short time — please try again in a minute."
     }
   },
   "Questions": {
@@ -381,15 +399,17 @@
     "buyerNameLabel": "Name",
     "buyerEmailLabel": "Email",
     "buyerPhoneLabel": "Phone number",
-    "purchaseButton": "Complete purchase (mock)",
-    "purchasing": "Purchasing...",
+    "purchaseButton": "Complete purchase",
+    "purchasing": "Redirecting to payment...",
     "purchaseSuccessTitle": "Purchase successful!",
     "purchaseSuccessDescription": "Keep the following ticket links:",
     "viewTicket": "View ticket {number}",
+    "mockPaymentNotice": "This purchase uses Mock Payment — no real money is charged.",
     "errors": {
       "invalidInput": "Please check the information you entered.",
       "notConfigured": "This project isn't connected to a Supabase database yet.",
-      "purchaseFailed": "Couldn't complete the purchase, please try again."
+      "purchaseFailed": "Couldn't complete the purchase, please try again.",
+      "rateLimited": "Too many attempts in a short time — please try again in a minute."
     },
     "validation": {
       "ticketTypeRequired": "Please select a ticket type.",
@@ -406,6 +426,15 @@
         "used": "Used",
         "cancelled": "Cancelled"
       }
+    },
+    "successPage": {
+      "paidTitle": "Payment confirmed!",
+      "paidDescription": "Thanks for your purchase. Keep your ticket links:",
+      "viewTicket": "View ticket {number}",
+      "pendingTitle": "Confirming your payment...",
+      "pendingDescription": "We received your order and are waiting for payment confirmation. Check your email in a few minutes — tickets are sent automatically once confirmed.",
+      "failedDescription": "The payment couldn't be completed. If you were charged, please contact the organizer.",
+      "backToEvent": "Back to the event page"
     }
   },
   "CheckIn": {

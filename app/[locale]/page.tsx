@@ -26,12 +26,7 @@ function HomeContent() {
         </Button>
       </div>
       <div className="mt-2 flex flex-col items-center gap-1.5">
-        <Button
-          size="lg"
-          variant="ghost"
-          nativeButton={false}
-          render={<Link href="/events/sara-ahmad-wedding" />}
-        >
+        <Button size="lg" variant="ghost" nativeButton={false} render={<Link href="/guest" />}>
           {t('guestCta')}
         </Button>
         <p className="text-muted-foreground text-sm">{t('guestHint')}</p>

@@ -8,6 +8,7 @@ import { listPublicTicketTypes } from '@/lib/services/tickets.service';
 import { EventPasswordGate } from '@/components/public/event-password-gate';
 import { PurchaseForm } from '@/components/public/purchase-form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { isMoyasarConfigured } from '@/lib/payments';
 
 export default async function EventTicketsPage({
   params,
@@ -46,7 +47,11 @@ export default async function EventTicketsPage({
           <AlertDescription>{t('noTicketsAvailable')}</AlertDescription>
         </Alert>
       ) : (
-        <PurchaseForm eventSlug={slug} ticketTypes={ticketTypes} />
+        <PurchaseForm
+          eventSlug={slug}
+          ticketTypes={ticketTypes}
+          isMockPayment={!isMoyasarConfigured()}
+        />
       )}
     </main>
   );

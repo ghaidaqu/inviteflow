@@ -357,6 +357,8 @@ export interface Database {
           payment_provider: string;
           payment_status: PaymentStatus;
           payment_reference: string | null;
+          ticket_type_id: string | null;
+          quantity: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -371,6 +373,8 @@ export interface Database {
           payment_provider?: string;
           payment_status?: PaymentStatus;
           payment_reference?: string | null;
+          ticket_type_id?: string | null;
+          quantity?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -526,6 +530,33 @@ export interface Database {
       };
       get_ticket_by_qr_token: {
         Args: { p_qr_token: string };
+        Returns: Json;
+      };
+      check_rate_limit: {
+        Args: { p_key: string; p_max_hits: number; p_window_seconds: number };
+        Returns: boolean;
+      };
+      create_pending_ticket_order: {
+        Args: {
+          p_event_slug: string;
+          p_ticket_type_id: string;
+          p_quantity: number;
+          p_buyer_name: string;
+          p_buyer_email: string | null;
+          p_buyer_phone: string | null;
+        };
+        Returns: Json;
+      };
+      confirm_ticket_order: {
+        Args: { p_order_id: string; p_payment_reference: string };
+        Returns: Json;
+      };
+      fail_ticket_order: {
+        Args: { p_order_id: string };
+        Returns: undefined;
+      };
+      get_order_status: {
+        Args: { p_order_id: string };
         Returns: Json;
       };
     };
