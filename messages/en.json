@@ -10,6 +10,434 @@
     "login": "Log in"
   },
   "Common": {
-    "languageSwitcher": "Language"
+    "languageSwitcher": "Language",
+    "loading": "Loading..."
+  },
+  "Auth": {
+    "register": {
+      "title": "Create an organizer account",
+      "subtitle": "Sign up to start creating your events and digital invitations.",
+      "fullNameLabel": "Full name",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "submit": "Create account",
+      "submitting": "Creating...",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "login": {
+      "title": "Log in",
+      "subtitle": "Log in to manage your events.",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "forgotPasswordLink": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Create account"
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a password reset link.",
+      "emailLabel": "Email",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "successMessage": "If that email is registered, a reset link will arrive shortly.",
+      "backToLogin": "Back to login"
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "subtitle": "Enter a new password for your account.",
+      "passwordLabel": "New password",
+      "confirmPasswordLabel": "Confirm password",
+      "submit": "Save password",
+      "submitting": "Saving..."
+    },
+    "errors": {
+      "invalidInput": "Please check the information you entered.",
+      "invalidCredentials": "Incorrect email or password.",
+      "emailAlreadyExists": "This email is already registered.",
+      "sessionExpired": "Your session has expired, please request a new link.",
+      "authConfirmFailed": "This link is invalid or has expired.",
+      "notConfigured": "This project isn't connected to a Supabase database yet.",
+      "unknown": "Something went wrong, please try again."
+    },
+    "validation": {
+      "fullNameTooShort": "Name must be at least 2 characters.",
+      "fullNameTooLong": "Name is too long.",
+      "emailInvalid": "Please enter a valid email address.",
+      "passwordTooShort": "Password must be at least 8 characters.",
+      "passwordTooLong": "Password is too long.",
+      "passwordRequired": "Password is required.",
+      "passwordMismatch": "Passwords do not match."
+    }
+  },
+  "Dashboard": {
+    "logout": "Log out",
+    "nav": {
+      "overview": "Overview",
+      "events": "Events"
+    },
+    "overview": {
+      "title": "Overview",
+      "totalEvents": "Total events",
+      "totalGuests": "Total guests",
+      "attending": "Attending",
+      "notAttending": "Not attending",
+      "maybe": "Maybe",
+      "noResponse": "No response",
+      "ticketsSold": "Tickets sold",
+      "ticketsRemaining": "Tickets remaining",
+      "totalRevenue": "Revenue (mock)",
+      "checkedIn": "Checked in",
+      "rsvpBreakdown": "RSVP breakdown",
+      "latestResponses": "Latest responses",
+      "latestCheckIns": "Latest check-ins",
+      "noData": "No data yet.",
+      "status": {
+        "attending": "Attending",
+        "not_attending": "Not attending",
+        "maybe": "Maybe"
+      }
+    }
+  },
+  "Events": {
+    "types": {
+      "wedding": "Wedding",
+      "graduation": "Graduation",
+      "university_meetup": "University meetup",
+      "workshop": "Workshop",
+      "sports": "Sports event",
+      "conference": "Conference",
+      "private": "Private event",
+      "other": "Other"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "published": "Published",
+      "ended": "Ended"
+    },
+    "form": {
+      "nameLabel": "Event name",
+      "typeLabel": "Event type",
+      "typePlaceholder": "Select event type",
+      "descriptionLabel": "Description",
+      "eventDateLabel": "Date & time",
+      "rsvpDeadlineLabel": "RSVP deadline",
+      "locationTextLabel": "Location",
+      "locationMapUrlLabel": "Google Maps link",
+      "coverImageUrlLabel": "Cover image URL",
+      "primaryLocaleLabel": "Primary language",
+      "localeAr": "Arabic",
+      "localeEn": "English",
+      "visibilityLabel": "Visibility",
+      "visibilityPublic": "Public",
+      "visibilityPrivate": "Private",
+      "isRsvpEnabledLabel": "Enable RSVP",
+      "isTicketingEnabledLabel": "Enable ticketing",
+      "isQrEnabledLabel": "Enable QR code",
+      "isPasswordProtectedLabel": "Password-protect this page",
+      "passwordLabel": "Password",
+      "passwordKeepPlaceholder": "Leave empty to keep the current password",
+      "submitCreate": "Create event",
+      "submitEdit": "Save changes",
+      "submitting": "Saving..."
+    },
+    "list": {
+      "title": "Events",
+      "newButton": "New event",
+      "empty": "No events yet. Create your first event.",
+      "viewButton": "View"
+    },
+    "detail": {
+      "editButton": "Edit",
+      "deleteButton": "Delete",
+      "deleteConfirmTitle": "Delete event",
+      "deleteConfirmDescription": "This event will be deleted and will no longer appear. This action cannot be undone.",
+      "deleteConfirmAction": "Confirm delete",
+      "deleteConfirmCancel": "Cancel",
+      "publishButton": "Publish event",
+      "unpublishButton": "Revert to draft",
+      "endButton": "End event",
+      "publicLinkLabel": "Public invitation link",
+      "copyLink": "Copy link",
+      "linkCopied": "Link copied",
+      "backToList": "Back to events",
+      "guestsButton": "Guests",
+      "rsvpSettingsButton": "RSVP & Questions",
+      "ticketsButton": "Tickets",
+      "checkInButton": "QR Check-in"
+    },
+    "errors": {
+      "invalidInput": "Please check the information you entered.",
+      "unauthorized": "You must be logged in to do this.",
+      "passwordRequiredForProtection": "Enter a password to enable protection.",
+      "unknown": "Something went wrong, please try again."
+    },
+    "validation": {
+      "nameTooShort": "Event name must be at least 2 characters.",
+      "nameTooLong": "Event name is too long.",
+      "typeRequired": "Please select an event type.",
+      "urlInvalid": "Please enter a valid URL.",
+      "dateInvalid": "Please enter a valid date and time."
+    }
+  },
+  "PublicEvent": {
+    "passwordGate": {
+      "title": "This invitation is protected",
+      "description": "Enter the password to view the invitation details.",
+      "passwordLabel": "Password",
+      "submit": "View invitation",
+      "submitting": "Checking..."
+    },
+    "errors": {
+      "passwordRequired": "Please enter the password.",
+      "invalidPassword": "Incorrect password."
+    },
+    "dateLabel": "Date & time",
+    "locationLabel": "Location",
+    "rsvpDeadlineLabel": "RSVP deadline",
+    "openLocationButton": "Open location",
+    "addToCalendarButton": "Add to calendar",
+    "shareWhatsappButton": "Share via WhatsApp",
+    "copyLinkButton": "Copy link",
+    "linkCopied": "Link copied",
+    "shareMessage": "Invitation: {name}",
+    "rsvpButton": "RSVP",
+    "ticketsButton": "Buy tickets"
+  },
+  "Rsvp": {
+    "pageSubtitle": "Please fill out the form to confirm your attendance.",
+    "editPageSubtitle": "You can update your response here.",
+    "nameLabel": "Name",
+    "phoneLabel": "Phone number",
+    "emailLabel": "Email",
+    "statusLabel": "Will you attend?",
+    "statusPlaceholder": "Select your response",
+    "status": {
+      "attending": "Attending",
+      "not_attending": "Not attending",
+      "maybe": "Maybe"
+    },
+    "companionsLabel": "Companions",
+    "companionNamePlaceholder": "Companion name",
+    "addCompanion": "Add companion",
+    "messageLabel": "Message to the organizer",
+    "submit": "Submit response",
+    "submitting": "Submitting...",
+    "saveChanges": "Save changes",
+    "updateSaved": "Your response has been updated.",
+    "thankYouTitle": "Thank you!",
+    "thankYouDescription": "Your response was received. Keep the link below to edit your response later if needed.",
+    "editLinkLabel": "Edit response link",
+    "editingClosed": "Editing is no longer available (deadline passed or disabled by the organizer).",
+    "yes": "Yes",
+    "no": "No",
+    "errors": {
+      "invalidInput": "Please check the information you entered.",
+      "answerRequired": "Please answer all required questions.",
+      "notConfigured": "This project isn't connected to a Supabase database yet.",
+      "submitFailed": "Couldn't submit your response, please try again."
+    }
+  },
+  "Questions": {
+    "title": "Custom Questions",
+    "questionNumber": "Question {number}",
+    "questionTextArLabel": "Question text (Arabic)",
+    "questionTextEnLabel": "Question text (English)",
+    "typeLabel": "Question type",
+    "types": {
+      "short_text": "Short text",
+      "long_text": "Long text",
+      "yes_no": "Yes / No",
+      "single_choice": "Single choice",
+      "multi_choice": "Multiple choice",
+      "number": "Number"
+    },
+    "isRequiredLabel": "Required question",
+    "optionsLabel": "Options",
+    "optionTextArPlaceholder": "Option text (Arabic)",
+    "optionTextEnPlaceholder": "Option text (English)",
+    "addOption": "Add option",
+    "addQuestion": "Add question",
+    "save": "Save questions",
+    "saving": "Saving...",
+    "saved": "Questions saved successfully.",
+    "errors": {
+      "optionsMinimum": "This question type needs at least two options.",
+      "invalidInput": "Please check the information you entered.",
+      "unauthorized": "You must be logged in to do this.",
+      "unknown": "Something went wrong, please try again."
+    }
+  },
+  "Guests": {
+    "title": "Guests",
+    "searchPlaceholder": "Search by name, email, or phone",
+    "statusFilter": {
+      "all": "All responses",
+      "attending": "Attending",
+      "not_attending": "Not attending",
+      "maybe": "Maybe",
+      "no_response": "No response"
+    },
+    "status": {
+      "attending": "Attending",
+      "not_attending": "Not attending",
+      "maybe": "Maybe",
+      "no_response": "No response"
+    },
+    "exportCsv": "Export CSV",
+    "empty": "No matching guests.",
+    "csv": {
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "status": "Status",
+      "companionsCount": "Companions count",
+      "companionsNames": "Companions names",
+      "message": "Message",
+      "respondedAt": "Responded at"
+    },
+    "deleteConfirmTitle": "Delete guest",
+    "deleteConfirmDescription": "This guest and their response will be permanently deleted.",
+    "deleteConfirmCancel": "Cancel",
+    "deleteConfirmAction": "Confirm delete"
+  },
+  "Tickets": {
+    "title": "Tickets",
+    "newButton": "New ticket type",
+    "empty": "No ticket types yet.",
+    "free": "Free",
+    "soldOf": "{sold} of {total} sold",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "deleteConfirmTitle": "Delete ticket type",
+    "deleteConfirmDescription": "This ticket type will be deleted. This action cannot be undone.",
+    "deleteConfirmCancel": "Cancel",
+    "deleteConfirmAction": "Confirm delete",
+    "form": {
+      "createTitle": "Create ticket type",
+      "nameArLabel": "Name (Arabic)",
+      "nameEnLabel": "Name (English)",
+      "priceLabel": "Price",
+      "currencyLabel": "Currency",
+      "quantityTotalLabel": "Quantity available",
+      "maxPerOrderLabel": "Max per order",
+      "saleStartAtLabel": "Sale start",
+      "saleEndAtLabel": "Sale end",
+      "statusLabel": "Status",
+      "statuses": {
+        "active": "Active",
+        "paused": "Paused",
+        "ended": "Ended"
+      },
+      "saving": "Saving...",
+      "saveChanges": "Save changes",
+      "create": "Create"
+    },
+    "errors": {
+      "invalidInput": "Please check the information you entered.",
+      "unauthorized": "You must be logged in to do this.",
+      "unknown": "Something went wrong, please try again."
+    },
+    "validation": {
+      "nameRequired": "This field is required.",
+      "priceInvalid": "Please enter a valid price.",
+      "quantityInvalid": "Please enter a valid quantity.",
+      "maxPerOrderInvalid": "Please enter a valid value.",
+      "dateInvalid": "Please enter a valid date and time."
+    },
+    "list": {
+      "title": "Issued Tickets",
+      "empty": "No tickets issued yet.",
+      "exportCsv": "Export CSV",
+      "totalTickets": "Total tickets",
+      "usedTickets": "Used",
+      "unusedTickets": "Unused",
+      "status": {
+        "valid": "Valid",
+        "used": "Used",
+        "cancelled": "Cancelled"
+      },
+      "csv": {
+        "holderName": "Holder name",
+        "ticketType": "Ticket type",
+        "status": "Status",
+        "buyerEmail": "Buyer email",
+        "pricePaid": "Price paid",
+        "createdAt": "Issued at"
+      }
+    }
+  },
+  "PublicTickets": {
+    "pageSubtitle": "Choose a ticket type and complete your details.",
+    "noTicketsAvailable": "No tickets are available for purchase right now.",
+    "free": "Free",
+    "ticketTypeLabel": "Ticket type",
+    "quantityLabel": "Quantity",
+    "buyerNameLabel": "Name",
+    "buyerEmailLabel": "Email",
+    "buyerPhoneLabel": "Phone number",
+    "purchaseButton": "Complete purchase (mock)",
+    "purchasing": "Purchasing...",
+    "purchaseSuccessTitle": "Purchase successful!",
+    "purchaseSuccessDescription": "Keep the following ticket links:",
+    "viewTicket": "View ticket {number}",
+    "errors": {
+      "invalidInput": "Please check the information you entered.",
+      "notConfigured": "This project isn't connected to a Supabase database yet.",
+      "purchaseFailed": "Couldn't complete the purchase, please try again."
+    },
+    "validation": {
+      "ticketTypeRequired": "Please select a ticket type.",
+      "quantityInvalid": "Please enter a valid quantity.",
+      "nameRequired": "This field is required.",
+      "emailInvalid": "Please enter a valid email address."
+    },
+    "ticketPage": {
+      "holderNameLabel": "Holder name",
+      "dateLabel": "Date & time",
+      "locationLabel": "Location",
+      "status": {
+        "valid": "Valid",
+        "used": "Used",
+        "cancelled": "Cancelled"
+      }
+    }
+  },
+  "CheckIn": {
+    "title": "QR Check-in",
+    "cameraUnavailable": "Couldn't access the camera. You can enter the ticket code manually below.",
+    "manualTokenPlaceholder": "Enter ticket code",
+    "manualSubmit": "Check",
+    "recentScans": "Recent scans",
+    "checkedIn": "Checked in",
+    "totalTickets": "Total tickets",
+    "results": {
+      "valid": "Valid",
+      "already_used": "Already used",
+      "cancelled": "Cancelled",
+      "not_found": "Not found",
+      "error": "Error"
+    }
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet.",
+    "markAllRead": "Mark all as read",
+    "rsvpNew": "New response from {name}",
+    "ticketPurchased": "New ticket from {name}",
+    "ticketCheckedIn": "{name} checked in"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "The link you tried to open doesn't exist or was removed.",
+    "backHome": "Back to homepage"
+  },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "description": "Sorry for the inconvenience — try again or come back later.",
+    "retry": "Try again"
   }
 }

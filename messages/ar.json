@@ -10,6 +10,434 @@
     "login": "تسجيل الدخول"
   },
   "Common": {
-    "languageSwitcher": "اللغة"
+    "languageSwitcher": "اللغة",
+    "loading": "جارٍ التحميل..."
+  },
+  "Auth": {
+    "register": {
+      "title": "إنشاء حساب منظّم",
+      "subtitle": "أنشئ حسابك لتبدأ بإنشاء مناسباتك ودعواتك الرقمية.",
+      "fullNameLabel": "الاسم الكامل",
+      "emailLabel": "البريد الإلكتروني",
+      "passwordLabel": "كلمة المرور",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "submit": "إنشاء الحساب",
+      "submitting": "جارٍ الإنشاء...",
+      "haveAccount": "لديك حساب بالفعل؟",
+      "loginLink": "تسجيل الدخول"
+    },
+    "login": {
+      "title": "تسجيل الدخول",
+      "subtitle": "سجّل الدخول لمتابعة مناسباتك.",
+      "emailLabel": "البريد الإلكتروني",
+      "passwordLabel": "كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "submitting": "جارٍ الدخول...",
+      "forgotPasswordLink": "نسيت كلمة المرور؟",
+      "noAccount": "ليس لديك حساب؟",
+      "registerLink": "إنشاء حساب"
+    },
+    "forgotPassword": {
+      "title": "استعادة كلمة المرور",
+      "subtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.",
+      "emailLabel": "البريد الإلكتروني",
+      "submit": "إرسال رابط الاستعادة",
+      "submitting": "جارٍ الإرسال...",
+      "successMessage": "إذا كان بريدك مسجّلاً لدينا، ستصلك رسالة تحتوي رابط إعادة التعيين خلال دقائق.",
+      "backToLogin": "العودة لتسجيل الدخول"
+    },
+    "resetPassword": {
+      "title": "تعيين كلمة مرور جديدة",
+      "subtitle": "أدخل كلمة المرور الجديدة لحسابك.",
+      "passwordLabel": "كلمة المرور الجديدة",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "submit": "حفظ كلمة المرور",
+      "submitting": "جارٍ الحفظ..."
+    },
+    "errors": {
+      "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
+      "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "emailAlreadyExists": "هذا البريد الإلكتروني مسجّل بالفعل.",
+      "sessionExpired": "انتهت صلاحية الجلسة، يرجى طلب رابط جديد.",
+      "authConfirmFailed": "الرابط غير صالح أو منتهي الصلاحية.",
+      "notConfigured": "لم يتم ربط المشروع بقاعدة بيانات Supabase بعد.",
+      "unknown": "حدث خطأ غير متوقع، حاول مرة أخرى."
+    },
+    "validation": {
+      "fullNameTooShort": "الاسم يجب أن يكون حرفين على الأقل.",
+      "fullNameTooLong": "الاسم طويل جدًا.",
+      "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح.",
+      "passwordTooShort": "كلمة المرور يجب أن تكون 8 أحرف على الأقل.",
+      "passwordTooLong": "كلمة المرور طويلة جدًا.",
+      "passwordRequired": "كلمة المرور مطلوبة.",
+      "passwordMismatch": "كلمتا المرور غير متطابقتين."
+    }
+  },
+  "Dashboard": {
+    "logout": "تسجيل الخروج",
+    "nav": {
+      "overview": "نظرة عامة",
+      "events": "المناسبات"
+    },
+    "overview": {
+      "title": "نظرة عامة",
+      "totalEvents": "إجمالي المناسبات",
+      "totalGuests": "عدد المدعوين",
+      "attending": "سيحضرون",
+      "notAttending": "اعتذروا",
+      "maybe": "ربما",
+      "noResponse": "لم يردوا",
+      "ticketsSold": "التذاكر المباعة",
+      "ticketsRemaining": "التذاكر المتبقية",
+      "totalRevenue": "الإيرادات (تجريبي)",
+      "checkedIn": "الحاضرون فعليًا",
+      "rsvpBreakdown": "توزيع الردود",
+      "latestResponses": "أحدث الردود",
+      "latestCheckIns": "أحدث عمليات الدخول",
+      "noData": "لا توجد بيانات بعد.",
+      "status": {
+        "attending": "سيحضر",
+        "not_attending": "لن يحضر",
+        "maybe": "ربما"
+      }
+    }
+  },
+  "Events": {
+    "types": {
+      "wedding": "زواج",
+      "graduation": "تخرج",
+      "university_meetup": "اجتماع جامعي",
+      "workshop": "ورشة عمل",
+      "sports": "فعالية رياضية",
+      "conference": "مؤتمر",
+      "private": "مناسبة خاصة",
+      "other": "أخرى"
+    },
+    "statuses": {
+      "draft": "مسودة",
+      "published": "منشورة",
+      "ended": "منتهية"
+    },
+    "form": {
+      "nameLabel": "اسم المناسبة",
+      "typeLabel": "نوع المناسبة",
+      "typePlaceholder": "اختر نوع المناسبة",
+      "descriptionLabel": "الوصف",
+      "eventDateLabel": "التاريخ والوقت",
+      "rsvpDeadlineLabel": "الموعد النهائي للرد",
+      "locationTextLabel": "الموقع",
+      "locationMapUrlLabel": "رابط خرائط جوجل",
+      "coverImageUrlLabel": "رابط صورة الغلاف",
+      "primaryLocaleLabel": "اللغة الأساسية",
+      "localeAr": "العربية",
+      "localeEn": "الإنجليزية",
+      "visibilityLabel": "ظهور المناسبة",
+      "visibilityPublic": "عامة",
+      "visibilityPrivate": "خاصة",
+      "isRsvpEnabledLabel": "تفعيل تأكيد الحضور (RSVP)",
+      "isTicketingEnabledLabel": "تفعيل التذاكر",
+      "isQrEnabledLabel": "تفعيل رمز QR",
+      "isPasswordProtectedLabel": "حماية الصفحة بكلمة مرور",
+      "passwordLabel": "كلمة المرور",
+      "passwordKeepPlaceholder": "اتركها فارغة للإبقاء على كلمة المرور الحالية",
+      "submitCreate": "إنشاء المناسبة",
+      "submitEdit": "حفظ التعديلات",
+      "submitting": "جارٍ الحفظ..."
+    },
+    "list": {
+      "title": "المناسبات",
+      "newButton": "مناسبة جديدة",
+      "empty": "لا توجد مناسبات بعد. أنشئ أول مناسبة لك.",
+      "viewButton": "عرض"
+    },
+    "detail": {
+      "editButton": "تعديل",
+      "deleteButton": "حذف",
+      "deleteConfirmTitle": "حذف المناسبة",
+      "deleteConfirmDescription": "سيتم حذف هذه المناسبة ولن تظهر بعد الآن. لا يمكن التراجع عن هذا الإجراء.",
+      "deleteConfirmAction": "تأكيد الحذف",
+      "deleteConfirmCancel": "إلغاء",
+      "publishButton": "نشر المناسبة",
+      "unpublishButton": "تحويل إلى مسودة",
+      "endButton": "إنهاء المناسبة",
+      "publicLinkLabel": "رابط الدعوة العامة",
+      "copyLink": "نسخ الرابط",
+      "linkCopied": "تم نسخ الرابط",
+      "backToList": "العودة إلى المناسبات",
+      "guestsButton": "الضيوف",
+      "rsvpSettingsButton": "إعدادات RSVP والأسئلة",
+      "ticketsButton": "التذاكر",
+      "checkInButton": "مسح QR وتسجيل الحضور"
+    },
+    "errors": {
+      "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
+      "unauthorized": "يجب تسجيل الدخول لتنفيذ هذا الإجراء.",
+      "passwordRequiredForProtection": "أدخل كلمة مرور لتفعيل الحماية.",
+      "unknown": "حدث خطأ غير متوقع، حاول مرة أخرى."
+    },
+    "validation": {
+      "nameTooShort": "اسم المناسبة يجب أن يكون حرفين على الأقل.",
+      "nameTooLong": "اسم المناسبة طويل جدًا.",
+      "typeRequired": "يرجى اختيار نوع المناسبة.",
+      "urlInvalid": "يرجى إدخال رابط صحيح.",
+      "dateInvalid": "يرجى إدخال تاريخ ووقت صحيحين."
+    }
+  },
+  "PublicEvent": {
+    "passwordGate": {
+      "title": "هذه الدعوة محمية",
+      "description": "أدخل كلمة المرور لعرض تفاصيل الدعوة.",
+      "passwordLabel": "كلمة المرور",
+      "submit": "عرض الدعوة",
+      "submitting": "جارٍ التحقق..."
+    },
+    "errors": {
+      "passwordRequired": "يرجى إدخال كلمة المرور.",
+      "invalidPassword": "كلمة المرور غير صحيحة."
+    },
+    "dateLabel": "التاريخ والوقت",
+    "locationLabel": "الموقع",
+    "rsvpDeadlineLabel": "آخر موعد للرد",
+    "openLocationButton": "فتح الموقع",
+    "addToCalendarButton": "إضافة إلى التقويم",
+    "shareWhatsappButton": "مشاركة عبر واتساب",
+    "copyLinkButton": "نسخ الرابط",
+    "linkCopied": "تم نسخ الرابط",
+    "shareMessage": "دعوة: {name}",
+    "rsvpButton": "تأكيد الحضور (RSVP)",
+    "ticketsButton": "شراء تذكرة"
+  },
+  "Rsvp": {
+    "pageSubtitle": "يرجى تعبئة النموذج لتأكيد حضورك.",
+    "editPageSubtitle": "يمكنك تعديل ردك من هنا.",
+    "nameLabel": "الاسم",
+    "phoneLabel": "رقم الجوال",
+    "emailLabel": "البريد الإلكتروني",
+    "statusLabel": "هل ستحضر؟",
+    "statusPlaceholder": "اختر ردك",
+    "status": {
+      "attending": "سأحضر",
+      "not_attending": "لن أحضر",
+      "maybe": "ربما"
+    },
+    "companionsLabel": "المرافقون",
+    "companionNamePlaceholder": "اسم المرافق",
+    "addCompanion": "إضافة مرافق",
+    "messageLabel": "رسالة للمنظّم",
+    "submit": "إرسال الرد",
+    "submitting": "جارٍ الإرسال...",
+    "saveChanges": "حفظ التعديلات",
+    "updateSaved": "تم حفظ التعديلات بنجاح.",
+    "thankYouTitle": "شكرًا لك!",
+    "thankYouDescription": "تم استلام ردك بنجاح. احتفظ بالرابط التالي لتعديل ردك لاحقًا إذا احتجت.",
+    "editLinkLabel": "رابط تعديل الرد",
+    "editingClosed": "لم يعد بالإمكان تعديل الرد (انتهى الموعد أو تم إيقاف التعديل).",
+    "yes": "نعم",
+    "no": "لا",
+    "errors": {
+      "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
+      "answerRequired": "يرجى الإجابة على جميع الأسئلة المطلوبة.",
+      "notConfigured": "لم يتم ربط المشروع بقاعدة بيانات Supabase بعد.",
+      "submitFailed": "تعذّر إرسال الرد، حاول مرة أخرى."
+    }
+  },
+  "Questions": {
+    "title": "الأسئلة المخصصة",
+    "questionNumber": "سؤال {number}",
+    "questionTextArLabel": "نص السؤال (عربي)",
+    "questionTextEnLabel": "نص السؤال (إنجليزي)",
+    "typeLabel": "نوع السؤال",
+    "types": {
+      "short_text": "نص قصير",
+      "long_text": "نص طويل",
+      "yes_no": "نعم / لا",
+      "single_choice": "اختيار واحد",
+      "multi_choice": "اختيارات متعددة",
+      "number": "رقم"
+    },
+    "isRequiredLabel": "سؤال إلزامي",
+    "optionsLabel": "الخيارات",
+    "optionTextArPlaceholder": "نص الخيار (عربي)",
+    "optionTextEnPlaceholder": "نص الخيار (إنجليزي)",
+    "addOption": "إضافة خيار",
+    "addQuestion": "إضافة سؤال",
+    "save": "حفظ الأسئلة",
+    "saving": "جارٍ الحفظ...",
+    "saved": "تم حفظ الأسئلة بنجاح.",
+    "errors": {
+      "optionsMinimum": "يحتاج هذا النوع من الأسئلة خيارين على الأقل.",
+      "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
+      "unauthorized": "يجب تسجيل الدخول لتنفيذ هذا الإجراء.",
+      "unknown": "حدث خطأ غير متوقع، حاول مرة أخرى."
+    }
+  },
+  "Guests": {
+    "title": "الضيوف",
+    "searchPlaceholder": "بحث بالاسم أو البريد أو الجوال",
+    "statusFilter": {
+      "all": "كل الردود",
+      "attending": "سيحضر",
+      "not_attending": "لن يحضر",
+      "maybe": "ربما",
+      "no_response": "بدون رد"
+    },
+    "status": {
+      "attending": "سيحضر",
+      "not_attending": "لن يحضر",
+      "maybe": "ربما",
+      "no_response": "بدون رد"
+    },
+    "exportCsv": "تصدير CSV",
+    "empty": "لا يوجد ضيوف مطابقون.",
+    "csv": {
+      "name": "الاسم",
+      "phone": "الجوال",
+      "email": "البريد الإلكتروني",
+      "status": "الحالة",
+      "companionsCount": "عدد المرافقين",
+      "companionsNames": "أسماء المرافقين",
+      "message": "الرسالة",
+      "respondedAt": "تاريخ الرد"
+    },
+    "deleteConfirmTitle": "حذف الضيف",
+    "deleteConfirmDescription": "سيتم حذف هذا الضيف وردّه نهائيًا.",
+    "deleteConfirmCancel": "إلغاء",
+    "deleteConfirmAction": "تأكيد الحذف"
+  },
+  "Tickets": {
+    "title": "التذاكر",
+    "newButton": "فئة تذكرة جديدة",
+    "empty": "لا توجد فئات تذاكر بعد.",
+    "free": "مجانية",
+    "soldOf": "تم بيع {sold} من {total}",
+    "editButton": "تعديل",
+    "deleteButton": "حذف",
+    "deleteConfirmTitle": "حذف فئة التذكرة",
+    "deleteConfirmDescription": "سيتم حذف فئة التذكرة هذه. لا يمكن التراجع عن هذا الإجراء.",
+    "deleteConfirmCancel": "إلغاء",
+    "deleteConfirmAction": "تأكيد الحذف",
+    "form": {
+      "createTitle": "إنشاء فئة تذكرة",
+      "nameArLabel": "اسم الفئة (عربي)",
+      "nameEnLabel": "اسم الفئة (إنجليزي)",
+      "priceLabel": "السعر",
+      "currencyLabel": "العملة",
+      "quantityTotalLabel": "الكمية المتاحة",
+      "maxPerOrderLabel": "الحد الأقصى لكل طلب",
+      "saleStartAtLabel": "بداية البيع",
+      "saleEndAtLabel": "نهاية البيع",
+      "statusLabel": "الحالة",
+      "statuses": {
+        "active": "نشطة",
+        "paused": "متوقفة",
+        "ended": "منتهية"
+      },
+      "saving": "جارٍ الحفظ...",
+      "saveChanges": "حفظ التعديلات",
+      "create": "إنشاء"
+    },
+    "errors": {
+      "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
+      "unauthorized": "يجب تسجيل الدخول لتنفيذ هذا الإجراء.",
+      "unknown": "حدث خطأ غير متوقع، حاول مرة أخرى."
+    },
+    "validation": {
+      "nameRequired": "هذا الحقل مطلوب.",
+      "priceInvalid": "يرجى إدخال سعر صحيح.",
+      "quantityInvalid": "يرجى إدخال كمية صحيحة.",
+      "maxPerOrderInvalid": "يرجى إدخال قيمة صحيحة.",
+      "dateInvalid": "يرجى إدخال تاريخ ووقت صحيحين."
+    },
+    "list": {
+      "title": "التذاكر المُصدرة",
+      "empty": "لا توجد تذاكر مُصدرة بعد.",
+      "exportCsv": "تصدير CSV",
+      "totalTickets": "إجمالي التذاكر",
+      "usedTickets": "مستخدمة",
+      "unusedTickets": "غير مستخدمة",
+      "status": {
+        "valid": "صالحة",
+        "used": "مستخدمة",
+        "cancelled": "ملغاة"
+      },
+      "csv": {
+        "holderName": "اسم الحامل",
+        "ticketType": "فئة التذكرة",
+        "status": "الحالة",
+        "buyerEmail": "بريد المشتري",
+        "pricePaid": "المبلغ المدفوع",
+        "createdAt": "تاريخ الإصدار"
+      }
+    }
+  },
+  "PublicTickets": {
+    "pageSubtitle": "اختر فئة التذكرة وأكمل بياناتك.",
+    "noTicketsAvailable": "لا توجد تذاكر متاحة للبيع حاليًا.",
+    "free": "مجانية",
+    "ticketTypeLabel": "فئة التذكرة",
+    "quantityLabel": "الكمية",
+    "buyerNameLabel": "الاسم",
+    "buyerEmailLabel": "البريد الإلكتروني",
+    "buyerPhoneLabel": "رقم الجوال",
+    "purchaseButton": "إتمام الشراء (تجريبي)",
+    "purchasing": "جارٍ الشراء...",
+    "purchaseSuccessTitle": "تم الشراء بنجاح!",
+    "purchaseSuccessDescription": "احتفظ بروابط تذاكرك التالية:",
+    "viewTicket": "عرض التذكرة {number}",
+    "errors": {
+      "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
+      "notConfigured": "لم يتم ربط المشروع بقاعدة بيانات Supabase بعد.",
+      "purchaseFailed": "تعذّر إتمام عملية الشراء، حاول مرة أخرى."
+    },
+    "validation": {
+      "ticketTypeRequired": "يرجى اختيار فئة التذكرة.",
+      "quantityInvalid": "يرجى إدخال كمية صحيحة.",
+      "nameRequired": "هذا الحقل مطلوب.",
+      "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح."
+    },
+    "ticketPage": {
+      "holderNameLabel": "اسم الحامل",
+      "dateLabel": "التاريخ والوقت",
+      "locationLabel": "الموقع",
+      "status": {
+        "valid": "صالحة",
+        "used": "مستخدمة",
+        "cancelled": "ملغاة"
+      }
+    }
+  },
+  "CheckIn": {
+    "title": "مسح QR وتسجيل الحضور",
+    "cameraUnavailable": "تعذّر الوصول إلى الكاميرا. يمكنك إدخال رمز التذكرة يدويًا بالأسفل.",
+    "manualTokenPlaceholder": "أدخل رمز التذكرة",
+    "manualSubmit": "تحقق",
+    "recentScans": "آخر عمليات المسح",
+    "checkedIn": "تم تسجيل حضورهم",
+    "totalTickets": "إجمالي التذاكر",
+    "results": {
+      "valid": "صالحة",
+      "already_used": "مستخدمة مسبقًا",
+      "cancelled": "ملغاة",
+      "not_found": "غير موجودة",
+      "error": "خطأ"
+    }
+  },
+  "Notifications": {
+    "title": "الإشعارات",
+    "empty": "لا توجد إشعارات بعد.",
+    "markAllRead": "تحديد الكل كمقروء",
+    "rsvpNew": "رد جديد من {name}",
+    "ticketPurchased": "تذكرة جديدة من {name}",
+    "ticketCheckedIn": "تم تسجيل حضور {name}"
+  },
+  "NotFound": {
+    "title": "الصفحة غير موجودة",
+    "description": "الرابط الذي حاولت الوصول إليه غير موجود أو تم حذفه.",
+    "backHome": "العودة للصفحة الرئيسية"
+  },
+  "ErrorPage": {
+    "title": "حدث خطأ غير متوقع",
+    "description": "نأسف على الإزعاج، حاول مرة أخرى أو ارجع لاحقًا.",
+    "retry": "إعادة المحاولة"
   }
 }

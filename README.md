@@ -1,36 +1,174 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InviteFlow
 
-## Getting Started
+منصة SaaS لإدارة الدعوات الرقمية، تأكيد الحضور (RSVP)، وتذاكر الفعاليات — عربي/إنجليزي (RTL/LTR) مبنية بـ Next.js 15 وSupabase.
 
-First, run the development server:
+---
+
+## المحتويات
+
+- [التقنيات المستخدمة](#التقنيات-المستخدمة)
+- [التشغيل المحلي](#التشغيل-المحلي)
+- [إعداد Supabase](#إعداد-supabase)
+- [الحساب التجريبي](#الحساب-التجريبي)
+- [الاختبارات](#الاختبارات)
+- [النشر على Vercel](#النشر-على-vercel)
+- [هيكل المشروع](#هيكل-المشروع)
+- [الميزات المكتملة](#الميزات-المكتملة-المرحلة-الأولى)
+- [الميزات المؤجلة](#الميزات-المؤجلة-المرحلة-الثانية)
+- [قرارات وملاحظات هامة](#قرارات-وملاحظات-هامة)
+
+---
+
+## التقنيات المستخدمة
+
+- **Next.js 15** (App Router) + **TypeScript**
+- **Tailwind CSS v4** + **shadcn/ui** (مبني على Base UI)
+- **Supabase**: PostgreSQL + Auth + Storage + Realtime
+- **next-intl**: عربي/إنجليزي مع دعم RTL/LTR كامل
+- **React Hook Form** + **Zod** للتحقق من صحة النماذج
+- **Recharts** للرسوم البيانية في لوحة التحكم
+- **qrcode** لتوليد رموز QR، **html5-qrcode** لمسحها بكاميرا الجوال
+- **bcryptjs** لتجزئة كلمات مرور حماية صفحات الدعوة
+- **Vitest** + **pglite** (Postgres حقيقي عبر WASM) للاختبارات
+
+---
+
+## التشغيل المحلي
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+يفتح المشروع على `http://localhost:3000` ويُعيد التوجيه تلقائيًا إلى `/ar`. **المشروع يعمل ويُبنى بنجاح حتى بدون ربط Supabase** — الصفحات العامة تعمل بشكل طبيعي، وأي عملية تحتاج قاعدة بيانات فعلية (تسجيل دخول، إرسال RSVP، شراء تذكرة...) تُظهر رسالة عربية/إنجليزية واضحة بدل الانهيار، لحين ربط مشروع Supabase حقيقي (انظر القسم التالي).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+أوامر أخرى مفيدة:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build        # بناء إنتاجي
+npm run start         # تشغيل البناء الإنتاجي
+npm run lint           # فحص ESLint
+npm run format          # تنسيق الكود بـ Prettier
+npm run test              # تشغيل كل الاختبارات
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## إعداد Supabase
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. أنشئ مشروعًا جديدًا على [supabase.com](https://supabase.com).
+2. من **Project Settings → API** انسخ:
+   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
+   - `anon public key` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `service_role key` → `SUPABASE_SERVICE_ROLE_KEY` (⚠️ سرّي تمامًا، لا يُستخدم إلا على الخادم)
+3. انسخ `.env.example` إلى `.env.local` واملأ القيم:
+   ```bash
+   cp .env.example .env.local
+   ```
+4. طبّق ملفات الـ migrations الموجودة في `supabase/migrations/` بالترتيب (أرقامها تضمن الترتيب الصحيح). أسهل طريقتين:
+   - **عبر لوحة Supabase**: افتح **SQL Editor** والصق محتوى كل ملف بالترتيب ونفّذه.
+   - **عبر Supabase CLI** (إن كان مثبّتًا لديك):
+     ```bash
+     supabase link --project-ref <project-ref>
+     supabase db push
+     ```
+5. (اختياري، للتجربة) نفّذ `supabase/seed.sql` بنفس الطريقة **فقط على مشروع محلي عبر `supabase start`** — هذا الملف يُدخل صفوفًا مباشرة في `auth.users` وهو أمر غير مدعوم على مشروع Supabase مُستضاف (Hosted). على مشروع حقيقي، أنشئ حسابك عبر صفحة `/register` بدلًا من ذلك.
+6. أعد تشغيل `npm run dev` بعد ملء `.env.local`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> جميع الجداول محمية بسياسات **Row Level Security**، والعمليات الحسّاسة (إرسال RSVP، شراء تذكرة، مسح QR) تمر حصرًا عبر دوال قاعدة بيانات آمنة (`SECURITY DEFINER`) بدل الوصول المباشر للجداول — التفاصيل الكاملة في تعليقات ملفات الـ migrations.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## الحساب التجريبي
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+بعد تنفيذ `supabase/seed.sql` على مشروع Supabase محلي:
+
+- **البريد الإلكتروني**: `demo@inviteflow.app`
+- **كلمة المرور**: `password123`
+
+يملك هذا الحساب منظمة تجريبية بثلاث مناسبات (زفاف منشور بردود RSVP، مؤتمر منشور بتذاكر مباعة، وحفل تخرج كمسودة).
+
+على مشروع Supabase حقيقي (Hosted): سجّل عبر `/register` — تُنشأ لك منظمة شخصية تلقائيًا عند التسجيل.
+
+---
+
+## الاختبارات
+
+```bash
+npm run test
+```
+
+**26 اختبارًا** تغطي:
+
+- **طبقة قاعدة البيانات** (`tests/db/`): تُشغَّل كل ملفات الـ migrations فعليًا على محرك Postgres حقيقي (`pglite`، بدون الحاجة لـ Docker)، وتتحقق من: تفعيل RLS وسياساته على كل جدول، الـ triggers التلقائية (إنشاء ملف شخصي، عضوية منظمة، إعدادات مناسبة افتراضية)، تقديم RSVP والإشعار التلقائي، رفض الرد بعد الموعد النهائي، منع بيع تذاكر أكثر من المتاح، منع مسح نفس التذكرة مرتين، والبحث العام عن تذكرة برمز QR.
+- **صحة ملفات الترجمة** (`tests/i18n-messages.test.ts`): يتأكد أن `ar.json` و`en.json` يحتويان بالضبط نفس المفاتيح، لمنع نسيان أي ترجمة.
+- **دوال مساعدة نقية** (`tests/utils/`): توليد الـ slug، وتصدير CSV.
+
+---
+
+## النشر على Vercel
+
+1. ادفع المشروع إلى مستودع GitHub.
+2. من [vercel.com/new](https://vercel.com/new) استورد المستودع.
+3. أضف متغيرات البيئة نفسها من `.env.local` في إعدادات المشروع على Vercel (Environment Variables):
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `NEXT_PUBLIC_APP_URL` (رابط النشر النهائي، مثل `https://inviteflow.vercel.app`)
+4. من **Supabase → Authentication → URL Configuration** أضف رابط Vercel إلى **Redirect URLs** (مطلوب لروابط تأكيد البريد واستعادة كلمة المرور).
+5. اضغط Deploy.
+
+---
+
+## هيكل المشروع
+
+```
+app/[locale]/            صفحات عامة، مصادقة، ولوحة التحكم (موجّهة عبر next-intl)
+app/auth/confirm/        Route Handler لتبادل رمز تأكيد البريد/استعادة كلمة المرور
+components/{auth,dashboard,public,ui}/   مكوّنات الواجهة
+lib/actions/              Server Actions (منطق حسّاس، جانب الخادم فقط)
+lib/services/             منطق الأعمال والوصول لقاعدة البيانات (مفصول عن الواجهات)
+lib/payments/             طبقة تجريد مزوّد الدفع (Mock حاليًا، قابلة للاستبدال بـ Stripe/Moyasar)
+lib/supabase/             عملاء Supabase (متصفح/خادم/service-role) + فحص الإعداد
+lib/validations/          مخططات Zod
+messages/{ar,en}.json      كل نصوص الواجهة (لا نصوص مباشرة داخل المكوّنات)
+supabase/migrations/       12 ملف SQL مرقّمة بالترتيب
+supabase/seed.sql          بيانات تجريبية
+tests/                     اختبارات Vitest (قاعدة بيانات + وحدات + ترجمة)
+```
+
+---
+
+## الميزات المكتملة (المرحلة الأولى)
+
+- تسجيل/دخول/خروج/استعادة كلمة مرور، وحماية كاملة للوحة التحكم.
+- إنشاء وإدارة مناسبات متعددة (مسودة/منشورة/منتهية) مع كل الحقول المطلوبة.
+- صفحة دعوة رقمية عامة متجاوبة (RTL/LTR): صورة غلاف، مشاركة واتساب، إضافة للتقويم (ملف .ics حقيقي)، نسخ رابط، QR اختياري، وحماية بكلمة مرور اختيارية.
+- RSVP بدون تسجيل دخول (سأحضر/لن أحضر/ربما)، مرافقون، رسالة، أسئلة مخصصة (6 أنواع)، وتعديل الرد عبر رابط آمن قبل الموعد النهائي.
+- لوحة الضيوف: بحث، فلترة، تصدير CSV.
+- تذاكر: فئات متعددة، Mock Payment، QR فريد لكل تذكرة، صفحة تذكرة عامة، ومنع البيع الزائد على مستوى قاعدة البيانات.
+- مسح QR بكاميرا الجوال (مع تراجع آمن لإدخال يدوي)، حالات التذكرة الأربع، وتحديث لحظي عبر Supabase Realtime.
+- لوحة إحصائيات: إجمالي المناسبات/المدعوين/الردود/التذاكر/الإيرادات التجريبية/الحضور الفعلي، رسم بياني، وأحدث الردود وعمليات الدخول.
+- إشعارات داخلية لحظية (RSVP جديد، شراء تذكرة، مسح تذكرة) عبر Supabase Realtime.
+- صفحات 404/خطأ/تحميل مخصصة ومترجمة لكل الأقسام.
+
+## الميزات المؤجلة (المرحلة الثانية)
+
+كما هو مخطط، لم تُنفَّذ الآن لكن المعمارية جاهزة لاستقبالها دون كسر النظام:
+
+- WhatsApp Cloud API وResend (بنية الإشعارات مبنية بحقل `type` + `payload jsonb` عام تسمح بإضافة قنوات جديدة).
+- Stripe / Moyasar (طبقة `lib/payments/provider.ts` مصمّمة كواجهة عامة؛ استبدال المزوّد يتم في `lib/payments/index.ts` فقط).
+- تذكيرات مجدولة، رسائل جماعية، قائمة انتظار، إرسال صور بعد المناسبة.
+- قوالب تصميم متقدمة ومحرر تصميم مرئي (جدول `event_designs` بحقل `design_json` مرن جاهز لذلك).
+- تطبيق جوال.
+- تصدير Excel حقيقي (`.xlsx`) — انظر الملاحظة الأمنية أدناه.
+- خيار "اختيارات متعددة" (multi-choice) في الأسئلة المخصصة يُعرض حاليًا كحقل نصي بسيط بدل مربعات اختيار فعلية.
+
+---
+
+## قرارات وملاحظات هامة
+
+- **Next.js 15 بدل 16**: النسخة محددة صراحة كما طُلب. أحدث نسخة 15.x تحمل تبعيات داخلية (`postcss`/`sharp`) بثغرات معروفة لا يوجد لها إصلاح إلا بالترقية لـ Next 16 — تُركت كما هي عمدًا.
+- **لا تصدير Excel حقيقي**: مكتبة `xlsx` (SheetJS) تحمل ثغرتين عاليتي الخطورة (Prototype Pollution وReDoS) بدون نسخة مُصححة على npm. استُبدلت بتصدير CSV (يفتح بنفس الجودة في Excel، ويدعم العربية عبر BOM).
+- **الأمان**: لا يُستخدم Supabase Service Role إطلاقًا في المتصفح. كل عملية حسّاسة (RSVP، شراء تذكرة، مسح QR، تسجيل حضور) تمر عبر دالة قاعدة بيانات `SECURITY DEFINER` تتحقق من كل قاعدة عمل قبل تنفيذها، وليس عبر سياسات RLS فضفاضة.
+- **العمل بدون Supabase**: كل صفحة ومكوّن يتصل بـ Supabase (خادم أو متصفح) محميّ بفحص `isSupabaseConfigured()` بحيث لا ينهار المشروع أثناء التطوير قبل ربط مشروع حقيقي.
