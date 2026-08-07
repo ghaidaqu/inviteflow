@@ -6,6 +6,10 @@ import { listQuestions } from '@/lib/services/questions.service';
 import { QuestionsEditor } from '@/components/dashboard/questions-editor';
 import { Link } from '@/i18n/navigation';
 
+// "RSVP" — a separate track from the invitation itself (see /invitation):
+// a poll/questionnaire tool for actually organizing an event or meetup
+// around the organizer's own questions, independent of whether guests are
+// just "accepting" an invitation.
 export default async function EventRsvpSettingsPage({
   params,
 }: {
@@ -35,7 +39,8 @@ export default async function EventRsvpSettingsPage({
       >
         {event.name}
       </Link>
-      <h1 className="mt-2 mb-6 text-2xl font-bold tracking-tight">{t('title')}</h1>
+      <h1 className="mt-2 mb-1 text-2xl font-bold tracking-tight">{t('title')}</h1>
+      <p className="text-muted-foreground mb-6">{t('rsvpPageSubtitle')}</p>
       <QuestionsEditor eventId={id} initialQuestions={questions} />
     </main>
   );

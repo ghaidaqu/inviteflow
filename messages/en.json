@@ -182,7 +182,8 @@
       "linkCopied": "Link copied",
       "backToList": "Back to events",
       "guestsButton": "Guests",
-      "rsvpSettingsButton": "RSVP & Questions",
+      "invitationButton": "💌 Digital invitation",
+      "rsvpSettingsButton": "✅ RSVP questions",
       "ticketsButton": "Tickets",
       "checkInButton": "QR Check-in"
     },
@@ -261,8 +262,29 @@
       "rateLimited": "Too many attempts in a short time — please try again in a minute."
     }
   },
+  "EventSettings": {
+    "invitationPageTitle": "💌 Digital Invitation",
+    "invitationPageSubtitle": "A simple personal invitation — you're hosting, and you decide whether you want a headcount of who's coming, or just to share the details without waiting on a response. This is a separate track from RSVP questions.",
+    "allowMaybeLabel": "Allow a \"Maybe\" option",
+    "allowMaybeHint": "Turn off for a simple invitation (accept or decline only), no third option.",
+    "collectCompanionsLabel": "Collect companion names",
+    "collectCompanionsHint": "Turn on if guests can bring additional people.",
+    "maxCompanionsLabel": "Maximum companions",
+    "collectMessageLabel": "Allow a message to the organizer",
+    "allowGuestEditLabel": "Allow guests to edit their response later",
+    "allowGuestEditHint": "If off, a response is final and guests can't change it.",
+    "saving": "Saving...",
+    "saveButton": "Save settings",
+    "saved": "Settings saved successfully.",
+    "errors": {
+      "invalidInput": "Please check the information you entered.",
+      "unauthorized": "You must be logged in to do this.",
+      "unknown": "Something went wrong, please try again."
+    }
+  },
   "Questions": {
     "title": "Custom Questions",
+    "rsvpPageSubtitle": "A poll/questionnaire tool for organizing an event or meetup — questions you define, with answers from your invitees coming back to you. A separate track from the digital invitation.",
     "questionNumber": "Question {number}",
     "questionTextArLabel": "Question text (Arabic)",
     "questionTextEnLabel": "Question text (English)",

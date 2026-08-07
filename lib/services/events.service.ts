@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase';
 import type { EventFormOutput } from '@/lib/validations/events';
+import type { EventSettingsFormOutput } from '@/lib/validations/event-settings';
 import { slugify, randomSuffix } from '@/lib/utils/slug';
 import { hashPassword } from '@/lib/utils/password';
 
@@ -171,6 +172,42 @@ export async function setEventStatus(
     .eq('organization_id', organizationId);
 
   if (error) throw error;
+}
+
+export async function getEventSettings(
+  supabase: Client,
+  eventId: string,
+): Promise<EventSettingsRow | null> {
+  const { data, error } = await supabase
+    .from('event_settings')
+    .select('*')
+    .eq('event_id', eventId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateEventSettings(
+  supabase: Client,
+  eventId: string,
+  input: EventSettingsFormOutput,
+): Promise<EventSettingsRow> {
+  const { data, error } = await supabase
+    .from('event_settings')
+    .update({
+      allow_maybe: input.allowMaybe,
+      collect_companions: input.collectCompanions,
+      max_companions: input.maxCompanions,
+      collect_message: input.collectMessage,
+      allow_guest_edit: input.allowGuestEdit,
+    })
+    .eq('event_id', eventId)
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function getPublicEventBySlug(

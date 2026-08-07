@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { eventFormSchema } from '@/lib/validations/events';
+import { eventSettingsFormSchema } from '@/lib/validations/event-settings';
 import {
   createEvent,
   updateEvent,
@@ -12,6 +13,7 @@ import {
   softDeleteEvent,
   getCurrentOrganizationId,
   getEvent,
+  updateEventSettings,
 } from '@/lib/services/events.service';
 
 export type EventActionState = {
@@ -129,6 +131,50 @@ export async function setEventStatusAction(
   const locale = await getLocale();
   revalidatePath(`/${locale}/dashboard/events`);
   revalidatePath(`/${locale}/dashboard/events/${eventId}`);
+}
+
+export type EventSettingsActionState = {
+  error?: string;
+  success?: boolean;
+};
+
+export async function updateEventSettingsAction(
+  eventId: string,
+  _prevState: EventSettingsActionState,
+  formData: FormData,
+): Promise<EventSettingsActionState> {
+  const parsed = eventSettingsFormSchema.safeParse({
+    allowMaybe: formData.get('allowMaybe') === 'true',
+    collectCompanions: formData.get('collectCompanions') === 'true',
+    maxCompanions: formData.get('maxCompanions'),
+    collectMessage: formData.get('collectMessage') === 'true',
+    allowGuestEdit: formData.get('allowGuestEdit') === 'true',
+  });
+  if (!parsed.success) return { error: 'invalidInput' };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'unauthorized' };
+
+  const organizationId = await getCurrentOrganizationId(supabase, user.id);
+  if (!organizationId) return { error: 'unknown' };
+
+  // Ownership check — updateEventSettings itself relies on RLS, but this
+  // confirms the event actually belongs to the caller's organization first.
+  const event = await getEvent(supabase, organizationId, eventId);
+  if (!event) return { error: 'unknown' };
+
+  try {
+    await updateEventSettings(supabase, eventId, parsed.data);
+  } catch {
+    return { error: 'unknown' };
+  }
+
+  const locale = await getLocale();
+  revalidatePath(`/${locale}/dashboard/events/${eventId}/rsvp`);
+  return { success: true };
 }
 
 export async function deleteEventAction(eventId: string) {

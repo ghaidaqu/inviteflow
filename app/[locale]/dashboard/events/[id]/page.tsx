@@ -76,6 +76,14 @@ export default async function EventDetailPage({
           variant="outline"
           size="sm"
           nativeButton={false}
+          render={<Link href={`/dashboard/events/${event.id}/invitation`} />}
+        >
+          {t('detail.invitationButton')}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          nativeButton={false}
           render={<Link href={`/dashboard/events/${event.id}/rsvp`} />}
         >
           {t('detail.rsvpSettingsButton')}

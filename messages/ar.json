@@ -182,7 +182,8 @@
       "linkCopied": "تم نسخ الرابط",
       "backToList": "العودة إلى المناسبات",
       "guestsButton": "الضيوف",
-      "rsvpSettingsButton": "إعدادات RSVP والأسئلة",
+      "invitationButton": "💌 الدعوة الرقمية",
+      "rsvpSettingsButton": "✅ أسئلة RSVP",
       "ticketsButton": "التذاكر",
       "checkInButton": "مسح QR وتسجيل الحضور"
     },
@@ -261,8 +262,29 @@
       "rateLimited": "محاولات كثيرة خلال وقت قصير، يرجى المحاولة بعد دقيقة."
     }
   },
+  "EventSettings": {
+    "invitationPageTitle": "💌 الدعوة الرقمية",
+    "invitationPageSubtitle": "دعوة شخصية بسيطة — أنت تعزم، وتقرر هل تبي تعرف عدد الموافقين ولا بس توصل التفاصيل بدون انتظار رد. هذا مسار منفصل تمامًا عن أسئلة RSVP.",
+    "allowMaybeLabel": "السماح بخيار \"ربما\"",
+    "allowMaybeHint": "أطفئه لدعوة بسيطة (قبول أو اعتذار فقط، بدون خيار ثالث).",
+    "collectCompanionsLabel": "جمع أسماء المرافقين",
+    "collectCompanionsHint": "شغّله لو الدعوة تسمح للضيف يجيب معه أشخاص إضافيين.",
+    "maxCompanionsLabel": "الحد الأقصى للمرافقين",
+    "collectMessageLabel": "السماح برسالة للمنظّم",
+    "allowGuestEditLabel": "السماح للضيف بتعديل رده لاحقًا",
+    "allowGuestEditHint": "لو مطفّى، يصير الرد نهائي ولا يقدر الضيف يغيّره.",
+    "saving": "جارٍ الحفظ...",
+    "saveButton": "حفظ الإعدادات",
+    "saved": "تم حفظ الإعدادات بنجاح.",
+    "errors": {
+      "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
+      "unauthorized": "يجب تسجيل الدخول للقيام بهذا.",
+      "unknown": "حدث خطأ ما، يرجى المحاولة مرة أخرى."
+    }
+  },
   "Questions": {
     "title": "الأسئلة المخصصة",
+    "rsvpPageSubtitle": "أداة تصويت/استبيان لتنظيم فعالية أو لقاء — أسئلة تحددها أنت، وتوصلك إجابات المدعوين عليها. مسار منفصل عن الدعوة الرقمية.",
     "questionNumber": "سؤال {number}",
     "questionTextArLabel": "نص السؤال (عربي)",
     "questionTextEnLabel": "نص السؤال (إنجليزي)",
