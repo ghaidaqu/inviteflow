@@ -85,7 +85,11 @@ export default async function PublicEventPage({
 
       <div className="mt-6 flex flex-wrap gap-2">
         {event.is_rsvp_enabled && (
-          <Button className="w-full sm:w-fit" render={<Link href={`/events/${event.slug}/rsvp`} />}>
+          <Button
+            className="w-full sm:w-fit"
+            nativeButton={false}
+            render={<Link href={`/events/${event.slug}/rsvp`} />}
+          >
             {t('rsvpButton')}
           </Button>
         )}
@@ -93,6 +97,7 @@ export default async function PublicEventPage({
           <Button
             className="w-full sm:w-fit"
             variant="outline"
+            nativeButton={false}
             render={<Link href={`/events/${event.slug}/tickets`} />}
           >
             {t('ticketsButton')}

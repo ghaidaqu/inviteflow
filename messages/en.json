@@ -7,7 +7,9 @@
     "title": "InviteFlow",
     "subtitle": "Create your digital invitation, track responses, and issue tickets — all in one place.",
     "cta": "Get started",
-    "login": "Log in"
+    "login": "Log in",
+    "guestCta": "Browse as a guest (no sign-up)",
+    "guestHint": "Try a real invitation and send your RSVP — no account needed"
   },
   "Common": {
     "languageSwitcher": "Language",

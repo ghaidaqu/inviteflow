@@ -28,7 +28,9 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">{t('list.title')}</h1>
-        <Button render={<Link href="/dashboard/events/new" />}>{t('list.newButton')}</Button>
+        <Button nativeButton={false} render={<Link href="/dashboard/events/new" />}>
+          {t('list.newButton')}
+        </Button>
       </div>
 
       {events.length === 0 ? (
@@ -51,6 +53,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
                 variant="outline"
                 size="sm"
                 className="mt-2 w-fit"
+                nativeButton={false}
                 render={<Link href={`/dashboard/events/${event.id}`} />}
               >
                 {t('list.viewButton')}

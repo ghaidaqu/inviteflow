@@ -53,7 +53,11 @@ export default async function EventDetailPage({
           </div>
           <p className="text-muted-foreground mt-1">{t(`types.${event.type}`)}</p>
         </div>
-        <Button variant="outline" render={<Link href={`/dashboard/events/${event.id}/edit`} />}>
+        <Button
+          variant="outline"
+          nativeButton={false}
+          render={<Link href={`/dashboard/events/${event.id}/edit`} />}
+        >
           {t('detail.editButton')}
         </Button>
       </div>
@@ -63,6 +67,7 @@ export default async function EventDetailPage({
         <Button
           variant="outline"
           size="sm"
+          nativeButton={false}
           render={<Link href={`/dashboard/events/${event.id}/guests`} />}
         >
           {t('detail.guestsButton')}
@@ -70,6 +75,7 @@ export default async function EventDetailPage({
         <Button
           variant="outline"
           size="sm"
+          nativeButton={false}
           render={<Link href={`/dashboard/events/${event.id}/rsvp`} />}
         >
           {t('detail.rsvpSettingsButton')}
@@ -77,6 +83,7 @@ export default async function EventDetailPage({
         <Button
           variant="outline"
           size="sm"
+          nativeButton={false}
           render={<Link href={`/dashboard/events/${event.id}/tickets`} />}
         >
           {t('detail.ticketsButton')}
@@ -84,6 +91,7 @@ export default async function EventDetailPage({
         <Button
           variant="outline"
           size="sm"
+          nativeButton={false}
           render={<Link href={`/dashboard/events/${event.id}/check-in`} />}
         >
           {t('detail.checkInButton')}
