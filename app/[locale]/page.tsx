@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
-import { MailIcon, MessageCircleIcon, TicketIcon, SparklesIcon, CalendarIcon } from 'lucide-react';
+import { MailIcon, ListChecksIcon, TicketIcon, SparklesIcon, CalendarIcon } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { listPublicTicketedEvents } from '@/lib/services/events.service';
@@ -84,7 +84,7 @@ function HomeContent() {
 
         <div className="animate-in fade-in mt-6 grid w-full max-w-3xl gap-4 delay-500 duration-700 sm:grid-cols-3">
           <FeatureCard icon={<MailIcon className="size-5" />} label={t('feature1')} />
-          <FeatureCard icon={<MessageCircleIcon className="size-5" />} label={t('feature2')} />
+          <FeatureCard icon={<ListChecksIcon className="size-5" />} label={t('feature2')} />
           <FeatureCard icon={<TicketIcon className="size-5" />} label={t('feature3')} />
         </div>
       </div>
@@ -92,14 +92,20 @@ function HomeContent() {
   );
 }
 
+// Each card mirrors one of the three fully-separate creation tracks
+// (Digital Invitation / RSVP-poll / Ticketed Event — see dashboard/events/new)
+// and links straight into starting one, instead of sitting as inert copy.
 function FeatureCard({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="bg-card/70 hover:border-primary/30 flex flex-col items-center gap-2 rounded-2xl border p-5 backdrop-blur-sm transition-colors">
-      <div className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-full">
+    <Link
+      href="/register"
+      className="bg-card/70 hover:border-primary/40 group flex flex-col items-center gap-2 rounded-2xl border p-5 backdrop-blur-sm transition-[color,background-color,border-color,transform] duration-150 ease-out hover:-translate-y-0.5 active:scale-[0.98]"
+    >
+      <div className="bg-primary/10 text-primary group-hover:bg-primary/15 flex size-10 items-center justify-center rounded-full transition-colors">
         {icon}
       </div>
       <p className="text-sm font-medium">{label}</p>
-    </div>
+    </Link>
   );
 }
 
