@@ -55,8 +55,8 @@ export async function ProductPreviews() {
     <section className="bg-muted/30 py-16 sm:py-24">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <div className="mx-auto max-w-xl text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{t('title')}</h2>
-          <p className="text-muted-foreground mt-3 text-lg">{t('subtitle')}</p>
+          <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{t('title')}</h2>
+          <p className="text-muted-foreground mt-3 text-base">{t('subtitle')}</p>
         </div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-3">

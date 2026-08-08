@@ -17,10 +17,10 @@ export async function WhyInviteFlow() {
           equal columns — the most common, most generic AI layout pattern. */}
       <div className="grid gap-10 sm:grid-cols-5 sm:gap-12">
         <div className="sm:col-span-2">
-          <h2 className="text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
+          <h2 className="text-2xl font-extrabold tracking-tight text-balance sm:text-3xl">
             {t('title')}
           </h2>
-          <p className="text-muted-foreground mt-4 text-lg text-balance">{t('statement')}</p>
+          <p className="text-muted-foreground mt-4 text-base text-balance">{t('statement')}</p>
         </div>
 
         <ul className="flex flex-col gap-6 sm:col-span-3">

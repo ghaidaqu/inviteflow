@@ -14,10 +14,10 @@ export async function FinalCta() {
       <div aria-hidden className="bg-grain pointer-events-none absolute inset-0 -z-10 opacity-60" />
 
       <div className="text-primary-foreground mx-auto flex w-full max-w-3xl flex-col items-center gap-5 px-4 py-16 text-center sm:px-6 sm:py-24">
-        <h2 className="text-3xl font-extrabold tracking-tight text-balance sm:text-5xl">
+        <h2 className="text-2xl font-extrabold tracking-tight text-balance sm:text-4xl">
           {t('title')}
         </h2>
-        <p className="text-primary-foreground/80 text-lg">{t('subtitle')}</p>
+        <p className="text-primary-foreground/80 text-base sm:text-lg">{t('subtitle')}</p>
         <div className="mt-2 flex flex-wrap justify-center gap-3">
           <Button
             size="lg"

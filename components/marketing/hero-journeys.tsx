@@ -48,10 +48,12 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           <span className="bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium">
             {t('eyebrow')}
           </span>
-          <h1 className="max-w-3xl text-4xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl">
+          <h1 className="max-w-2xl text-3xl leading-[1.15] font-extrabold tracking-tight text-balance sm:text-5xl">
             {t('title')}
           </h1>
-          <p className="text-muted-foreground max-w-lg text-lg text-balance">{t('subtitle')}</p>
+          <p className="text-muted-foreground max-w-lg text-base text-balance sm:text-lg">
+            {t('subtitle')}
+          </p>
         </div>
 
         <div
@@ -80,14 +82,14 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                   />
 
                   <span
-                    className="flex size-14 items-center justify-center rounded-2xl text-3xl"
+                    className="flex size-11 items-center justify-center rounded-xl text-xl"
                     style={{ backgroundColor: 'var(--journey-accent-soft)' }}
                   >
                     {tj(`${key}.emoji`)}
                   </span>
 
-                  <div className="flex flex-col gap-1.5">
-                    <h3 className="text-xl font-bold tracking-tight">{tj(`${key}.title`)}</h3>
+                  <div className="flex flex-col gap-1">
+                    <h3 className="text-base font-bold tracking-tight">{tj(`${key}.title`)}</h3>
                     <p className="text-muted-foreground text-sm">{tj(`${key}.tagline`)}</p>
                   </div>
 

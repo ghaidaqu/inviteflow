@@ -15,7 +15,7 @@ export async function HowItWorks() {
       id="how-it-works"
       className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24"
     >
-      <h2 className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl">
+      <h2 className="text-center text-2xl font-extrabold tracking-tight sm:text-3xl">
         {t('title')}
       </h2>
 

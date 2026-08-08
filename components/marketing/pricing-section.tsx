@@ -12,14 +12,14 @@ export async function PricingSection() {
       className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24"
     >
       <div className="mx-auto max-w-xl text-center">
-        <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{t('title')}</h2>
-        <p className="text-muted-foreground mt-3 text-lg">{t('subtitle')}</p>
+        <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{t('title')}</h2>
+        <p className="text-muted-foreground mt-3 text-base">{t('subtitle')}</p>
       </div>
 
       {/* A single, honest tier — no fabricated multi-plan pricing table for
           a product that doesn't have paid subscription tiers. */}
       <div className="border-primary/30 bg-card shadow-primary/5 relative mx-auto mt-10 flex max-w-md flex-col gap-5 rounded-3xl border-2 p-8 text-center shadow-xl">
-        <h3 className="text-2xl font-extrabold">{t('planTitle')}</h3>
+        <h3 className="text-xl font-extrabold">{t('planTitle')}</h3>
         <ul className="mx-auto flex flex-col gap-2.5 text-start">
           {(['planPoint1', 'planPoint2', 'planPoint3'] as const).map((key) => (
             <li key={key} className="flex items-center gap-2.5 text-sm">

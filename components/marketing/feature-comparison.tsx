@@ -49,7 +49,7 @@ export async function FeatureComparison() {
   return (
     <section className="bg-muted/30 py-16 sm:py-24">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
-        <h2 className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <h2 className="text-center text-2xl font-extrabold tracking-tight sm:text-3xl">
           {t('title')}
         </h2>
 

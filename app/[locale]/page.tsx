@@ -57,7 +57,7 @@ async function PublicEventsSection({ events, locale }: { events: EventRow[]; loc
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-      <h2 className="text-center text-3xl font-extrabold tracking-tight sm:text-4xl">
+      <h2 className="text-center text-2xl font-extrabold tracking-tight sm:text-3xl">
         {t('title')}
       </h2>
       <p className="text-muted-foreground mt-3 text-center text-lg">{t('subtitle')}</p>
