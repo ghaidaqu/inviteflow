@@ -160,7 +160,7 @@
       "visibilityLabel": "ظهور المناسبة",
       "visibilityPublic": "عامة",
       "visibilityPrivate": "خاصة",
-      "isRsvpEnabledLabel": "تفعيل تأكيد الحضور (RSVP)",
+      "isRsvpEnabledLabel": "تفعيل تأكيد الحضور",
       "isTicketingEnabledLabel": "تفعيل التذاكر",
       "isQrEnabledLabel": "تفعيل رمز QR",
       "isPasswordProtectedLabel": "حماية الصفحة بكلمة مرور",
@@ -173,7 +173,10 @@
         "invitation": "دعوة رقمية",
         "event": "فعالية بتذاكر",
         "rsvp": "RSVP / استفتاء"
-      }
+      },
+      "questionsInlineTitle": "أسئلة الاستطلاع",
+      "questionsInlineHint": "أضف الأسئلة اللي تبي ترسلها لضيوفك. تقدر تضيف أو تعدّل عليها لاحقًا من صفحة الإعدادات.",
+      "questionsInlineEmpty": "ما فيه أسئلة بعد — اضغط \"إضافة سؤال\" لتبدأ."
     },
     "list": {
       "title": "المناسبات",

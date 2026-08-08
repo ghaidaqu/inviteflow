@@ -6,6 +6,7 @@ import { MailIcon, ListChecksIcon, TicketIcon, SparklesIcon, CalendarIcon } from
 import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { listPublicTicketedEvents } from '@/lib/services/events.service';
+import { TiltCard } from '@/components/ui/tilt-card';
 import type { Database } from '@/types/supabase';
 
 type EventRow = Database['public']['Tables']['events']['Row'];
@@ -35,12 +36,15 @@ function HomeContent() {
   const t = useTranslations('HomePage');
 
   return (
-    <main className="relative flex flex-col overflow-hidden">
-      {/* Decorative gradient backdrop — pure CSS, no images/assets needed. */}
+    <main className="bg-grain relative flex flex-col overflow-hidden">
+      {/* Decorative gradient backdrop — pure CSS, no images/assets needed.
+          Blobs drift slowly (animate-drift-*) and a film-grain overlay
+          (.bg-grain) keeps the gradient from reading as a flat, sterile
+          fill — both off under prefers-reduced-motion. */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="bg-primary/25 absolute start-[-10%] top-[-15%] size-[32rem] rounded-full blur-3xl" />
-        <div className="bg-accent/35 absolute end-[-15%] top-[10%] size-[28rem] rounded-full blur-3xl" />
-        <div className="bg-primary/10 absolute start-[20%] bottom-[-20%] size-[36rem] rounded-full blur-3xl" />
+        <div className="bg-primary/25 animate-drift-a absolute start-[-10%] top-[-15%] size-[32rem] rounded-full blur-3xl" />
+        <div className="bg-accent/35 animate-drift-b absolute end-[-15%] top-[10%] size-[28rem] rounded-full blur-3xl" />
+        <div className="bg-primary/10 animate-drift-c absolute start-[20%] bottom-[-20%] size-[36rem] rounded-full blur-3xl" />
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center gap-8 px-4 py-20 text-center">
@@ -82,22 +86,28 @@ function HomeContent() {
           <p className="text-muted-foreground text-sm">{t('guestHint')}</p>
         </div>
 
-        <div className="animate-in fade-in mt-6 grid w-full max-w-3xl gap-4 delay-500 duration-700 sm:grid-cols-3">
-          <FeatureCard
-            href="/dashboard/events/new/invitation"
-            icon={<MailIcon className="size-5" />}
-            label={t('feature1')}
-          />
-          <FeatureCard
-            href="/dashboard/events/new/rsvp"
-            icon={<ListChecksIcon className="size-5" />}
-            label={t('feature2')}
-          />
-          <FeatureCard
-            href="/dashboard/events/new/event"
-            icon={<TicketIcon className="size-5" />}
-            label={t('feature3')}
-          />
+        <div className="animate-in fade-in mt-6 grid w-full max-w-3xl gap-4 delay-500 duration-700 [perspective:800px] sm:grid-cols-3">
+          <TiltCard>
+            <FeatureCard
+              href="/dashboard/events/new/invitation"
+              icon={<MailIcon className="size-5" />}
+              label={t('feature1')}
+            />
+          </TiltCard>
+          <TiltCard>
+            <FeatureCard
+              href="/dashboard/events/new/rsvp"
+              icon={<ListChecksIcon className="size-5" />}
+              label={t('feature2')}
+            />
+          </TiltCard>
+          <TiltCard>
+            <FeatureCard
+              href="/dashboard/events/new/event"
+              icon={<TicketIcon className="size-5" />}
+              label={t('feature3')}
+            />
+          </TiltCard>
         </div>
       </div>
     </main>

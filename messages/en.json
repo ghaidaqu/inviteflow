@@ -160,7 +160,7 @@
       "visibilityLabel": "Visibility",
       "visibilityPublic": "Public",
       "visibilityPrivate": "Private",
-      "isRsvpEnabledLabel": "Enable RSVP",
+      "isRsvpEnabledLabel": "Enable attendance confirmation",
       "isTicketingEnabledLabel": "Enable ticketing",
       "isQrEnabledLabel": "Enable QR code",
       "isPasswordProtectedLabel": "Password-protect this page",
@@ -173,7 +173,10 @@
         "invitation": "Digital invitation",
         "event": "Ticketed event",
         "rsvp": "RSVP / poll"
-      }
+      },
+      "questionsInlineTitle": "Poll questions",
+      "questionsInlineHint": "Add the questions you want to send your guests. You can add or edit more later from the settings page.",
+      "questionsInlineEmpty": "No questions yet — click \"Add question\" to start."
     },
     "list": {
       "title": "Events",

@@ -27,6 +27,8 @@ import {
 import { Field, FieldLabel, FieldError, FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { InlineQuestionsBuilder } from '@/components/dashboard/inline-questions-builder';
+import type { QuestionInput } from '@/lib/validations/questions';
 import type { Database } from '@/types/supabase';
 
 type EventRow = Database['public']['Tables']['events']['Row'];
@@ -71,6 +73,7 @@ export function EventForm({
   const tValidation = useTranslations('Events.validation');
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [questions, setQuestions] = useState<QuestionInput[]>([]);
 
   const {
     register,
@@ -124,6 +127,14 @@ export function EventForm({
     formData.set('isQrEnabled', String(values.isQrEnabled));
     formData.set('isPasswordProtected', String(values.isPasswordProtected));
     formData.set('password', values.password ?? '');
+
+    if (track === 'rsvp' && !event) {
+      // Drop fully-blank draft rows (an empty "add question" click the
+      // organizer never filled in) rather than sending them to the server
+      // and risking the whole batch getting rejected over one empty draft.
+      const filledQuestions = questions.filter((q) => q.textAr.trim().length > 0);
+      formData.set('questions', JSON.stringify(filledQuestions));
+    }
 
     startTransition(async () => {
       const result = await action({}, formData);
@@ -262,6 +273,10 @@ export function EventForm({
             />
           </Field>
         </div>
+
+        {track === 'rsvp' && !event && (
+          <InlineQuestionsBuilder value={questions} onChange={setQuestions} />
+        )}
 
         <Field orientation="horizontal">
           <FieldLabel htmlFor="isRsvpEnabled" className="flex-1 font-normal">

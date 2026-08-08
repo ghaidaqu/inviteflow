@@ -6,6 +6,7 @@ import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { eventFormSchema } from '@/lib/validations/events';
 import { eventSettingsFormSchema } from '@/lib/validations/event-settings';
+import { questionsFormSchema } from '@/lib/validations/questions';
 import {
   createEvent,
   updateEvent,
@@ -15,6 +16,9 @@ import {
   getEvent,
   updateEventSettings,
 } from '@/lib/services/events.service';
+import { replaceQuestions } from '@/lib/services/questions.service';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
 
 export type EventActionState = {
   error?: string;
@@ -38,6 +42,31 @@ function readFormInput(formData: FormData) {
     isPasswordProtected: formData.get('isPasswordProtected') === 'true',
     password: formData.get('password'),
   };
+}
+
+// Best-effort save for the questions an organizer wrote inline on the RSVP
+// creation form. Deliberately never throws: the event itself already
+// validated and was created successfully by the time this runs, and the
+// organizer can always add/fix questions afterward from the RSVP settings
+// page — a malformed or empty inline draft shouldn't roll back or fail the
+// whole "create event" submission.
+async function saveInlineQuestions(
+  supabase: SupabaseClient<Database>,
+  eventId: string,
+  formData: FormData,
+): Promise<void> {
+  const raw = formData.get('questions');
+  if (typeof raw !== 'string' || !raw.trim()) return;
+
+  try {
+    const parsedJson: unknown = JSON.parse(raw);
+    const parsed = questionsFormSchema.safeParse({ questions: parsedJson });
+    if (parsed.success && parsed.data.questions.length > 0) {
+      await replaceQuestions(supabase, eventId, parsed.data.questions);
+    }
+  } catch {
+    // Ignore — see doc comment above.
+  }
 }
 
 export async function createEventAction(
@@ -70,6 +99,8 @@ export async function createEventAction(
   } catch {
     return { error: 'unknown' };
   }
+
+  await saveInlineQuestions(supabase, eventId, formData);
 
   revalidatePath(`/${locale}/dashboard/events`);
   redirect(`/${locale}/dashboard/events/${eventId}`);

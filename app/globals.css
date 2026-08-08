@@ -143,3 +143,67 @@ html[dir='rtl'] {
     @apply font-sans;
   }
 }
+
+/* Slow ambient drift for hero backdrop blobs — decorative/marketing tier,
+   so a longer duration is fine (see the animate skill's "should this
+   animate" gate: rare/marketing surfaces can carry a longer, moving
+   background where a UI control couldn't). transform-only, GPU-friendly. */
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3%, 4%) scale(1.08);
+  }
+}
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-4%, -3%) scale(1.1);
+  }
+}
+@keyframes drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(2%, -5%) scale(1.05);
+  }
+}
+.animate-drift-a {
+  animation: drift-a 14s ease-in-out infinite;
+}
+.animate-drift-b {
+  animation: drift-b 18s ease-in-out infinite;
+}
+.animate-drift-c {
+  animation: drift-c 22s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift-a,
+  .animate-drift-b,
+  .animate-drift-c {
+    animation: none;
+  }
+}
+
+/* Subtle film-grain texture so gradient backdrops read as a material, not a
+   flat vector fill (redesign-existing-projects: "flat design with zero
+   texture feels sterile"). Fixed, pointer-events-none, very low opacity. */
+.bg-grain {
+  position: relative;
+}
+.bg-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
