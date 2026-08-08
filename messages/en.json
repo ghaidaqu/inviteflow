@@ -4,21 +4,133 @@
     "description": "A platform for digital invitations, RSVP tracking, and event ticketing."
   },
   "HomePage": {
-    "badge": "Built Arabic-first",
-    "title": "InviteFlow",
-    "subtitle": "Create your digital invitation, track responses, and issue tickets — all in one place.",
-    "feature1": "Digital invitation",
-    "feature2": "RSVP / poll",
-    "feature3": "Ticketed event",
+    "nav": {
+      "journeysLink": "Journeys",
+      "howItWorksLink": "How it works",
+      "pricingLink": "Pricing",
+      "loginLink": "Log in",
+      "startLink": "Start free"
+    },
+    "hero": {
+      "eyebrow": "Built Arabic-first for your events",
+      "title": "What do you want to create today?",
+      "subtitle": "InviteFlow is three completely separate tools in one place — pick the one you need and start right away.",
+      "guestLink": "Or try it as a guest, no sign-up ←"
+    },
+    "journeys": {
+      "invitation": {
+        "emoji": "💍",
+        "title": "Digital Invitation",
+        "tagline": "Elegant and personal — for your wedding or private occasion",
+        "bullet1": "Accept or decline with one tap, right inside WhatsApp",
+        "bullet2": "No questions, no clutter — just the details that matter",
+        "bullet3": "A shareable link, ready instantly",
+        "cta": "Start your invitation"
+      },
+      "ticketing": {
+        "emoji": "🎟",
+        "title": "Ticketed Event",
+        "tagline": "Professional and sale-ready from minute one",
+        "bullet1": "Ticket tiers with your own prices and quantities",
+        "bullet2": "Real online payment",
+        "bullet3": "Check-in attendees with a QR scan",
+        "cta": "Create your event"
+      },
+      "rsvp": {
+        "emoji": "📊",
+        "title": "RSVP Poll",
+        "tagline": "Simple and organized — for a meetup or group event",
+        "bullet1": "Questions you design yourself",
+        "bullet2": "Sent directly to specific phone numbers",
+        "bullet3": "Instant results you can broadcast to everyone",
+        "cta": "Set up your poll"
+      }
+    },
+    "why": {
+      "title": "Why InviteFlow?",
+      "statement": "Built from the ground up for Arabic-speaking users — not a translated foreign tool.",
+      "point1": "Guests reply right inside WhatsApp — never opening a link at all",
+      "point2": "Real online payment for ticket sales",
+      "point3": "Every guest gets their own edit link, no account needed",
+      "point4": "Your data is protected by row-level security in the database"
+    },
+    "previews": {
+      "title": "See what it actually looks like",
+      "subtitle": "Real previews of each track — not illustrations.",
+      "invitationLabel": "Digital invitation",
+      "invitationSample": "Join us to celebrate Sara & Ahmad's wedding",
+      "invitationStatus": "Awaiting your response",
+      "ticketLabel": "QR ticket",
+      "ticketSample": "Entry ticket — VIP",
+      "ticketHolder": "Name: Abdullah Al-Harbi",
+      "pollLabel": "Poll results",
+      "pollSample": "Which date works best for you?",
+      "pollOption1": "Thursday",
+      "pollOption2": "Friday",
+      "pollOption3": "Saturday"
+    },
+    "occasions": {
+      "title": "For which occasion?",
+      "subtitle": "Works with almost any kind of event"
+    },
+    "comparison": {
+      "title": "Compare the three tracks",
+      "colInvitation": "Digital invitation",
+      "colRsvp": "RSVP poll",
+      "colTicketing": "Ticketed event",
+      "rowResponse": "How guests respond",
+      "invitationResponse": "WhatsApp button",
+      "rsvpResponse": "Question form",
+      "ticketingResponse": "No response — direct ticket",
+      "rowQuestions": "Custom questions",
+      "rowTickets": "Sell tickets",
+      "rowQr": "QR check-in",
+      "rowBestFor": "Best for",
+      "invitationBestFor": "Personal occasions (weddings, graduations)",
+      "rsvpBestFor": "Organizing a group event or meetup",
+      "ticketingBestFor": "Paid events and conferences",
+      "yes": "Yes",
+      "no": "No",
+      "optional": "Optional"
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "step1Title": "Pick your track",
+      "step1Description": "Invitation, poll, or ticketed event — each one completely separate",
+      "step2Title": "Fill in the details",
+      "step2Description": "Name, date, questions, or ticket tiers",
+      "step3Title": "Share the link",
+      "step3Description": "Straight over WhatsApp — responses reach you instantly"
+    },
+    "pricing": {
+      "title": "Pricing",
+      "subtitle": "No complexity",
+      "planTitle": "Completely free — for now",
+      "planPoint1": "Unlimited invitations and polls",
+      "planPoint2": "No monthly subscription",
+      "planPoint3": "Create your account and start right away",
+      "cta": "Start free"
+    },
+    "finalCta": {
+      "title": "Ready to start?",
+      "subtitle": "Takes less than two minutes",
+      "primaryCta": "Create your free account",
+      "secondaryCta": "Or try it as a guest"
+    },
+    "footer": {
+      "tagline": "Built Arabic-first for your events — invitations, polls, and tickets.",
+      "journeysHeading": "Journeys",
+      "accountHeading": "Account",
+      "loginLink": "Log in",
+      "registerLink": "Create account",
+      "guestLink": "Try as a guest",
+      "copyright": "© {year} InviteFlow"
+    },
     "publicEvents": {
       "title": "Events open for booking now",
       "subtitle": "Book your ticket directly — no sign-up needed.",
       "viewButton": "View details & book →"
-    },
-    "cta": "Get started",
-    "login": "Log in",
-    "guestCta": "Browse as a guest (no sign-up)",
-    "guestHint": "Try a real invitation and send your RSVP — no account needed"
+    }
   },
   "GuestHub": {
     "title": "Try InviteFlow as a guest",
