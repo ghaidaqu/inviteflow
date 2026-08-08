@@ -3,13 +3,20 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { MailIcon, ListChecksIcon, TicketIcon, SparklesIcon, CalendarIcon } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/public';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { listPublicTicketedEvents } from '@/lib/services/events.service';
 import { TiltCard } from '@/components/ui/tilt-card';
 import type { Database } from '@/types/supabase';
 
 type EventRow = Database['public']['Tables']['events']['Row'];
+
+// This page fetches with the cookie-free public client (see
+// lib/supabase/public.ts) specifically so it CAN be cached — under real
+// traffic (many people opening a shared link at once), serving a
+// once-a-minute cached page is both faster and far lighter on the database
+// than hitting Supabase on every single request.
+export const revalidate = 60;
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -20,7 +27,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // already knowing the event's direct link.
   let events: EventRow[] = [];
   if (isSupabaseConfigured()) {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     events = await listPublicTicketedEvents(supabase);
   }
 

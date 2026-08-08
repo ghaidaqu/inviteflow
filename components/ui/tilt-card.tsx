@@ -51,8 +51,7 @@ export function TiltCard({
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       className={cn(
-        'transition-transform duration-300 ease-out [transform-style:preserve-3d] motion-reduce:transition-none',
-        '[@media(hover:hover)and(pointer:fine)]:will-change-transform',
+        'transition-transform duration-300 ease-out will-change-transform [transform-style:preserve-3d] motion-reduce:transition-none',
         className,
       )}
     >
