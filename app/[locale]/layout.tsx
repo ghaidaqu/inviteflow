@@ -61,7 +61,10 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={dir}
-      className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} h-full antialiased`}
+      // `dark` is applied unconditionally (not behind a toggle) — the
+      // dark neon-red identity in globals.css is the only theme right
+      // now, by explicit direction, not a light/dark preference.
+      className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} dark h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
         <NextIntlClientProvider>

@@ -61,7 +61,7 @@ export async function ProductPreviews() {
 
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
           {/* Invitation card mockup */}
-          <div className="animate-in fade-in slide-in-from-bottom-2 rounded-3xl border bg-gradient-to-b from-white to-rose-50/60 p-6 shadow-sm duration-700 dark:from-neutral-900 dark:to-neutral-900">
+          <div className="animate-in fade-in slide-in-from-bottom-2 bg-card rounded-3xl border p-6 shadow-sm duration-700">
             <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
               {t('invitationLabel')}
             </span>
@@ -85,11 +85,11 @@ export async function ProductPreviews() {
           </div>
 
           {/* Ticket mockup — stub shape with a perforated divider */}
-          <div className="animate-in fade-in slide-in-from-bottom-2 flex flex-col overflow-hidden rounded-3xl border bg-gradient-to-b from-white to-blue-50/60 p-6 shadow-sm duration-700 [animation-delay:80ms] dark:from-neutral-900 dark:to-neutral-900">
+          <div className="animate-in fade-in slide-in-from-bottom-2 bg-card flex flex-col overflow-hidden rounded-3xl border p-6 shadow-sm duration-700 [animation-delay:80ms]">
             <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
               {t('ticketLabel')}
             </span>
-            <div className="relative mt-4 flex items-stretch overflow-hidden rounded-2xl bg-[oklch(0.42_0.09_250)] text-white">
+            <div className="from-primary relative mt-4 flex items-stretch overflow-hidden rounded-2xl bg-gradient-to-br to-[oklch(0.32_0.14_10)] text-white">
               <div className="flex flex-1 flex-col justify-between p-4">
                 <div>
                   <p className="text-sm font-bold">{t('ticketSample')}</p>
@@ -102,7 +102,7 @@ export async function ProductPreviews() {
               </div>
               <div
                 aria-hidden
-                className="bg-background relative flex w-24 shrink-0 items-center justify-center before:absolute before:start-1/2 before:-top-3 before:size-6 before:-translate-x-1/2 before:rounded-full before:bg-[oklch(0.98_0.008_60)] before:content-[''] after:absolute after:start-1/2 after:-bottom-3 after:size-6 after:-translate-x-1/2 after:rounded-full after:bg-[oklch(0.98_0.008_60)] after:content-['']"
+                className="bg-card before:bg-card after:bg-card relative flex w-24 shrink-0 items-center justify-center before:absolute before:start-1/2 before:-top-3 before:size-6 before:-translate-x-1/2 before:rounded-full before:content-[''] after:absolute after:start-1/2 after:-bottom-3 after:size-6 after:-translate-x-1/2 after:rounded-full after:content-['']"
               >
                 <QrGlyph />
               </div>
@@ -110,7 +110,7 @@ export async function ProductPreviews() {
           </div>
 
           {/* Poll results mockup — simple bar chart */}
-          <div className="animate-in fade-in slide-in-from-bottom-2 rounded-3xl border bg-gradient-to-b from-white to-emerald-50/60 p-6 shadow-sm duration-700 [animation-delay:160ms] dark:from-neutral-900 dark:to-neutral-900">
+          <div className="animate-in fade-in slide-in-from-bottom-2 bg-card rounded-3xl border p-6 shadow-sm duration-700 [animation-delay:160ms]">
             <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
               {t('pollLabel')}
             </span>
@@ -125,7 +125,7 @@ export async function ProductPreviews() {
                   <span className="text-muted-foreground w-14 shrink-0 text-xs">{row.label}</span>
                   <div className="bg-muted h-2.5 flex-1 overflow-hidden rounded-full">
                     <div
-                      className="h-full rounded-full bg-[oklch(0.5_0.11_165)]"
+                      className="bg-primary h-full rounded-full"
                       style={{ width: `${row.pct}%` }}
                     />
                   </div>

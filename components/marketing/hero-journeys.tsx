@@ -5,24 +5,25 @@ import { CheckIcon, ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
 
 type JourneyKey = 'invitation' | 'ticketing' | 'rsvp';
 
-// Each journey gets its own accent within the shared cream/burgundy system —
-// distinct enough that the three cards read as three different products at
-// a glance, without breaking the site's overall identity. Set as CSS custom
-// properties scoped to the card, not global theme overrides.
+// Each journey is differentiated by weight/shade within a single red +
+// neutral palette, not a different hue per card — a "rainbow" of accent
+// colors (red/blue/green) read as a color-party, not the serious/official
+// look this platform wants. Set as CSS custom properties scoped to the
+// card, not global theme overrides.
 const JOURNEY_STYLE: Record<JourneyKey, { accent: string; accentSoft: string; track: string }> = {
   invitation: {
-    accent: 'oklch(0.47 0.19 15)', // the brand burgundy — richest, most emotional
-    accentSoft: 'oklch(0.47 0.19 15 / 10%)',
+    accent: 'oklch(0.62 0.22 20)', // the brand red — full color, the primary journey
+    accentSoft: 'oklch(0.62 0.22 20 / 15%)',
     track: 'invitation',
   },
   ticketing: {
-    accent: 'oklch(0.42 0.09 250)', // cool slate-blue — professional, modern
-    accentSoft: 'oklch(0.42 0.09 250 / 10%)',
+    accent: 'oklch(0.85 0.005 60)', // near-white/silver — neutral, professional
+    accentSoft: 'oklch(0.85 0.005 60 / 12%)',
     track: 'event',
   },
   rsvp: {
-    accent: 'oklch(0.5 0.11 165)', // teal-green — clean, analytical
-    accentSoft: 'oklch(0.5 0.11 165 / 10%)',
+    accent: 'oklch(0.6 0.01 60)', // mid gray — neutral, understated
+    accentSoft: 'oklch(0.6 0.01 60 / 12%)',
     track: 'rsvp',
   },
 };
@@ -37,22 +38,23 @@ export async function HeroJourneys({ locale }: { locale: string }) {
 
   return (
     <section className="bg-grain relative overflow-hidden">
-      {/* Aurora + a receding 3D grid — see the aurora and hero-grid utility
-          classes in globals.css. Wide, looping motion plus a slow hue
-          drift, so this reads as a living gradient, not a static blob. */}
+      {/* Aurora backdrop, recolored for the dark neon-red identity — the
+          blobs now sit on a near-black page, so they use mix-blend-screen
+          (which brightens rather than muddies against dark) at higher
+          opacity, so they read as actual glowing light sources, not a
+          faint wash. Same wide looping motion + hue drift as before. */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="hero-grid absolute inset-0 opacity-[0.15]" />
         <div
-          className="animate-aurora-a absolute start-[-20%] top-[-25%] size-[34rem] rounded-full opacity-45 blur-[90px]"
-          style={{ backgroundColor: 'oklch(0.5 0.22 20)' }}
+          className="animate-aurora-a absolute start-[-20%] top-[-25%] size-[34rem] rounded-full opacity-60 mix-blend-screen blur-[100px]"
+          style={{ backgroundColor: 'oklch(0.6 0.26 18)' }}
         />
         <div
-          className="animate-aurora-b absolute end-[-20%] top-[-10%] size-[30rem] rounded-full opacity-40 blur-[90px]"
-          style={{ backgroundColor: 'oklch(0.78 0.14 75)' }}
+          className="animate-aurora-b absolute end-[-20%] top-[-10%] size-[30rem] rounded-full opacity-45 mix-blend-screen blur-[100px]"
+          style={{ backgroundColor: 'oklch(0.5 0.22 355)' }}
         />
         <div
-          className="animate-aurora-c absolute start-[10%] bottom-[-35%] size-[36rem] rounded-full opacity-35 blur-[90px]"
-          style={{ backgroundColor: 'oklch(0.55 0.18 350)' }}
+          className="animate-aurora-c absolute start-[10%] bottom-[-35%] size-[36rem] rounded-full opacity-40 mix-blend-screen blur-[100px]"
+          style={{ backgroundColor: 'oklch(0.4 0.2 10)' }}
         />
         <div className="from-background/0 via-background/40 to-background absolute inset-0 bg-gradient-to-b" />
       </div>
@@ -62,7 +64,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           <span className="bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             {t('eyebrow')}
           </span>
-          <h1 className="max-w-xl text-2xl leading-[1.2] font-extrabold tracking-tight text-balance sm:text-4xl">
+          <h1 className="text-glow max-w-xl text-2xl leading-[1.2] font-extrabold tracking-tight text-balance sm:text-4xl">
             {t('title')}
           </h1>
           <p className="text-muted-foreground max-w-md text-sm text-balance sm:text-base">

@@ -94,38 +94,45 @@
   --sidebar-ring: oklch(0.47 0.19 15 / 40%);
 }
 
+/* Dark, dramatic "neon red on black" identity — replaces the earlier
+   cream/burgundy theme site-wide per explicit direction (a reference
+   screenshot: near-black surfaces, a glowing crimson accent, high-contrast
+   white text). Applied everywhere via `.dark` on <html> in layout.tsx, so
+   every page inherits it automatically through the existing semantic
+   tokens (bg-background, bg-card, bg-primary, etc.) with no per-component
+   changes needed. */
 .dark {
-  --background: oklch(0.16 0.02 20);
-  --foreground: oklch(0.96 0.01 60);
-  --card: oklch(0.21 0.025 20);
-  --card-foreground: oklch(0.96 0.01 60);
-  --popover: oklch(0.21 0.025 20);
-  --popover-foreground: oklch(0.96 0.01 60);
-  --primary: oklch(0.72 0.16 20);
-  --primary-foreground: oklch(0.18 0.03 20);
-  --secondary: oklch(0.28 0.03 25);
-  --secondary-foreground: oklch(0.96 0.01 60);
-  --muted: oklch(0.26 0.02 25);
-  --muted-foreground: oklch(0.72 0.03 40);
-  --accent: oklch(0.55 0.1 70);
-  --accent-foreground: oklch(0.97 0.01 60);
-  --destructive: oklch(0.704 0.191 22.216);
+  --background: oklch(0.12 0.015 20);
+  --foreground: oklch(0.97 0.005 60);
+  --card: oklch(0.17 0.02 18);
+  --card-foreground: oklch(0.97 0.005 60);
+  --popover: oklch(0.17 0.02 18);
+  --popover-foreground: oklch(0.97 0.005 60);
+  --primary: oklch(0.6 0.26 18);
+  --primary-foreground: oklch(0.99 0.005 60);
+  --secondary: oklch(0.22 0.03 18);
+  --secondary-foreground: oklch(0.97 0.005 60);
+  --muted: oklch(0.19 0.02 18);
+  --muted-foreground: oklch(0.65 0.03 30);
+  --accent: oklch(0.4 0.16 8);
+  --accent-foreground: oklch(0.97 0.005 60);
+  --destructive: oklch(0.65 0.24 20);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.72 0.16 20 / 40%);
-  --chart-1: oklch(0.72 0.16 20);
-  --chart-2: oklch(0.55 0.1 70);
-  --chart-3: oklch(0.6 0.15 30);
-  --chart-4: oklch(0.5 0.08 50);
-  --chart-5: oklch(0.8 0.05 60);
-  --sidebar: oklch(0.19 0.02 20);
-  --sidebar-foreground: oklch(0.96 0.01 60);
-  --sidebar-primary: oklch(0.72 0.16 20);
-  --sidebar-primary-foreground: oklch(0.18 0.03 20);
-  --sidebar-accent: oklch(0.28 0.03 25);
-  --sidebar-accent-foreground: oklch(0.96 0.01 60);
+  --ring: oklch(0.6 0.26 18 / 50%);
+  --chart-1: oklch(0.6 0.26 18);
+  --chart-2: oklch(0.45 0.18 5);
+  --chart-3: oklch(0.5 0.2 15);
+  --chart-4: oklch(0.7 0.15 350);
+  --chart-5: oklch(0.4 0.12 20);
+  --sidebar: oklch(0.14 0.018 18);
+  --sidebar-foreground: oklch(0.97 0.005 60);
+  --sidebar-primary: oklch(0.6 0.26 18);
+  --sidebar-primary-foreground: oklch(0.99 0.005 60);
+  --sidebar-accent: oklch(0.22 0.03 18);
+  --sidebar-accent-foreground: oklch(0.97 0.005 60);
   --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.72 0.16 20 / 40%);
+  --sidebar-ring: oklch(0.6 0.26 18 / 50%);
 }
 
 html[dir='rtl'] {
@@ -221,21 +228,6 @@ html[dir='rtl'] {
   }
 }
 
-/* Slow-receding 3D perspective grid — a second, subtle "wow" layer under
-   the aurora blobs. Pure CSS (background-image grid lines + a perspective
-   transform), no canvas/WebGL needed. Masked so it fades out before
-   reaching the content instead of competing with it. */
-.hero-grid {
-  background-image:
-    linear-gradient(to right, var(--border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-  background-size: 56px 56px;
-  transform: perspective(500px) rotateX(58deg) scale(1.6);
-  transform-origin: center top;
-  -webkit-mask-image: linear-gradient(to bottom, black, transparent 75%);
-  mask-image: linear-gradient(to bottom, black, transparent 75%);
-}
-
 /* Subtle film-grain texture so gradient backdrops read as a material, not a
    flat vector fill (redesign-existing-projects: "flat design with zero
    texture feels sterile"). Fixed, pointer-events-none, very low opacity. */
@@ -250,4 +242,19 @@ html[dir='rtl'] {
   opacity: 0.05;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Neon text glow for the hero headline — a soft layered red halo behind
+   crisp white text, matching the dark neon-red identity. */
+.text-glow {
+  text-shadow:
+    0 0 20px oklch(0.6 0.26 18 / 55%),
+    0 0 48px oklch(0.6 0.26 18 / 35%);
+}
+
+/* Matching glow for primary CTA buttons — same red, as a box-shadow halo. */
+.shadow-glow {
+  box-shadow:
+    0 0 16px oklch(0.6 0.26 18 / 45%),
+    0 0 40px oklch(0.6 0.26 18 / 25%);
 }

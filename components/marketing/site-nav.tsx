@@ -42,7 +42,12 @@ export function SiteNav() {
             <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/login" />}>
               {t('loginLink')}
             </Button>
-            <Button size="sm" nativeButton={false} render={<Link href="/register" />}>
+            <Button
+              size="sm"
+              className="shadow-glow"
+              nativeButton={false}
+              render={<Link href="/register" />}
+            >
               {t('startLink')}
             </Button>
           </div>
