@@ -17,8 +17,9 @@ export async function PricingSection() {
       </div>
 
       {/* A single, honest tier — no fabricated multi-plan pricing table for
-          a product that doesn't have paid subscription tiers. */}
-      <div className="border-primary/30 bg-card shadow-primary/5 relative mx-auto mt-10 flex max-w-md flex-col gap-5 rounded-3xl border-2 p-8 text-center shadow-xl">
+          a product that doesn't have paid subscription tiers. Whitespace
+          instead of a heavy bordered/shadowed box. */}
+      <div className="border-border mx-auto mt-10 flex max-w-md flex-col items-center gap-5 border-t pt-8 text-center">
         <h3 className="text-xl font-extrabold">{t('planTitle')}</h3>
         <ul className="mx-auto flex flex-col gap-2.5 text-start">
           {(['planPoint1', 'planPoint2', 'planPoint3'] as const).map((key) => (

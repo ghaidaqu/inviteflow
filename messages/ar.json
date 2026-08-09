@@ -5,17 +5,23 @@
   },
   "HomePage": {
     "nav": {
-      "journeysLink": "المسارات",
+      "journeysLink": "المنتجات",
+      "templatesLink": "قوالب",
       "howItWorksLink": "كيف يعمل",
       "pricingLink": "الأسعار",
       "loginLink": "تسجيل الدخول",
-      "startLink": "ابدأ مجانًا"
+      "startLink": "ابدأ مجاناً"
     },
     "hero": {
-      "eyebrow": "منصة عربية بالكامل لتنظيم فعالياتك",
-      "title": "وش تبي تسوي اليوم؟",
-      "subtitle": "InviteFlow ثلاث أدوات منفصلة تمامًا في مكان واحد — اختر الأنسب لك، وابدأ فورًا.",
+      "headlineLine1": "كل مناسبة",
+      "headlineLine2": "تستحق أن تُحكى",
+      "subtitle": "منصّة متكاملة لإنشاء دعوات رقمية، تنظيم استفتاءات RSVP، وبيع تذاكر الفعاليات — بسهولة واحترافية تامة.",
+      "primaryCta": "ابدأ مجاناً",
+      "secondaryCta": "شاهد كيف تعمل",
       "guestLink": "أو جرّب المنصة كضيف بدون تسجيل ←"
+    },
+    "panels": {
+      "exploreCta": "استكشف"
     },
     "journeys": {
       "invitation": {

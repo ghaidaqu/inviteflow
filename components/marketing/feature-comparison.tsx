@@ -40,23 +40,24 @@ export async function FeatureComparison() {
 
   function renderCell(cell: Cell, textKey?: string) {
     if (cell === 'yes') return <CheckIcon className="text-primary mx-auto size-5" />;
-    if (cell === 'no') return <MinusIcon className="text-muted-foreground/50 mx-auto size-5" />;
-    if (cell === 'optional')
-      return <span className="text-muted-foreground text-sm">{t('optional')}</span>;
+    if (cell === 'no') return <MinusIcon className="mx-auto size-5 opacity-30" />;
+    if (cell === 'optional') return <span className="text-sm opacity-60">{t('optional')}</span>;
     return <span className="text-sm">{textKey ? t(textKey as 'rowResponse') : ''}</span>;
   }
 
   return (
-    <section className="bg-muted/30 py-16 sm:py-24">
+    // Second "near-black" band for the ivory/black rhythm the editorial
+    // direction calls for — plain dividers, no card border/shadow box.
+    <section className="bg-foreground text-background py-16 sm:py-24">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
         <h2 className="text-center text-2xl font-extrabold tracking-tight sm:text-3xl">
           {t('title')}
         </h2>
 
         <div className="mt-10 overflow-x-auto">
-          <table className="bg-card w-full min-w-[640px] border-collapse overflow-hidden rounded-2xl border text-center shadow-sm">
+          <table className="w-full min-w-[640px] border-collapse text-center">
             <thead>
-              <tr className="border-b">
+              <tr className="border-background/15 border-b">
                 <th className="p-4 text-start text-sm font-medium"></th>
                 <th className="p-4 text-sm font-bold">{t('colInvitation')}</th>
                 <th className="p-4 text-sm font-bold">{t('colRsvp')}</th>
@@ -65,8 +66,8 @@ export async function FeatureComparison() {
             </thead>
             <tbody>
               {ROWS.map((row) => (
-                <tr key={row.labelKey} className="border-b last:border-b-0">
-                  <td className="text-muted-foreground p-4 text-start text-sm font-medium">
+                <tr key={row.labelKey} className="border-background/10 border-b last:border-b-0">
+                  <td className="p-4 text-start text-sm font-medium opacity-70">
                     {t(row.labelKey as 'rowResponse')}
                   </td>
                   <td className="p-4">{renderCell(row.invitation, row.invitationTextKey)}</td>

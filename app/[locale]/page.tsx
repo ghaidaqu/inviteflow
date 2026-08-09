@@ -39,11 +39,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <main className="flex flex-col">
         <HeroJourneys locale={locale} />
         <WhyInviteFlow />
-        <ProductPreviews />
         <OccasionGallery />
+        <HowItWorks />
+        <ProductPreviews />
         {events.length > 0 && <PublicEventsSection events={events} locale={locale} />}
         <FeatureComparison />
-        <HowItWorks />
         <PricingSection />
         <FinalCta />
       </main>

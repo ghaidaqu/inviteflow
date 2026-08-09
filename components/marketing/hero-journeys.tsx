@@ -1,30 +1,45 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { TiltCard } from '@/components/ui/tilt-card';
-import { CheckIcon, ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  PlayIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  MailIcon,
+  TicketIcon,
+  ListChecksIcon,
+} from 'lucide-react';
 
 type JourneyKey = 'invitation' | 'ticketing' | 'rsvp';
 
-// Each journey is differentiated by weight/shade within a single red +
-// neutral palette, not a different hue per card — a "rainbow" of accent
-// colors (red/blue/green) read as a color-party, not the serious/official
-// look this platform wants. Set as CSS custom properties scoped to the
-// card, not global theme overrides.
-const JOURNEY_STYLE: Record<JourneyKey, { accent: string; accentSoft: string; track: string }> = {
+// Three distinct editorial panel treatments — deep red, dark ink navy, and
+// muted purple — deliberately different from each other (these are three
+// separate products) and deliberately NOT the site's neon/glow language;
+// flat, matte color blocks per the "premium editorial poster" direction.
+const PANEL_STYLE: Record<
+  JourneyKey,
+  { photoFrom: string; photoTo: string; panel: string; track: string; icon: typeof MailIcon }
+> = {
   invitation: {
-    accent: 'oklch(0.62 0.22 20)', // the brand red — full color, the primary journey
-    accentSoft: 'oklch(0.62 0.22 20 / 15%)',
+    photoFrom: '#c23855',
+    photoTo: '#7d0f28',
+    panel: '#5c0e21',
     track: 'invitation',
+    icon: MailIcon,
   },
   ticketing: {
-    accent: 'oklch(0.85 0.005 60)', // near-white/silver — neutral, professional
-    accentSoft: 'oklch(0.85 0.005 60 / 12%)',
+    photoFrom: '#2c3550',
+    photoTo: '#0e1420',
+    panel: '#151b28',
     track: 'event',
+    icon: TicketIcon,
   },
   rsvp: {
-    accent: 'oklch(0.6 0.01 60)', // mid gray — neutral, understated
-    accentSoft: 'oklch(0.6 0.01 60 / 12%)',
+    photoFrom: '#6d4f82',
+    photoTo: '#2f2038',
+    panel: '#3a2844',
     track: 'rsvp',
+    icon: ListChecksIcon,
   },
 };
 
@@ -33,113 +48,102 @@ const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'ticketing', 'rsvp'];
 export async function HeroJourneys({ locale }: { locale: string }) {
   const t = await getTranslations('HomePage.hero');
   const tj = await getTranslations('HomePage.journeys');
+  const tp = await getTranslations('HomePage.panels');
   const isRtl = locale === 'ar';
   const ArrowIcon = isRtl ? ArrowLeftIcon : ArrowRightIcon;
 
   return (
-    <section className="bg-grain relative overflow-hidden">
-      {/* Aurora backdrop, recolored for the dark neon-red identity — the
-          blobs now sit on a near-black page, so they use mix-blend-screen
-          (which brightens rather than muddies against dark) at higher
-          opacity, so they read as actual glowing light sources, not a
-          faint wash. Same wide looping motion + hue drift as before. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div
-          className="animate-aurora-a absolute start-[-20%] top-[-25%] size-[34rem] rounded-full opacity-60 mix-blend-screen blur-[100px]"
-          style={{ backgroundColor: 'oklch(0.6 0.26 18)' }}
-        />
-        <div
-          className="animate-aurora-b absolute end-[-20%] top-[-10%] size-[30rem] rounded-full opacity-45 mix-blend-screen blur-[100px]"
-          style={{ backgroundColor: 'oklch(0.5 0.22 355)' }}
-        />
-        <div
-          className="animate-aurora-c absolute start-[10%] bottom-[-35%] size-[36rem] rounded-full opacity-40 mix-blend-screen blur-[100px]"
-          style={{ backgroundColor: 'oklch(0.4 0.2 10)' }}
-        />
-        <div className="from-background/0 via-background/40 to-background absolute inset-0 bg-gradient-to-b" />
-      </div>
-
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-12 text-center sm:px-6 sm:py-16">
-        <div className="animate-in fade-in slide-in-from-bottom-4 flex flex-col items-center gap-3 duration-700">
-          <span className="bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
-            {t('eyebrow')}
-          </span>
-          <h1 className="text-glow max-w-xl text-2xl leading-[1.2] font-extrabold tracking-tight text-balance sm:text-4xl">
-            {t('title')}
+    <section className="relative overflow-hidden py-14 sm:py-20">
+      <div className="mx-auto grid w-full max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-8">
+        {/* Text content — first in DOM order lands on the reading-start
+            side under RTL (the right), mirroring the reference's LTR
+            layout rather than copying its literal left/right placement. */}
+        <div className="animate-in fade-in slide-in-from-bottom-4 relative z-10 flex flex-col items-start gap-6 duration-700">
+          <h1 className="text-4xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl">
+            {t('headlineLine1')}
+            <br />
+            <span className="text-primary">{t('headlineLine2')}</span>
           </h1>
-          <p className="text-muted-foreground max-w-md text-sm text-balance sm:text-base">
-            {t('subtitle')}
-          </p>
+          <p className="text-muted-foreground max-w-md text-lg text-balance">{t('subtitle')}</p>
+
+          <div className="flex flex-wrap gap-3">
+            <Button size="lg" nativeButton={false} render={<Link href="/register" />}>
+              {t('primaryCta')}
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              nativeButton={false}
+              render={<a href="#how-it-works" />}
+            >
+              <PlayIcon className="size-4" />
+              {t('secondaryCta')}
+            </Button>
+          </div>
+
+          <Link
+            href="/guest"
+            className="text-muted-foreground hover:text-primary text-sm font-medium underline-offset-4 hover:underline"
+          >
+            {t('guestLink')}
+          </Link>
         </div>
 
-        <div
-          id="journeys"
-          className="animate-in fade-in slide-in-from-bottom-4 grid w-full scroll-mt-24 gap-5 delay-150 duration-700 [perspective:1000px] sm:grid-cols-3"
-        >
-          {JOURNEY_KEYS.map((key, index) => {
-            const style = JOURNEY_STYLE[key];
-            return (
-              <TiltCard key={key} className="h-full">
+        {/* Graphic side — huge cropped serif "INVITE" behind three
+            overlapping editorial panels. The panels are deliberately
+            shorter than the container (not h-full) so the giant type
+            visibly peeks out above and below them, cropped at the
+            section edges — that gap is the whole point of the effect. */}
+        <div className="relative flex min-h-[420px] items-center justify-center sm:min-h-[520px] lg:min-h-[600px]">
+          <span
+            aria-hidden
+            className="text-foreground pointer-events-none absolute inset-0 flex items-center justify-center text-[clamp(5rem,15vw,12rem)] leading-none font-black tracking-tight select-none"
+            style={{ fontFamily: 'var(--font-playfair)' }}
+          >
+            INVITE
+          </span>
+
+          <div className="relative z-10 flex h-[260px] items-stretch justify-center gap-4 sm:h-[320px] sm:gap-6 lg:h-[360px]">
+            {JOURNEY_KEYS.map((key, index) => {
+              const style = PANEL_STYLE[key];
+              const Icon = style.icon;
+              return (
                 <Link
+                  key={key}
                   href={`/dashboard/events/new/${style.track}`}
-                  className="group border-border/70 bg-card relative flex h-full flex-col items-start gap-4 overflow-hidden rounded-3xl border p-6 text-start shadow-sm transition-shadow hover:shadow-2xl"
-                  style={
-                    {
-                      '--journey-accent': style.accent,
-                      '--journey-accent-soft': style.accentSoft,
-                      animationDelay: `${index * 80}ms`,
-                    } as React.CSSProperties
-                  }
+                  className={`group flex w-[26%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[29%] ${index === 1 ? 'lg:-translate-y-6' : ''}`}
                 >
                   <div
-                    aria-hidden
-                    className="absolute inset-x-0 top-0 h-1"
-                    style={{ backgroundColor: 'var(--journey-accent)' }}
-                  />
-
-                  <span
-                    className="flex size-11 items-center justify-center rounded-xl text-xl"
-                    style={{ backgroundColor: 'var(--journey-accent-soft)' }}
+                    className="relative flex flex-1 items-start p-3"
+                    style={{
+                      background: `linear-gradient(160deg, ${style.photoFrom}, ${style.photoTo})`,
+                    }}
                   >
-                    {tj(`${key}.emoji`)}
-                  </span>
-
-                  <div className="flex flex-col gap-1">
-                    <h3 className="text-base font-bold tracking-tight">{tj(`${key}.title`)}</h3>
-                    <p className="text-muted-foreground text-sm">{tj(`${key}.tagline`)}</p>
+                    <span className="flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm">
+                      <Icon className="size-4.5" />
+                    </span>
                   </div>
-
-                  <ul className="flex flex-col gap-2 text-sm">
-                    {(['bullet1', 'bullet2', 'bullet3'] as const).map((bulletKey) => (
-                      <li key={bulletKey} className="flex items-start gap-2">
-                        <CheckIcon
-                          className="mt-0.5 size-4 shrink-0"
-                          style={{ color: 'var(--journey-accent)' }}
-                        />
-                        <span>{tj(`${key}.${bulletKey}`)}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <span
-                    className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-semibold"
-                    style={{ color: 'var(--journey-accent)' }}
+                  <div
+                    className="flex flex-col gap-2 p-4 text-white"
+                    style={{ backgroundColor: style.panel }}
                   >
-                    {tj(`${key}.cta`)}
-                    <ArrowIcon className="size-4 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                  </span>
+                    <span className="text-xs font-semibold text-white/60 tabular-nums">
+                      0{index + 1}
+                    </span>
+                    <h3 className="text-base font-bold tracking-tight sm:text-lg">
+                      {tj(`${key}.title`)}
+                    </h3>
+                    <p className="hidden text-xs text-white/70 sm:block">{tj(`${key}.tagline`)}</p>
+                    <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
+                      {tp('exploreCta')}
+                      <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                    </span>
+                  </div>
                 </Link>
-              </TiltCard>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-
-        <Link
-          href="/guest"
-          className="text-muted-foreground hover:text-primary animate-in fade-in text-sm font-medium underline-offset-4 delay-300 duration-700 hover:underline"
-        >
-          {t('guestLink')}
-        </Link>
       </div>
     </section>
   );

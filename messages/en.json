@@ -5,17 +5,23 @@
   },
   "HomePage": {
     "nav": {
-      "journeysLink": "Journeys",
+      "journeysLink": "Products",
+      "templatesLink": "Templates",
       "howItWorksLink": "How it works",
       "pricingLink": "Pricing",
       "loginLink": "Log in",
       "startLink": "Start free"
     },
     "hero": {
-      "eyebrow": "Built Arabic-first for your events",
-      "title": "What do you want to create today?",
-      "subtitle": "InviteFlow is three completely separate tools in one place — pick the one you need and start right away.",
+      "headlineLine1": "Every occasion",
+      "headlineLine2": "deserves to be told",
+      "subtitle": "A complete platform for digital invitations, RSVP polls, and event ticketing — simple, and fully professional.",
+      "primaryCta": "Start free",
+      "secondaryCta": "See how it works",
       "guestLink": "Or try it as a guest, no sign-up ←"
+    },
+    "panels": {
+      "exploreCta": "Explore"
     },
     "journeys": {
       "invitation": {

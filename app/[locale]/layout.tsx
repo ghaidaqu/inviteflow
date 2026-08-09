@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Cairo } from 'next/font/google';
+import { Geist, Geist_Mono, Cairo, Playfair_Display } from 'next/font/google';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -20,6 +20,14 @@ const geistMono = Geist_Mono({
 const cairo = Cairo({
   variable: '--font-cairo',
   subsets: ['arabic', 'latin'],
+});
+
+// Decorative editorial serif — used only for the huge cropped "INVITE"
+// background typography on the homepage, never for real body/UI text.
+const playfair = Playfair_Display({
+  variable: '--font-playfair',
+  subsets: ['latin'],
+  weight: ['700', '900'],
 });
 
 export function generateStaticParams() {
@@ -61,10 +69,11 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={dir}
-      // `dark` is applied unconditionally (not behind a toggle) — the
-      // dark neon-red identity in globals.css is the only theme right
-      // now, by explicit direction, not a light/dark preference.
-      className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} dark h-full antialiased`}
+      // The public site (homepage, auth, guest/public event pages) uses
+      // the light editorial theme in :root. The dashboard app scopes
+      // itself into the dark theme separately (see dashboard/layout.tsx)
+      // — two distinct, intentional surfaces rather than one global mode.
+      className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
         <NextIntlClientProvider>

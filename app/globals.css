@@ -57,50 +57,52 @@
 
 :root {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  /* Warm rose/burgundy brand identity — elegant enough for a wedding
-     invitation, energetic enough for a ticketed event. Replaces the
-     unmodified shadcn grayscale defaults. */
-  --background: oklch(0.985 0.008 60);
-  --foreground: oklch(0.22 0.03 20);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.03 20);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.03 20);
-  --primary: oklch(0.47 0.19 15);
-  --primary-foreground: oklch(0.99 0.01 60);
-  --secondary: oklch(0.95 0.03 60);
-  --secondary-foreground: oklch(0.35 0.1 20);
-  --muted: oklch(0.96 0.015 50);
-  --muted-foreground: oklch(0.52 0.04 30);
-  --accent: oklch(0.82 0.11 75);
-  --accent-foreground: oklch(0.3 0.08 40);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.02 40);
-  --input: oklch(0.9 0.02 40);
-  --ring: oklch(0.47 0.19 15 / 40%);
-  --chart-1: oklch(0.47 0.19 15);
-  --chart-2: oklch(0.82 0.11 75);
-  --chart-3: oklch(0.6 0.15 30);
-  --chart-4: oklch(0.7 0.08 50);
-  --chart-5: oklch(0.4 0.05 20);
-  --radius: 0.9rem;
-  --sidebar: oklch(0.99 0.005 60);
-  --sidebar-foreground: oklch(0.22 0.03 20);
-  --sidebar-primary: oklch(0.47 0.19 15);
-  --sidebar-primary-foreground: oklch(0.99 0.01 60);
-  --sidebar-accent: oklch(0.95 0.03 60);
-  --sidebar-accent-foreground: oklch(0.35 0.1 20);
-  --sidebar-border: oklch(0.9 0.02 40);
-  --sidebar-ring: oklch(0.47 0.19 15 / 40%);
+  /* Editorial "warm ivory / near-black / deep red" identity for the public
+     site — a premium-editorial direction (reference: warm ivory #F7F4EF,
+     near-black #111217 text, deep red #9E1730 accent), replacing the
+     earlier rose/burgundy SaaS palette. The dashboard app deliberately
+     stays on the separate dark theme below (see dashboard/layout.tsx) —
+     this is the public marketing/auth surface's palette. */
+  --background: #f7f4ef;
+  --foreground: #111217;
+  --card: #fffdfa;
+  --card-foreground: #111217;
+  --popover: #fffdfa;
+  --popover-foreground: #111217;
+  --primary: #9e1730;
+  --primary-foreground: #fffdfa;
+  --secondary: #ede7dd;
+  --secondary-foreground: #111217;
+  --muted: #ede7dd;
+  --muted-foreground: #6b6560;
+  --accent: #9e1730;
+  --accent-foreground: #fffdfa;
+  --destructive: #9e1730;
+  --border: #e2dbcd;
+  --input: #e2dbcd;
+  --ring: #9e173080;
+  --chart-1: #9e1730;
+  --chart-2: #3a3f4b;
+  --chart-3: #4b3a54;
+  --chart-4: #c9a15a;
+  --chart-5: #6b6560;
+  --radius: 0.6rem;
+  --sidebar: #fffdfa;
+  --sidebar-foreground: #111217;
+  --sidebar-primary: #9e1730;
+  --sidebar-primary-foreground: #fffdfa;
+  --sidebar-accent: #ede7dd;
+  --sidebar-accent-foreground: #111217;
+  --sidebar-border: #e2dbcd;
+  --sidebar-ring: #9e173080;
 }
 
-/* Dark, dramatic "neon red on black" identity — replaces the earlier
-   cream/burgundy theme site-wide per explicit direction (a reference
-   screenshot: near-black surfaces, a glowing crimson accent, high-contrast
-   white text). Applied everywhere via `.dark` on <html> in layout.tsx, so
-   every page inherits it automatically through the existing semantic
-   tokens (bg-background, bg-card, bg-primary, etc.) with no per-component
-   changes needed. */
+/* Dark, dramatic "neon red on black" identity for the dashboard app only
+   (scoped via `.dark` on a wrapper in dashboard/layout.tsx, not globally)
+   — near-black surfaces, a glowing crimson accent, high-contrast white
+   text. Every dashboard page inherits it automatically through the
+   existing semantic tokens (bg-background, bg-card, bg-primary, etc.)
+   with no per-component changes needed. */
 .dark {
   --background: oklch(0.12 0.015 20);
   --foreground: oklch(0.97 0.005 60);

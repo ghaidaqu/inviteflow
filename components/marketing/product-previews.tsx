@@ -89,7 +89,7 @@ export async function ProductPreviews() {
             <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
               {t('ticketLabel')}
             </span>
-            <div className="from-primary relative mt-4 flex items-stretch overflow-hidden rounded-2xl bg-gradient-to-br to-[oklch(0.32_0.14_10)] text-white">
+            <div className="relative mt-4 flex items-stretch overflow-hidden rounded-2xl bg-gradient-to-br from-[#2c3550] to-[#0e1420] text-white">
               <div className="flex flex-1 flex-col justify-between p-4">
                 <div>
                   <p className="text-sm font-bold">{t('ticketSample')}</p>
