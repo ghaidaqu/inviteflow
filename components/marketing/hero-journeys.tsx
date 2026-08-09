@@ -37,21 +37,35 @@ export async function HeroJourneys({ locale }: { locale: string }) {
 
   return (
     <section className="bg-grain relative overflow-hidden">
+      {/* Aurora + a receding 3D grid — see the aurora and hero-grid utility
+          classes in globals.css. Wide, looping motion plus a slow hue
+          drift, so this reads as a living gradient, not a static blob. */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="bg-primary/20 animate-drift-a absolute start-[-15%] top-[-20%] size-[28rem] rounded-full blur-3xl" />
-        <div className="bg-accent/30 animate-drift-b absolute end-[-15%] top-[5%] size-[24rem] rounded-full blur-3xl" />
-        <div className="bg-primary/10 animate-drift-c absolute start-[15%] bottom-[-25%] size-[32rem] rounded-full blur-3xl" />
+        <div className="hero-grid absolute inset-0 opacity-[0.15]" />
+        <div
+          className="animate-aurora-a absolute start-[-20%] top-[-25%] size-[34rem] rounded-full opacity-45 blur-[90px]"
+          style={{ backgroundColor: 'oklch(0.5 0.22 20)' }}
+        />
+        <div
+          className="animate-aurora-b absolute end-[-20%] top-[-10%] size-[30rem] rounded-full opacity-40 blur-[90px]"
+          style={{ backgroundColor: 'oklch(0.78 0.14 75)' }}
+        />
+        <div
+          className="animate-aurora-c absolute start-[10%] bottom-[-35%] size-[36rem] rounded-full opacity-35 blur-[90px]"
+          style={{ backgroundColor: 'oklch(0.55 0.18 350)' }}
+        />
+        <div className="from-background/0 via-background/40 to-background absolute inset-0 bg-gradient-to-b" />
       </div>
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-10 px-4 py-16 text-center sm:px-6 sm:py-24">
-        <div className="animate-in fade-in slide-in-from-bottom-4 flex flex-col items-center gap-4 duration-700">
-          <span className="bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-12 text-center sm:px-6 sm:py-16">
+        <div className="animate-in fade-in slide-in-from-bottom-4 flex flex-col items-center gap-3 duration-700">
+          <span className="bg-primary/10 text-primary inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium">
             {t('eyebrow')}
           </span>
-          <h1 className="max-w-2xl text-3xl leading-[1.15] font-extrabold tracking-tight text-balance sm:text-5xl">
+          <h1 className="max-w-xl text-2xl leading-[1.2] font-extrabold tracking-tight text-balance sm:text-4xl">
             {t('title')}
           </h1>
-          <p className="text-muted-foreground max-w-lg text-base text-balance sm:text-lg">
+          <p className="text-muted-foreground max-w-md text-sm text-balance sm:text-base">
             {t('subtitle')}
           </p>
         </div>
