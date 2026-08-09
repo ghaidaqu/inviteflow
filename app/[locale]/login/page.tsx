@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuthCard } from '@/components/auth/auth-card';
-import { LoginForm } from '@/components/auth/login-form';
+import { LoginMethods } from '@/components/auth/login-methods';
 
 export default async function LoginPage({
   params,
@@ -16,7 +16,7 @@ export default async function LoginPage({
 
   return (
     <AuthCard title={t('title')} subtitle={t('subtitle')}>
-      <LoginForm next={next} />
+      <LoginMethods next={next} />
     </AuthCard>
   );
 }
