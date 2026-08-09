@@ -9,6 +9,8 @@
       "templatesLink": "Templates",
       "howItWorksLink": "How it works",
       "pricingLink": "Pricing",
+      "resourcesLink": "Resources",
+      "aboutLink": "About",
       "loginLink": "Log in",
       "startLink": "Start free"
     },
@@ -22,6 +24,16 @@
     },
     "panels": {
       "exploreCta": "Explore"
+    },
+    "trustStrip": {
+      "item1Title": "Direct WhatsApp",
+      "item1Label": "Guests never open a separate link",
+      "item2Title": "Real online payment",
+      "item2Label": "Through the Moyasar gateway",
+      "item3Title": "QR code entry",
+      "item3Label": "Instant check-in",
+      "item4Title": "Row-level security",
+      "item4Label": "Your data is protected in the database"
     },
     "journeys": {
       "invitation": {

@@ -9,6 +9,8 @@
       "templatesLink": "قوالب",
       "howItWorksLink": "كيف يعمل",
       "pricingLink": "الأسعار",
+      "resourcesLink": "الموارد",
+      "aboutLink": "عن المنصة",
       "loginLink": "تسجيل الدخول",
       "startLink": "ابدأ مجاناً"
     },
@@ -22,6 +24,16 @@
     },
     "panels": {
       "exploreCta": "استكشف"
+    },
+    "trustStrip": {
+      "item1Title": "واتساب مباشر",
+      "item1Label": "بدون ما يفتح الضيف أي رابط",
+      "item2Title": "دفع إلكتروني حقيقي",
+      "item2Label": "عبر بوابة ميسر",
+      "item3Title": "دخول برمز QR",
+      "item3Label": "تسجيل حضور فوري",
+      "item4Title": "حماية على مستوى الصف",
+      "item4Label": "بياناتك مؤمّنة داخل قاعدة البيانات"
     },
     "journeys": {
       "invitation": {

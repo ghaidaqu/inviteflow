@@ -12,7 +12,7 @@ export async function WhyInviteFlow() {
   const t = await getTranslations('HomePage.why');
 
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+    <section id="why" className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
       {/* Deliberately asymmetric (big statement + a stacked list), not three
           equal columns — the most common, most generic AI layout pattern. */}
       <div className="grid gap-10 sm:grid-cols-5 sm:gap-12">

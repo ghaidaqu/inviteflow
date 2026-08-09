@@ -90,20 +90,20 @@ export async function HeroJourneys({ locale }: { locale: string }) {
         </div>
 
         {/* Graphic side — huge cropped serif "INVITE" behind three
-            overlapping editorial panels. The panels are deliberately
-            shorter than the container (not h-full) so the giant type
-            visibly peeks out above and below them, cropped at the
-            section edges — that gap is the whole point of the effect. */}
-        <div className="relative flex min-h-[420px] items-center justify-center sm:min-h-[520px] lg:min-h-[600px]">
+            overlapping editorial panels. All three panels are the same
+            fixed height and share one flex row (no per-card stagger) so
+            their tops and bottoms line up in one straight band; the type
+            peeks out above/below that band, cropped at the section edges. */}
+        <div className="relative flex min-h-[460px] flex-col justify-end pb-2 sm:min-h-[560px] lg:min-h-[620px]">
           <span
             aria-hidden
-            className="text-foreground pointer-events-none absolute inset-0 flex items-center justify-center text-[clamp(5rem,15vw,12rem)] leading-none font-black tracking-tight select-none"
+            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(5rem,15vw,12rem)] leading-none font-black tracking-tight select-none sm:pt-10"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             INVITE
           </span>
 
-          <div className="relative z-10 flex h-[260px] items-stretch justify-center gap-4 sm:h-[320px] sm:gap-6 lg:h-[360px]">
+          <div className="relative z-10 flex h-[280px] items-stretch justify-center gap-4 sm:h-[340px] sm:gap-6 lg:h-[380px]">
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];
               const Icon = style.icon;
@@ -111,7 +111,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                 <Link
                   key={key}
                   href={`/dashboard/events/new/${style.track}`}
-                  className={`group flex w-[26%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[29%] ${index === 1 ? 'lg:-translate-y-6' : ''}`}
+                  className="group flex w-[26%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[29%]"
                 >
                   <div
                     className="relative flex flex-1 items-start p-3"
@@ -123,6 +123,22 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                       <Icon className="size-4.5" />
                     </span>
                   </div>
+
+                  {/* Wave divider — the panel rises into the photo instead
+                      of a straight horizontal seam, per explicit direction
+                      ("not a full rectangle, the text covers a small part
+                      of the image"). The svg's fill is the panel color, and
+                      a negative margin pulls it up over the photo. */}
+                  <svg
+                    aria-hidden
+                    viewBox="0 0 100 16"
+                    preserveAspectRatio="none"
+                    className="relative -mb-px block h-4 w-full"
+                    style={{ marginTop: -14 }}
+                  >
+                    <path d="M0,16 L0,9 Q25,-2 50,7 T100,8 L100,16 Z" fill={style.panel} />
+                  </svg>
+
                   <div
                     className="flex flex-col gap-2 p-4 text-white"
                     style={{ backgroundColor: style.panel }}

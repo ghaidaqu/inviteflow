@@ -39,6 +39,15 @@ export function SiteNav() {
           >
             {t('pricingLink')}
           </a>
+          <a
+            href="#how-it-works"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {t('resourcesLink')}
+          </a>
+          <a href="#why" className="text-muted-foreground hover:text-foreground transition-colors">
+            {t('aboutLink')}
+          </a>
         </div>
 
         <div className="flex items-center gap-3">
