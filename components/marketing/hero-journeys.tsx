@@ -7,7 +7,7 @@ import {
   ArrowRightIcon,
   MailIcon,
   TicketIcon,
-  ListChecksIcon,
+  BarChart3Icon,
 } from 'lucide-react';
 
 type JourneyKey = 'invitation' | 'ticketing' | 'rsvp';
@@ -16,30 +16,44 @@ type JourneyKey = 'invitation' | 'ticketing' | 'rsvp';
 // muted purple — deliberately different from each other (these are three
 // separate products) and deliberately NOT the site's neon/glow language;
 // flat, matte color blocks per the "premium editorial poster" direction.
+// `photoPattern` is a stylized, decorative texture (never a real/stock
+// photo — no genuine event photography exists to show) evoking each
+// journey: an envelope silhouette for invitations, a scattered-light/
+// "crowd bokeh" dot field for the two event-based tracks.
 const PANEL_STYLE: Record<
   JourneyKey,
-  { photoFrom: string; photoTo: string; panel: string; track: string; icon: typeof MailIcon }
+  {
+    photoFrom: string;
+    photoTo: string;
+    panel: string;
+    track: string;
+    icon: typeof MailIcon;
+    photoPattern: 'envelope' | 'bokeh';
+  }
 > = {
   invitation: {
-    photoFrom: '#c23855',
-    photoTo: '#7d0f28',
-    panel: '#5c0e21',
+    photoFrom: '#9c2a41',
+    photoTo: '#5c0e21',
+    panel: '#3d0916',
     track: 'invitation',
     icon: MailIcon,
+    photoPattern: 'envelope',
   },
   ticketing: {
-    photoFrom: '#2c3550',
-    photoTo: '#0e1420',
-    panel: '#151b28',
+    photoFrom: '#232c44',
+    photoTo: '#0a0e17',
+    panel: '#080a10',
     track: 'event',
     icon: TicketIcon,
+    photoPattern: 'bokeh',
   },
   rsvp: {
-    photoFrom: '#6d4f82',
-    photoTo: '#2f2038',
-    panel: '#3a2844',
+    photoFrom: '#503a63',
+    photoTo: '#241a2c',
+    panel: '#1c1322',
     track: 'rsvp',
-    icon: ListChecksIcon,
+    icon: BarChart3Icon,
+    photoPattern: 'bokeh',
   },
 };
 
@@ -94,10 +108,10 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             fixed height and share one flex row (no per-card stagger) so
             their tops and bottoms line up in one straight band; the type
             peeks out above/below that band, cropped at the section edges. */}
-        <div className="relative flex min-h-[460px] flex-col justify-end pb-2 sm:min-h-[560px] lg:min-h-[620px]">
+        <div className="relative flex min-h-[480px] flex-col justify-end overflow-hidden pb-2 sm:min-h-[580px] lg:min-h-[640px]">
           <span
             aria-hidden
-            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(5rem,15vw,12rem)] leading-none font-black tracking-tight select-none sm:pt-10"
+            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-4 text-[clamp(6rem,19vw,16rem)] leading-none font-black tracking-tight select-none sm:pt-6"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             INVITE
@@ -114,29 +128,72 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                   className="group flex w-[26%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[29%]"
                 >
                   <div
-                    className="relative flex flex-1 items-start p-3"
+                    className="relative flex flex-1 items-start overflow-hidden p-3"
                     style={{
                       background: `linear-gradient(160deg, ${style.photoFrom}, ${style.photoTo})`,
                     }}
                   >
-                    <span className="flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm">
+                    {style.photoPattern === 'envelope' ? (
+                      <svg
+                        aria-hidden
+                        viewBox="0 0 120 90"
+                        className="pointer-events-none absolute inset-x-2 bottom-0 h-[70%] w-[calc(100%-1rem)] opacity-25"
+                        fill="none"
+                      >
+                        <rect
+                          x="4"
+                          y="18"
+                          width="112"
+                          height="72"
+                          rx="4"
+                          fill="#fff"
+                          fillOpacity="0.9"
+                        />
+                        <path
+                          d="M4 22 L60 62 L116 22"
+                          stroke={style.photoTo}
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <rect x="20" y="0" width="80" height="46" rx="2" fill="#fff" />
+                      </svg>
+                    ) : (
+                      <svg
+                        aria-hidden
+                        viewBox="0 0 200 130"
+                        className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
+                      >
+                        {Array.from({ length: 24 }).map((_, i) => (
+                          <circle
+                            key={i}
+                            cx={(i * 37) % 200}
+                            cy={20 + ((i * 53) % 100)}
+                            r={i % 3 === 0 ? 3.5 : 1.6}
+                            fill="#fff"
+                            fillOpacity={i % 3 === 0 ? 0.5 : 0.8}
+                          />
+                        ))}
+                      </svg>
+                    )}
+                    <span className="relative flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm">
                       <Icon className="size-4.5" />
                     </span>
                   </div>
 
-                  {/* Wave divider — the panel rises into the photo instead
-                      of a straight horizontal seam, per explicit direction
-                      ("not a full rectangle, the text covers a small part
-                      of the image"). The svg's fill is the panel color, and
-                      a negative margin pulls it up over the photo. */}
+                  {/* Wave divider — deliberately large amplitude (not a
+                      subtle wobble) so the panel visibly rises up and
+                      covers a real portion of the photo, per explicit
+                      direction. Fill = panel color; negative margin pulls
+                      it up over the photo underneath. */}
                   <svg
                     aria-hidden
-                    viewBox="0 0 100 16"
+                    viewBox="0 0 100 40"
                     preserveAspectRatio="none"
-                    className="relative -mb-px block h-4 w-full"
-                    style={{ marginTop: -14 }}
+                    className="relative -mb-px block h-10 w-full"
+                    style={{ marginTop: -34 }}
                   >
-                    <path d="M0,16 L0,9 Q25,-2 50,7 T100,8 L100,16 Z" fill={style.panel} />
+                    <path d="M0,40 L0,22 Q25,-6 50,16 T100,18 L100,40 Z" fill={style.panel} />
                   </svg>
 
                   <div

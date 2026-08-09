@@ -39,7 +39,7 @@
       "invitation": {
         "emoji": "💍",
         "title": "Digital Invitation",
-        "tagline": "Elegant and personal — for your wedding or private occasion",
+        "tagline": "Design unique invitations and share them with your guests easily",
         "bullet1": "Accept or decline with one tap, right inside WhatsApp",
         "bullet2": "No questions, no clutter — just the details that matter",
         "bullet3": "A shareable link, ready instantly",
@@ -48,7 +48,7 @@
       "ticketing": {
         "emoji": "🎟",
         "title": "Ticketed Event",
-        "tagline": "Professional and sale-ready from minute one",
+        "tagline": "Sell tickets, manage entry, and professional QR codes",
         "bullet1": "Ticket tiers with your own prices and quantities",
         "bullet2": "Real online payment",
         "bullet3": "Check-in attendees with a QR scan",
@@ -56,8 +56,8 @@
       },
       "rsvp": {
         "emoji": "📊",
-        "title": "RSVP Poll",
-        "tagline": "Simple and organized — for a meetup or group event",
+        "title": "Polls & RSVP",
+        "tagline": "Collect attendance responses and survey your guests",
         "bullet1": "Questions you design yourself",
         "bullet2": "Sent directly to specific phone numbers",
         "bullet3": "Instant results you can broadcast to everyone",
