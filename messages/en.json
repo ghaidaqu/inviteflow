@@ -233,6 +233,7 @@
     "errors": {
       "invalidInput": "Please check the information you entered.",
       "invalidCredentials": "Incorrect email or password.",
+      "emailNotConfirmed": "Your email hasn't been confirmed yet. Check your inbox and click the confirmation link first.",
       "emailAlreadyExists": "This email is already registered.",
       "sessionExpired": "Your session has expired, please request a new link.",
       "authConfirmFailed": "This link is invalid or has expired.",

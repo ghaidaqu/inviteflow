@@ -37,11 +37,10 @@ export default async function DashboardLayout({
     : [[], 0];
 
   return (
-    // The dashboard app is the one surface that keeps the dark neon-red
-    // theme; the public site around it uses the light editorial theme in
-    // :root. `dark` + explicit bg/text here scope that cleanly since
-    // <html>/<body> no longer force dark globally.
-    <div className="dark bg-background text-foreground flex min-h-full flex-col">
+    // The dashboard now shares the same light editorial theme (:root) as
+    // the public site instead of a separate dark palette — one consistent
+    // look across the whole product instead of a jarring switch on login.
+    <div className="bg-background text-foreground flex min-h-full flex-col">
       <DashboardHeader
         userEmail={user.email ?? ''}
         fullName={profile?.full_name ?? null}

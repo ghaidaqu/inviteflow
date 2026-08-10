@@ -117,7 +117,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
         <div className="relative flex min-h-[440px] flex-col justify-end overflow-hidden pb-2 sm:min-h-[560px] lg:min-h-[620px]">
           <span
             aria-hidden
-            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(3.75rem,10.5vw,8.75rem)] leading-none font-black tracking-tighter whitespace-nowrap select-none sm:pt-8"
+            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(4.5rem,13vw,10rem)] leading-none font-black tracking-normal whitespace-nowrap select-none sm:pt-8"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             INVITE
@@ -125,10 +125,13 @@ export async function HeroJourneys({ locale }: { locale: string }) {
 
           {/* Forced left-to-right order (01 burgundy → 02 navy → 03 purple)
               regardless of page direction, matching the reference exactly
-              instead of mirroring under RTL. */}
+              instead of mirroring under RTL. Pulled up over the "INVITE"
+              text with a transform (negative margin is a no-op here — the
+              flex-end alignment on the single-item row just reclaims the
+              space) so the cards visibly cover roughly its bottom quarter. */}
           <div
             dir="ltr"
-            className="relative z-10 flex h-[280px] items-stretch justify-center gap-4 sm:h-[340px] sm:gap-6 lg:h-[380px]"
+            className="relative z-10 flex h-[280px] -translate-y-20 items-stretch justify-center gap-4 sm:h-[340px] sm:-translate-y-24 sm:gap-6 lg:h-[380px] lg:-translate-y-28"
           >
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];

@@ -74,32 +74,44 @@ export default async function EventDetailPage({
         <EventDetailActions eventId={event.id} status={event.status} />
       </div>
 
+      {/* Only surface tools the event actually uses — a ticketing event has
+          no business showing an RSVP/invitation tool, and a pure RSVP/poll
+          or invitation event has no tickets to sell or scan. Guests is the
+          one tool every track shares. */}
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <ToolCard
           href={`/dashboard/events/${event.id}/guests`}
           icon={UsersIcon}
           label={t('detail.guestsButton')}
         />
-        <ToolCard
-          href={`/dashboard/events/${event.id}/invitation`}
-          icon={MailIcon}
-          label={t('detail.invitationButton')}
-        />
-        <ToolCard
-          href={`/dashboard/events/${event.id}/rsvp`}
-          icon={CheckCircle2Icon}
-          label={t('detail.rsvpSettingsButton')}
-        />
-        <ToolCard
-          href={`/dashboard/events/${event.id}/tickets`}
-          icon={TicketIcon}
-          label={t('detail.ticketsButton')}
-        />
-        <ToolCard
-          href={`/dashboard/events/${event.id}/check-in`}
-          icon={QrCodeIcon}
-          label={t('detail.checkInButton')}
-        />
+        {event.is_rsvp_enabled && (
+          <>
+            <ToolCard
+              href={`/dashboard/events/${event.id}/invitation`}
+              icon={MailIcon}
+              label={t('detail.invitationButton')}
+            />
+            <ToolCard
+              href={`/dashboard/events/${event.id}/rsvp`}
+              icon={CheckCircle2Icon}
+              label={t('detail.rsvpSettingsButton')}
+            />
+          </>
+        )}
+        {event.is_ticketing_enabled && (
+          <>
+            <ToolCard
+              href={`/dashboard/events/${event.id}/tickets`}
+              icon={TicketIcon}
+              label={t('detail.ticketsButton')}
+            />
+            <ToolCard
+              href={`/dashboard/events/${event.id}/check-in`}
+              icon={QrCodeIcon}
+              label={t('detail.checkInButton')}
+            />
+          </>
+        )}
       </div>
 
       {event.status === 'published' && event.visibility === 'public' && (
@@ -117,32 +129,34 @@ export default async function EventDetailPage({
         </div>
       )}
 
-      <dl className="bg-card mt-6 grid gap-4 rounded-2xl border p-5 sm:grid-cols-2">
-        {event.description && (
-          <div className="sm:col-span-2">
-            <dt className="text-muted-foreground text-sm">{t('form.descriptionLabel')}</dt>
-            <dd className="mt-1">{event.description}</dd>
-          </div>
-        )}
-        {event.event_date && (
-          <div>
-            <dt className="text-muted-foreground text-sm">{t('form.eventDateLabel')}</dt>
-            <dd className="mt-1">{new Date(event.event_date).toLocaleString(locale)}</dd>
-          </div>
-        )}
-        {event.rsvp_deadline && (
-          <div>
-            <dt className="text-muted-foreground text-sm">{t('form.rsvpDeadlineLabel')}</dt>
-            <dd className="mt-1">{new Date(event.rsvp_deadline).toLocaleString(locale)}</dd>
-          </div>
-        )}
-        {event.location_text && (
-          <div>
-            <dt className="text-muted-foreground text-sm">{t('form.locationTextLabel')}</dt>
-            <dd className="mt-1">{event.location_text}</dd>
-          </div>
-        )}
-      </dl>
+      {(event.description || event.event_date || event.rsvp_deadline || event.location_text) && (
+        <dl className="bg-card mt-6 grid gap-4 rounded-2xl border p-5 sm:grid-cols-2">
+          {event.description && (
+            <div className="sm:col-span-2">
+              <dt className="text-muted-foreground text-sm">{t('form.descriptionLabel')}</dt>
+              <dd className="mt-1">{event.description}</dd>
+            </div>
+          )}
+          {event.event_date && (
+            <div>
+              <dt className="text-muted-foreground text-sm">{t('form.eventDateLabel')}</dt>
+              <dd className="mt-1">{new Date(event.event_date).toLocaleString(locale)}</dd>
+            </div>
+          )}
+          {event.rsvp_deadline && (
+            <div>
+              <dt className="text-muted-foreground text-sm">{t('form.rsvpDeadlineLabel')}</dt>
+              <dd className="mt-1">{new Date(event.rsvp_deadline).toLocaleString(locale)}</dd>
+            </div>
+          )}
+          {event.location_text && (
+            <div>
+              <dt className="text-muted-foreground text-sm">{t('form.locationTextLabel')}</dt>
+              <dd className="mt-1">{event.location_text}</dd>
+            </div>
+          )}
+        </dl>
+      )}
     </main>
   );
 }

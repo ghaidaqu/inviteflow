@@ -93,6 +93,14 @@ export async function loginAction(
   });
 
   if (error) {
+    // Supabase returns a distinct code when the account exists and the
+    // password is right, but the signup confirmation email hasn't been
+    // clicked yet — surfacing that specifically instead of folding it into
+    // "wrong email or password" (which sent at least one real user down a
+    // false trail double-checking a password that was never the problem).
+    if (error.code === 'email_not_confirmed') {
+      return { error: 'emailNotConfirmed' };
+    }
     return { error: 'invalidCredentials' };
   }
 

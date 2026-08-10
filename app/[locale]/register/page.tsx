@@ -1,7 +1,13 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuthCard } from '@/components/auth/auth-card';
-import { RegisterForm } from '@/components/auth/register-form';
+import { LoginMethods } from '@/components/auth/login-methods';
 
+// "Start free" and "Log in" are the same page in disguise: with OTP auth,
+// creating an account and signing in are the same action (enter a phone or
+// email, confirm the code — a new account is created automatically if one
+// doesn't exist yet). Keeping a separate fullName+password-only form here
+// was confusing — it looked like a heavier, different flow than login,
+// when functionally it doesn't need to be.
 export default async function RegisterPage({
   params,
   searchParams,
@@ -16,7 +22,7 @@ export default async function RegisterPage({
 
   return (
     <AuthCard title={t('title')} subtitle={t('subtitle')}>
-      <RegisterForm next={next} />
+      <LoginMethods next={next} />
     </AuthCard>
   );
 }
