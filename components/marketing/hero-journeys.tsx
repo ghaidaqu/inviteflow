@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
@@ -14,46 +15,49 @@ type JourneyKey = 'invitation' | 'ticketing' | 'rsvp';
 
 // Three distinct editorial panel treatments — deep red, dark ink navy, and
 // muted purple — deliberately different from each other (these are three
-// separate products) and deliberately NOT the site's neon/glow language;
-// flat, matte color blocks per the "premium editorial poster" direction.
-// `photoPattern` is a stylized, decorative texture (never a real/stock
-// photo — no genuine event photography exists to show) evoking each
-// journey: an envelope silhouette for invitations, a scattered-light/
-// "crowd bokeh" dot field for the two event-based tracks.
+// separate products) and deliberately NOT the site's neon/glow language.
+// `photo` is a real (freely-licensed, self-hosted) photo evoking each
+// journey; `tintFrom/tintTo` is a matching color wash laid over it so the
+// three cards keep distinct brand identities instead of looking like plain
+// stock photography.
 const PANEL_STYLE: Record<
   JourneyKey,
   {
-    photoFrom: string;
-    photoTo: string;
+    photo: string;
+    photoAlt: string;
+    tintFrom: string;
+    tintTo: string;
     panel: string;
     track: string;
     icon: typeof MailIcon;
-    photoPattern: 'envelope' | 'bokeh';
   }
 > = {
   invitation: {
-    photoFrom: '#9c2a41',
-    photoTo: '#5c0e21',
+    photo: '/images/hero/invitation.jpg',
+    photoAlt: 'Wedding invitation stationery flat lay',
+    tintFrom: 'rgba(156,42,65,0.45)',
+    tintTo: 'rgba(61,9,22,0.85)',
     panel: '#3d0916',
     track: 'invitation',
     icon: MailIcon,
-    photoPattern: 'envelope',
   },
   ticketing: {
-    photoFrom: '#232c44',
-    photoTo: '#0a0e17',
+    photo: '/images/hero/ticketing.jpg',
+    photoAlt: 'Concert crowd under stage lights',
+    tintFrom: 'rgba(35,44,68,0.5)',
+    tintTo: 'rgba(8,10,16,0.9)',
     panel: '#080a10',
     track: 'event',
     icon: TicketIcon,
-    photoPattern: 'bokeh',
   },
   rsvp: {
-    photoFrom: '#503a63',
-    photoTo: '#241a2c',
+    photo: '/images/hero/rsvp.jpg',
+    photoAlt: 'Hand checking off items on a poll checklist',
+    tintFrom: 'rgba(80,58,99,0.5)',
+    tintTo: 'rgba(28,19,34,0.88)',
     panel: '#1c1322',
     track: 'rsvp',
     icon: BarChart3Icon,
-    photoPattern: 'bokeh',
   },
 };
 
@@ -107,17 +111,25 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             overlapping editorial panels. All three panels are the same
             fixed height and share one flex row (no per-card stagger) so
             their tops and bottoms line up in one straight band; the type
-            peeks out above/below that band, cropped at the section edges. */}
-        <div className="relative flex min-h-[480px] flex-col justify-end overflow-hidden pb-2 sm:min-h-[580px] lg:min-h-[640px]">
+            peeks out above/below that band, cropped at the section edges.
+            Sized to actually fit the column width so letters read cleanly
+            instead of being amputated at the container edge. */}
+        <div className="relative flex min-h-[440px] flex-col justify-end overflow-hidden pb-2 sm:min-h-[560px] lg:min-h-[620px]">
           <span
             aria-hidden
-            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-4 text-[clamp(6rem,19vw,16rem)] leading-none font-black tracking-tight select-none sm:pt-6"
+            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(3.75rem,10.5vw,8.75rem)] leading-none font-black tracking-tighter whitespace-nowrap select-none sm:pt-8"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             INVITE
           </span>
 
-          <div className="relative z-10 flex h-[280px] items-stretch justify-center gap-4 sm:h-[340px] sm:gap-6 lg:h-[380px]">
+          {/* Forced left-to-right order (01 burgundy → 02 navy → 03 purple)
+              regardless of page direction, matching the reference exactly
+              instead of mirroring under RTL. */}
+          <div
+            dir="ltr"
+            className="relative z-10 flex h-[280px] items-stretch justify-center gap-4 sm:h-[340px] sm:gap-6 lg:h-[380px]"
+          >
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];
               const Icon = style.icon;
@@ -127,55 +139,21 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                   href={`/dashboard/events/new/${style.track}`}
                   className="group flex w-[26%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[29%]"
                 >
-                  <div
-                    className="relative flex flex-1 items-start overflow-hidden p-3"
-                    style={{
-                      background: `linear-gradient(160deg, ${style.photoFrom}, ${style.photoTo})`,
-                    }}
-                  >
-                    {style.photoPattern === 'envelope' ? (
-                      <svg
-                        aria-hidden
-                        viewBox="0 0 120 90"
-                        className="pointer-events-none absolute inset-x-2 bottom-0 h-[70%] w-[calc(100%-1rem)] opacity-25"
-                        fill="none"
-                      >
-                        <rect
-                          x="4"
-                          y="18"
-                          width="112"
-                          height="72"
-                          rx="4"
-                          fill="#fff"
-                          fillOpacity="0.9"
-                        />
-                        <path
-                          d="M4 22 L60 62 L116 22"
-                          stroke={style.photoTo}
-                          strokeWidth="4"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <rect x="20" y="0" width="80" height="46" rx="2" fill="#fff" />
-                      </svg>
-                    ) : (
-                      <svg
-                        aria-hidden
-                        viewBox="0 0 200 130"
-                        className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
-                      >
-                        {Array.from({ length: 24 }).map((_, i) => (
-                          <circle
-                            key={i}
-                            cx={(i * 37) % 200}
-                            cy={20 + ((i * 53) % 100)}
-                            r={i % 3 === 0 ? 3.5 : 1.6}
-                            fill="#fff"
-                            fillOpacity={i % 3 === 0 ? 0.5 : 0.8}
-                          />
-                        ))}
-                      </svg>
-                    )}
+                  <div className="relative flex flex-1 items-start overflow-hidden p-3">
+                    <Image
+                      src={style.photo}
+                      alt={style.photoAlt}
+                      fill
+                      sizes="(min-width: 1024px) 220px, 33vw"
+                      className="object-cover"
+                    />
+                    <div
+                      aria-hidden
+                      className="absolute inset-0"
+                      style={{
+                        background: `linear-gradient(160deg, ${style.tintFrom}, ${style.tintTo})`,
+                      }}
+                    />
                     <span className="relative flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm">
                       <Icon className="size-4.5" />
                     </span>
