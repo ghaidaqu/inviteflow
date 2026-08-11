@@ -29,22 +29,22 @@ const PANEL_STYLE: Record<
   }
 > = {
   invitation: {
-    glassFrom: 'rgba(156,42,65,0.18)',
-    glassTo: 'rgba(61,9,22,0.32)',
+    glassFrom: 'rgba(156,42,65,0.1)',
+    glassTo: 'rgba(61,9,22,0.22)',
     panel: '#3d0916',
     track: 'invitation',
     icon: MailIcon,
   },
   ticketing: {
-    glassFrom: 'rgba(35,44,68,0.2)',
-    glassTo: 'rgba(8,10,16,0.35)',
+    glassFrom: 'rgba(35,44,68,0.12)',
+    glassTo: 'rgba(8,10,16,0.25)',
     panel: '#080a10',
     track: 'event',
     icon: TicketIcon,
   },
   rsvp: {
-    glassFrom: 'rgba(80,58,99,0.2)',
-    glassTo: 'rgba(28,19,34,0.35)',
+    glassFrom: 'rgba(80,58,99,0.12)',
+    glassTo: 'rgba(28,19,34,0.25)',
     panel: '#1c1322',
     track: 'rsvp',
     icon: BarChart3Icon,
@@ -172,7 +172,6 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                     <h3 className="text-base font-bold tracking-tight sm:text-lg">
                       {tj(`${key}.title`)}
                     </h3>
-                    <p className="hidden text-xs text-white/70 sm:block">{tj(`${key}.tagline`)}</p>
                     {isLocked ? (
                       <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-white/60">
                         {tp('comingSoon')}

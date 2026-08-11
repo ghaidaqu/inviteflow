@@ -304,8 +304,27 @@
       "eventDateLabel": "التاريخ والوقت",
       "rsvpDeadlineLabel": "الموعد النهائي للرد",
       "locationTextLabel": "الموقع",
-      "locationMapUrlLabel": "رابط خرائط جوجل",
-      "coverImageUrlLabel": "رابط صورة الغلاف",
+      "locationMapUrlLabel": "حدد الموقع على الخريطة",
+      "coverImageUrlLabel": "صورة الغلاف",
+      "map": {
+        "searchPlaceholder": "ابحث عن مكان أو عنوان...",
+        "searchNotFound": "ما لقينا هذا المكان، جرّب اسم مختلف.",
+        "mapLabel": "خريطة تحديد الموقع",
+        "hint": "اضغط على الخريطة أو اسحب الدبوس لتحديد الموقع بدقة."
+      },
+      "upload": {
+        "choose": "اختر صورة أو فيديو",
+        "uploading": "جارٍ الرفع...",
+        "remove": "إزالة الملف",
+        "hint": "صورة (PNG، JPG، WEBP) بحد أقصى 5MB، أو فيديو (MP4، WEBM، MOV) بحد أقصى 50MB.",
+        "errors": {
+          "invalidInput": "يرجى اختيار ملف صورة أو فيديو.",
+          "unauthorized": "يجب تسجيل الدخول لرفع ملف.",
+          "fileTooLarge": "حجم الملف أكبر من الحد المسموح.",
+          "invalidFileType": "نوع الملف غير مدعوم — استخدم صورة (PNG/JPG/WEBP) أو فيديو (MP4/WEBM/MOV).",
+          "uploadFailed": "تعذّر رفع الصورة، حاول مرة أخرى."
+        }
+      },
       "primaryLocaleLabel": "اللغة الأساسية",
       "localeAr": "العربية",
       "localeEn": "الإنجليزية",

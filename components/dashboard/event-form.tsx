@@ -28,6 +28,8 @@ import { Field, FieldLabel, FieldError, FieldGroup } from '@/components/ui/field
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { InlineQuestionsBuilder } from '@/components/dashboard/inline-questions-builder';
+import { LocationMapPicker } from '@/components/dashboard/location-map-picker';
+import { CoverImageUpload } from '@/components/dashboard/cover-image-upload';
 import type { QuestionInput } from '@/lib/validations/questions';
 import type { Database } from '@/types/supabase';
 
@@ -212,13 +214,25 @@ export function EventForm({
 
         <Field data-invalid={!!errors.locationMapUrl}>
           <FieldLabel htmlFor="locationMapUrl">{t('locationMapUrlLabel')}</FieldLabel>
-          <Input id="locationMapUrl" type="url" {...register('locationMapUrl')} />
+          <Controller
+            control={control}
+            name="locationMapUrl"
+            render={({ field }) => (
+              <LocationMapPicker value={field.value ?? ''} onChange={field.onChange} />
+            )}
+          />
           <FieldError>{fieldMessage(errors.locationMapUrl?.message)}</FieldError>
         </Field>
 
         <Field data-invalid={!!errors.coverImageUrl}>
           <FieldLabel htmlFor="coverImageUrl">{t('coverImageUrlLabel')}</FieldLabel>
-          <Input id="coverImageUrl" type="url" {...register('coverImageUrl')} />
+          <Controller
+            control={control}
+            name="coverImageUrl"
+            render={({ field }) => (
+              <CoverImageUpload value={field.value ?? ''} onChange={field.onChange} />
+            )}
+          />
           <FieldError>{fieldMessage(errors.coverImageUrl?.message)}</FieldError>
         </Field>
 
@@ -278,48 +292,14 @@ export function EventForm({
           <InlineQuestionsBuilder value={questions} onChange={setQuestions} />
         )}
 
-        <Field orientation="horizontal">
-          <FieldLabel htmlFor="isRsvpEnabled" className="flex-1 font-normal">
-            {t('isRsvpEnabledLabel')}
-          </FieldLabel>
-          <Controller
-            control={control}
-            name="isRsvpEnabled"
-            render={({ field }) => (
-              <Switch id="isRsvpEnabled" checked={field.value} onCheckedChange={field.onChange} />
-            )}
-          />
-        </Field>
-
-        <Field orientation="horizontal">
-          <FieldLabel htmlFor="isTicketingEnabled" className="flex-1 font-normal">
-            {t('isTicketingEnabledLabel')}
-          </FieldLabel>
-          <Controller
-            control={control}
-            name="isTicketingEnabled"
-            render={({ field }) => (
-              <Switch
-                id="isTicketingEnabled"
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            )}
-          />
-        </Field>
-
-        <Field orientation="horizontal">
-          <FieldLabel htmlFor="isQrEnabled" className="flex-1 font-normal">
-            {t('isQrEnabledLabel')}
-          </FieldLabel>
-          <Controller
-            control={control}
-            name="isQrEnabled"
-            render={({ field }) => (
-              <Switch id="isQrEnabled" checked={field.value} onCheckedChange={field.onChange} />
-            )}
-          />
-        </Field>
+        {/* isRsvpEnabled/isTicketingEnabled/isQrEnabled toggles were
+            removed from the visible form — the product is invitation-only
+            for now (see the creation chooser and createEventAction's
+            server-side lock), so there's nothing left to toggle. Their
+            current values still round-trip through defaultValues/onSubmit
+            unchanged, which matters for editing an already-existing
+            ticketing/RSVP event from before the lock — it just isn't
+            editable from here anymore. */}
 
         <Field orientation="horizontal">
           <FieldLabel htmlFor="isPasswordProtected" className="flex-1 font-normal">

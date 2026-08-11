@@ -304,8 +304,27 @@
       "eventDateLabel": "Date & time",
       "rsvpDeadlineLabel": "RSVP deadline",
       "locationTextLabel": "Location",
-      "locationMapUrlLabel": "Google Maps link",
-      "coverImageUrlLabel": "Cover image URL",
+      "locationMapUrlLabel": "Pin the location on the map",
+      "coverImageUrlLabel": "Cover image",
+      "map": {
+        "searchPlaceholder": "Search for a place or address...",
+        "searchNotFound": "We couldn't find that place — try a different name.",
+        "mapLabel": "Location picker map",
+        "hint": "Click the map or drag the pin to fine-tune the location."
+      },
+      "upload": {
+        "choose": "Choose image or video",
+        "uploading": "Uploading...",
+        "remove": "Remove file",
+        "hint": "Image (PNG, JPG, WEBP) up to 5MB, or video (MP4, WEBM, MOV) up to 50MB.",
+        "errors": {
+          "invalidInput": "Please choose an image or video file.",
+          "unauthorized": "You need to be signed in to upload a file.",
+          "fileTooLarge": "That file is larger than the allowed limit.",
+          "invalidFileType": "Unsupported file type — use an image (PNG/JPG/WEBP) or video (MP4/WEBM/MOV).",
+          "uploadFailed": "Couldn't upload the image, please try again."
+        }
+      },
       "primaryLocaleLabel": "Primary language",
       "localeAr": "Arabic",
       "localeEn": "English",

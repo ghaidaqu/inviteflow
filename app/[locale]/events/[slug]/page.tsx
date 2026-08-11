@@ -52,12 +52,23 @@ export default async function PublicEventPage({
 
       <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-2xl px-4 py-10 duration-700 sm:px-6">
         {event.cover_image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={event.cover_image_url}
-            alt={event.name}
-            className="mb-6 aspect-video w-full rounded-2xl object-cover shadow-lg"
-          />
+          /\.(mp4|webm|mov)$/i.test(event.cover_image_url) ? (
+            <video
+              src={event.cover_image_url}
+              className="mb-6 aspect-video w-full rounded-2xl object-cover shadow-lg"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={event.cover_image_url}
+              alt={event.name}
+              className="mb-6 aspect-video w-full rounded-2xl object-cover shadow-lg"
+            />
+          )
         ) : (
           <div className="from-primary/15 via-accent/20 to-primary/10 mb-6 flex aspect-[2/1] w-full flex-col items-center justify-center rounded-2xl bg-gradient-to-br p-6 text-center shadow-sm">
             <Badge className="mb-3">{tTypes(event.type)}</Badge>
