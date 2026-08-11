@@ -1,10 +1,10 @@
 import { getTranslations } from 'next-intl/server';
-import { MessageCircleIcon, CreditCardIcon, QrCodeIcon, ShieldCheckIcon } from 'lucide-react';
+import { MessageCircleIcon, SparklesIcon, LinkIcon, ShieldCheckIcon } from 'lucide-react';
 
 const ITEMS = [
   { titleKey: 'item1Title', labelKey: 'item1Label', icon: MessageCircleIcon },
-  { titleKey: 'item2Title', labelKey: 'item2Label', icon: CreditCardIcon },
-  { titleKey: 'item3Title', labelKey: 'item3Label', icon: QrCodeIcon },
+  { titleKey: 'item2Title', labelKey: 'item2Label', icon: SparklesIcon },
+  { titleKey: 'item3Title', labelKey: 'item3Label', icon: LinkIcon },
   { titleKey: 'item4Title', labelKey: 'item4Label', icon: ShieldCheckIcon },
 ] as const;
 

@@ -126,12 +126,11 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];
               const Icon = style.icon;
-              return (
-                <Link
-                  key={key}
-                  href={`/dashboard/events/new/${style.track}`}
-                  className="group flex w-[20%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[22%]"
-                >
+              const isLocked = key !== 'invitation';
+              const panelClassName = `group flex w-[20%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out sm:w-[22%] ${isLocked ? 'grayscale-[35%]' : 'hover:-translate-y-2'}`;
+
+              const content = (
+                <>
                   <div
                     className="relative flex flex-1 items-start overflow-hidden p-3 backdrop-blur-[1px]"
                     style={{
@@ -141,6 +140,11 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                     <span className="relative flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm">
                       <Icon className="size-4.5" />
                     </span>
+                    {isLocked && (
+                      <span className="absolute end-2 top-2 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
+                        {tp('comingSoon')}
+                      </span>
+                    )}
                   </div>
 
                   {/* Wave divider — deliberately large amplitude (not a
@@ -169,11 +173,31 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                       {tj(`${key}.title`)}
                     </h3>
                     <p className="hidden text-xs text-white/70 sm:block">{tj(`${key}.tagline`)}</p>
-                    <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
-                      {tp('exploreCta')}
-                      <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                    </span>
+                    {isLocked ? (
+                      <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-white/60">
+                        {tp('comingSoon')}
+                      </span>
+                    ) : (
+                      <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
+                        {tp('exploreCta')}
+                        <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                      </span>
+                    )}
                   </div>
+                </>
+              );
+
+              return isLocked ? (
+                <div key={key} aria-disabled="true" className={panelClassName}>
+                  {content}
+                </div>
+              ) : (
+                <Link
+                  key={key}
+                  href={`/dashboard/events/new/${style.track}`}
+                  className={panelClassName}
+                >
+                  {content}
                 </Link>
               );
             })}

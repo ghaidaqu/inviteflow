@@ -17,21 +17,22 @@
     "hero": {
       "headlineLine1": "Every occasion",
       "headlineLine2": "deserves to be told",
-      "subtitle": "A complete platform for digital invitations, RSVP polls, and event ticketing — simple, and fully professional.",
+      "subtitle": "Design your digital invitation and share it with your guests in minutes — simple, and fully professional. (Ticketing and polls coming soon)",
       "primaryCta": "Start free",
       "secondaryCta": "See how it works",
       "guestLink": "Or try it as a guest, no sign-up ←"
     },
     "panels": {
-      "exploreCta": "Explore"
+      "exploreCta": "Explore",
+      "comingSoon": "Coming soon"
     },
     "trustStrip": {
       "item1Title": "Direct WhatsApp",
       "item1Label": "Guests never open a separate link",
-      "item2Title": "Real online payment",
-      "item2Label": "Through the Moyasar gateway",
-      "item3Title": "QR code entry",
-      "item3Label": "Instant check-in",
+      "item2Title": "Ready in minutes",
+      "item2Label": "Design and share, no hassle",
+      "item3Title": "No sign-up for guests",
+      "item3Label": "One tap to respond, right in WhatsApp",
       "item4Title": "Row-level security",
       "item4Label": "Your data is protected in the database"
     },
@@ -68,13 +69,13 @@
       "title": "Why InviteFlow?",
       "statement": "Built from the ground up for Arabic-speaking users — not a translated foreign tool.",
       "point1": "Guests reply right inside WhatsApp — never opening a link at all",
-      "point2": "Real online payment for ticket sales",
+      "point2": "An elegant digital invitation you share with one link",
       "point3": "Every guest gets their own edit link, no account needed",
       "point4": "Your data is protected by row-level security in the database"
     },
     "previews": {
       "title": "See what it actually looks like",
-      "subtitle": "Real previews of each track — not illustrations.",
+      "subtitle": "A real preview of your invitation — not an illustration.",
       "invitationLabel": "Digital invitation",
       "invitationSample": "Join us to celebrate Sara & Ahmad's wedding",
       "invitationStatus": "Awaiting your response",
@@ -124,7 +125,7 @@
       "title": "Pricing",
       "subtitle": "No complexity",
       "planTitle": "Completely free — for now",
-      "planPoint1": "Unlimited invitations and polls",
+      "planPoint1": "Unlimited digital invitations",
       "planPoint2": "No monthly subscription",
       "planPoint3": "Create your account and start right away",
       "cta": "Start free"
@@ -152,18 +153,13 @@
   },
   "GuestHub": {
     "title": "Try InviteFlow as a guest",
-    "subtitle": "Pick an experience to try — everything here is real and working, no sign-up needed.",
+    "subtitle": "A real wedding invitation — try it yourself, no sign-up needed.",
     "rsvp": {
       "title": "Digital Invitation",
       "description": "A real wedding invitation — respond attending/not attending and see it reach the organizer instantly.",
       "cta": "Open the invitation"
     },
-    "tickets": {
-      "title": "Buy tickets",
-      "description": "A demo conference with real ticket tiers — try picking one and completing a (mock) purchase.",
-      "cta": "See ticket tiers"
-    },
-    "note": "Note: purchases here use Mock Payment — no real money is charged."
+    "note": "Ticketing and polls are coming soon."
   },
   "Common": {
     "languageSwitcher": "Language",
@@ -344,6 +340,8 @@
       "title": "Create new",
       "subtitle": "Choose the right track — each one is completely separate from the others.",
       "startButton": "Start",
+      "comingSoon": "Coming soon",
+      "comingSoonNote": "This track isn't available yet — we're focused on digital invitations for now.",
       "invitation": {
         "title": "Digital invitation",
         "description": "A simple personal invitation to an occasion (wedding, graduation...) — optional accept/decline, no extra questions."
@@ -381,6 +379,7 @@
       "invalidInput": "Please check the information you entered.",
       "unauthorized": "You must be logged in to do this.",
       "passwordRequiredForProtection": "Enter a password to enable protection.",
+      "trackLocked": "This track isn't available yet — ticketing and polls are coming soon.",
       "unknown": "Something went wrong, please try again."
     },
     "validation": {

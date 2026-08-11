@@ -19,6 +19,11 @@ export default async function NewEventPage({
   setRequestLocale(locale);
   if (!isTrack(track)) notFound();
 
+  // Ticketing and RSVP are locked (see the chooser page) — a direct URL
+  // shouldn't be able to reach the create form even though the route
+  // itself still technically exists.
+  if (track !== 'invitation') notFound();
+
   const t = await getTranslations('Events.newChooser');
 
   return (

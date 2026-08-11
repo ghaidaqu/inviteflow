@@ -78,6 +78,15 @@ export async function createEventAction(
     return { error: 'invalidInput' };
   }
 
+  // Ticketing and RSVP are locked platform-wide for now — the chooser page
+  // and the /new/[track] route already keep the UI from getting here, but
+  // this is the actual enforcement point in case someone crafts a request
+  // directly (e.g. toggling "enable ticketing" on what looked like an
+  // invitation-track submission).
+  if (parsed.data.isTicketingEnabled || !parsed.data.isRsvpEnabled) {
+    return { error: 'trackLocked' };
+  }
+
   if (parsed.data.isPasswordProtected && !parsed.data.password) {
     return { error: 'passwordRequiredForProtection' };
   }
