@@ -68,18 +68,21 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       value: stats.attendingCount,
       icon: CheckCircle2Icon,
       tone: 'text-chart-1 bg-chart-1/10',
+      href: '#latest-responses',
     },
     {
       label: t('notAttending'),
       value: stats.notAttendingCount,
       icon: XCircleIcon,
       tone: 'text-destructive bg-destructive/10',
+      href: '#latest-responses',
     },
     {
       label: t('noResponse'),
       value: stats.noResponseCount,
       icon: HelpCircleIcon,
       tone: 'text-muted-foreground bg-muted',
+      href: '#latest-responses',
     },
     {
       label: t('ticketsSold'),
@@ -112,20 +115,24 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       <h1 className="text-2xl font-extrabold tracking-tight">{t('title')}</h1>
 
       <div className="animate-in fade-in slide-in-from-bottom-1 mt-6 grid grid-cols-2 gap-3 duration-300 ease-out sm:grid-cols-3 lg:grid-cols-4">
-        {statCards.map((card) => (
-          <div
-            key={card.label}
-            className="bg-card hover:border-primary/30 flex flex-col gap-3 rounded-2xl border p-4 transition-colors"
-          >
-            <div className={`flex size-9 items-center justify-center rounded-full ${card.tone}`}>
-              <card.icon className="size-4.5" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold tabular-nums">{card.value}</div>
-              <div className="text-muted-foreground text-sm">{card.label}</div>
-            </div>
-          </div>
-        ))}
+        {statCards.map((card) => {
+          const CardTag = card.href ? 'a' : 'div';
+          return (
+            <CardTag
+              key={card.label}
+              {...(card.href ? { href: card.href } : {})}
+              className="bg-card hover:border-primary/30 flex flex-col gap-3 rounded-2xl border p-4 transition-colors"
+            >
+              <div className={`flex size-9 items-center justify-center rounded-full ${card.tone}`}>
+                <card.icon className="size-4.5" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold tabular-nums">{card.value}</div>
+                <div className="text-muted-foreground text-sm">{card.label}</div>
+              </div>
+            </CardTag>
+          );
+        })}
       </div>
 
       <div className="mt-8">
@@ -139,12 +146,12 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       </div>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
-        <div>
+        <div id="latest-responses" className="scroll-mt-20">
           <h2 className="mb-3 text-lg font-bold tracking-tight">{t('latestResponses')}</h2>
           {stats.latestResponses.length === 0 ? (
             <p className="text-muted-foreground text-sm">{t('noData')}</p>
           ) : (
-            <ul className="flex flex-col gap-2">
+            <ul className="flex max-h-[480px] flex-col gap-2 overflow-y-auto">
               {stats.latestResponses.map((r) => (
                 <li
                   key={r.id}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useTransition } from 'react';
+import { useEffect, useMemo, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -42,7 +42,25 @@ import {
   PencilIcon,
   PlusIcon,
   XIcon,
+  ContactRoundIcon,
 } from 'lucide-react';
+
+// The Contact Picker API (Android Chrome only — no iOS Safari, no desktop)
+// lets the organizer pick straight from their phone's contacts instead of
+// typing every guest by hand. Feature-detected and only rendered where the
+// browser actually supports it, so everyone else just sees the plain rows.
+type ContactsManager = {
+  select: (
+    props: string[],
+    opts?: { multiple?: boolean },
+  ) => Promise<Array<{ name?: string[]; tel?: string[] }>>;
+};
+
+function getContactsManager(): ContactsManager | null {
+  if (typeof navigator === 'undefined') return null;
+  const nav = navigator as Navigator & { contacts?: ContactsManager };
+  return nav.contacts ?? null;
+}
 
 const STATUS_FILTERS = ['all', 'attending', 'not_attending', 'maybe', 'no_response'] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
@@ -77,6 +95,30 @@ export function GuestsTable({
   const [isAdding, startAdding] = useTransition();
   const [addError, setAddError] = useState<string | null>(null);
   const [addSuccessCount, setAddSuccessCount] = useState<number | null>(null);
+  const [contactsSupported, setContactsSupported] = useState(false);
+
+  useEffect(() => {
+    setContactsSupported(getContactsManager() !== null);
+  }, []);
+
+  async function handleImportContacts() {
+    const contacts = getContactsManager();
+    if (!contacts) return;
+    try {
+      const picked = await contacts.select(['name', 'tel'], { multiple: true });
+      if (picked.length === 0) return;
+      const imported = picked.map((c) => ({
+        name: c.name?.[0]?.trim() ?? '',
+        phone: c.tel?.[0]?.trim() ?? '',
+      }));
+      setRows((prev) => {
+        const withoutBlankTrailing = prev.filter((r) => r.name.trim() || r.phone.trim());
+        return [...withoutBlankTrailing, ...imported];
+      });
+    } catch {
+      // User cancelled the picker, or the browser denied it — nothing to do.
+    }
+  }
 
   const [editingGuest, setEditingGuest] = useState<GuestWithResponse | null>(null);
   const [editDraft, setEditDraft] = useState<GuestRowDraft>(emptyRow);
@@ -309,15 +351,28 @@ export function GuestsTable({
                   )}
                 </div>
               ))}
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="w-fit"
-                onClick={() => setRows((prev) => [...prev, emptyRow])}
-              >
-                <PlusIcon /> {t('addGuests.addRow')}
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-fit"
+                  onClick={() => setRows((prev) => [...prev, emptyRow])}
+                >
+                  <PlusIcon /> {t('addGuests.addRow')}
+                </Button>
+                {contactsSupported && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-fit"
+                    onClick={handleImportContacts}
+                  >
+                    <ContactRoundIcon /> {t('addGuests.importContacts')}
+                  </Button>
+                )}
+              </div>
             </div>
             <DialogFooter>
               <DialogClose render={<Button variant="outline" />}>

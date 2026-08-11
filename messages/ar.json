@@ -562,6 +562,7 @@
       "phoneLabel": "رقم الجوال",
       "phonePlaceholder": "05xxxxxxxx",
       "addRow": "إضافة ضيف آخر",
+      "importContacts": "استيراد من جهات الاتصال",
       "removeRow": "حذف هذا الصف",
       "submit": "إضافة",
       "submitting": "جارٍ الإضافة...",

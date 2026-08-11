@@ -562,6 +562,7 @@
       "phoneLabel": "Phone number",
       "phonePlaceholder": "05xxxxxxxx",
       "addRow": "Add another guest",
+      "importContacts": "Import from contacts",
       "removeRow": "Remove this row",
       "submit": "Add",
       "submitting": "Adding...",

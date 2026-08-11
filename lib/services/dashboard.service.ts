@@ -100,7 +100,7 @@ export async function getDashboardStats(
   );
   const totalRevenue = paidOrders.reduce((sum, o) => sum + Number(o.total_amount), 0);
 
-  const latestResponseRows = responses.slice(0, 5);
+  const latestResponseRows = responses.slice(0, 20);
   const guestIds = latestResponseRows.map((r) => r.guest_id);
   const { data: guestNames, error: guestNamesError } =
     guestIds.length > 0

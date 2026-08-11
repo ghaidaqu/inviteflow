@@ -48,11 +48,16 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
                   {t(`statuses.${event.status}`)}
                 </Badge>
               </div>
-              <p className="text-muted-foreground text-sm">{t(`types.${event.type}`)}</p>
+              <p className="text-muted-foreground text-sm">
+                {t(`types.${event.type}`)}
+                {event.event_date && (
+                  <> · {new Date(event.event_date).toLocaleDateString(locale)}</>
+                )}
+              </p>
               <Button
                 variant="outline"
                 size="sm"
-                className="mt-2 w-fit"
+                className="mt-auto w-fit"
                 nativeButton={false}
                 render={<Link href={`/dashboard/events/${event.id}`} />}
               >
