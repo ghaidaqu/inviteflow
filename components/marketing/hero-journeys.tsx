@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
@@ -16,45 +15,36 @@ type JourneyKey = 'invitation' | 'ticketing' | 'rsvp';
 // Three distinct editorial panel treatments — deep red, dark ink navy, and
 // muted purple — deliberately different from each other (these are three
 // separate products) and deliberately NOT the site's neon/glow language.
-// `photo` is a real (freely-licensed, self-hosted) photo evoking each
-// journey; `tintFrom/tintTo` is a matching color wash laid over it so the
-// three cards keep distinct brand identities instead of looking like plain
-// stock photography.
+// No photography: the panel top is a translucent wash of its own color so
+// the giant "INVITE" type behind the row reads faintly through the glass —
+// that layering is the entire effect, not a background image.
 const PANEL_STYLE: Record<
   JourneyKey,
   {
-    photo: string;
-    photoAlt: string;
-    tintFrom: string;
-    tintTo: string;
+    glassFrom: string;
+    glassTo: string;
     panel: string;
     track: string;
     icon: typeof MailIcon;
   }
 > = {
   invitation: {
-    photo: '/images/hero/invitation.jpg',
-    photoAlt: 'Wedding invitation stationery flat lay',
-    tintFrom: 'rgba(156,42,65,0.45)',
-    tintTo: 'rgba(61,9,22,0.85)',
+    glassFrom: 'rgba(156,42,65,0.18)',
+    glassTo: 'rgba(61,9,22,0.32)',
     panel: '#3d0916',
     track: 'invitation',
     icon: MailIcon,
   },
   ticketing: {
-    photo: '/images/hero/ticketing.jpg',
-    photoAlt: 'Concert crowd under stage lights',
-    tintFrom: 'rgba(35,44,68,0.5)',
-    tintTo: 'rgba(8,10,16,0.9)',
+    glassFrom: 'rgba(35,44,68,0.2)',
+    glassTo: 'rgba(8,10,16,0.35)',
     panel: '#080a10',
     track: 'event',
     icon: TicketIcon,
   },
   rsvp: {
-    photo: '/images/hero/rsvp.jpg',
-    photoAlt: 'Hand checking off items on a poll checklist',
-    tintFrom: 'rgba(80,58,99,0.5)',
-    tintTo: 'rgba(28,19,34,0.88)',
+    glassFrom: 'rgba(80,58,99,0.2)',
+    glassTo: 'rgba(28,19,34,0.35)',
     panel: '#1c1322',
     track: 'rsvp',
     icon: BarChart3Icon,
@@ -117,7 +107,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
         <div className="relative flex min-h-[440px] flex-col justify-end overflow-hidden pb-2 sm:min-h-[560px] lg:min-h-[620px]">
           <span
             aria-hidden
-            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(4.5rem,13vw,10rem)] leading-none font-black tracking-normal whitespace-nowrap select-none sm:pt-8"
+            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(4.5rem,15vw,9rem)] leading-none font-black tracking-normal whitespace-nowrap select-none sm:pt-8 sm:text-[clamp(6rem,25vw,12rem)] lg:text-[clamp(4.5rem,13vw,10rem)]"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             INVITE
@@ -131,7 +121,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               space) so the cards visibly cover roughly its bottom quarter. */}
           <div
             dir="ltr"
-            className="relative z-10 flex h-[280px] -translate-y-20 items-stretch justify-center gap-4 sm:h-[340px] sm:-translate-y-24 sm:gap-6 lg:h-[380px] lg:-translate-y-28"
+            className="relative z-10 flex h-[280px] -translate-y-12 items-stretch justify-center gap-4 sm:h-[340px] sm:-translate-y-14 sm:gap-6 lg:h-[380px] lg:-translate-y-[67px]"
           >
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];
@@ -140,23 +130,14 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                 <Link
                   key={key}
                   href={`/dashboard/events/new/${style.track}`}
-                  className="group flex w-[26%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[29%]"
+                  className="group flex w-[20%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[22%]"
                 >
-                  <div className="relative flex flex-1 items-start overflow-hidden p-3">
-                    <Image
-                      src={style.photo}
-                      alt={style.photoAlt}
-                      fill
-                      sizes="(min-width: 1024px) 220px, 33vw"
-                      className="object-cover"
-                    />
-                    <div
-                      aria-hidden
-                      className="absolute inset-0"
-                      style={{
-                        background: `linear-gradient(160deg, ${style.tintFrom}, ${style.tintTo})`,
-                      }}
-                    />
+                  <div
+                    className="relative flex flex-1 items-start overflow-hidden p-3 backdrop-blur-[1px]"
+                    style={{
+                      background: `linear-gradient(160deg, ${style.glassFrom}, ${style.glassTo})`,
+                    }}
+                  >
                     <span className="relative flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm">
                       <Icon className="size-4.5" />
                     </span>

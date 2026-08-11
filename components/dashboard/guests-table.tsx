@@ -3,7 +3,6 @@
 import { useMemo, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -23,16 +22,27 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
+import { Field, FieldLabel } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   deleteGuestAction,
   addGuestsAction,
+  updateGuestAction,
   sendGuestInviteAction,
   type AddGuestsActionState,
+  type UpdateGuestActionState,
 } from '@/lib/actions/guests';
 import { buildCsv } from '@/lib/utils/csv';
 import type { GuestWithResponse } from '@/lib/services/guests.service';
-import { Trash2Icon, DownloadIcon, MessageCircleIcon, UserPlusIcon } from 'lucide-react';
+import {
+  Trash2Icon,
+  DownloadIcon,
+  MessageCircleIcon,
+  UserPlusIcon,
+  PencilIcon,
+  PlusIcon,
+  XIcon,
+} from 'lucide-react';
 
 const STATUS_FILTERS = ['all', 'attending', 'not_attending', 'maybe', 'no_response'] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
@@ -42,6 +52,9 @@ const STATUS_VARIANT = {
   not_attending: 'destructive',
   maybe: 'secondary',
 } as const;
+
+type GuestRowDraft = { name: string; phone: string };
+const emptyRow: GuestRowDraft = { name: '', phone: '' };
 
 export function GuestsTable({
   eventId,
@@ -60,10 +73,15 @@ export function GuestsTable({
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const [addOpen, setAddOpen] = useState(false);
-  const [guestLines, setGuestLines] = useState('');
+  const [rows, setRows] = useState<GuestRowDraft[]>([emptyRow]);
   const [isAdding, startAdding] = useTransition();
   const [addError, setAddError] = useState<string | null>(null);
   const [addSuccessCount, setAddSuccessCount] = useState<number | null>(null);
+
+  const [editingGuest, setEditingGuest] = useState<GuestWithResponse | null>(null);
+  const [editDraft, setEditDraft] = useState<GuestRowDraft>(emptyRow);
+  const [isEditing, startEditing] = useTransition();
+  const [editError, setEditError] = useState<string | null>(null);
 
   const [invitingId, setInvitingId] = useState<string | null>(null);
   const [isInviting, startInviting] = useTransition();
@@ -89,11 +107,24 @@ export function GuestsTable({
     });
   }
 
+  function updateRow(index: number, patch: Partial<GuestRowDraft>) {
+    setRows((prev) => prev.map((r, i) => (i === index ? { ...r, ...patch } : r)));
+  }
+
+  function removeRow(index: number) {
+    setRows((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== index) : prev));
+  }
+
   function handleAddGuests() {
     setAddError(null);
     setAddSuccessCount(null);
+    const cleanRows = rows.filter((r) => r.name.trim().length > 0);
+    if (cleanRows.length === 0) {
+      setAddError('invalidInput');
+      return;
+    }
     const formData = new FormData();
-    formData.set('guestLines', guestLines);
+    formData.set('guestRows', JSON.stringify(cleanRows));
 
     startAdding(async () => {
       const result: AddGuestsActionState = await addGuestsAction(eventId, {}, formData);
@@ -101,7 +132,39 @@ export function GuestsTable({
         setAddError(result.error);
       } else {
         setAddSuccessCount(result.addedCount ?? 0);
-        setGuestLines('');
+        setRows([emptyRow]);
+      }
+    });
+  }
+
+  function openEdit(guest: GuestWithResponse) {
+    setEditError(null);
+    setEditDraft({ name: guest.name ?? '', phone: guest.phone ?? '' });
+    setEditingGuest(guest);
+  }
+
+  function handleSaveEdit() {
+    if (!editingGuest) return;
+    if (!editDraft.name.trim()) {
+      setEditError('invalidInput');
+      return;
+    }
+    setEditError(null);
+    const formData = new FormData();
+    formData.set('name', editDraft.name);
+    formData.set('phone', editDraft.phone);
+
+    startEditing(async () => {
+      const result: UpdateGuestActionState = await updateGuestAction(
+        eventId,
+        editingGuest.id,
+        {},
+        formData,
+      );
+      if (result.error) {
+        setEditError(result.error);
+      } else {
+        setEditingGuest(null);
       }
     });
   }
@@ -177,7 +240,16 @@ export function GuestsTable({
             ))}
           </SelectContent>
         </Select>
-        <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <Dialog
+          open={addOpen}
+          onOpenChange={(open) => {
+            setAddOpen(open);
+            if (open) {
+              setAddError(null);
+              setAddSuccessCount(null);
+            }
+          }}
+        >
           <DialogTrigger render={<Button variant="outline" className="ms-auto" />}>
             <UserPlusIcon /> {t('addGuests.trigger')}
           </DialogTrigger>
@@ -198,17 +270,63 @@ export function GuestsTable({
                 </AlertDescription>
               </Alert>
             )}
-            <Textarea
-              value={guestLines}
-              onChange={(e) => setGuestLines(e.target.value)}
-              placeholder={t('addGuests.placeholder')}
-              rows={6}
-            />
+            <div className="flex flex-col gap-3">
+              {rows.map((row, index) => (
+                <div key={index} className="flex items-end gap-2">
+                  <Field className="flex-1">
+                    <FieldLabel htmlFor={`guest-name-${index}`}>
+                      {t('addGuests.nameLabel')}
+                    </FieldLabel>
+                    <Input
+                      id={`guest-name-${index}`}
+                      value={row.name}
+                      onChange={(e) => updateRow(index, { name: e.target.value })}
+                      placeholder={t('addGuests.namePlaceholder')}
+                    />
+                  </Field>
+                  <Field className="flex-1">
+                    <FieldLabel htmlFor={`guest-phone-${index}`}>
+                      {t('addGuests.phoneLabel')}
+                    </FieldLabel>
+                    <Input
+                      id={`guest-phone-${index}`}
+                      value={row.phone}
+                      onChange={(e) => updateRow(index, { phone: e.target.value })}
+                      placeholder={t('addGuests.phonePlaceholder')}
+                      dir="ltr"
+                    />
+                  </Field>
+                  {rows.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => removeRow(index)}
+                      aria-label={t('addGuests.removeRow')}
+                    >
+                      <XIcon />
+                    </Button>
+                  )}
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-fit"
+                onClick={() => setRows((prev) => [...prev, emptyRow])}
+              >
+                <PlusIcon /> {t('addGuests.addRow')}
+              </Button>
+            </div>
             <DialogFooter>
               <DialogClose render={<Button variant="outline" />}>
                 {t('addGuests.cancel')}
               </DialogClose>
-              <Button onClick={handleAddGuests} disabled={isAdding || !guestLines.trim()}>
+              <Button
+                onClick={handleAddGuests}
+                disabled={isAdding || !rows.some((r) => r.name.trim())}
+              >
                 {isAdding ? t('addGuests.submitting') : t('addGuests.submit')}
               </Button>
             </DialogFooter>
@@ -268,6 +386,14 @@ export function GuestsTable({
                             <MessageCircleIcon />
                           </Button>
                         )}
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          title={t('editGuest.trigger')}
+                          onClick={() => openEdit(guest)}
+                        >
+                          <PencilIcon />
+                        </Button>
                         <Dialog
                           open={deletingId === guest.id}
                           onOpenChange={(open) => setDeletingId(open ? guest.id : null)}
@@ -308,6 +434,45 @@ export function GuestsTable({
           </table>
         </div>
       )}
+
+      <Dialog open={editingGuest !== null} onOpenChange={(open) => !open && setEditingGuest(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('editGuest.title')}</DialogTitle>
+            <DialogDescription>{t('editGuest.description')}</DialogDescription>
+          </DialogHeader>
+          {editError && (
+            <Alert variant="destructive">
+              <AlertDescription>{tErrors(editError)}</AlertDescription>
+            </Alert>
+          )}
+          <div className="flex flex-col gap-3">
+            <Field>
+              <FieldLabel htmlFor="edit-guest-name">{t('addGuests.nameLabel')}</FieldLabel>
+              <Input
+                id="edit-guest-name"
+                value={editDraft.name}
+                onChange={(e) => setEditDraft((d) => ({ ...d, name: e.target.value }))}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="edit-guest-phone">{t('addGuests.phoneLabel')}</FieldLabel>
+              <Input
+                id="edit-guest-phone"
+                value={editDraft.phone}
+                onChange={(e) => setEditDraft((d) => ({ ...d, phone: e.target.value }))}
+                dir="ltr"
+              />
+            </Field>
+          </div>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>{t('addGuests.cancel')}</DialogClose>
+            <Button onClick={handleSaveEdit} disabled={isEditing || !editDraft.name.trim()}>
+              {isEditing ? t('editGuest.submitting') : t('editGuest.submit')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

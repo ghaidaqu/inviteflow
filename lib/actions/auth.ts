@@ -5,6 +5,9 @@ import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
+import { getCurrentOrganizationId, hasAnyEvents } from '@/lib/services/events.service';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
 import {
   registerSchema,
   loginSchema,
@@ -32,6 +35,25 @@ function safeNextPath(value: FormDataEntryValue | null, locale: string): string 
   if (!value.startsWith(`/${locale}/`) && value !== `/${locale}`) return null;
   if (value.startsWith('//') || value.includes('://')) return null;
   return value;
+}
+
+// A brand-new account landing on the stats overview just sees zeroes
+// everywhere — send it straight to "choose your track" instead, and only
+// once an event actually exists does the normal dashboard become the
+// default landing spot. Only applies when there's no explicit `next`
+// (i.e. the user wasn't on their way to a specific page already).
+async function defaultPostAuthPath(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  locale: string,
+): Promise<string> {
+  try {
+    const organizationId = await getCurrentOrganizationId(supabase, userId);
+    const hasEvents = organizationId ? await hasAnyEvents(supabase, organizationId) : false;
+    return hasEvents ? `/${locale}/dashboard` : `/${locale}/dashboard/events/new`;
+  } catch {
+    return `/${locale}/dashboard`;
+  }
 }
 
 export async function registerAction(
@@ -66,7 +88,13 @@ export async function registerAction(
     return { error: error.code === 'user_already_exists' ? 'emailAlreadyExists' : 'unknown' };
   }
 
-  redirect(safeNextPath(formData.get('next'), locale) ?? `/${locale}/dashboard`);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const fallback = user
+    ? await defaultPostAuthPath(supabase, user.id, locale)
+    : `/${locale}/dashboard`;
+  redirect(safeNextPath(formData.get('next'), locale) ?? fallback);
 }
 
 export async function loginAction(
@@ -204,7 +232,13 @@ export async function verifyPhoneOtpAction(
 
   if (error) return { error: 'otpInvalid' };
 
-  redirect(safeNextPath(formData.get('next'), locale) ?? `/${locale}/dashboard`);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const fallback = user
+    ? await defaultPostAuthPath(supabase, user.id, locale)
+    : `/${locale}/dashboard`;
+  redirect(safeNextPath(formData.get('next'), locale) ?? fallback);
 }
 
 export async function requestEmailOtpAction(
@@ -261,7 +295,13 @@ export async function verifyEmailOtpAction(
 
   if (error) return { error: 'otpInvalid' };
 
-  redirect(safeNextPath(formData.get('next'), locale) ?? `/${locale}/dashboard`);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const fallback = user
+    ? await defaultPostAuthPath(supabase, user.id, locale)
+    : `/${locale}/dashboard`;
+  redirect(safeNextPath(formData.get('next'), locale) ?? fallback);
 }
 
 export async function resetPasswordAction(

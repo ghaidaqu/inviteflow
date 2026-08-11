@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 export const registerSchema = z
   .object({
@@ -57,14 +58,16 @@ export const phoneOtpRequestSchema = z.object({
   phone: z
     .string()
     .trim()
-    .regex(/^\+[1-9]\d{7,14}$/, { error: 'phoneInvalid' }),
+    .transform(normalizeDigits)
+    .pipe(z.string().regex(/^\+[1-9]\d{7,14}$/, { error: 'phoneInvalid' })),
 });
 export type PhoneOtpRequestInput = z.infer<typeof phoneOtpRequestSchema>;
 
 export const otpCodeSchema = z
   .string()
   .trim()
-  .regex(/^\d{6}$/, { error: 'otpInvalid' });
+  .transform(normalizeDigits)
+  .pipe(z.string().regex(/^\d{6}$/, { error: 'otpInvalid' }));
 
 export const phoneOtpVerifySchema = z.object({
   phone: phoneOtpRequestSchema.shape.phone,

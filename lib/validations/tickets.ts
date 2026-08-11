@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 export const ticketTypeStatuses = ['active', 'paused', 'ended'] as const;
 
@@ -8,21 +9,29 @@ const optionalDateTime = z
   .transform((v) => (v ? v : undefined))
   .refine((v) => v === undefined || !Number.isNaN(Date.parse(v)), { error: 'dateInvalid' });
 
-export const ticketTypeFormSchema = z.object({
-  nameAr: z.string().trim().min(1, { error: 'nameRequired' }).max(150),
-  nameEn: z
-    .string()
-    .trim()
-    .optional()
-    .transform((v) => (v ? v : undefined)),
-  price: z.coerce.number().min(0, { error: 'priceInvalid' }),
-  currency: z.string().trim().min(1).max(10).default('SAR'),
-  quantityTotal: z.coerce.number().int().min(0, { error: 'quantityInvalid' }),
-  maxPerOrder: z.coerce.number().int().min(1, { error: 'maxPerOrderInvalid' }),
-  saleStartAt: optionalDateTime,
-  saleEndAt: optionalDateTime,
-  status: z.enum(ticketTypeStatuses),
-});
+export const ticketTypeFormSchema = z
+  .object({
+    nameAr: z.string().trim().min(1, { error: 'nameRequired' }).max(150),
+    nameEn: z
+      .string()
+      .trim()
+      .optional()
+      .transform((v) => (v ? v : undefined)),
+    price: z.coerce.number().min(0, { error: 'priceInvalid' }),
+    currency: z.string().trim().min(1).max(10).default('SAR'),
+    quantityTotal: z.coerce.number().int().min(0, { error: 'quantityInvalid' }),
+    maxPerOrder: z.coerce.number().int().min(1, { error: 'maxPerOrderInvalid' }),
+    saleStartAt: optionalDateTime,
+    saleEndAt: optionalDateTime,
+    status: z.enum(ticketTypeStatuses),
+  })
+  .refine(
+    (data) =>
+      !data.saleStartAt ||
+      !data.saleEndAt ||
+      Date.parse(data.saleEndAt) > Date.parse(data.saleStartAt),
+    { path: ['saleEndAt'], error: 'saleEndBeforeStart' },
+  );
 
 export type TicketTypeFormInput = z.input<typeof ticketTypeFormSchema>;
 export type TicketTypeFormOutput = z.output<typeof ticketTypeFormSchema>;
@@ -38,6 +47,7 @@ export const purchaseFormSchema = z.object({
   buyerPhone: z
     .string()
     .trim()
+    .transform(normalizeDigits)
     .optional()
     .transform((v) => (v ? v : undefined)),
 });

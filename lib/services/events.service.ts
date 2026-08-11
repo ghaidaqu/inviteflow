@@ -25,6 +25,22 @@ export async function getCurrentOrganizationId(
   return data?.organization_id ?? null;
 }
 
+/**
+ * Whether the organization has created any event yet — used to send a
+ * brand-new account straight to "choose your track" instead of a stats
+ * overview that's just empty/zero everywhere on a first login.
+ */
+export async function hasAnyEvents(supabase: Client, organizationId: string): Promise<boolean> {
+  const { count, error } = await supabase
+    .from('events')
+    .select('id', { count: 'exact', head: true })
+    .eq('organization_id', organizationId)
+    .is('deleted_at', null);
+
+  if (error) throw error;
+  return (count ?? 0) > 0;
+}
+
 export async function listEvents(supabase: Client, organizationId: string): Promise<EventRow[]> {
   const { data, error } = await supabase
     .from('events')

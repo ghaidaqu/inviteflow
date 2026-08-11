@@ -64,6 +64,19 @@ export async function createGuestManually(
   return data;
 }
 
+export async function updateGuest(
+  supabase: Client,
+  guestId: string,
+  input: { name: string; phone: string | null },
+): Promise<void> {
+  const { error } = await supabase
+    .from('guests')
+    .update({ name: input.name, phone: input.phone })
+    .eq('id', guestId);
+
+  if (error) throw error;
+}
+
 export async function deleteGuest(supabase: Client, guestId: string): Promise<void> {
   // RLS on `guests` already restricts this update to members of the event's
   // organization, so no extra organization check is needed here.

@@ -1,11 +1,18 @@
 import * as React from 'react';
-import { Input as InputPrimitive } from '@base-ui/react/input';
 
 import { cn } from '@/lib/utils';
 
+// Plain native <input>, not Base UI's <Input>/<Field.Control> primitive:
+// that primitive destructures `defaultValue` out of props and only re-applies
+// it when explicitly given a `value`/`defaultValue` prop, which silently
+// drops react-hook-form's uncontrolled `register()` pattern (RHF sets the
+// initial value imperatively via its ref callback, never through a
+// `defaultValue` prop) — every edit form using `register()` rendered
+// existing data as blank fields. A native element has none of that
+// indirection, so RHF's ref-based defaultValues work exactly as intended.
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
   return (
-    <InputPrimitive
+    <input
       type={type}
       data-slot="input"
       className={cn(

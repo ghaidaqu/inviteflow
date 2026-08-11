@@ -556,12 +556,24 @@
     "addGuests": {
       "trigger": "Add guests",
       "title": "Add guests manually",
-      "description": "One guest per line — name, then phone after a comma (optional). Example: Khaled Alotaibi, 0501234567",
-      "placeholder": "Khaled Alotaibi, 0501234567\nMona Aldosari",
+      "description": "Enter each guest's name and phone (optional), and add a new row per guest.",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. Khaled Alotaibi",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "05xxxxxxxx",
+      "addRow": "Add another guest",
+      "removeRow": "Remove this row",
       "submit": "Add",
       "submitting": "Adding...",
       "success": "{count} guest(s) added successfully.",
       "cancel": "Cancel"
+    },
+    "editGuest": {
+      "trigger": "Edit guest",
+      "title": "Edit guest details",
+      "description": "Update the guest's name or phone number.",
+      "submit": "Save",
+      "submitting": "Saving..."
     },
     "sendInvite": {
       "button": "Send invite via WhatsApp",
@@ -619,7 +631,8 @@
       "priceInvalid": "Please enter a valid price.",
       "quantityInvalid": "Please enter a valid quantity.",
       "maxPerOrderInvalid": "Please enter a valid value.",
-      "dateInvalid": "Please enter a valid date and time."
+      "dateInvalid": "Please enter a valid date and time.",
+      "saleEndBeforeStart": "The sale end date must be after the start date."
     },
     "list": {
       "title": "Issued Tickets",
