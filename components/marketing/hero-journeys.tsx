@@ -105,7 +105,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               space) so the cards visibly cover roughly its bottom quarter. */}
           <div
             dir="ltr"
-            className="relative z-10 flex h-[280px] -translate-y-12 items-stretch justify-center gap-4 sm:h-[340px] sm:-translate-y-14 sm:gap-6 lg:h-[380px] lg:-translate-y-[67px]"
+            className="relative z-10 flex h-[280px] -translate-y-[66px] items-stretch justify-center gap-4 sm:h-[340px] sm:-translate-y-5 sm:gap-6 lg:h-[380px] lg:-translate-y-[67px]"
           >
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];
