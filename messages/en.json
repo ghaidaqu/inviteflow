@@ -154,6 +154,7 @@
     "loading": "Loading..."
   },
   "Auth": {
+    "backToHome": "Home",
     "register": {
       "title": "Create an organizer account",
       "subtitle": "Sign up to start creating your events and digital invitations.",
@@ -568,6 +569,10 @@
       "phoneLabel": "Phone number",
       "phonePlaceholder": "05xxxxxxxx",
       "addRow": "Add another guest",
+      "pasteList": "Paste a list",
+      "pasteListPlaceholder": "Paste your list of names and numbers — one guest per line, e.g.:\nSultan Alharbi 0501234567\nNora Alotaibi 0559876543",
+      "pasteListHint": "Copy from Excel, Notes, or anywhere else — one line per guest, any order or separator between the name and number.",
+      "pasteListSubmit": "Convert to a list",
       "importContacts": "Import from contacts",
       "removeRow": "Remove this row",
       "submit": "Add",

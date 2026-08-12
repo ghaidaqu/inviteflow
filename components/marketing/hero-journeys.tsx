@@ -152,13 +152,19 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                   </svg>
 
                   <div
-                    className="flex flex-col gap-2 p-4 text-white"
+                    className="flex flex-col gap-1.5 p-2.5 text-white sm:gap-2 sm:p-4"
                     style={{ backgroundColor: style.panel }}
                   >
-                    <span className="text-xs font-semibold text-white/60 tabular-nums">
+                    <span className="text-[0.65rem] font-semibold text-white/60 tabular-nums sm:text-xs">
                       0{index + 1}
                     </span>
-                    <h3 className="text-base font-bold tracking-tight sm:text-lg">
+                    {/* Card content width at the base/mobile tier is only
+                        ~40px (3 narrow cards sharing one phone screen) —
+                        text-sm keeps titles like "استبيانات و RSVP" to a
+                        readable 2-3 lines there instead of 4-5 cramped
+                        ones; text-base only from sm: up, where cards are
+                        wide enough to afford it. */}
+                    <h3 className="text-sm leading-snug font-bold tracking-tight sm:text-lg">
                       {tj(`${key}.title`)}
                     </h3>
                     {isLocked ? (

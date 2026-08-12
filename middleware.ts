@@ -50,5 +50,11 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)'],
+  // `auth` is excluded alongside the framework/API paths: routes under
+  // /auth (password-reset confirmation, logout) live outside /[locale] on
+  // purpose and must never go through next-intl's locale-prefix redirect —
+  // with `localePrefix: 'always'`, a request to /auth/logout would
+  // otherwise get redirected to /ar/auth/logout, which doesn't exist,
+  // breaking the route entirely instead of running it.
+  matcher: ['/((?!api|trpc|_next|_vercel|auth|.*\\..*).*)'],
 };

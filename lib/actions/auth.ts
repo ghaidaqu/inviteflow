@@ -135,16 +135,10 @@ export async function loginAction(
   redirect(safeNextPath(formData.get('next'), locale) ?? `/${locale}/dashboard`);
 }
 
-export async function logoutAction() {
-  const locale = await getLocale();
-
-  if (isSupabaseConfigured()) {
-    const supabase = await createClient();
-    await supabase.auth.signOut();
-  }
-
-  redirect(`/${locale}/login`);
-}
+// Logout moved to app/auth/logout/route.ts — a plain POST route handler
+// instead of a server action, so it can't go stale across a deploy (see
+// that file for why). Keep this file free of a same-named export so no
+// one wires the fragile version back in by accident.
 
 export async function forgotPasswordAction(
   _prevState: AuthActionState,

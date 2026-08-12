@@ -1,5 +1,4 @@
 import { getTranslations } from 'next-intl/server';
-import { logoutAction } from '@/lib/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { NotificationsBell } from '@/components/dashboard/notifications-bell';
@@ -48,7 +47,12 @@ export async function DashboardHeader({
         <span className="text-muted-foreground hidden text-sm sm:inline">
           {fullName ?? userEmail}
         </span>
-        <form action={logoutAction}>
+        {/* Plain route handler, not a server action — see app/auth/logout/route.ts
+            for why: a server action's ID is baked into the page bundle at
+            load time and goes stale the moment a new version deploys, so a
+            tab left open across a deploy would fail to log out with a raw
+            "unexpected error". A URL-addressed route keeps working forever. */}
+        <form action="/auth/logout" method="post">
           <Button type="submit" variant="outline" size="sm">
             {t('logout')}
           </Button>

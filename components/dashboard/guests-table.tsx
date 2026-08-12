@@ -33,6 +33,8 @@ import {
   type UpdateGuestActionState,
 } from '@/lib/actions/guests';
 import { buildCsv } from '@/lib/utils/csv';
+import { parseGuestListText } from '@/lib/utils/guest-list';
+import { Textarea } from '@/components/ui/textarea';
 import type { GuestWithResponse } from '@/lib/services/guests.service';
 import {
   Trash2Icon,
@@ -43,6 +45,7 @@ import {
   PlusIcon,
   XIcon,
   ContactRoundIcon,
+  ClipboardPasteIcon,
 } from 'lucide-react';
 
 // The Contact Picker API (Android Chrome only — no iOS Safari, no desktop)
@@ -96,6 +99,8 @@ export function GuestsTable({
   const [addError, setAddError] = useState<string | null>(null);
   const [addSuccessCount, setAddSuccessCount] = useState<number | null>(null);
   const [contactsSupported, setContactsSupported] = useState(false);
+  const [pasteOpen, setPasteOpen] = useState(false);
+  const [pasteText, setPasteText] = useState('');
 
   useEffect(() => {
     setContactsSupported(getContactsManager() !== null);
@@ -118,6 +123,22 @@ export function GuestsTable({
     } catch {
       // User cancelled the picker, or the browser denied it — nothing to do.
     }
+  }
+
+  // Typing a hundred+ guests one row at a time isn't realistic — this lets
+  // the organizer paste a whole list at once (from Excel/Sheets, Notes, or
+  // a WhatsApp forward: one guest per line, name and number in any order
+  // or separator) and have it turn into editable rows they can still fix
+  // up before submitting.
+  function handleParsePaste() {
+    const parsed = parseGuestListText(pasteText);
+    if (parsed.length === 0) return;
+    setRows((prev) => {
+      const withoutBlankTrailing = prev.filter((r) => r.name.trim() || r.phone.trim());
+      return [...withoutBlankTrailing, ...parsed];
+    });
+    setPasteText('');
+    setPasteOpen(false);
   }
 
   const [editingGuest, setEditingGuest] = useState<GuestWithResponse | null>(null);
@@ -289,6 +310,9 @@ export function GuestsTable({
             if (open) {
               setAddError(null);
               setAddSuccessCount(null);
+            } else {
+              setPasteOpen(false);
+              setPasteText('');
             }
           }}
         >
@@ -361,6 +385,15 @@ export function GuestsTable({
                 >
                   <PlusIcon /> {t('addGuests.addRow')}
                 </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-fit"
+                  onClick={() => setPasteOpen((v) => !v)}
+                >
+                  <ClipboardPasteIcon /> {t('addGuests.pasteList')}
+                </Button>
                 {contactsSupported && (
                   <Button
                     type="button"
@@ -373,6 +406,40 @@ export function GuestsTable({
                   </Button>
                 )}
               </div>
+
+              {pasteOpen && (
+                <div className="bg-muted/30 flex flex-col gap-2 rounded-lg border p-3">
+                  <Textarea
+                    value={pasteText}
+                    onChange={(e) => setPasteText(e.target.value)}
+                    placeholder={t('addGuests.pasteListPlaceholder')}
+                    dir="auto"
+                    rows={5}
+                  />
+                  <p className="text-muted-foreground text-xs">{t('addGuests.pasteListHint')}</p>
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setPasteOpen(false);
+                        setPasteText('');
+                      }}
+                    >
+                      {t('addGuests.cancel')}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={!pasteText.trim()}
+                      onClick={handleParsePaste}
+                    >
+                      {t('addGuests.pasteListSubmit')}
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
             <DialogFooter>
               <DialogClose render={<Button variant="outline" />}>
