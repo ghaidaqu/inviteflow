@@ -12,24 +12,34 @@ export async function ProductPreviews() {
         </div>
 
         <div className="mx-auto mt-12 max-w-sm">
-          {/* Invitation card mockup */}
-          <div className="animate-in fade-in slide-in-from-bottom-2 bg-card rounded-3xl border p-6 shadow-sm duration-700">
-            <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-              {t('invitationLabel')}
-            </span>
-            <div className="border-primary/20 mt-4 flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-8 text-center">
-              <span className="text-3xl">💍</span>
-              <p className="text-lg leading-snug font-bold text-balance">{t('invitationSample')}</p>
-              <span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-medium">
-                {t('invitationStatus')}
+          {/* Invitation preview, framed as a real webpage (browser chrome +
+              URL bar) rather than a chat bubble with quick-reply buttons —
+              the invitation is a proper link guests open, not a WhatsApp
+              message, and the mockup should read that way at a glance. */}
+          <div className="animate-in fade-in slide-in-from-bottom-2 bg-card overflow-hidden rounded-3xl border shadow-sm duration-700">
+            <div className="border-border/60 bg-muted/40 flex items-center gap-2 border-b px-4 py-2.5">
+              <span className="flex gap-1.5">
+                <span className="size-2 rounded-full bg-red-400/70" />
+                <span className="size-2 rounded-full bg-amber-400/70" />
+                <span className="size-2 rounded-full bg-green-400/70" />
               </span>
-              <div className="mt-1 flex w-full gap-2">
-                <div className="bg-primary/90 flex-1 rounded-lg py-2 text-center text-xs font-semibold text-white">
-                  ✓
-                </div>
-                <div className="border-border flex-1 rounded-lg border py-2 text-center text-xs font-semibold">
-                  ✕
-                </div>
+              <span className="bg-background text-muted-foreground ms-1 flex-1 truncate rounded-full border px-3 py-1 text-[11px] ltr:text-left rtl:text-right">
+                inviteflow.app/sara-ahmad
+              </span>
+            </div>
+
+            <div className="p-6">
+              <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                {t('invitationLabel')}
+              </span>
+              <div className="border-primary/20 mt-4 flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-8 text-center">
+                <span className="text-3xl">💍</span>
+                <p className="text-lg leading-snug font-bold text-balance">
+                  {t('invitationSample')}
+                </p>
+                <span className="bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-medium">
+                  {t('invitationStatus')}
+                </span>
               </div>
             </div>
           </div>

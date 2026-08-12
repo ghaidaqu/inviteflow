@@ -1,14 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import {
-  PlayIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  MailIcon,
-  TicketIcon,
-  BarChart3Icon,
-} from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, MailIcon, TicketIcon, BarChart3Icon } from 'lucide-react';
 
 type JourneyKey = 'invitation' | 'ticketing' | 'rsvp';
 
@@ -78,15 +71,6 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             <Button size="lg" nativeButton={false} render={<Link href="/register" />}>
               {t('primaryCta')}
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              nativeButton={false}
-              render={<a href="#how-it-works" />}
-            >
-              <PlayIcon className="size-4" />
-              {t('secondaryCta')}
-            </Button>
           </div>
 
           <Link
@@ -127,7 +111,12 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               const style = PANEL_STYLE[key];
               const Icon = style.icon;
               const isLocked = key !== 'invitation';
-              const panelClassName = `group flex w-[20%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out sm:w-[22%] ${isLocked ? 'grayscale-[35%]' : 'hover:-translate-y-2'}`;
+              // Widened so the row's total footprint (3 cards + gaps)
+              // actually spans the same width as the "INVITE" type behind
+              // it, measured per breakpoint (glyph width vs. row width) —
+              // was previously ~23% short at sm/lg, leaving an odd gap of
+              // bare text on either side of the card row.
+              const panelClassName = `group flex w-[21%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out sm:w-[29%] ${isLocked ? 'grayscale-[35%]' : 'hover:-translate-y-2'}`;
 
               const content = (
                 <>

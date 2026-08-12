@@ -7,9 +7,7 @@
     "nav": {
       "journeysLink": "المنتجات",
       "templatesLink": "قوالب",
-      "howItWorksLink": "كيف يعمل",
       "pricingLink": "الأسعار",
-      "resourcesLink": "الموارد",
       "aboutLink": "عن المنصة",
       "loginLink": "تسجيل الدخول",
       "startLink": "ابدأ مجاناً"
@@ -19,7 +17,6 @@
       "headlineLine2": "تستحق أن تُحكى",
       "subtitle": "صمّم دعوتك الرقمية وشاركها مع ضيوفك خلال دقائق — بسهولة واحترافية تامة. (التذاكر والاستفتاءات قريبًا)",
       "primaryCta": "ابدأ مجاناً",
-      "secondaryCta": "شاهد كيف تعمل",
       "guestLink": "أو جرّب المنصة كضيف بدون تسجيل ←"
     },
     "panels": {
@@ -111,15 +108,6 @@
       "yes": "نعم",
       "no": "لا",
       "optional": "اختياري"
-    },
-    "howItWorks": {
-      "title": "كيف تشتغل؟",
-      "step1Title": "اختر مسارك",
-      "step1Description": "دعوة، استفتاء، أو فعالية بتذاكر — كل واحد منفصل تمامًا",
-      "step2Title": "جهّز التفاصيل",
-      "step2Description": "الاسم، التاريخ، الأسئلة أو فئات التذاكر",
-      "step3Title": "شارك الرابط",
-      "step3Description": "عبر واتساب مباشرة — والردود توصلك فورًا"
     },
     "pricing": {
       "title": "الأسعار",

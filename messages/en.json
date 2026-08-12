@@ -7,9 +7,7 @@
     "nav": {
       "journeysLink": "Products",
       "templatesLink": "Templates",
-      "howItWorksLink": "How it works",
       "pricingLink": "Pricing",
-      "resourcesLink": "Resources",
       "aboutLink": "About",
       "loginLink": "Log in",
       "startLink": "Start free"
@@ -19,7 +17,6 @@
       "headlineLine2": "deserves to be told",
       "subtitle": "Design your digital invitation and share it with your guests in minutes — simple, and fully professional. (Ticketing and polls coming soon)",
       "primaryCta": "Start free",
-      "secondaryCta": "See how it works",
       "guestLink": "Or try it as a guest, no sign-up ←"
     },
     "panels": {
@@ -111,15 +108,6 @@
       "yes": "Yes",
       "no": "No",
       "optional": "Optional"
-    },
-    "howItWorks": {
-      "title": "How it works",
-      "step1Title": "Pick your track",
-      "step1Description": "Invitation, poll, or ticketed event — each one completely separate",
-      "step2Title": "Fill in the details",
-      "step2Description": "Name, date, questions, or ticket tiers",
-      "step3Title": "Share the link",
-      "step3Description": "Straight over WhatsApp — responses reach you instantly"
     },
     "pricing": {
       "title": "Pricing",

@@ -5,7 +5,6 @@ import { TrustStrip } from '@/components/marketing/trust-strip';
 import { WhyInviteFlow } from '@/components/marketing/why-inviteflow';
 import { ProductPreviews } from '@/components/marketing/product-previews';
 import { OccasionGallery } from '@/components/marketing/occasion-gallery';
-import { HowItWorks } from '@/components/marketing/how-it-works';
 import { PricingSection } from '@/components/marketing/pricing-section';
 import { FinalCta } from '@/components/marketing/final-cta';
 import { SiteFooter } from '@/components/marketing/site-footer';
@@ -28,7 +27,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <TrustStrip />
         <WhyInviteFlow />
         <OccasionGallery />
-        <HowItWorks />
         <ProductPreviews />
         <PricingSection />
         <FinalCta />
