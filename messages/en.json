@@ -35,30 +35,15 @@
     },
     "journeys": {
       "invitation": {
-        "emoji": "💍",
         "title": "Digital Invitation",
-        "tagline": "Design unique invitations and share them with your guests easily",
-        "bullet1": "Accept or decline with one tap, right inside WhatsApp",
-        "bullet2": "No questions, no clutter — just the details that matter",
-        "bullet3": "A shareable link, ready instantly",
         "cta": "Start your invitation"
       },
       "ticketing": {
-        "emoji": "🎟",
         "title": "Ticketed Event",
-        "tagline": "Sell tickets, manage entry, and professional QR codes",
-        "bullet1": "Ticket tiers with your own prices and quantities",
-        "bullet2": "Real online payment",
-        "bullet3": "Check-in attendees with a QR scan",
         "cta": "Create your event"
       },
       "rsvp": {
-        "emoji": "📊",
         "title": "Polls & RSVP",
-        "tagline": "Collect attendance responses and survey your guests",
-        "bullet1": "Questions you design yourself",
-        "bullet2": "Sent directly to specific phone numbers",
-        "bullet3": "Instant results you can broadcast to everyone",
         "cta": "Set up your poll"
       }
     },
@@ -75,39 +60,11 @@
       "subtitle": "A real preview of your invitation — not an illustration.",
       "invitationLabel": "Digital invitation",
       "invitationSample": "Join us to celebrate Sara & Ahmad's wedding",
-      "invitationStatus": "Awaiting your response",
-      "ticketLabel": "QR ticket",
-      "ticketSample": "Entry ticket — VIP",
-      "ticketHolder": "Name: Abdullah Al-Harbi",
-      "pollLabel": "Poll results",
-      "pollSample": "Which date works best for you?",
-      "pollOption1": "Thursday",
-      "pollOption2": "Friday",
-      "pollOption3": "Saturday"
+      "invitationStatus": "Awaiting your response"
     },
     "occasions": {
       "title": "For which occasion?",
       "subtitle": "Works with almost any kind of event"
-    },
-    "comparison": {
-      "title": "Compare the three tracks",
-      "colInvitation": "Digital invitation",
-      "colRsvp": "RSVP poll",
-      "colTicketing": "Ticketed event",
-      "rowResponse": "How guests respond",
-      "invitationResponse": "WhatsApp button",
-      "rsvpResponse": "Question form",
-      "ticketingResponse": "No response — direct ticket",
-      "rowQuestions": "Custom questions",
-      "rowTickets": "Sell tickets",
-      "rowQr": "QR check-in",
-      "rowBestFor": "Best for",
-      "invitationBestFor": "Personal occasions (weddings, graduations)",
-      "rsvpBestFor": "Organizing a group event or meetup",
-      "ticketingBestFor": "Paid events and conferences",
-      "yes": "Yes",
-      "no": "No",
-      "optional": "Optional"
     },
     "pricing": {
       "title": "Pricing",
@@ -132,22 +89,16 @@
       "registerLink": "Create account",
       "guestLink": "Try as a guest",
       "copyright": "© {year} InviteFlow"
-    },
-    "publicEvents": {
-      "title": "Events open for booking now",
-      "subtitle": "Book your ticket directly — no sign-up needed.",
-      "viewButton": "View details & book →"
     }
   },
   "GuestHub": {
     "title": "Try InviteFlow as a guest",
-    "subtitle": "A real wedding invitation — try it yourself, no sign-up needed.",
     "rsvp": {
-      "title": "Digital Invitation",
-      "description": "A real wedding invitation — respond attending/not attending and see it reach the organizer instantly.",
-      "cta": "Open the invitation"
+      "title": "Digital Invitation"
     },
-    "note": "Ticketing and polls are coming soon."
+    "unavailable": "The demo invitation isn’t available yet — the sample data hasn’t been added to the database.",
+    "unavailableHint": "Run supabase/seed.sql against your database to enable the demo invitation.",
+    "backHome": "Back to home"
   },
   "Common": {
     "languageSwitcher": "Language",
@@ -157,15 +108,7 @@
     "backToHome": "Home",
     "register": {
       "title": "Create an organizer account",
-      "subtitle": "Sign up to start creating your events and digital invitations.",
-      "fullNameLabel": "Full name",
-      "emailLabel": "Email",
-      "passwordLabel": "Password",
-      "confirmPasswordLabel": "Confirm password",
-      "submit": "Create account",
-      "submitting": "Creating...",
-      "haveAccount": "Already have an account?",
-      "loginLink": "Log in"
+      "subtitle": "Sign up to start creating your events and digital invitations."
     },
     "login": {
       "title": "Log in",
@@ -311,7 +254,8 @@
           "unauthorized": "You need to be signed in to upload a file.",
           "fileTooLarge": "That file is larger than the allowed limit.",
           "invalidFileType": "Unsupported file type — use an image (PNG/JPG/WEBP) or video (MP4/WEBM/MOV).",
-          "uploadFailed": "Couldn't upload the image, please try again."
+          "uploadFailed": "Couldn't upload the image, please try again.",
+          "rateLimited": "Too many uploads in a short time — wait a moment and try again."
         }
       },
       "primaryLocaleLabel": "Primary language",
@@ -320,9 +264,6 @@
       "visibilityLabel": "Visibility",
       "visibilityPublic": "Public",
       "visibilityPrivate": "Private",
-      "isRsvpEnabledLabel": "Enable attendance confirmation",
-      "isTicketingEnabledLabel": "Enable ticketing",
-      "isQrEnabledLabel": "Enable QR code",
       "isPasswordProtectedLabel": "Password-protect this page",
       "passwordLabel": "Password",
       "passwordKeepPlaceholder": "Leave empty to keep the current password",

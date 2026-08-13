@@ -2,3 +2,12 @@
 node_modules
 coverage
 package-lock.json
+
+# Vendored agent/skill tooling — copied in from upstream, not our source.
+# Reformatting it would churn files we don't own and make upstream updates
+# conflict, while `format:check` failing on ~280 vendored files hides real
+# formatting problems in the app itself.
+.agents
+.claude
+.github/skills
+.impeccable

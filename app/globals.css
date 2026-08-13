@@ -138,7 +138,13 @@
 }
 
 html[dir='rtl'] {
-  --font-sans: var(--font-cairo), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Cairo is self-hosted as two subset files (see lib/fonts.ts): Arabic
+     first so Arabic text uses it, Latin next so digits and Latin words
+     inside Arabic copy stay in the same typeface instead of dropping to
+     Geist. The browser resolves this per glyph, left to right. */
+  --font-sans:
+    var(--font-cairo-arabic), var(--font-cairo-latin), var(--font-geist-sans), ui-sans-serif,
+    system-ui, sans-serif;
 }
 
 @layer base {

@@ -1,34 +1,11 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Cairo, Playfair_Display } from 'next/font/google';
+import { fontVariables } from '@/lib/fonts';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import '../globals.css';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
-
-const cairo = Cairo({
-  variable: '--font-cairo',
-  subsets: ['arabic', 'latin'],
-});
-
-// Decorative editorial serif — used only for the huge cropped "INVITE"
-// background typography on the homepage, never for real body/UI text.
-const playfair = Playfair_Display({
-  variable: '--font-playfair',
-  subsets: ['latin'],
-  weight: ['700', '900'],
-});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -73,7 +50,7 @@ export default async function LocaleLayout({
       // the light editorial theme in :root. The dashboard app scopes
       // itself into the dark theme separately (see dashboard/layout.tsx)
       // — two distinct, intentional surfaces rather than one global mode.
-      className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} ${playfair.variable} h-full antialiased`}
+      className={`${fontVariables} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
         <NextIntlClientProvider>

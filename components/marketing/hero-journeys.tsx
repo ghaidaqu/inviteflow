@@ -91,7 +91,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
         <div className="relative flex min-h-[440px] flex-col justify-end overflow-hidden pb-2 sm:min-h-[560px] lg:min-h-[620px]">
           <span
             aria-hidden
-            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(4.5rem,15vw,9rem)] leading-none font-black tracking-normal whitespace-nowrap select-none sm:pt-8 sm:text-[clamp(6rem,25vw,12rem)] lg:text-[clamp(4.5rem,13vw,10rem)]"
+            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(3.5rem,23.5vw,7rem)] leading-none font-black tracking-normal whitespace-nowrap select-none sm:pt-8 sm:text-[clamp(6rem,25vw,12rem)] lg:text-[clamp(4.5rem,13vw,10rem)]"
             style={{ fontFamily: 'var(--font-playfair)' }}
           >
             INVITE
@@ -105,7 +105,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               space) so the cards visibly cover roughly its bottom quarter. */}
           <div
             dir="ltr"
-            className="relative z-10 flex h-[280px] -translate-y-[66px] items-stretch justify-center gap-4 sm:h-[340px] sm:-translate-y-5 sm:gap-6 lg:h-[380px] lg:-translate-y-[67px]"
+            className="relative z-10 flex h-[280px] -translate-y-[52px] items-stretch justify-center gap-2 sm:h-[340px] sm:-translate-y-5 sm:gap-6 lg:h-[380px] lg:-translate-y-[67px]"
           >
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];
@@ -116,7 +116,13 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               // it, measured per breakpoint (glyph width vs. row width) —
               // was previously ~23% short at sm/lg, leaving an odd gap of
               // bare text on either side of the card row.
-              const panelClassName = `group flex w-[21%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out sm:w-[29%] ${isLocked ? 'grayscale-[35%]' : 'hover:-translate-y-2'}`;
+              //
+              // On phones the same 21% left each card ~75px wide, which
+              // squeezed titles like "استبيانات و RSVP" into a 55px column
+              // and clipped the "استكشف" CTA. The base tier now fills the
+              // container instead, and the INVITE type above scales up with
+              // it so the two still read as one deliberate composition.
+              const panelClassName = `group flex w-[30%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out sm:w-[29%] ${isLocked ? 'grayscale-[35%]' : 'hover:-translate-y-2'}`;
 
               const content = (
                 <>

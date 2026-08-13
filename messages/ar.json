@@ -35,30 +35,15 @@
     },
     "journeys": {
       "invitation": {
-        "emoji": "💍",
         "title": "دعوات رقمية",
-        "tagline": "تصميم دعوات فريدة ومشاركتها بسهولة مع ضيوفك",
-        "bullet1": "قبول أو اعتذار بضغطة زر داخل واتساب",
-        "bullet2": "بدون أسئلة أو تعقيد — بس التفاصيل المهمة",
-        "bullet3": "رابط جاهز تشاركه فورًا",
         "cta": "ابدأ دعوتك"
       },
       "ticketing": {
-        "emoji": "🎟",
         "title": "تذاكر وفعاليات",
-        "tagline": "بيع التذاكر، إدارة الدخول، وQR Code احترافي",
-        "bullet1": "فئات تذاكر بأسعار وكميات تحددها",
-        "bullet2": "دفع إلكتروني حقيقي",
-        "bullet3": "تسجيل دخول الحضور بمسح QR",
         "cta": "أنشئ فعاليتك"
       },
       "rsvp": {
-        "emoji": "📊",
         "title": "استبيانات و RSVP",
-        "tagline": "اجمع ردود الحضور واستطلاع آراء ضيوفك",
-        "bullet1": "أسئلة تصمّمها أنت بنفسك",
-        "bullet2": "ترسلها مباشرة لأرقام محددة",
-        "bullet3": "نتائج فورية تقدر تبثها للجميع",
         "cta": "جهّز استفتاءك"
       }
     },
@@ -75,39 +60,11 @@
       "subtitle": "معاينة حقيقية لدعوتك — مو رسوم توضيحية.",
       "invitationLabel": "دعوة رقمية",
       "invitationSample": "يسعدنا حضوركم حفل زفاف سارة وأحمد",
-      "invitationStatus": "بانتظار ردك",
-      "ticketLabel": "تذكرة QR",
-      "ticketSample": "تذكرة دخول — VIP",
-      "ticketHolder": "الاسم: عبدالله الحربي",
-      "pollLabel": "نتائج استفتاء",
-      "pollSample": "وش الموعد الأنسب لكم؟",
-      "pollOption1": "الخميس",
-      "pollOption2": "الجمعة",
-      "pollOption3": "السبت"
+      "invitationStatus": "بانتظار ردك"
     },
     "occasions": {
       "title": "لأي مناسبة؟",
       "subtitle": "يشتغل مع أي نوع فعالية تقريبًا"
-    },
-    "comparison": {
-      "title": "قارن بين المسارات الثلاثة",
-      "colInvitation": "دعوة رقمية",
-      "colRsvp": "استفتاء RSVP",
-      "colTicketing": "فعالية بتذاكر",
-      "rowResponse": "طريقة الرد",
-      "invitationResponse": "زر واتساب",
-      "rsvpResponse": "نموذج أسئلة",
-      "ticketingResponse": "لا يوجد رد — تذكرة مباشرة",
-      "rowQuestions": "أسئلة مخصصة",
-      "rowTickets": "بيع تذاكر",
-      "rowQr": "دخول برمز QR",
-      "rowBestFor": "الأنسب لـ",
-      "invitationBestFor": "مناسبات شخصية (زواج، تخرج)",
-      "rsvpBestFor": "تنظيم فعالية أو لقاء جماعي",
-      "ticketingBestFor": "فعاليات مدفوعة ومؤتمرات",
-      "yes": "نعم",
-      "no": "لا",
-      "optional": "اختياري"
     },
     "pricing": {
       "title": "الأسعار",
@@ -132,22 +89,16 @@
       "registerLink": "إنشاء حساب",
       "guestLink": "تجربة كضيف",
       "copyright": "© {year} InviteFlow"
-    },
-    "publicEvents": {
-      "title": "فعاليات مفتوحة للحجز الآن",
-      "subtitle": "احجز تذكرتك مباشرة — بدون تسجيل دخول.",
-      "viewButton": "عرض التفاصيل والحجز ←"
     }
   },
   "GuestHub": {
     "title": "جرّب InviteFlow كضيف",
-    "subtitle": "دعوة زفاف حقيقية — جرّبها بنفسك، بدون تسجيل أو حساب.",
     "rsvp": {
-      "title": "دعوة رقمية",
-      "description": "دعوة زفاف حقيقية — رد بالحضور/الاعتذار وشوف كيف يوصل ردك للمنظّم فورًا.",
-      "cta": "افتح الدعوة"
+      "title": "دعوة رقمية"
     },
-    "note": "التذاكر والاستفتاءات قريبًا."
+    "unavailable": "الدعوة التجريبية غير متوفرة حاليًا — لم تُضَف بيانات العرض لقاعدة البيانات بعد.",
+    "unavailableHint": "شغّل ملف supabase/seed.sql على قاعدة البيانات لتفعيل الدعوة التجريبية.",
+    "backHome": "العودة للرئيسية"
   },
   "Common": {
     "languageSwitcher": "اللغة",
@@ -157,15 +108,7 @@
     "backToHome": "الرئيسية",
     "register": {
       "title": "إنشاء حساب منظّم",
-      "subtitle": "أنشئ حسابك لتبدأ بإنشاء مناسباتك ودعواتك الرقمية.",
-      "fullNameLabel": "الاسم الكامل",
-      "emailLabel": "البريد الإلكتروني",
-      "passwordLabel": "كلمة المرور",
-      "confirmPasswordLabel": "تأكيد كلمة المرور",
-      "submit": "إنشاء الحساب",
-      "submitting": "جارٍ الإنشاء...",
-      "haveAccount": "لديك حساب بالفعل؟",
-      "loginLink": "تسجيل الدخول"
+      "subtitle": "أنشئ حسابك لتبدأ بإنشاء مناسباتك ودعواتك الرقمية."
     },
     "login": {
       "title": "تسجيل الدخول",
@@ -311,7 +254,8 @@
           "unauthorized": "يجب تسجيل الدخول لرفع ملف.",
           "fileTooLarge": "حجم الملف أكبر من الحد المسموح.",
           "invalidFileType": "نوع الملف غير مدعوم — استخدم صورة (PNG/JPG/WEBP) أو فيديو (MP4/WEBM/MOV).",
-          "uploadFailed": "تعذّر رفع الصورة، حاول مرة أخرى."
+          "uploadFailed": "تعذّر رفع الصورة، حاول مرة أخرى.",
+          "rateLimited": "محاولات رفع كثيرة خلال وقت قصير، انتظر شوي وحاول مرة ثانية."
         }
       },
       "primaryLocaleLabel": "اللغة الأساسية",
@@ -320,9 +264,6 @@
       "visibilityLabel": "ظهور المناسبة",
       "visibilityPublic": "عامة",
       "visibilityPrivate": "خاصة",
-      "isRsvpEnabledLabel": "تفعيل تأكيد الحضور",
-      "isTicketingEnabledLabel": "تفعيل التذاكر",
-      "isQrEnabledLabel": "تفعيل رمز QR",
       "isPasswordProtectedLabel": "حماية الصفحة بكلمة مرور",
       "passwordLabel": "كلمة المرور",
       "passwordKeepPlaceholder": "اتركها فارغة للإبقاء على كلمة المرور الحالية",

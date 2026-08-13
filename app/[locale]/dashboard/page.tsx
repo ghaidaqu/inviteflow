@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId } from '@/lib/services/events.service';
 import { getDashboardStats } from '@/lib/services/dashboard.service';
-import { RsvpBreakdownChart } from '@/components/dashboard/rsvp-breakdown-chart';
+import { RsvpBreakdownChart } from '@/components/dashboard/rsvp-breakdown-chart.lazy';
 import { Badge } from '@/components/ui/badge';
 import {
   CalendarIcon,

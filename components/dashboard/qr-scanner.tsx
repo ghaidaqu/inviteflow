@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
+import type { Html5Qrcode } from 'html5-qrcode';
 import { useTranslations } from 'next-intl';
 import { checkInTicketAction } from '@/lib/actions/checkin';
 import { Button } from '@/components/ui/button';
@@ -55,21 +55,31 @@ export function QrScanner() {
   }
 
   useEffect(() => {
-    const scanner = new Html5Qrcode(SCANNER_ELEMENT_ID);
-    scannerRef.current = scanner;
+    let cancelled = false;
 
-    scanner
-      .start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: 250 },
-        (decodedText) => {
-          void handleDecoded(decodedText);
-        },
-        () => {},
-      )
-      .catch(() => setCameraError('cameraUnavailable'));
+    // html5-qrcode is ~110KB and only ever runs here, behind a camera
+    // permission prompt. Importing it lazily keeps it out of the check-in
+    // page's initial bundle — the manual-entry fallback below stays usable
+    // while it loads, and on a device with no camera it never loads at all.
+    void import('html5-qrcode').then(({ Html5Qrcode }) => {
+      if (cancelled) return;
+      const scanner = new Html5Qrcode(SCANNER_ELEMENT_ID);
+      scannerRef.current = scanner;
+
+      scanner
+        .start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: 250 },
+          (decodedText) => {
+            void handleDecoded(decodedText);
+          },
+          () => {},
+        )
+        .catch(() => setCameraError('cameraUnavailable'));
+    });
 
     return () => {
+      cancelled = true;
       const current = scannerRef.current;
       if (current) {
         current

@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { checkRateLimit } from '@/lib/utils/rate-limit';
 
 export type UploadCoverImageState = {
   error?: string;
@@ -32,6 +33,18 @@ export async function uploadCoverImageAction(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: 'unauthorized' };
+
+  // Being signed in isn't enough of a guard on its own here: a video can be
+  // 50MB, so an account looping this call could run up real storage cost
+  // fast. Keyed on the user id (not just IP) so one account can't dodge the
+  // limit by switching networks.
+  const allowed = await checkRateLimit(supabase, {
+    action: 'cover-upload',
+    scope: user.id,
+    maxHits: 20,
+    windowSeconds: 600,
+  });
+  if (!allowed) return { error: 'rateLimited' };
 
   const file = formData.get('file');
   if (!(file instanceof File) || file.size === 0) return { error: 'invalidInput' };
