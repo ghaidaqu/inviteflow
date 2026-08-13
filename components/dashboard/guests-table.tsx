@@ -74,8 +74,8 @@ const STATUS_VARIANT = {
   maybe: 'secondary',
 } as const;
 
-type GuestRowDraft = { name: string; phone: string };
-const emptyRow: GuestRowDraft = { name: '', phone: '' };
+type GuestRowDraft = { name: string; phone: string; expectedCompanions: string };
+const emptyRow: GuestRowDraft = { name: '', phone: '', expectedCompanions: '' };
 
 export function GuestsTable({
   eventId,
@@ -115,6 +115,7 @@ export function GuestsTable({
       const imported = picked.map((c) => ({
         name: c.name?.[0]?.trim() ?? '',
         phone: c.tel?.[0]?.trim() ?? '',
+        expectedCompanions: '',
       }));
       setRows((prev) => {
         const withoutBlankTrailing = prev.filter((r) => r.name.trim() || r.phone.trim());
@@ -131,7 +132,7 @@ export function GuestsTable({
   // or separator) and have it turn into editable rows they can still fix
   // up before submitting.
   function handleParsePaste() {
-    const parsed = parseGuestListText(pasteText);
+    const parsed = parseGuestListText(pasteText).map((r) => ({ ...r, expectedCompanions: '' }));
     if (parsed.length === 0) return;
     setRows((prev) => {
       const withoutBlankTrailing = prev.filter((r) => r.name.trim() || r.phone.trim());
@@ -202,7 +203,11 @@ export function GuestsTable({
 
   function openEdit(guest: GuestWithResponse) {
     setEditError(null);
-    setEditDraft({ name: guest.name ?? '', phone: guest.phone ?? '' });
+    setEditDraft({
+      name: guest.name ?? '',
+      phone: guest.phone ?? '',
+      expectedCompanions: String(guest.expected_companions ?? 0),
+    });
     setEditingGuest(guest);
   }
 
@@ -216,6 +221,7 @@ export function GuestsTable({
     const formData = new FormData();
     formData.set('name', editDraft.name);
     formData.set('phone', editDraft.phone);
+    formData.set('expectedCompanions', editDraft.expectedCompanions);
 
     startEditing(async () => {
       const result: UpdateGuestActionState = await updateGuestAction(
@@ -255,6 +261,7 @@ export function GuestsTable({
       t('csv.phone'),
       t('csv.email'),
       t('csv.status'),
+      t('csv.expectedCompanions'),
       t('csv.companionsCount'),
       t('csv.companionsNames'),
       t('csv.message'),
@@ -265,6 +272,7 @@ export function GuestsTable({
       guest.phone ?? '',
       guest.email ?? '',
       guest.response ? t(`status.${guest.response.status}`) : t('status.no_response'),
+      guest.expected_companions ?? 0,
       guest.response?.companions_count ?? 0,
       Array.isArray(guest.response?.companions_names)
         ? (guest.response.companions_names as string[]).join('; ')
@@ -359,6 +367,21 @@ export function GuestsTable({
                       value={row.phone}
                       onChange={(e) => updateRow(index, { phone: e.target.value })}
                       placeholder={t('addGuests.phonePlaceholder')}
+                      dir="ltr"
+                    />
+                  </Field>
+                  <Field className="w-20 shrink-0">
+                    <FieldLabel htmlFor={`guest-companions-${index}`}>
+                      {t('addGuests.companionsLabel')}
+                    </FieldLabel>
+                    <Input
+                      id={`guest-companions-${index}`}
+                      type="number"
+                      inputMode="numeric"
+                      min={0}
+                      value={row.expectedCompanions}
+                      onChange={(e) => updateRow(index, { expectedCompanions: e.target.value })}
+                      placeholder="0"
                       dir="ltr"
                     />
                   </Field>
@@ -491,7 +514,21 @@ export function GuestsTable({
                         <Badge variant="outline">{t('status.no_response')}</Badge>
                       )}
                     </td>
-                    <td className="p-3">{guest.response?.companions_count ?? 0}</td>
+                    <td className="p-3">
+                      {guest.response ? (
+                        guest.response.companions_count
+                      ) : (
+                        /* No reply yet, so there is no real number to show —
+                           fall back to the organizer's own estimate, muted so
+                           it can't be mistaken for a confirmed answer. */
+                        <span
+                          className="text-muted-foreground"
+                          title={t('addGuests.companionsHint')}
+                        >
+                          {guest.expected_companions ?? 0}
+                        </span>
+                      )}
+                    </td>
                     <td className="text-muted-foreground max-w-xs truncate p-3">
                       {guest.response?.message ?? ''}
                     </td>
@@ -591,6 +628,22 @@ export function GuestsTable({
                 id="edit-guest-phone"
                 value={editDraft.phone}
                 onChange={(e) => setEditDraft((d) => ({ ...d, phone: e.target.value }))}
+                dir="ltr"
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="edit-guest-companions">
+                {t('addGuests.companionsLabel')}
+              </FieldLabel>
+              <Input
+                id="edit-guest-companions"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                value={editDraft.expectedCompanions}
+                onChange={(e) =>
+                  setEditDraft((d) => ({ ...d, expectedCompanions: e.target.value }))
+                }
                 dir="ltr"
               />
             </Field>

@@ -26,7 +26,16 @@ export type AddGuestsActionState = {
   addedCount?: number;
 };
 
-type GuestRow = { name: string; phone: string };
+type GuestRow = { name: string; phone: string; expectedCompanions?: number };
+
+// The organizer's own estimate of party size. Clamped rather than rejected:
+// a stray non-numeric or negative value should quietly mean "just them",
+// not fail the whole batch of guests being added.
+function parseCompanions(value: unknown): number {
+  const n = Number(normalizeDigits(String(value ?? '0')).trim());
+  if (!Number.isFinite(n) || n < 0) return 0;
+  return Math.min(Math.floor(n), 50);
+}
 
 /**
  * `guestRows` is a JSON-encoded array of {name, phone} — one explicit row
@@ -54,6 +63,7 @@ export async function addGuestsAction(
     .map((r) => ({
       name: (r.name ?? '').trim(),
       phone: r.phone ? normalizeDigits(r.phone.trim()) : null,
+      expectedCompanions: parseCompanions(r.expectedCompanions),
     }))
     .filter((g) => g.name.length > 0);
   if (guestsToAdd.length === 0) return { error: 'invalidInput' };
@@ -76,6 +86,7 @@ export async function addGuestsAction(
         name: guest.name,
         phone: guest.phone,
         email: null,
+        expectedCompanions: guest.expectedCompanions,
       });
     }
   } catch {
@@ -112,6 +123,7 @@ export async function updateGuestAction(
     await updateGuest(supabase, guestId, {
       name,
       phone: phoneRaw ? normalizeDigits(phoneRaw) : null,
+      expectedCompanions: parseCompanions(formData.get('expectedCompanions')),
     });
   } catch {
     return { error: 'unknown' };

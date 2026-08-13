@@ -498,7 +498,8 @@
       "companionsCount": "عدد المرافقين",
       "companionsNames": "أسماء المرافقين",
       "message": "الرسالة",
-      "respondedAt": "تاريخ الرد"
+      "respondedAt": "تاريخ الرد",
+      "expectedCompanions": "المرافقون المتوقعون"
     },
     "deleteConfirmTitle": "حذف الضيف",
     "deleteConfirmDescription": "سيتم حذف هذا الضيف وردّه نهائيًا.",
@@ -522,7 +523,9 @@
       "submit": "إضافة",
       "submitting": "جارٍ الإضافة...",
       "success": "تمت إضافة {count} ضيف بنجاح.",
-      "cancel": "إلغاء"
+      "cancel": "إلغاء",
+      "companionsLabel": "مرافقون",
+      "companionsHint": "العدد المتوقع من المنظّم — يُستبدل برد الضيف الفعلي بعد ما يرد."
     },
     "editGuest": {
       "trigger": "تعديل الضيف",

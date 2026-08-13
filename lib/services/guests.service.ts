@@ -47,7 +47,12 @@ export async function listGuestsWithResponses(
 export async function createGuestManually(
   supabase: Client,
   eventId: string,
-  input: { name: string; phone: string | null; email: string | null },
+  input: {
+    name: string;
+    phone: string | null;
+    email: string | null;
+    expectedCompanions?: number;
+  },
 ): Promise<GuestRow> {
   const { data, error } = await supabase
     .from('guests')
@@ -56,6 +61,7 @@ export async function createGuestManually(
       name: input.name,
       phone: input.phone,
       email: input.email,
+      expected_companions: input.expectedCompanions ?? 0,
     })
     .select('*')
     .single();
@@ -67,11 +73,15 @@ export async function createGuestManually(
 export async function updateGuest(
   supabase: Client,
   guestId: string,
-  input: { name: string; phone: string | null },
+  input: { name: string; phone: string | null; expectedCompanions: number },
 ): Promise<void> {
   const { error } = await supabase
     .from('guests')
-    .update({ name: input.name, phone: input.phone })
+    .update({
+      name: input.name,
+      phone: input.phone,
+      expected_companions: input.expectedCompanions,
+    })
     .eq('id', guestId);
 
   if (error) throw error;

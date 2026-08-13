@@ -205,6 +205,11 @@ export interface Database {
           phone: string | null;
           email: string | null;
           secure_token: string;
+          // How many people the ORGANIZER expects this invitation to cover
+          // ("family of 4"), set when they add the guest. Deliberately
+          // separate from rsvp_responses.companions_count, which is the
+          // guest's own stated number once they actually reply.
+          expected_companions: number;
           created_at: string;
           updated_at: string;
           deleted_at: string | null;
@@ -216,6 +221,7 @@ export interface Database {
           phone?: string | null;
           email?: string | null;
           secure_token?: string;
+          expected_companions?: number;
           created_at?: string;
           updated_at?: string;
           deleted_at?: string | null;

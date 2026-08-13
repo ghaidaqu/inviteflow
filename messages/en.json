@@ -498,7 +498,8 @@
       "companionsCount": "Companions count",
       "companionsNames": "Companions names",
       "message": "Message",
-      "respondedAt": "Responded at"
+      "respondedAt": "Responded at",
+      "expectedCompanions": "Expected companions"
     },
     "deleteConfirmTitle": "Delete guest",
     "deleteConfirmDescription": "This guest and their response will be permanently deleted.",
@@ -522,7 +523,9 @@
       "submit": "Add",
       "submitting": "Adding...",
       "success": "{count} guest(s) added successfully.",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "companionsLabel": "Guests",
+      "companionsHint": "The organizer's estimate — replaced by the guest's own answer once they reply."
     },
     "editGuest": {
       "trigger": "Edit guest",
