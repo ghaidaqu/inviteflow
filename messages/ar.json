@@ -403,7 +403,8 @@
       "notConfigured": "لم يتم ربط المشروع بقاعدة بيانات Supabase بعد.",
       "submitFailed": "تعذّر إرسال الرد، حاول مرة أخرى.",
       "rateLimited": "محاولات كثيرة خلال وقت قصير، يرجى المحاولة بعد دقيقة."
-    }
+    },
+    "a11yRemoveCompanion": "حذف هذا المرافق"
   },
   "EventSettings": {
     "invitationPageTitle": "الدعوة الرقمية",
@@ -467,7 +468,9 @@
         "unauthorized": "يجب تسجيل الدخول للقيام بهذا.",
         "unknown": "حدث خطأ ما، يرجى المحاولة مرة أخرى."
       }
-    }
+    },
+    "a11yDeleteQuestion": "حذف هذا السؤال",
+    "a11yDeleteOption": "حذف هذا الخيار"
   },
   "Guests": {
     "title": "الضيوف",
@@ -540,7 +543,8 @@
       "invalidInput": "يرجى إدخال اسم ضيف واحد على الأقل.",
       "unauthorized": "يجب تسجيل الدخول للقيام بهذا.",
       "unknown": "حدث خطأ ما، يرجى المحاولة مرة أخرى."
-    }
+    },
+    "a11yDeleteGuest": "حذف الضيف"
   },
   "Tickets": {
     "title": "التذاكر",
@@ -678,7 +682,8 @@
     "markAllRead": "تحديد الكل كمقروء",
     "rsvpNew": "رد جديد من {name}",
     "ticketPurchased": "تذكرة جديدة من {name}",
-    "ticketCheckedIn": "تم تسجيل حضور {name}"
+    "ticketCheckedIn": "تم تسجيل حضور {name}",
+    "a11yBell": "الإشعارات"
   },
   "NotFound": {
     "title": "الصفحة غير موجودة",

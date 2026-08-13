@@ -100,6 +100,7 @@ export function QuestionsEditor({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
+                    aria-label={t('a11yDeleteQuestion')}
                     onClick={() => remove(index)}
                   >
                     <Trash2Icon />
@@ -238,7 +239,13 @@ function QuestionOptionsEditor({
             name={`questions.${questionIndex}.options.${optionIndex}.textEn`}
             render={({ field: f }) => <Input {...f} placeholder={t('optionTextEnPlaceholder')} />}
           />
-          <Button type="button" variant="ghost" size="icon-sm" onClick={() => remove(optionIndex)}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t('a11yDeleteOption')}
+            onClick={() => remove(optionIndex)}
+          >
             <Trash2Icon />
           </Button>
         </div>

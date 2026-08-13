@@ -93,7 +93,9 @@ export function NotificationsBell({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" />}>
+      <DropdownMenuTrigger
+        render={<Button variant="ghost" size="icon" aria-label={t('a11yBell')} />}
+      >
         <span className="relative">
           <BellIcon />
           {unreadCount > 0 && (

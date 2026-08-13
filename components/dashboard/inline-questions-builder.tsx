@@ -99,6 +99,7 @@ export function InlineQuestionsBuilder({
                   type="button"
                   variant="ghost"
                   size="icon-sm"
+                  aria-label={t('a11yDeleteQuestion')}
                   onClick={() => removeQuestion(index)}
                 >
                   <Trash2Icon />
@@ -186,6 +187,7 @@ export function InlineQuestionsBuilder({
                           type="button"
                           variant="ghost"
                           size="icon-sm"
+                          aria-label={t('a11yDeleteOption')}
                           onClick={() => removeOption(index, oIndex)}
                         >
                           <Trash2Icon />

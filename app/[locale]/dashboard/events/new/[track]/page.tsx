@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { EventForm } from '@/components/dashboard/event-form';
 import { createEventAction } from '@/lib/actions/events';
+import { Link } from '@/i18n/navigation';
 
 const TRACKS = ['invitation', 'event', 'rsvp'] as const;
 type Track = (typeof TRACKS)[number];
@@ -25,10 +26,20 @@ export default async function NewEventPage({
   if (track !== 'invitation') notFound();
 
   const t = await getTranslations('Events.newChooser');
+  const tNav = await getTranslations('Dashboard.nav');
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t(`${track}.title`)}</h1>
+      {/* Matches the breadcrumb-back on the event subpages. Abandoning a
+          half-filled create form previously meant using the browser's back
+          button — the page offered no way out of its own. */}
+      <Link
+        href="/dashboard/events"
+        className="text-muted-foreground hover:text-primary text-sm hover:underline"
+      >
+        {tNav('events')}
+      </Link>
+      <h1 className="mt-2 mb-6 text-2xl font-bold tracking-tight">{t(`${track}.title`)}</h1>
       <EventForm action={createEventAction} track={track} />
     </main>
   );

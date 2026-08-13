@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { EventForm } from '@/components/dashboard/event-form';
 import { updateEventAction } from '@/lib/actions/events';
+import { Link } from '@/i18n/navigation';
 
 export default async function EditEventPage({
   params,
@@ -26,7 +27,15 @@ export default async function EditEventPage({
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">{t('submitEdit')}</h1>
+      {/* Same breadcrumb-back pattern the other event subpages use — without
+          it this form was a dead end with no way back to the event. */}
+      <Link
+        href={`/dashboard/events/${id}`}
+        className="text-muted-foreground hover:text-primary text-sm hover:underline"
+      >
+        {event.name}
+      </Link>
+      <h1 className="mt-2 mb-6 text-2xl font-bold tracking-tight">{t('submitEdit')}</h1>
       <EventForm event={event} action={updateEventAction.bind(null, event.id)} />
     </main>
   );

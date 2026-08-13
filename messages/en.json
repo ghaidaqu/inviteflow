@@ -403,7 +403,8 @@
       "notConfigured": "This project isn't connected to a Supabase database yet.",
       "submitFailed": "Couldn't submit your response, please try again.",
       "rateLimited": "Too many attempts in a short time — please try again in a minute."
-    }
+    },
+    "a11yRemoveCompanion": "Remove this companion"
   },
   "EventSettings": {
     "invitationPageTitle": "Digital Invitation",
@@ -467,7 +468,9 @@
         "unauthorized": "You must be logged in to do this.",
         "unknown": "Something went wrong, please try again."
       }
-    }
+    },
+    "a11yDeleteQuestion": "Delete this question",
+    "a11yDeleteOption": "Delete this option"
   },
   "Guests": {
     "title": "Guests",
@@ -540,7 +543,8 @@
       "invalidInput": "Please enter at least one guest name.",
       "unauthorized": "You must be logged in to do this.",
       "unknown": "Something went wrong, please try again."
-    }
+    },
+    "a11yDeleteGuest": "Delete guest"
   },
   "Tickets": {
     "title": "Tickets",
@@ -678,7 +682,8 @@
     "markAllRead": "Mark all as read",
     "rsvpNew": "New response from {name}",
     "ticketPurchased": "New ticket from {name}",
-    "ticketCheckedIn": "{name} checked in"
+    "ticketCheckedIn": "{name} checked in",
+    "a11yBell": "Notifications"
   },
   "NotFound": {
     "title": "Page not found",

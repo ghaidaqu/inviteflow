@@ -520,7 +520,15 @@ export function GuestsTable({
                           open={deletingId === guest.id}
                           onOpenChange={(open) => setDeletingId(open ? guest.id : null)}
                         >
-                          <DialogTrigger render={<Button variant="ghost" size="icon-sm" />}>
+                          <DialogTrigger
+                            render={
+                              <Button
+                                variant="ghost"
+                                size="icon-sm"
+                                aria-label={t('a11yDeleteGuest')}
+                              />
+                            }
+                          >
                             <Trash2Icon />
                           </DialogTrigger>
                           <DialogContent>

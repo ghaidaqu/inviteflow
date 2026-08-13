@@ -138,7 +138,13 @@ export function RsvpEditForm({
                   {...register(`companionsNames.${index}.name`)}
                   placeholder={t('companionNamePlaceholder')}
                 />
-                <Button type="button" variant="ghost" size="icon-sm" onClick={() => remove(index)}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={t('a11yRemoveCompanion')}
+                  onClick={() => remove(index)}
+                >
                   <Trash2Icon />
                 </Button>
               </div>

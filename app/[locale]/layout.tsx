@@ -55,7 +55,16 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col font-sans">
         <NextIntlClientProvider>
           {children}
-          <div className="fixed end-4 bottom-4 z-50">
+          {/* Mounted once here rather than per-page, because the guest-facing
+              pages (invitation, RSVP, ticket) deliberately have no nav or
+              header to put it in — and those are exactly the pages where a
+              visitor is most likely to want the other language.
+
+              It used to be `fixed bottom-4 end-4`, which meant it sat on top
+              of whatever occupied that corner: on a 390px phone it covered
+              ~1900px² of the hero's invitation card, including its CTA. A
+              normal element at the end of the column can't overlap anything. */}
+          <div className="border-border/60 flex justify-center border-t px-4 py-4">
             <LanguageSwitcher />
           </div>
         </NextIntlClientProvider>
