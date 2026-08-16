@@ -19,8 +19,8 @@ const baseProvider: WhatsAppProvider = isWhatsAppConfigured()
  * Meta's API only accepts E.164 without a "+", but guests' numbers are stored
  * however they were entered — historically "05XXXXXXXX", which the API would
  * reject outright. Normalizing here rather than at each call site means every
- * path (RSVP confirmations, invitations, ticket delivery, webhook replies) is
- * covered, including guests saved before numbers were normalized on input.
+ * path (RSVP confirmations, invitation sends, webhook replies) is covered,
+ * including guests saved before numbers were normalized on input.
  */
 export const whatsAppProvider: WhatsAppProvider = {
   async send(message) {

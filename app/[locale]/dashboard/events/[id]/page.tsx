@@ -7,14 +7,7 @@ import { Button } from '@/components/ui/button';
 import { EventDetailActions } from '@/components/dashboard/event-detail-actions';
 import { CopyLinkButton } from '@/components/dashboard/copy-link-button';
 import { Link } from '@/i18n/navigation';
-import {
-  UsersIcon,
-  MailIcon,
-  CheckCircle2Icon,
-  TicketIcon,
-  QrCodeIcon,
-  type LucideIcon,
-} from 'lucide-react';
+import { UsersIcon, MailIcon, CheckCircle2Icon, type LucideIcon } from 'lucide-react';
 
 const STATUS_VARIANT = {
   draft: 'secondary',
@@ -74,10 +67,10 @@ export default async function EventDetailPage({
         <EventDetailActions eventId={event.id} status={event.status} />
       </div>
 
-      {/* Only surface tools the event actually uses — a ticketing event has
-          no business showing an RSVP/invitation tool, and a pure RSVP/poll
-          or invitation event has no tickets to sell or scan. Guests is the
-          one tool every track shares. */}
+      {/* Ticketing was removed from the product entirely — this only ever
+          checks is_rsvp_enabled now. Left as a condition rather than always
+          rendering because a handful of events created before that removal
+          may have is_rsvp_enabled: false on record. */}
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <ToolCard
           href={`/dashboard/events/${event.id}/guests`}
@@ -95,20 +88,6 @@ export default async function EventDetailPage({
               href={`/dashboard/events/${event.id}/rsvp`}
               icon={CheckCircle2Icon}
               label={t('detail.rsvpSettingsButton')}
-            />
-          </>
-        )}
-        {event.is_ticketing_enabled && (
-          <>
-            <ToolCard
-              href={`/dashboard/events/${event.id}/tickets`}
-              icon={TicketIcon}
-              label={t('detail.ticketsButton')}
-            />
-            <ToolCard
-              href={`/dashboard/events/${event.id}/check-in`}
-              icon={QrCodeIcon}
-              label={t('detail.checkInButton')}
             />
           </>
         )}

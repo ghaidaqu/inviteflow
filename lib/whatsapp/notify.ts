@@ -178,20 +178,3 @@ export async function sendResultsBroadcastWhatsApp(
     return false;
   }
 }
-
-export async function sendBuyerTicketsWhatsApp(
-  eventSlug: string,
-  phone: string,
-  ticketUrls: string[],
-  locale: Locale,
-) {
-  const eventName = await getEventName(eventSlug);
-  if (!eventName) return;
-
-  const text =
-    locale === 'ar'
-      ? `شكرًا لشرائك تذاكر "${eventName}"! روابط تذاكرك:\n${ticketUrls.join('\n')}`
-      : `Thanks for your tickets to "${eventName}"! Your ticket links:\n${ticketUrls.join('\n')}`;
-
-  await safeSend(phone, text);
-}

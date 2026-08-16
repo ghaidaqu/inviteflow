@@ -101,69 +101,6 @@ export function guestRsvpConfirmationEmail(
   };
 }
 
-export function organizerTicketPurchasedEmail(
-  locale: Locale,
-  params: { eventName: string; buyerName: string; quantity: number },
-) {
-  if (locale === 'ar') {
-    return {
-      subject: `عملية شراء جديدة — ${params.eventName}`,
-      html: wrap(
-        locale,
-        `
-        <p>تم شراء <strong>${params.quantity}</strong> تذكرة لمناسبة <strong>${params.eventName}</strong>.</p>
-        <p>المشتري: ${params.buyerName}</p>
-      `,
-      ),
-    };
-  }
-  return {
-    subject: `New ticket purchase — ${params.eventName}`,
-    html: wrap(
-      locale,
-      `
-      <p><strong>${params.quantity}</strong> ticket(s) purchased for <strong>${params.eventName}</strong>.</p>
-      <p>Buyer: ${params.buyerName}</p>
-    `,
-    ),
-  };
-}
-
-export function buyerTicketsEmail(
-  locale: Locale,
-  params: { eventName: string; ticketUrls: string[] },
-) {
-  const links = params.ticketUrls
-    .map(
-      (url, i) =>
-        `<p><a href="${url}">${locale === 'ar' ? 'تذكرة' : 'Ticket'} ${i + 1}: ${url}</a></p>`,
-    )
-    .join('');
-
-  if (locale === 'ar') {
-    return {
-      subject: `تذاكرك — ${params.eventName}`,
-      html: wrap(
-        locale,
-        `
-        <p>شكرًا لشرائك تذاكر <strong>${params.eventName}</strong>. احتفظ بروابط تذاكرك:</p>
-        ${links}
-      `,
-      ),
-    };
-  }
-  return {
-    subject: `Your tickets — ${params.eventName}`,
-    html: wrap(
-      locale,
-      `
-      <p>Thanks for buying tickets to <strong>${params.eventName}</strong>. Keep these ticket links:</p>
-      ${links}
-    `,
-    ),
-  };
-}
-
 export function resultsBroadcastEmail(
   locale: Locale,
   params: { eventName: string; summary: ResultsSummary },

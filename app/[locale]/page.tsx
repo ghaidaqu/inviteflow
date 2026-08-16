@@ -9,10 +9,6 @@ import { PricingSection } from '@/components/marketing/pricing-section';
 import { FinalCta } from '@/components/marketing/final-cta';
 import { SiteFooter } from '@/components/marketing/site-footer';
 
-// Cookie-free public client is no longer needed here — the public ticketed
-// events listing was pulled from the homepage along with the 3-track
-// comparison table (see hero-journeys.tsx) while the product is focused on
-// digital invitations only.
 export const revalidate = 60;
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {

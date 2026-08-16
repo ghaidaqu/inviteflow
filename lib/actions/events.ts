@@ -37,7 +37,6 @@ function readFormInput(formData: FormData) {
     primaryLocale: formData.get('primaryLocale'),
     visibility: formData.get('visibility'),
     isRsvpEnabled: formData.get('isRsvpEnabled') === 'true',
-    isTicketingEnabled: formData.get('isTicketingEnabled') === 'true',
     isQrEnabled: formData.get('isQrEnabled') === 'true',
     isPasswordProtected: formData.get('isPasswordProtected') === 'true',
     password: formData.get('password'),
@@ -78,12 +77,11 @@ export async function createEventAction(
     return { error: 'invalidInput' };
   }
 
-  // Ticketing and RSVP are locked platform-wide for now — the chooser page
-  // and the /new/[track] route already keep the UI from getting here, but
-  // this is the actual enforcement point in case someone crafts a request
-  // directly (e.g. toggling "enable ticketing" on what looked like an
-  // invitation-track submission).
-  if (parsed.data.isTicketingEnabled || !parsed.data.isRsvpEnabled) {
+  // Ticketing has been removed from the product entirely. RSVP collection
+  // is mandatory for every event created through this action — this is the
+  // actual enforcement point in case a request is crafted directly with it
+  // turned off.
+  if (!parsed.data.isRsvpEnabled) {
     return { error: 'trackLocked' };
   }
 

@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "InviteFlow — دعوات رقمية وتذاكر فعاليات",
-    "description": "منصة لإدارة الدعوات الرقمية، تأكيد الحضور، وتذاكر الفعاليات."
+    "title": "InviteFlow — دعوات رقمية أنيقة",
+    "description": "دعوات رقمية أنيقة مع تأكيد حضور فوري عبر واتساب — للمناسبات التي تستحق التفاصيل الدقيقة."
   },
   "HomePage": {
     "nav": {
@@ -15,13 +15,12 @@
     "hero": {
       "headlineLine1": "كل مناسبة",
       "headlineLine2": "تستحق أن تُحكى",
-      "subtitle": "صمّم دعوتك الرقمية وشاركها مع ضيوفك خلال دقائق — بسهولة واحترافية تامة. (التذاكر والاستفتاءات قريبًا)",
+      "subtitle": "صمّم دعوتك الرقمية وشاركها مع ضيوفك خلال دقائق — بسهولة واحترافية تامة.",
       "primaryCta": "ابدأ مجاناً",
       "guestLink": "أو جرّب المنصة كضيف بدون تسجيل ←"
     },
     "panels": {
-      "exploreCta": "استكشف",
-      "comingSoon": "قريبًا"
+      "exploreCta": "استكشف"
     },
     "trustStrip": {
       "item1Title": "واتساب مباشر",
@@ -35,16 +34,10 @@
     },
     "journeys": {
       "invitation": {
-        "title": "دعوات رقمية",
-        "cta": "ابدأ دعوتك"
-      },
-      "ticketing": {
-        "title": "تذاكر وفعاليات",
-        "cta": "أنشئ فعاليتك"
+        "title": "دعوات رقمية"
       },
       "rsvp": {
-        "title": "استبيانات و RSVP",
-        "cta": "جهّز استفتاءك"
+        "title": "دعوة بالرابط"
       }
     },
     "why": {
@@ -83,7 +76,7 @@
     },
     "footer": {
       "tagline": "منصة عربية بالكامل لتنظيم فعالياتك — دعوات، استفتاءات، وتذاكر.",
-      "journeysHeading": "المسارات",
+      "journeysHeading": "المنتج",
       "accountHeading": "الحساب",
       "loginLink": "تسجيل الدخول",
       "registerLink": "إنشاء حساب",
@@ -197,8 +190,6 @@
       "notAttending": "اعتذروا",
       "maybe": "ربما",
       "noResponse": "لم يردوا",
-      "ticketsSold": "التذاكر المباعة",
-      "ticketsRemaining": "التذاكر المتبقية",
       "totalRevenue": "الإيرادات (تجريبي)",
       "checkedIn": "الحاضرون فعليًا",
       "rsvpBreakdown": "توزيع الردود",
@@ -272,8 +263,7 @@
       "submitting": "جارٍ الحفظ...",
       "trackBadge": {
         "invitation": "دعوة رقمية",
-        "event": "فعالية بتذاكر",
-        "rsvp": "RSVP / استفتاء"
+        "rsvp": "دعوة بالرابط"
       },
       "questionsInlineTitle": "أسئلة الاستطلاع",
       "questionsInlineHint": "أضف الأسئلة اللي تبي ترسلها لضيوفك. تقدر تضيف أو تعدّل عليها لاحقًا من صفحة الإعدادات.",
@@ -289,19 +279,13 @@
       "title": "إنشاء جديد",
       "subtitle": "اختر المسار المناسب — كل مسار منفصل تمامًا عن الثاني.",
       "startButton": "ابدأ",
-      "comingSoon": "قريبًا",
-      "comingSoonNote": "هذا المسار غير متاح حاليًا — نركّز الآن على الدعوات الرقمية فقط.",
       "invitation": {
         "title": "دعوة رقمية",
         "description": "دعوة شخصية بسيطة لمناسبة (زفاف، تخرج...) — قبول/اعتذار اختياري، بدون أسئلة إضافية."
       },
-      "event": {
-        "title": "فعالية بتذاكر",
-        "description": "معارض، مؤتمرات، فعاليات — حدد السعر وعدد التذاكر وابدأ البيع."
-      },
       "rsvp": {
-        "title": "RSVP / استفتاء",
-        "description": "نظّم فعالية أو لقاء عبر أسئلتك الخاصة، وأرسلها لأرقام محددة."
+        "title": "دعوة بالرابط",
+        "description": "رابط تسجيل مباشر — الاسم، الجوال، عدد المرافقين، وأسئلتك الخاصة. مثالي حين تحتاج الأرقام بدقة وسرعة دون تصميم دعوة."
       }
     },
     "detail": {
@@ -321,14 +305,13 @@
       "guestsButton": "الضيوف",
       "invitationButton": "الدعوة الرقمية",
       "rsvpSettingsButton": "أسئلة RSVP",
-      "ticketsButton": "التذاكر",
       "checkInButton": "مسح QR وتسجيل الحضور"
     },
     "errors": {
       "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
       "unauthorized": "يجب تسجيل الدخول لتنفيذ هذا الإجراء.",
       "passwordRequiredForProtection": "أدخل كلمة مرور لتفعيل الحماية.",
-      "trackLocked": "هذا المسار غير متاح حاليًا — التذاكر والاستفتاءات قريبًا.",
+      "trackLocked": "يجب أن تسمح المناسبة بتأكيد الحضور.",
       "unknown": "حدث خطأ غير متوقع، حاول مرة أخرى."
     },
     "validation": {
@@ -360,8 +343,7 @@
     "copyLinkButton": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط",
     "shareMessage": "دعوة: {name}",
-    "rsvpButton": "الرد على الدعوة",
-    "ticketsButton": "شراء تذكرة"
+    "rsvpButton": "الرد على الدعوة"
   },
   "Rsvp": {
     "pageSubtitle": "يرجى تعبئة النموذج لتأكيد حضورك.",
@@ -572,136 +554,6 @@
       "vcfEmpty": "ما لقينا أي جهة اتصال في هذا الملف."
     },
     "a11yDeleteGuest": "حذف الضيف"
-  },
-  "Tickets": {
-    "title": "التذاكر",
-    "newButton": "فئة تذكرة جديدة",
-    "empty": "لا توجد فئات تذاكر بعد.",
-    "free": "مجانية",
-    "soldOf": "تم بيع {sold} من {total}",
-    "editButton": "تعديل",
-    "deleteButton": "حذف",
-    "deleteConfirmTitle": "حذف فئة التذكرة",
-    "deleteConfirmDescription": "سيتم حذف فئة التذكرة هذه. لا يمكن التراجع عن هذا الإجراء.",
-    "deleteConfirmCancel": "إلغاء",
-    "deleteConfirmAction": "تأكيد الحذف",
-    "form": {
-      "createTitle": "إنشاء فئة تذكرة",
-      "nameArLabel": "اسم الفئة (عربي)",
-      "nameEnLabel": "اسم الفئة (إنجليزي)",
-      "priceLabel": "السعر",
-      "currencyLabel": "العملة",
-      "quantityTotalLabel": "الكمية المتاحة",
-      "maxPerOrderLabel": "الحد الأقصى لكل طلب",
-      "saleStartAtLabel": "بداية البيع",
-      "saleEndAtLabel": "نهاية البيع",
-      "statusLabel": "الحالة",
-      "statuses": {
-        "active": "نشطة",
-        "paused": "متوقفة",
-        "ended": "منتهية"
-      },
-      "saving": "جارٍ الحفظ...",
-      "saveChanges": "حفظ التعديلات",
-      "create": "إنشاء"
-    },
-    "errors": {
-      "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
-      "unauthorized": "يجب تسجيل الدخول لتنفيذ هذا الإجراء.",
-      "unknown": "حدث خطأ غير متوقع، حاول مرة أخرى."
-    },
-    "validation": {
-      "nameRequired": "هذا الحقل مطلوب.",
-      "priceInvalid": "يرجى إدخال سعر صحيح.",
-      "quantityInvalid": "يرجى إدخال كمية صحيحة.",
-      "maxPerOrderInvalid": "يرجى إدخال قيمة صحيحة.",
-      "dateInvalid": "يرجى إدخال تاريخ ووقت صحيحين.",
-      "saleEndBeforeStart": "يجب أن يكون تاريخ نهاية البيع بعد تاريخ البداية."
-    },
-    "list": {
-      "title": "التذاكر المُصدرة",
-      "empty": "لا توجد تذاكر مُصدرة بعد.",
-      "exportCsv": "تصدير CSV",
-      "totalTickets": "إجمالي التذاكر",
-      "usedTickets": "مستخدمة",
-      "unusedTickets": "غير مستخدمة",
-      "status": {
-        "valid": "صالحة",
-        "used": "مستخدمة",
-        "cancelled": "ملغاة"
-      },
-      "csv": {
-        "holderName": "اسم الحامل",
-        "ticketType": "فئة التذكرة",
-        "status": "الحالة",
-        "buyerEmail": "بريد المشتري",
-        "pricePaid": "المبلغ المدفوع",
-        "createdAt": "تاريخ الإصدار"
-      }
-    }
-  },
-  "PublicTickets": {
-    "pageSubtitle": "اختر فئة التذكرة وأكمل بياناتك.",
-    "noTicketsAvailable": "لا توجد تذاكر متاحة للبيع حاليًا.",
-    "free": "مجانية",
-    "ticketTypeLabel": "فئة التذكرة",
-    "quantityLabel": "الكمية",
-    "buyerNameLabel": "الاسم",
-    "buyerEmailLabel": "البريد الإلكتروني",
-    "buyerPhoneLabel": "رقم الجوال",
-    "purchaseButton": "إتمام الشراء",
-    "purchasing": "جارٍ التحويل لصفحة الدفع...",
-    "purchaseSuccessTitle": "تم الشراء بنجاح!",
-    "purchaseSuccessDescription": "احتفظ بروابط تذاكرك التالية:",
-    "viewTicket": "عرض التذكرة {number}",
-    "mockPaymentNotice": "هذا الشراء تجريبي (Mock Payment) — لن يتم خصم أي مبلغ فعلي.",
-    "errors": {
-      "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
-      "notConfigured": "لم يتم ربط المشروع بقاعدة بيانات Supabase بعد.",
-      "purchaseFailed": "تعذّر إتمام عملية الشراء، حاول مرة أخرى.",
-      "rateLimited": "محاولات كثيرة خلال وقت قصير، يرجى المحاولة بعد دقيقة."
-    },
-    "validation": {
-      "ticketTypeRequired": "يرجى اختيار فئة التذكرة.",
-      "quantityInvalid": "يرجى إدخال كمية صحيحة.",
-      "nameRequired": "هذا الحقل مطلوب.",
-      "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح."
-    },
-    "ticketPage": {
-      "holderNameLabel": "اسم الحامل",
-      "dateLabel": "التاريخ والوقت",
-      "locationLabel": "الموقع",
-      "status": {
-        "valid": "صالحة",
-        "used": "مستخدمة",
-        "cancelled": "ملغاة"
-      }
-    },
-    "successPage": {
-      "paidTitle": "تم تأكيد الدفع!",
-      "paidDescription": "شكرًا لشرائك. احتفظ بروابط تذاكرك:",
-      "viewTicket": "عرض التذكرة {number}",
-      "pendingTitle": "جارٍ تأكيد الدفع...",
-      "pendingDescription": "استلمنا طلبك وننتظر تأكيد الدفع من مزوّد الدفع. راجع بريدك الإلكتروني خلال دقائق — التذاكر تُرسل تلقائيًا فور التأكيد.",
-      "failedDescription": "تعذّر إتمام عملية الدفع. إذا خُصم مبلغ من حسابك تواصل مع المنظّم.",
-      "backToEvent": "العودة لصفحة المناسبة"
-    }
-  },
-  "CheckIn": {
-    "title": "مسح QR وتسجيل الحضور",
-    "cameraUnavailable": "تعذّر الوصول إلى الكاميرا. يمكنك إدخال رمز التذكرة يدويًا بالأسفل.",
-    "manualTokenPlaceholder": "أدخل رمز التذكرة",
-    "manualSubmit": "تحقق",
-    "recentScans": "آخر عمليات المسح",
-    "checkedIn": "تم تسجيل حضورهم",
-    "totalTickets": "إجمالي التذاكر",
-    "results": {
-      "valid": "صالحة",
-      "already_used": "مستخدمة مسبقًا",
-      "cancelled": "ملغاة",
-      "not_found": "غير موجودة",
-      "error": "خطأ"
-    }
   },
   "Notifications": {
     "title": "الإشعارات",

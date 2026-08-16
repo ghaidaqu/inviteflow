@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "InviteFlow — Digital Invitations & Event Tickets",
-    "description": "A platform for digital invitations, RSVP tracking, and event ticketing."
+    "title": "InviteFlow — Elegant Digital Invitations",
+    "description": "Elegant digital invitations with instant WhatsApp RSVP confirmation — for occasions that deserve the details done right."
   },
   "HomePage": {
     "nav": {
@@ -15,13 +15,12 @@
     "hero": {
       "headlineLine1": "Every occasion",
       "headlineLine2": "deserves to be told",
-      "subtitle": "Design your digital invitation and share it with your guests in minutes — simple, and fully professional. (Ticketing and polls coming soon)",
+      "subtitle": "Design your digital invitation and share it with your guests in minutes — simple, and fully professional.",
       "primaryCta": "Start free",
       "guestLink": "Or try it as a guest, no sign-up ←"
     },
     "panels": {
-      "exploreCta": "Explore",
-      "comingSoon": "Coming soon"
+      "exploreCta": "Explore"
     },
     "trustStrip": {
       "item1Title": "Direct WhatsApp",
@@ -35,16 +34,10 @@
     },
     "journeys": {
       "invitation": {
-        "title": "Digital Invitation",
-        "cta": "Start your invitation"
-      },
-      "ticketing": {
-        "title": "Ticketed Event",
-        "cta": "Create your event"
+        "title": "Digital Invitation"
       },
       "rsvp": {
-        "title": "Polls & RSVP",
-        "cta": "Set up your poll"
+        "title": "Link Invitation"
       }
     },
     "why": {
@@ -83,7 +76,7 @@
     },
     "footer": {
       "tagline": "Built Arabic-first for your events — invitations, polls, and tickets.",
-      "journeysHeading": "Journeys",
+      "journeysHeading": "Product",
       "accountHeading": "Account",
       "loginLink": "Log in",
       "registerLink": "Create account",
@@ -197,8 +190,6 @@
       "notAttending": "Not attending",
       "maybe": "Maybe",
       "noResponse": "No response",
-      "ticketsSold": "Tickets sold",
-      "ticketsRemaining": "Tickets remaining",
       "totalRevenue": "Revenue (mock)",
       "checkedIn": "Checked in",
       "rsvpBreakdown": "RSVP breakdown",
@@ -272,8 +263,7 @@
       "submitting": "Saving...",
       "trackBadge": {
         "invitation": "Digital invitation",
-        "event": "Ticketed event",
-        "rsvp": "RSVP / poll"
+        "rsvp": "Link Invitation"
       },
       "questionsInlineTitle": "Poll questions",
       "questionsInlineHint": "Add the questions you want to send your guests. You can add or edit more later from the settings page.",
@@ -289,19 +279,13 @@
       "title": "Create new",
       "subtitle": "Choose the right track — each one is completely separate from the others.",
       "startButton": "Start",
-      "comingSoon": "Coming soon",
-      "comingSoonNote": "This track isn't available yet — we're focused on digital invitations for now.",
       "invitation": {
         "title": "Digital invitation",
         "description": "A simple personal invitation to an occasion (wedding, graduation...) — optional accept/decline, no extra questions."
       },
-      "event": {
-        "title": "Ticketed event",
-        "description": "Exhibitions, conferences, events — set a price and ticket count, and start selling."
-      },
       "rsvp": {
-        "title": "RSVP / poll",
-        "description": "Organize an event or meetup around your own questions, and send it to specific phone numbers."
+        "title": "Link Invitation",
+        "description": "A direct registration link — name, phone, headcount, and your own questions. Ideal when you need accurate numbers fast, without an invitation design."
       }
     },
     "detail": {
@@ -321,14 +305,13 @@
       "guestsButton": "Guests",
       "invitationButton": "Digital invitation",
       "rsvpSettingsButton": "RSVP questions",
-      "ticketsButton": "Tickets",
       "checkInButton": "QR Check-in"
     },
     "errors": {
       "invalidInput": "Please check the information you entered.",
       "unauthorized": "You must be logged in to do this.",
       "passwordRequiredForProtection": "Enter a password to enable protection.",
-      "trackLocked": "This track isn't available yet — ticketing and polls are coming soon.",
+      "trackLocked": "This event must allow RSVP responses.",
       "unknown": "Something went wrong, please try again."
     },
     "validation": {
@@ -360,8 +343,7 @@
     "copyLinkButton": "Copy link",
     "linkCopied": "Link copied",
     "shareMessage": "Invitation: {name}",
-    "rsvpButton": "Respond to invitation",
-    "ticketsButton": "Buy tickets"
+    "rsvpButton": "Respond to invitation"
   },
   "Rsvp": {
     "pageSubtitle": "Please fill out the form to confirm your attendance.",
@@ -572,136 +554,6 @@
       "vcfEmpty": "We couldn't find any contacts in that file."
     },
     "a11yDeleteGuest": "Delete guest"
-  },
-  "Tickets": {
-    "title": "Tickets",
-    "newButton": "New ticket type",
-    "empty": "No ticket types yet.",
-    "free": "Free",
-    "soldOf": "{sold} of {total} sold",
-    "editButton": "Edit",
-    "deleteButton": "Delete",
-    "deleteConfirmTitle": "Delete ticket type",
-    "deleteConfirmDescription": "This ticket type will be deleted. This action cannot be undone.",
-    "deleteConfirmCancel": "Cancel",
-    "deleteConfirmAction": "Confirm delete",
-    "form": {
-      "createTitle": "Create ticket type",
-      "nameArLabel": "Name (Arabic)",
-      "nameEnLabel": "Name (English)",
-      "priceLabel": "Price",
-      "currencyLabel": "Currency",
-      "quantityTotalLabel": "Quantity available",
-      "maxPerOrderLabel": "Max per order",
-      "saleStartAtLabel": "Sale start",
-      "saleEndAtLabel": "Sale end",
-      "statusLabel": "Status",
-      "statuses": {
-        "active": "Active",
-        "paused": "Paused",
-        "ended": "Ended"
-      },
-      "saving": "Saving...",
-      "saveChanges": "Save changes",
-      "create": "Create"
-    },
-    "errors": {
-      "invalidInput": "Please check the information you entered.",
-      "unauthorized": "You must be logged in to do this.",
-      "unknown": "Something went wrong, please try again."
-    },
-    "validation": {
-      "nameRequired": "This field is required.",
-      "priceInvalid": "Please enter a valid price.",
-      "quantityInvalid": "Please enter a valid quantity.",
-      "maxPerOrderInvalid": "Please enter a valid value.",
-      "dateInvalid": "Please enter a valid date and time.",
-      "saleEndBeforeStart": "The sale end date must be after the start date."
-    },
-    "list": {
-      "title": "Issued Tickets",
-      "empty": "No tickets issued yet.",
-      "exportCsv": "Export CSV",
-      "totalTickets": "Total tickets",
-      "usedTickets": "Used",
-      "unusedTickets": "Unused",
-      "status": {
-        "valid": "Valid",
-        "used": "Used",
-        "cancelled": "Cancelled"
-      },
-      "csv": {
-        "holderName": "Holder name",
-        "ticketType": "Ticket type",
-        "status": "Status",
-        "buyerEmail": "Buyer email",
-        "pricePaid": "Price paid",
-        "createdAt": "Issued at"
-      }
-    }
-  },
-  "PublicTickets": {
-    "pageSubtitle": "Choose a ticket type and complete your details.",
-    "noTicketsAvailable": "No tickets are available for purchase right now.",
-    "free": "Free",
-    "ticketTypeLabel": "Ticket type",
-    "quantityLabel": "Quantity",
-    "buyerNameLabel": "Name",
-    "buyerEmailLabel": "Email",
-    "buyerPhoneLabel": "Phone number",
-    "purchaseButton": "Complete purchase",
-    "purchasing": "Redirecting to payment...",
-    "purchaseSuccessTitle": "Purchase successful!",
-    "purchaseSuccessDescription": "Keep the following ticket links:",
-    "viewTicket": "View ticket {number}",
-    "mockPaymentNotice": "This purchase uses Mock Payment — no real money is charged.",
-    "errors": {
-      "invalidInput": "Please check the information you entered.",
-      "notConfigured": "This project isn't connected to a Supabase database yet.",
-      "purchaseFailed": "Couldn't complete the purchase, please try again.",
-      "rateLimited": "Too many attempts in a short time — please try again in a minute."
-    },
-    "validation": {
-      "ticketTypeRequired": "Please select a ticket type.",
-      "quantityInvalid": "Please enter a valid quantity.",
-      "nameRequired": "This field is required.",
-      "emailInvalid": "Please enter a valid email address."
-    },
-    "ticketPage": {
-      "holderNameLabel": "Holder name",
-      "dateLabel": "Date & time",
-      "locationLabel": "Location",
-      "status": {
-        "valid": "Valid",
-        "used": "Used",
-        "cancelled": "Cancelled"
-      }
-    },
-    "successPage": {
-      "paidTitle": "Payment confirmed!",
-      "paidDescription": "Thanks for your purchase. Keep your ticket links:",
-      "viewTicket": "View ticket {number}",
-      "pendingTitle": "Confirming your payment...",
-      "pendingDescription": "We received your order and are waiting for payment confirmation. Check your email in a few minutes — tickets are sent automatically once confirmed.",
-      "failedDescription": "The payment couldn't be completed. If you were charged, please contact the organizer.",
-      "backToEvent": "Back to the event page"
-    }
-  },
-  "CheckIn": {
-    "title": "QR Check-in",
-    "cameraUnavailable": "Couldn't access the camera. You can enter the ticket code manually below.",
-    "manualTokenPlaceholder": "Enter ticket code",
-    "manualSubmit": "Check",
-    "recentScans": "Recent scans",
-    "checkedIn": "Checked in",
-    "totalTickets": "Total tickets",
-    "results": {
-      "valid": "Valid",
-      "already_used": "Already used",
-      "cancelled": "Cancelled",
-      "not_found": "Not found",
-      "error": "Error"
-    }
   },
   "Notifications": {
     "title": "Notifications",

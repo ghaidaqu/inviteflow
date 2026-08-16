@@ -4,8 +4,6 @@ import { emailProvider, isEmailConfigured } from './index';
 import {
   organizerNewRsvpEmail,
   guestRsvpConfirmationEmail,
-  organizerTicketPurchasedEmail,
-  buyerTicketsEmail,
   resultsBroadcastEmail,
 } from './templates';
 import type { ResultsSummary } from '@/lib/services/results.service';
@@ -87,22 +85,6 @@ export async function sendGuestRsvpConfirmation(
   await safeSend(guestEmail, subject, html);
 }
 
-export async function notifyOrganizerTicketPurchase(
-  eventSlug: string,
-  buyerName: string,
-  quantity: number,
-) {
-  const contact = await getOrganizerContact(eventSlug);
-  if (!contact) return;
-
-  const { subject, html } = organizerTicketPurchasedEmail(contact.locale, {
-    eventName: contact.eventName,
-    buyerName,
-    quantity,
-  });
-  await safeSend(contact.email, subject, html);
-}
-
 /** Organizer-triggered broadcast — reports success so the dashboard can
  * show an accurate "sent to N of M guests" count instead of a blind
  * best-effort fire-and-forget. */
@@ -122,18 +104,4 @@ export async function sendResultsBroadcastEmail(
     console.error('[email] results broadcast failed', error);
     return false;
   }
-}
-
-export async function sendBuyerTickets(
-  eventSlug: string,
-  buyerEmail: string,
-  ticketUrls: string[],
-  locale: Locale,
-) {
-  const admin = createAdminClient();
-  const { data: event } = await admin.from('events').select('name').eq('slug', eventSlug).single();
-  if (!event) return;
-
-  const { subject, html } = buyerTicketsEmail(locale, { eventName: event.name, ticketUrls });
-  await safeSend(buyerEmail, subject, html);
 }

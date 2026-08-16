@@ -19,7 +19,7 @@ export async function getClientIp(): Promise<string> {
 }
 
 type RateLimitOptions = {
-  /** Logical bucket name, e.g. "rsvp" or "tickets". */
+  /** Logical bucket name, e.g. "rsvp" or "cover-upload". */
   action: string;
   /** Extra identifier to key on in addition to IP (e.g. an event slug). */
   scope?: string;

@@ -1,9 +1,9 @@
 /**
  * Shared visual shell for the guest-facing form pages that people reach via
- * a direct link (RSVP, ticket purchase) — same warm gradient backdrop,
- * icon badge, and entrance treatment as the rest of the redesigned public
- * surfaces (homepage, guest hub, event page), so these don't feel like a
- * separate, uncared-for step in the flow.
+ * a direct link (RSVP, the standalone Link registration flow) — same warm
+ * gradient backdrop, icon badge, and entrance treatment as the rest of the
+ * redesigned public surfaces (homepage, guest hub, event page), so these
+ * don't feel like a separate, uncared-for step in the flow.
  */
 export function PublicFormShell({
   icon,

@@ -1,16 +1,16 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowLeftIcon, ArrowRightIcon, MailIcon, TicketIcon, BarChart3Icon } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon } from 'lucide-react';
 
-type JourneyKey = 'invitation' | 'ticketing' | 'rsvp';
+type JourneyKey = 'invitation' | 'rsvp';
 
-// Three distinct editorial panel treatments — deep red, dark ink navy, and
-// muted purple — deliberately different from each other (these are three
-// separate products) and deliberately NOT the site's neon/glow language.
-// No photography: the panel top is a translucent wash of its own color so
-// the giant "INVITE" type behind the row reads faintly through the glass —
-// that layering is the entire effect, not a background image.
+// Two distinct editorial panel treatments — deep red and muted purple —
+// deliberately different from each other (these are two separate products)
+// and deliberately NOT the site's neon/glow language. No photography: the
+// panel top is a translucent wash of its own color so the giant "INVITE"
+// type behind the row reads faintly through the glass — that layering is
+// the entire effect, not a background image.
 const PANEL_STYLE: Record<
   JourneyKey,
   {
@@ -28,23 +28,16 @@ const PANEL_STYLE: Record<
     track: 'invitation',
     icon: MailIcon,
   },
-  ticketing: {
-    glassFrom: 'rgba(35,44,68,0.12)',
-    glassTo: 'rgba(8,10,16,0.25)',
-    panel: '#080a10',
-    track: 'event',
-    icon: TicketIcon,
-  },
   rsvp: {
     glassFrom: 'rgba(80,58,99,0.12)',
     glassTo: 'rgba(28,19,34,0.25)',
     panel: '#1c1322',
     track: 'rsvp',
-    icon: BarChart3Icon,
+    icon: LinkIcon,
   },
 };
 
-const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'ticketing', 'rsvp'];
+const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp'];
 
 export async function HeroJourneys({ locale }: { locale: string }) {
   const t = await getTranslations('HomePage.hero');
@@ -105,24 +98,17 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               space) so the cards visibly cover roughly its bottom quarter. */}
           <div
             dir="ltr"
-            className="relative z-10 flex h-[280px] -translate-y-[52px] items-stretch justify-center gap-2 sm:h-[340px] sm:-translate-y-5 sm:gap-6 lg:h-[380px] lg:-translate-y-[67px]"
+            className="relative z-10 flex h-[280px] -translate-y-[52px] items-stretch justify-center gap-3 sm:h-[340px] sm:-translate-y-5 sm:gap-8 lg:h-[380px] lg:-translate-y-[67px]"
           >
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];
               const Icon = style.icon;
-              const isLocked = key !== 'invitation';
-              // Widened so the row's total footprint (3 cards + gaps)
-              // actually spans the same width as the "INVITE" type behind
-              // it, measured per breakpoint (glyph width vs. row width) —
-              // was previously ~23% short at sm/lg, leaving an odd gap of
-              // bare text on either side of the card row.
-              //
-              // On phones the same 21% left each card ~75px wide, which
-              // squeezed titles like "استبيانات و RSVP" into a 55px column
-              // and clipped the "استكشف" CTA. The base tier now fills the
-              // container instead, and the INVITE type above scales up with
-              // it so the two still read as one deliberate composition.
-              const panelClassName = `group flex w-[30%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out sm:w-[29%] ${isLocked ? 'grayscale-[35%]' : 'hover:-translate-y-2'}`;
+              // Two cards now (Ticketing was removed from the product), so
+              // each one is wider than the old three-up layout — widened to
+              // keep the row's total footprint spanning the same width as
+              // the "INVITE" type behind it, same principle as before.
+              const panelClassName =
+                'group flex w-[44%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[42%]';
 
               const content = (
                 <>
@@ -135,11 +121,6 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                     <span className="relative flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm">
                       <Icon className="size-4.5" />
                     </span>
-                    {isLocked && (
-                      <span className="absolute end-2 top-2 rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
-                        {tp('comingSoon')}
-                      </span>
-                    )}
                   </div>
 
                   {/* Wave divider — deliberately large amplitude (not a
@@ -164,34 +145,18 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                     <span className="text-[0.65rem] font-semibold text-white/60 tabular-nums sm:text-xs">
                       0{index + 1}
                     </span>
-                    {/* Card content width at the base/mobile tier is only
-                        ~40px (3 narrow cards sharing one phone screen) —
-                        text-sm keeps titles like "استبيانات و RSVP" to a
-                        readable 2-3 lines there instead of 4-5 cramped
-                        ones; text-base only from sm: up, where cards are
-                        wide enough to afford it. */}
                     <h3 className="text-sm leading-snug font-bold tracking-tight sm:text-lg">
                       {tj(`${key}.title`)}
                     </h3>
-                    {isLocked ? (
-                      <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-white/60">
-                        {tp('comingSoon')}
-                      </span>
-                    ) : (
-                      <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
-                        {tp('exploreCta')}
-                        <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                      </span>
-                    )}
+                    <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
+                      {tp('exploreCta')}
+                      <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                    </span>
                   </div>
                 </>
               );
 
-              return isLocked ? (
-                <div key={key} aria-disabled="true" className={panelClassName}>
-                  {content}
-                </div>
-              ) : (
+              return (
                 <Link
                   key={key}
                   href={`/dashboard/events/new/${style.track}`}

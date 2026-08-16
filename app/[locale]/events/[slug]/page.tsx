@@ -126,17 +126,6 @@ export default async function PublicEventPage({
               {t('rsvpButton')}
             </Button>
           )}
-          {event.is_ticketing_enabled && (
-            <Button
-              size="lg"
-              className="w-full transition-transform hover:-translate-y-0.5 sm:w-fit"
-              variant="outline"
-              nativeButton={false}
-              render={<Link href={`/events/${event.slug}/tickets`} />}
-            >
-              {t('ticketsButton')}
-            </Button>
-          )}
         </div>
 
         <div className="mt-6">

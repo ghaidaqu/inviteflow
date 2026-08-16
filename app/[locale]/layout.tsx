@@ -56,7 +56,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           {children}
           {/* Mounted once here rather than per-page, because the guest-facing
-              pages (invitation, RSVP, ticket) deliberately have no nav or
+              pages (invitation, RSVP link) deliberately have no nav or
               header to put it in — and those are exactly the pages where a
               visitor is most likely to want the other language.
 

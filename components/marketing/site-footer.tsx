@@ -31,11 +31,6 @@ export async function SiteFooter() {
                 {tj('rsvp.title')}
               </Link>
             </li>
-            <li>
-              <Link href="/dashboard/events/new/event" className="hover:text-foreground">
-                {tj('ticketing.title')}
-              </Link>
-            </li>
           </ul>
         </div>
 

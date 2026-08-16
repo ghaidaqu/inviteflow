@@ -48,16 +48,16 @@ function toIso(value?: string): string {
   return Number.isNaN(date.getTime()) ? '' : date.toISOString();
 }
 
-type Track = 'invitation' | 'event' | 'rsvp';
+type Track = 'invitation' | 'rsvp';
 
-// Presets for the three separate creation tracks (see the /dashboard/events/new
-// chooser page) — each track pre-selects the flags that make sense for it,
-// but the toggles stay visible/editable in case an organizer genuinely wants
-// a mix (e.g. an invitation that also sells tickets).
-const TRACK_DEFAULTS: Record<Track, { isRsvpEnabled: boolean; isTicketingEnabled: boolean }> = {
-  invitation: { isRsvpEnabled: true, isTicketingEnabled: false },
-  event: { isRsvpEnabled: false, isTicketingEnabled: true },
-  rsvp: { isRsvpEnabled: true, isTicketingEnabled: false },
+// Presets for the two creation tracks (see the /dashboard/events/new chooser
+// page): the decorated Digital Invitation, and the simpler Link — a
+// registration-only page (name, phone, headcount, custom questions) with no
+// invitation design around it. Both collect RSVP responses; Ticketing has
+// been removed from the product entirely.
+const TRACK_DEFAULTS: Record<Track, { isRsvpEnabled: boolean }> = {
+  invitation: { isRsvpEnabled: true },
+  rsvp: { isRsvpEnabled: true },
 };
 
 export function EventForm({
@@ -96,8 +96,6 @@ export function EventForm({
       primaryLocale: event?.primary_locale ?? 'ar',
       visibility: event?.visibility ?? 'private',
       isRsvpEnabled: event?.is_rsvp_enabled ?? TRACK_DEFAULTS[track ?? 'invitation'].isRsvpEnabled,
-      isTicketingEnabled:
-        event?.is_ticketing_enabled ?? TRACK_DEFAULTS[track ?? 'invitation'].isTicketingEnabled,
       isQrEnabled: event?.is_qr_enabled ?? false,
       isPasswordProtected: Boolean(event?.password_hash),
       password: '',
@@ -125,7 +123,6 @@ export function EventForm({
     formData.set('primaryLocale', values.primaryLocale);
     formData.set('visibility', values.visibility);
     formData.set('isRsvpEnabled', String(values.isRsvpEnabled));
-    formData.set('isTicketingEnabled', String(values.isTicketingEnabled));
     formData.set('isQrEnabled', String(values.isQrEnabled));
     formData.set('isPasswordProtected', String(values.isPasswordProtected));
     formData.set('password', values.password ?? '');
@@ -292,14 +289,12 @@ export function EventForm({
           <InlineQuestionsBuilder value={questions} onChange={setQuestions} />
         )}
 
-        {/* isRsvpEnabled/isTicketingEnabled/isQrEnabled toggles were
-            removed from the visible form — the product is invitation-only
-            for now (see the creation chooser and createEventAction's
-            server-side lock), so there's nothing left to toggle. Their
-            current values still round-trip through defaultValues/onSubmit
-            unchanged, which matters for editing an already-existing
-            ticketing/RSVP event from before the lock — it just isn't
-            editable from here anymore. */}
+        {/* isRsvpEnabled/isQrEnabled toggles aren't exposed in the visible
+            form — every event collects RSVP responses (see
+            createEventAction's server-side check), so there's nothing to
+            toggle. Their values still round-trip through
+            defaultValues/onSubmit unchanged, which matters for editing an
+            event created before this was the case. */}
 
         <Field orientation="horizontal">
           <FieldLabel htmlFor="isPasswordProtected" className="flex-1 font-normal">

@@ -43,7 +43,6 @@ export const eventFormSchema = z.object({
   primaryLocale: z.enum(eventLocales),
   visibility: z.enum(eventVisibilities),
   isRsvpEnabled: z.boolean(),
-  isTicketingEnabled: z.boolean(),
   isQrEnabled: z.boolean(),
   isPasswordProtected: z.boolean(),
   password: optionalText,

@@ -8,10 +8,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
     globals: true,
-    // halq-barbershop-work is an unrelated project accidentally copied into
-    // this working directory (its own .git, unrelated broken deps) — not
-    // InviteFlow code, and its own tests aren't ours to run or fix.
-    exclude: ['**/node_modules/**', '**/halq-barbershop-work/**'],
+    exclude: ['**/node_modules/**'],
   },
   resolve: {
     alias: {

@@ -115,7 +115,6 @@ export async function createEvent(
       primary_locale: input.primaryLocale,
       visibility: input.visibility,
       is_rsvp_enabled: input.isRsvpEnabled,
-      is_ticketing_enabled: input.isTicketingEnabled,
       is_qr_enabled: input.isQrEnabled,
       password_hash: passwordHash,
     })
@@ -162,7 +161,6 @@ export async function updateEvent(
       primary_locale: input.primaryLocale,
       visibility: input.visibility,
       is_rsvp_enabled: input.isRsvpEnabled,
-      is_ticketing_enabled: input.isTicketingEnabled,
       is_qr_enabled: input.isQrEnabled,
       password_hash: passwordHash,
     })
@@ -224,26 +222,6 @@ export async function updateEventSettings(
 
   if (error) throw error;
   return data;
-}
-
-/**
- * Public, ticketed events for the homepage — anonymous visitors should be
- * able to discover and buy tickets without logging in or knowing a direct
- * link, not just organizers who already have their event's URL.
- */
-export async function listPublicTicketedEvents(supabase: Client, limit = 6): Promise<EventRow[]> {
-  const { data, error } = await supabase
-    .from('events')
-    .select('*')
-    .eq('status', 'published')
-    .eq('visibility', 'public')
-    .eq('is_ticketing_enabled', true)
-    .is('deleted_at', null)
-    .order('event_date', { ascending: true, nullsFirst: false })
-    .limit(limit);
-
-  if (error) throw error;
-  return data ?? [];
 }
 
 export async function getPublicEventBySlug(

@@ -10,10 +10,6 @@ import {
   CheckCircle2Icon,
   XCircleIcon,
   HelpCircleIcon,
-  TicketIcon,
-  TicketsIcon,
-  WalletIcon,
-  QrCodeIcon,
 } from 'lucide-react';
 
 const RESPONSE_STATUS_VARIANT = {
@@ -42,12 +38,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         notAttendingCount: 0,
         maybeCount: 0,
         noResponseCount: 0,
-        ticketsSold: 0,
-        ticketsRemaining: 0,
-        totalRevenue: 0,
-        checkedInCount: 0,
         latestResponses: [],
-        latestCheckIns: [],
       };
 
   const statCards = [
@@ -83,30 +74,6 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       icon: HelpCircleIcon,
       tone: 'text-muted-foreground bg-muted',
       href: '#latest-responses',
-    },
-    {
-      label: t('ticketsSold'),
-      value: stats.ticketsSold,
-      icon: TicketIcon,
-      tone: 'text-accent-foreground bg-accent/25',
-    },
-    {
-      label: t('ticketsRemaining'),
-      value: stats.ticketsRemaining,
-      icon: TicketsIcon,
-      tone: 'text-accent-foreground bg-accent/25',
-    },
-    {
-      label: t('totalRevenue'),
-      value: stats.totalRevenue,
-      icon: WalletIcon,
-      tone: 'text-chart-1 bg-chart-1/10',
-    },
-    {
-      label: t('checkedIn'),
-      value: stats.checkedInCount,
-      icon: QrCodeIcon,
-      tone: 'text-primary bg-primary/10',
     },
   ];
 
@@ -145,54 +112,26 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         />
       </div>
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-2">
-        <div id="latest-responses" className="scroll-mt-20">
-          <h2 className="mb-3 text-lg font-bold tracking-tight">{t('latestResponses')}</h2>
-          {stats.latestResponses.length === 0 ? (
-            <p className="text-muted-foreground text-sm">{t('noData')}</p>
-          ) : (
-            <ul className="flex max-h-[480px] flex-col gap-2 overflow-y-auto">
-              {stats.latestResponses.map((r) => (
-                <li
-                  key={r.id}
-                  className="bg-card hover:border-primary/30 flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm transition-colors"
-                >
-                  <div>
-                    <div className="font-medium">{r.guestName || '—'}</div>
-                    <div className="text-muted-foreground text-xs">{r.eventName}</div>
-                  </div>
-                  <Badge variant={RESPONSE_STATUS_VARIANT[r.status]}>
-                    {t(`status.${r.status}`)}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div>
-          <h2 className="mb-3 text-lg font-bold tracking-tight">{t('latestCheckIns')}</h2>
-          {stats.latestCheckIns.length === 0 ? (
-            <p className="text-muted-foreground text-sm">{t('noData')}</p>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {stats.latestCheckIns.map((c) => (
-                <li
-                  key={c.id}
-                  className="bg-card hover:border-primary/30 flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm transition-colors"
-                >
-                  <div>
-                    <div className="font-medium">{c.holderName}</div>
-                    <div className="text-muted-foreground text-xs">{c.eventName}</div>
-                  </div>
-                  <span className="text-muted-foreground text-xs">
-                    {new Date(c.checkedInAt).toLocaleString(locale)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+      <div id="latest-responses" className="mt-8 scroll-mt-20">
+        <h2 className="mb-3 text-lg font-bold tracking-tight">{t('latestResponses')}</h2>
+        {stats.latestResponses.length === 0 ? (
+          <p className="text-muted-foreground text-sm">{t('noData')}</p>
+        ) : (
+          <ul className="grid max-h-[480px] gap-2 overflow-y-auto sm:grid-cols-2">
+            {stats.latestResponses.map((r) => (
+              <li
+                key={r.id}
+                className="bg-card hover:border-primary/30 flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm transition-colors"
+              >
+                <div>
+                  <div className="font-medium">{r.guestName || '—'}</div>
+                  <div className="text-muted-foreground text-xs">{r.eventName}</div>
+                </div>
+                <Badge variant={RESPONSE_STATUS_VARIANT[r.status]}>{t(`status.${r.status}`)}</Badge>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </main>
   );

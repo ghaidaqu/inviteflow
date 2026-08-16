@@ -26,11 +26,6 @@
 *.swp
 *.swo
 
-# Unrelated project accidentally copied into this working directory —
-# has its own .git, not part of InviteFlow. Excluded so it's never picked
-# up by git, or by deploy tooling that packages based on git tracking.
-/halq-barbershop-work
-
 # debug
 npm-debug.log*
 yarn-debug.log*
