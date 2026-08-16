@@ -7,7 +7,8 @@ import { normalizeDigits } from '@/lib/utils/digits';
 // separated (Excel/Sheets copy-paste), comma-separated, or just plain
 // space-separated — by finding the phone-looking run of digits on the
 // line and treating everything else on that line as the name, rather
-// than requiring a specific delimiter.
+// than requiring a specific delimiter. Separators are stripped in both
+// alphabets: an Arabic list is far more likely to use "،" than ",".
 const PHONE_PATTERN = /(\+?\d[\d\s-]{6,}\d)/;
 
 export type ParsedGuestRow = { name: string; phone: string };
@@ -20,11 +21,14 @@ export function parseGuestListText(text: string): ParsedGuestRow[] {
     .map((line) => {
       const match = line.match(PHONE_PATTERN);
       if (!match || match.index === undefined) {
-        return { name: line.replace(/^[\s,\t|-]+|[\s,\t|-]+$/g, ''), phone: '' };
+        return {
+          name: line.replace(/^[\s,;\u060C\u061B\t|-]+|[\s,;\u060C\u061B\t|-]+$/g, ''),
+          phone: '',
+        };
       }
       const phone = match[0].replace(/[\s-]/g, '');
       const name = (line.slice(0, match.index) + line.slice(match.index + match[0].length)).replace(
-        /^[\s,\t|-]+|[\s,\t|-]+$/g,
+        /^[\s,;\u060C\u061B\t|-]+|[\s,;\u060C\u061B\t|-]+$/g,
         '',
       );
       return { name, phone };

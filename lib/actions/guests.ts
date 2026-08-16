@@ -7,6 +7,7 @@ import { deleteGuest, createGuestManually, updateGuest } from '@/lib/services/gu
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { sendInvitationWhatsApp } from '@/lib/whatsapp/notify';
 import { normalizeDigits } from '@/lib/utils/digits';
+import { normalizePhone } from '@/lib/utils/phone';
 
 export async function deleteGuestAction(eventId: string, guestId: string) {
   const supabase = await createClient();
@@ -28,6 +29,16 @@ export type AddGuestsActionState = {
 
 type GuestRow = { name: string; phone: string; expectedCompanions?: number };
 
+// Stored in E.164 so the same person can't be re-added under a different
+// spelling and so WhatsApp gets a number it accepts. An unparseable value is
+// kept as typed rather than dropped — the organizer can still see and fix it.
+function canonicalPhone(raw: string | null | undefined): string | null {
+  const trimmed = String(raw ?? '').trim();
+  if (!trimmed) return null;
+  const result = normalizePhone(trimmed);
+  return result.ok ? result.e164 : normalizeDigits(trimmed);
+}
+
 // The organizer's own estimate of party size. Clamped rather than rejected:
 // a stray non-numeric or negative value should quietly mean "just them",
 // not fail the whole batch of guests being added.
@@ -38,11 +49,11 @@ function parseCompanions(value: unknown): number {
 }
 
 /**
- * `guestRows` is a JSON-encoded array of {name, phone} — one explicit row
- * per guest from the add-guest dialog's repeatable name/phone field pairs
- * (see GuestsTable), not a free-text "Name, phone" line the organizer had
- * to format correctly themselves. Phone digits are normalized (Arabic-Indic
- * → ASCII) so a number typed on an Arabic keyboard still saves correctly.
+ * `guestRows` is a JSON-encoded array of {name, phone, expectedCompanions}
+ * coming from the add-guests dialog, after the organizer has reviewed and
+ * confirmed what will be created (see AddGuestsDialog). Numbers arrive
+ * already normalized, but are re-normalized here too: a server action is a
+ * public entry point and can't trust its caller.
  */
 export async function addGuestsAction(
   eventId: string,
@@ -58,11 +69,12 @@ export async function addGuestsAction(
   } catch {
     return { error: 'invalidInput' };
   }
+  if (!Array.isArray(rows) || rows.length > 1000) return { error: 'invalidInput' };
 
   const guestsToAdd = rows
     .map((r) => ({
       name: (r.name ?? '').trim(),
-      phone: r.phone ? normalizeDigits(r.phone.trim()) : null,
+      phone: canonicalPhone(r.phone),
       expectedCompanions: parseCompanions(r.expectedCompanions),
     }))
     .filter((g) => g.name.length > 0);
@@ -122,7 +134,7 @@ export async function updateGuestAction(
   try {
     await updateGuest(supabase, guestId, {
       name,
-      phone: phoneRaw ? normalizeDigits(phoneRaw) : null,
+      phone: canonicalPhone(phoneRaw),
       expectedCompanions: parseCompanions(formData.get('expectedCompanions')),
     });
   } catch {

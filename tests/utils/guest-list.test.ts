@@ -10,6 +10,15 @@ describe('parseGuestListText', () => {
     ]);
   });
 
+  it('strips an Arabic comma as well as an ASCII one', () => {
+    expect(parseGuestListText('نورة العتيبي، ٠٥٥٩٨٧٦٥٤٣')).toEqual([
+      { name: 'نورة العتيبي', phone: '0559876543' },
+    ]);
+    expect(parseGuestListText('سلطان؛ 0551234567')).toEqual([
+      { name: 'سلطان', phone: '0551234567' },
+    ]);
+  });
+
   it('parses comma-separated lines', () => {
     const rows = parseGuestListText('سلطان, 0501234567');
     expect(rows).toEqual([{ name: 'سلطان', phone: '0501234567' }]);

@@ -11,3 +11,7 @@ package-lock.json
 .claude
 .github/skills
 .impeccable
+
+# Unrelated project accidentally copied into this working directory —
+# has its own .git, not part of InviteFlow.
+halq-barbershop-work

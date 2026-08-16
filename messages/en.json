@@ -507,16 +507,16 @@
     "deleteConfirmAction": "Confirm delete",
     "addGuests": {
       "trigger": "Add guests",
-      "title": "Add guests manually",
-      "description": "Enter each guest's name and phone (optional), and add a new row per guest.",
+      "title": "Add guests",
+      "description": "Paste your whole list at once — we’ll review it with you before saving.",
       "nameLabel": "Name",
       "namePlaceholder": "e.g. Khaled Alotaibi",
       "phoneLabel": "Phone number",
       "phonePlaceholder": "05xxxxxxxx",
       "addRow": "Add another guest",
       "pasteList": "Paste a list",
-      "pasteListPlaceholder": "Paste your list of names and numbers — one guest per line, e.g.:\nSultan Alharbi 0501234567\nNora Alotaibi 0559876543",
-      "pasteListHint": "Copy from Excel, Notes, or anywhere else — one line per guest, any order or separator between the name and number.",
+      "pasteListPlaceholder": "One guest per line, e.g.:\nSultan Alharbi 0501234567\nNora Alotaibi, 0559876543\nAbdullah\t+966551112233",
+      "pasteListHint": "Copy from Excel, Notes, or anywhere — any separator between name and number. Arabic-Indic digits are read automatically.",
       "pasteListSubmit": "Convert to a list",
       "importContacts": "Import from contacts",
       "removeRow": "Remove this row",
@@ -525,7 +525,30 @@
       "success": "{count} guest(s) added successfully.",
       "cancel": "Cancel",
       "companionsLabel": "Guests",
-      "companionsHint": "The organizer's estimate — replaced by the guest's own answer once they reply."
+      "companionsHint": "The organizer's estimate — replaced by the guest's own answer once they reply.",
+      "reviewTitle": "Review before saving",
+      "reviewDescription": "Check the names and numbers, and drop any row you don’t want. Nothing is saved until you confirm.",
+      "pasteListLabel": "Paste names and numbers",
+      "reviewCta": "Review list",
+      "orImportFrom": "Or import from:",
+      "importVcf": "Contacts file (VCF or CSV)",
+      "contactsUnsupported": "Picking contacts directly works on Android/Chrome only. On iPhone: export your contacts as a VCF file, or paste the list above.",
+      "statusLabel": "Status",
+      "statusOk": "Ready",
+      "includeRow": "Include this row",
+      "backToInput": "Back",
+      "confirmImport": "Add {n}",
+      "summaryImportable": "{n} ready",
+      "summaryDuplicate": "{n} duplicate",
+      "summaryAlreadyAdded": "{n} already added",
+      "summaryInvalid": "{n} invalid number",
+      "summaryMissing": "{n} no number",
+      "issue": {
+        "invalidPhone": "Invalid number",
+        "missingPhone": "No number",
+        "duplicateInList": "Duplicate in list",
+        "alreadyAdded": "Already added"
+      }
     },
     "editGuest": {
       "trigger": "Edit guest",
@@ -545,7 +568,8 @@
     "errors": {
       "invalidInput": "Please enter at least one guest name.",
       "unauthorized": "You must be logged in to do this.",
-      "unknown": "Something went wrong, please try again."
+      "unknown": "Something went wrong, please try again.",
+      "vcfEmpty": "We couldn't find any contacts in that file."
     },
     "a11yDeleteGuest": "Delete guest"
   },

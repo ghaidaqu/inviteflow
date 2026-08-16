@@ -23,6 +23,11 @@ const eslintConfig = [
       '.claude/skills/**',
       '.github/skills/**',
       '.github/agents/**',
+      // An unrelated project got copied into this working directory by
+      // accident (has its own .git, its own — currently broken — deps).
+      // Not InviteFlow code; excluded so this repo's own lint stays a
+      // signal instead of ~8700 lines of noise from a different app.
+      'halq-barbershop-work/**',
     ],
   },
 ];

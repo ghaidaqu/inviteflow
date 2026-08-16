@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, useTransition } from 'react';
+import { useMemo, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -26,44 +26,15 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   deleteGuestAction,
-  addGuestsAction,
   updateGuestAction,
   sendGuestInviteAction,
-  type AddGuestsActionState,
   type UpdateGuestActionState,
 } from '@/lib/actions/guests';
 import { buildCsv } from '@/lib/utils/csv';
-import { parseGuestListText } from '@/lib/utils/guest-list';
-import { Textarea } from '@/components/ui/textarea';
+import { formatPhoneForDisplay } from '@/lib/utils/phone';
+import { AddGuestsDialog } from '@/components/dashboard/add-guests-dialog';
 import type { GuestWithResponse } from '@/lib/services/guests.service';
-import {
-  Trash2Icon,
-  DownloadIcon,
-  MessageCircleIcon,
-  UserPlusIcon,
-  PencilIcon,
-  PlusIcon,
-  XIcon,
-  ContactRoundIcon,
-  ClipboardPasteIcon,
-} from 'lucide-react';
-
-// The Contact Picker API (Android Chrome only — no iOS Safari, no desktop)
-// lets the organizer pick straight from their phone's contacts instead of
-// typing every guest by hand. Feature-detected and only rendered where the
-// browser actually supports it, so everyone else just sees the plain rows.
-type ContactsManager = {
-  select: (
-    props: string[],
-    opts?: { multiple?: boolean },
-  ) => Promise<Array<{ name?: string[]; tel?: string[] }>>;
-};
-
-function getContactsManager(): ContactsManager | null {
-  if (typeof navigator === 'undefined') return null;
-  const nav = navigator as Navigator & { contacts?: ContactsManager };
-  return nav.contacts ?? null;
-}
+import { Trash2Icon, DownloadIcon, MessageCircleIcon, PencilIcon } from 'lucide-react';
 
 const STATUS_FILTERS = ['all', 'attending', 'not_attending', 'maybe', 'no_response'] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
@@ -92,55 +63,6 @@ export function GuestsTable({
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [isPending, startTransition] = useTransition();
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const [addOpen, setAddOpen] = useState(false);
-  const [rows, setRows] = useState<GuestRowDraft[]>([emptyRow]);
-  const [isAdding, startAdding] = useTransition();
-  const [addError, setAddError] = useState<string | null>(null);
-  const [addSuccessCount, setAddSuccessCount] = useState<number | null>(null);
-  const [contactsSupported, setContactsSupported] = useState(false);
-  const [pasteOpen, setPasteOpen] = useState(false);
-  const [pasteText, setPasteText] = useState('');
-
-  useEffect(() => {
-    setContactsSupported(getContactsManager() !== null);
-  }, []);
-
-  async function handleImportContacts() {
-    const contacts = getContactsManager();
-    if (!contacts) return;
-    try {
-      const picked = await contacts.select(['name', 'tel'], { multiple: true });
-      if (picked.length === 0) return;
-      const imported = picked.map((c) => ({
-        name: c.name?.[0]?.trim() ?? '',
-        phone: c.tel?.[0]?.trim() ?? '',
-        expectedCompanions: '',
-      }));
-      setRows((prev) => {
-        const withoutBlankTrailing = prev.filter((r) => r.name.trim() || r.phone.trim());
-        return [...withoutBlankTrailing, ...imported];
-      });
-    } catch {
-      // User cancelled the picker, or the browser denied it — nothing to do.
-    }
-  }
-
-  // Typing a hundred+ guests one row at a time isn't realistic — this lets
-  // the organizer paste a whole list at once (from Excel/Sheets, Notes, or
-  // a WhatsApp forward: one guest per line, name and number in any order
-  // or separator) and have it turn into editable rows they can still fix
-  // up before submitting.
-  function handleParsePaste() {
-    const parsed = parseGuestListText(pasteText).map((r) => ({ ...r, expectedCompanions: '' }));
-    if (parsed.length === 0) return;
-    setRows((prev) => {
-      const withoutBlankTrailing = prev.filter((r) => r.name.trim() || r.phone.trim());
-      return [...withoutBlankTrailing, ...parsed];
-    });
-    setPasteText('');
-    setPasteOpen(false);
-  }
 
   const [editingGuest, setEditingGuest] = useState<GuestWithResponse | null>(null);
   const [editDraft, setEditDraft] = useState<GuestRowDraft>(emptyRow);
@@ -171,41 +93,11 @@ export function GuestsTable({
     });
   }
 
-  function updateRow(index: number, patch: Partial<GuestRowDraft>) {
-    setRows((prev) => prev.map((r, i) => (i === index ? { ...r, ...patch } : r)));
-  }
-
-  function removeRow(index: number) {
-    setRows((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== index) : prev));
-  }
-
-  function handleAddGuests() {
-    setAddError(null);
-    setAddSuccessCount(null);
-    const cleanRows = rows.filter((r) => r.name.trim().length > 0);
-    if (cleanRows.length === 0) {
-      setAddError('invalidInput');
-      return;
-    }
-    const formData = new FormData();
-    formData.set('guestRows', JSON.stringify(cleanRows));
-
-    startAdding(async () => {
-      const result: AddGuestsActionState = await addGuestsAction(eventId, {}, formData);
-      if (result.error) {
-        setAddError(result.error);
-      } else {
-        setAddSuccessCount(result.addedCount ?? 0);
-        setRows([emptyRow]);
-      }
-    });
-  }
-
   function openEdit(guest: GuestWithResponse) {
     setEditError(null);
     setEditDraft({
       name: guest.name ?? '',
-      phone: guest.phone ?? '',
+      phone: guest.phone ? formatPhoneForDisplay(guest.phone) : '',
       expectedCompanions: String(guest.expected_companions ?? 0),
     });
     setEditingGuest(guest);
@@ -311,172 +203,10 @@ export function GuestsTable({
             ))}
           </SelectContent>
         </Select>
-        <Dialog
-          open={addOpen}
-          onOpenChange={(open) => {
-            setAddOpen(open);
-            if (open) {
-              setAddError(null);
-              setAddSuccessCount(null);
-            } else {
-              setPasteOpen(false);
-              setPasteText('');
-            }
-          }}
-        >
-          <DialogTrigger render={<Button variant="outline" className="ms-auto" />}>
-            <UserPlusIcon /> {t('addGuests.trigger')}
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('addGuests.title')}</DialogTitle>
-              <DialogDescription>{t('addGuests.description')}</DialogDescription>
-            </DialogHeader>
-            {addError && (
-              <Alert variant="destructive">
-                <AlertDescription>{tErrors(addError)}</AlertDescription>
-              </Alert>
-            )}
-            {addSuccessCount !== null && (
-              <Alert>
-                <AlertDescription>
-                  {t('addGuests.success', { count: addSuccessCount })}
-                </AlertDescription>
-              </Alert>
-            )}
-            <div className="flex flex-col gap-3">
-              {rows.map((row, index) => (
-                <div key={index} className="flex items-end gap-2">
-                  <Field className="flex-1">
-                    <FieldLabel htmlFor={`guest-name-${index}`}>
-                      {t('addGuests.nameLabel')}
-                    </FieldLabel>
-                    <Input
-                      id={`guest-name-${index}`}
-                      value={row.name}
-                      onChange={(e) => updateRow(index, { name: e.target.value })}
-                      placeholder={t('addGuests.namePlaceholder')}
-                    />
-                  </Field>
-                  <Field className="flex-1">
-                    <FieldLabel htmlFor={`guest-phone-${index}`}>
-                      {t('addGuests.phoneLabel')}
-                    </FieldLabel>
-                    <Input
-                      id={`guest-phone-${index}`}
-                      value={row.phone}
-                      onChange={(e) => updateRow(index, { phone: e.target.value })}
-                      placeholder={t('addGuests.phonePlaceholder')}
-                      dir="ltr"
-                    />
-                  </Field>
-                  <Field className="w-20 shrink-0">
-                    <FieldLabel htmlFor={`guest-companions-${index}`}>
-                      {t('addGuests.companionsLabel')}
-                    </FieldLabel>
-                    <Input
-                      id={`guest-companions-${index}`}
-                      type="number"
-                      inputMode="numeric"
-                      min={0}
-                      value={row.expectedCompanions}
-                      onChange={(e) => updateRow(index, { expectedCompanions: e.target.value })}
-                      placeholder="0"
-                      dir="ltr"
-                    />
-                  </Field>
-                  {rows.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      onClick={() => removeRow(index)}
-                      aria-label={t('addGuests.removeRow')}
-                    >
-                      <XIcon />
-                    </Button>
-                  )}
-                </div>
-              ))}
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="w-fit"
-                  onClick={() => setRows((prev) => [...prev, emptyRow])}
-                >
-                  <PlusIcon /> {t('addGuests.addRow')}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="w-fit"
-                  onClick={() => setPasteOpen((v) => !v)}
-                >
-                  <ClipboardPasteIcon /> {t('addGuests.pasteList')}
-                </Button>
-                {contactsSupported && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="w-fit"
-                    onClick={handleImportContacts}
-                  >
-                    <ContactRoundIcon /> {t('addGuests.importContacts')}
-                  </Button>
-                )}
-              </div>
-
-              {pasteOpen && (
-                <div className="bg-muted/30 flex flex-col gap-2 rounded-lg border p-3">
-                  <Textarea
-                    value={pasteText}
-                    onChange={(e) => setPasteText(e.target.value)}
-                    placeholder={t('addGuests.pasteListPlaceholder')}
-                    dir="auto"
-                    rows={5}
-                  />
-                  <p className="text-muted-foreground text-xs">{t('addGuests.pasteListHint')}</p>
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setPasteOpen(false);
-                        setPasteText('');
-                      }}
-                    >
-                      {t('addGuests.cancel')}
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      disabled={!pasteText.trim()}
-                      onClick={handleParsePaste}
-                    >
-                      {t('addGuests.pasteListSubmit')}
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-            <DialogFooter>
-              <DialogClose render={<Button variant="outline" />}>
-                {t('addGuests.cancel')}
-              </DialogClose>
-              <Button
-                onClick={handleAddGuests}
-                disabled={isAdding || !rows.some((r) => r.name.trim())}
-              >
-                {isAdding ? t('addGuests.submitting') : t('addGuests.submit')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <AddGuestsDialog
+          eventId={eventId}
+          existingPhones={guests.map((g) => g.phone ?? '').filter(Boolean)}
+        />
         <Button variant="outline" onClick={handleExportCsv}>
           <DownloadIcon /> {t('exportCsv')}
         </Button>
@@ -503,8 +233,9 @@ export function GuestsTable({
                   <tr key={guest.id} className="border-t">
                     <td className="p-3">
                       <div className="font-medium">{guest.name ?? '—'}</div>
-                      <div className="text-muted-foreground text-xs">
-                        {guest.phone ?? guest.email ?? ''}
+                      <div className="text-muted-foreground text-xs" dir="ltr">
+                        {/* Stored as E.164; Saudi numbers read better locally. */}
+                        {guest.phone ? formatPhoneForDisplay(guest.phone) : (guest.email ?? '')}
                       </div>
                     </td>
                     <td className="p-3">
