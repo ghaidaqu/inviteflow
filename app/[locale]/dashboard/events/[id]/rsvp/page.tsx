@@ -5,12 +5,13 @@ import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.servic
 import { listQuestions } from '@/lib/services/questions.service';
 import { QuestionsEditor } from '@/components/dashboard/questions-editor';
 import { BroadcastResultsButton } from '@/components/dashboard/broadcast-results-button';
+import { BulkMessageDialog } from '@/components/dashboard/bulk-message-dialog';
 import { Link } from '@/i18n/navigation';
 
-// "RSVP" — a separate track from the invitation itself (see /invitation):
-// a poll/questionnaire tool for actually organizing an event or meetup
-// around the organizer's own questions, independent of whether guests are
-// just "accepting" an invitation.
+// RSVP settings for an existing event: custom questions plus broadcasting
+// results/messages to guests. Used by both creation tracks (Digital
+// Invitation and Link Invitation) — the questions/RSVP mechanics are the
+// same regardless of which one the event started as.
 export default async function EventRsvpSettingsPage({
   params,
 }: {
@@ -45,7 +46,10 @@ export default async function EventRsvpSettingsPage({
           <h1 className="mb-1 text-2xl font-bold tracking-tight">{t('title')}</h1>
           <p className="text-muted-foreground">{t('rsvpPageSubtitle')}</p>
         </div>
-        <BroadcastResultsButton eventId={id} />
+        <div className="flex flex-wrap gap-2">
+          <BulkMessageDialog eventId={id} />
+          <BroadcastResultsButton eventId={id} />
+        </div>
       </div>
       <QuestionsEditor eventId={id} initialQuestions={questions} />
     </main>

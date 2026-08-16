@@ -452,7 +452,26 @@
       }
     },
     "a11yDeleteQuestion": "Delete this question",
-    "a11yDeleteOption": "Delete this option"
+    "a11yDeleteOption": "Delete this option",
+    "bulkMessage": {
+      "trigger": "Message confirmed guests",
+      "title": "Bulk message to confirmed guests",
+      "description": "Sends a WhatsApp message directly to every guest who replied \"attending\" only — good for last-minute updates (a venue or time change) that don’t apply to everyone invited.",
+      "messageLabel": "Message",
+      "messagePlaceholder": "e.g. Quick heads up — the event moved to Ballroom B at the same hotel.",
+      "confirm": "Send now",
+      "cancel": "Cancel",
+      "sending": "Sending...",
+      "sentSummary": "Sent to {sent} of {total} confirmed guests.",
+      "noRecipients": "No confirmed guests with a phone number on file yet.",
+      "errors": {
+        "invalidInput": "Write a valid message (max 1000 characters).",
+        "unauthorized": "You must be logged in to do this.",
+        "notConfigured": "WhatsApp isn’t set up on this site yet.",
+        "rateLimited": "You’ve hit the bulk-send limit for this hour — try again later.",
+        "unknown": "Something went wrong, please try again."
+      }
+    }
   },
   "Guests": {
     "title": "Guests",
