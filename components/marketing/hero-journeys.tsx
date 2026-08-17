@@ -1,16 +1,16 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon, Building2Icon } from 'lucide-react';
 
-type JourneyKey = 'invitation' | 'rsvp';
+type JourneyKey = 'invitation' | 'rsvp' | 'institutional';
 
-// Two distinct editorial panel treatments — deep red and muted purple —
-// deliberately different from each other (these are two separate products)
-// and deliberately NOT the site's neon/glow language. No photography: the
-// panel top is a translucent wash of its own color so the giant "INVITE"
-// type behind the row reads faintly through the glass — that layering is
-// the entire effect, not a background image.
+// Three distinct editorial panel treatments — deep red, muted purple, and
+// dark ink navy — deliberately different from each other (these are three
+// separate products) and deliberately NOT the site's neon/glow language.
+// No photography: the panel top is a translucent wash of its own color so
+// the giant "INVITE" type behind the row reads faintly through the glass —
+// that layering is the entire effect, not a background image.
 const PANEL_STYLE: Record<
   JourneyKey,
   {
@@ -35,9 +35,16 @@ const PANEL_STYLE: Record<
     track: 'rsvp',
     icon: LinkIcon,
   },
+  institutional: {
+    glassFrom: 'rgba(35,44,68,0.12)',
+    glassTo: 'rgba(8,10,16,0.25)',
+    panel: '#080a10',
+    track: 'institutional',
+    icon: Building2Icon,
+  },
 };
 
-const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp'];
+const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp', 'institutional'];
 
 export async function HeroJourneys({ locale }: { locale: string }) {
   const t = await getTranslations('HomePage.hero');
@@ -98,17 +105,16 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               space) so the cards visibly cover roughly its bottom quarter. */}
           <div
             dir="ltr"
-            className="relative z-10 flex h-[280px] -translate-y-[52px] items-stretch justify-center gap-3 sm:h-[340px] sm:-translate-y-5 sm:gap-8 lg:h-[380px] lg:-translate-y-[67px]"
+            className="relative z-10 flex h-[280px] -translate-y-[52px] items-stretch justify-center gap-2 sm:h-[340px] sm:-translate-y-5 sm:gap-6 lg:h-[380px] lg:-translate-y-[67px]"
           >
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];
               const Icon = style.icon;
-              // Two cards now (Ticketing was removed from the product), so
-              // each one is wider than the old three-up layout — widened to
-              // keep the row's total footprint spanning the same width as
-              // the "INVITE" type behind it, same principle as before.
+              // Three cards, sized (with their gaps) to span the same width
+              // as the "INVITE" type behind them — see the mobile-hero pass
+              // in git history for how these percentages were measured.
               const panelClassName =
-                'group flex w-[44%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[42%]';
+                'group flex w-[30%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[29%]';
 
               const content = (
                 <>

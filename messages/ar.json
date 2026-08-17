@@ -38,6 +38,9 @@
       },
       "rsvp": {
         "title": "دعوة بالرابط"
+      },
+      "institutional": {
+        "title": "دعوة مؤسسية"
       }
     },
     "why": {
