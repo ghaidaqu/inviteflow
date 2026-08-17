@@ -30,11 +30,10 @@ function notificationText(
   switch (n.type) {
     case 'rsvp_new':
       return t('rsvpNew', { name: String(payload.guest_name ?? '') });
-    case 'ticket_purchased':
-      return t('ticketPurchased', { name: String(payload.buyer_name ?? '') });
-    case 'ticket_checked_in':
-      return t('ticketCheckedIn', { name: String(payload.holder_name ?? '') });
     default:
+      // Ticketing was removed from the product entirely — no new
+      // notification is ever created with this type again, but the
+      // database enum (and, in principle, an old row) still allows it.
       return n.type;
   }
 }

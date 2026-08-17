@@ -72,13 +72,6 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               {t('primaryCta')}
             </Button>
           </div>
-
-          <Link
-            href="/guest"
-            className="text-muted-foreground hover:text-primary text-sm font-medium underline-offset-4 hover:underline"
-          >
-            {t('guestLink')}
-          </Link>
         </div>
 
         {/* Graphic side — huge cropped serif "INVITE" behind three

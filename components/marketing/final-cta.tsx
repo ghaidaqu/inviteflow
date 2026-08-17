@@ -18,15 +18,6 @@ export async function FinalCta() {
           <Button size="lg" nativeButton={false} render={<Link href="/register" />}>
             {t('primaryCta')}
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-background/30 text-background hover:bg-background/10 hover:text-background bg-transparent"
-            nativeButton={false}
-            render={<Link href="/guest" />}
-          >
-            {t('secondaryCta')}
-          </Button>
         </div>
       </div>
     </section>

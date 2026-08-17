@@ -46,10 +46,10 @@
     "why": {
       "title": "Why InviteFlow?",
       "statement": "Built from the ground up for Arabic-speaking users — not a translated foreign tool.",
-      "point1": "Guests reply right inside WhatsApp — never opening a link at all",
-      "point2": "An elegant digital invitation you share with one link",
-      "point3": "Every guest gets their own edit link, no account needed",
-      "point4": "Your data is protected by row-level security in the database"
+      "point1": "Easy to use — no complexity.",
+      "point2": "Elegant designs for any occasion.",
+      "point3": "Your data, always saved and secure.",
+      "point4": "Manage your invitation and guests in one place."
     },
     "previews": {
       "title": "See what it actually looks like",
@@ -74,27 +74,17 @@
     "finalCta": {
       "title": "Ready to start?",
       "subtitle": "Takes less than two minutes",
-      "primaryCta": "Create your free account",
-      "secondaryCta": "Or try it as a guest"
+      "primaryCta": "Create your free account"
     },
     "footer": {
-      "tagline": "Built Arabic-first for your events — invitations, polls, and tickets.",
+      "tagline": "Built Arabic-first for your digital invitations — from weddings to institutional events.",
       "journeysHeading": "Product",
       "accountHeading": "Account",
       "loginLink": "Log in",
-      "registerLink": "Create account",
-      "guestLink": "Try as a guest",
-      "copyright": "© {year} InviteFlow"
+      "copyright": "© {year} InviteFlow",
+      "termsLink": "Terms",
+      "privacyLink": "Privacy"
     }
-  },
-  "GuestHub": {
-    "title": "Try InviteFlow as a guest",
-    "rsvp": {
-      "title": "Digital Invitation"
-    },
-    "unavailable": "The demo invitation isn’t available yet — the sample data hasn’t been added to the database.",
-    "unavailableHint": "Run supabase/seed.sql against your database to enable the demo invitation.",
-    "backHome": "Back to home"
   },
   "Common": {
     "languageSwitcher": "Language",
@@ -103,8 +93,8 @@
   "Auth": {
     "backToHome": "Home",
     "register": {
-      "title": "Create an organizer account",
-      "subtitle": "Sign up to start creating your events and digital invitations."
+      "title": "Log in",
+      "subtitle": "Sign in with your phone or email to start creating your digital invitations."
     },
     "login": {
       "title": "Log in",
@@ -271,7 +261,7 @@
         "rsvp": "Link Invitation",
         "institutional": "Institutional invitation"
       },
-      "questionsInlineTitle": "Poll questions",
+      "questionsInlineTitle": "Custom questions",
       "questionsInlineHint": "Add the questions you want to send your guests. You can add or edit more later from the settings page.",
       "questionsInlineEmpty": "No questions yet — click \"Add question\" to start."
     },
@@ -435,7 +425,7 @@
   },
   "Questions": {
     "title": "Custom Questions",
-    "rsvpPageSubtitle": "A poll/questionnaire tool for organizing an event or meetup — questions you define, with answers from your invitees coming back to you. A separate track from the digital invitation.",
+    "rsvpPageSubtitle": "Add your own questions for guests to answer when they respond — works on both the Digital Invitation and the Link Invitation.",
     "questionNumber": "Question {number}",
     "questionTextArLabel": "Question text (Arabic)",
     "questionTextEnLabel": "Question text (English)",
@@ -604,8 +594,6 @@
     "empty": "No notifications yet.",
     "markAllRead": "Mark all as read",
     "rsvpNew": "New response from {name}",
-    "ticketPurchased": "New ticket from {name}",
-    "ticketCheckedIn": "{name} checked in",
     "a11yBell": "Notifications"
   },
   "NotFound": {
@@ -617,5 +605,41 @@
     "title": "Something went wrong",
     "description": "Sorry for the inconvenience — try again or come back later.",
     "retry": "Try again"
+  },
+  "Legal": {
+    "backHome": "Home",
+    "lastUpdated": "Last updated: August 18, 2026",
+    "terms": {
+      "title": "Terms of Service",
+      "intro": "These terms govern your use of InviteFlow. The platform is currently in a trial phase — by using it, you agree to the terms below.",
+      "section1Heading": "1. Who uses the platform",
+      "section1Body": "InviteFlow serves two kinds of users: organizers (who create an account to manage their events) and guests (who use an invitation link to respond, with no account needed). These terms apply to both, as relevant to how they use the platform.",
+      "section2Heading": "2. Your account and responsibility",
+      "section2Body": "You're responsible for the accuracy of your event and guest data, and for keeping your account credentials secure. Don't use the platform to send abusive or unlawful content, or to collect guest data without their knowledge.",
+      "section3Heading": "3. Service limits",
+      "section3Body": "The platform is currently in a trial phase: some channels (like WhatsApp or email notifications) may not always be actively enabled, and we're continuously improving stability and features. We don't guarantee uninterrupted or error-free service, and we make a reasonable effort to fix any issue once found.",
+      "section4Heading": "4. Content you create",
+      "section4Body": "Your invitation's content (text, images, an organization logo if applicable) remains yours. By sharing it through the platform, you grant us only the permission needed to display, store, and send it to your guests per your own settings.",
+      "section5Heading": "5. Changes and suspension",
+      "section5Body": "We may update these terms or the platform's features as we continue building it, and we'll aim to notify you of any material change. Any account used in violation of these terms may be suspended.",
+      "section6Heading": "6. Contact",
+      "section6Body": "For any question about these terms, reach us at support@inviteflow.app."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "intro": "Here's what data we collect, how we use it, and who can access it — in the simplest terms possible.",
+      "section1Heading": "1. Data we collect",
+      "section1Body": "From organizers: name, phone number or email (for sign-in), and the event data they create. From guests: name and phone number (when responding to an invitation), and their answers to any custom questions the organizer added.",
+      "section2Heading": "2. How we use your data",
+      "section2Body": "We use your data only to run the service: displaying the invitation, recording guest responses, sending confirmations and reminders (via WhatsApp or email once enabled), and showing response stats to the organizer. We never sell your data or use it for advertising.",
+      "section3Heading": "3. Who can access your data",
+      "section3Body": "A given event's guest data is visible only to that specific event's organizer — enforced at the database level itself (Row Level Security), not just in the interface. No other organizer can see events or guests that aren't theirs.",
+      "section4Heading": "4. Sharing data with third parties",
+      "section4Body": "When an organizer enables WhatsApp or email sending, the confirmation message is sent through the relevant provider (Meta WhatsApp Cloud API, or Resend for email) — only the data needed to deliver that message (the phone number or email, and the message text) is shared with them. We never share your data with anyone else.",
+      "section5Heading": "5. Data security",
+      "section5Body": "Data is stored in Supabase (a secure PostgreSQL-based infrastructure), protected by row-level access policies. No full-privilege admin key is ever used from inside the browser.",
+      "section6Heading": "6. Your rights",
+      "section6Body": "Any guest can edit or delete their response via their own private link at any time before the deadline. To request full deletion of your data from any event, reach us at support@inviteflow.app."
+    }
   }
 }

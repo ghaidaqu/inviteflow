@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { updateRsvpAction, type RsvpActionState } from '@/lib/actions/rsvp';
 import type { QuestionWithOptions } from '@/lib/services/questions.service';
 import type { RsvpByToken } from '@/lib/services/rsvp.service';
@@ -58,7 +59,13 @@ export function RsvpQuestionsForm({
     setServerError(null);
     setSaved(false);
 
-    const missingRequired = questions.some((q) => q.is_required && !values.answers[q.id]);
+    const missingRequired = questions.some((q) => {
+      if (!q.is_required) return false;
+      const value = values.answers[q.id];
+      // An empty selection array is truthy in JS but still "no answer" —
+      // multi_choice needs its own emptiness check, unlike every other type.
+      return Array.isArray(value) ? value.length === 0 : !value;
+    });
     if (missingRequired) {
       setServerError('answerRequired');
       return;
@@ -182,6 +189,53 @@ function CustomQuestionField({
     );
   }
 
+  if (question.type === 'multi_choice') {
+    return (
+      <Field>
+        <FieldLabel>
+          {label}
+          {question.is_required && ' *'}
+        </FieldLabel>
+        <Controller
+          control={control}
+          name={`answers.${question.id}`}
+          render={({ field }) => {
+            const selected = Array.isArray(field.value) ? (field.value as string[]) : [];
+            return (
+              <div className="flex flex-col gap-2">
+                {question.options.map((option) => {
+                  const optionLabel =
+                    locale === 'ar'
+                      ? option.option_text_ar
+                      : (option.option_text_en ?? option.option_text_ar);
+                  const checked = selected.includes(option.id);
+                  return (
+                    <label
+                      key={option.id}
+                      className="flex cursor-pointer items-center gap-2.5 text-sm"
+                    >
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={(next) => {
+                          field.onChange(
+                            next
+                              ? [...selected, option.id]
+                              : selected.filter((id) => id !== option.id),
+                          );
+                        }}
+                      />
+                      {optionLabel}
+                    </label>
+                  );
+                })}
+              </div>
+            );
+          }}
+        />
+      </Field>
+    );
+  }
+
   if (question.type === 'number') {
     return (
       <Field>
@@ -226,7 +280,7 @@ function CustomQuestionField({
     );
   }
 
-  // short_text and multi_choice fall back to a simple text input for MVP.
+  // short_text is the only type meant to fall back to a plain input.
   return (
     <Field>
       <FieldLabel>

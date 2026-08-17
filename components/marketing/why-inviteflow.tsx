@@ -1,11 +1,11 @@
 import { getTranslations } from 'next-intl/server';
-import { MessageCircleIcon, CreditCardIcon, LinkIcon, ShieldCheckIcon } from 'lucide-react';
+import { MousePointerClickIcon, PaletteIcon, LockIcon, LayoutDashboardIcon } from 'lucide-react';
 
 const POINTS = [
-  { key: 'point1', icon: MessageCircleIcon },
-  { key: 'point2', icon: CreditCardIcon },
-  { key: 'point3', icon: LinkIcon },
-  { key: 'point4', icon: ShieldCheckIcon },
+  { key: 'point1', icon: MousePointerClickIcon },
+  { key: 'point2', icon: PaletteIcon },
+  { key: 'point3', icon: LockIcon },
+  { key: 'point4', icon: LayoutDashboardIcon },
 ] as const;
 
 export async function WhyInviteFlow() {

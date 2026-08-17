@@ -90,6 +90,24 @@ export async function getResultsSummary(
       };
     }
 
+    if (q.type === 'multi_choice') {
+      // answer_value is an array of selected option ids here (unlike
+      // single_choice's bare id) — a guest can tick more than one.
+      const questionOptions = options.filter((o) => o.question_id === q.id);
+      return {
+        questionTextAr: q.question_text_ar,
+        questionTextEn: q.question_text_en,
+        type: q.type,
+        tally: questionOptions.map((opt) => ({
+          labelAr: opt.option_text_ar,
+          labelEn: opt.option_text_en ?? opt.option_text_ar,
+          count: questionAnswers.filter(
+            (a) => Array.isArray(a.answer_value) && a.answer_value.includes(opt.id),
+          ).length,
+        })),
+      };
+    }
+
     return {
       questionTextAr: q.question_text_ar,
       questionTextEn: q.question_text_en,

@@ -47,22 +47,22 @@ export async function SiteFooter() {
                 {t('loginLink')}
               </Link>
             </li>
-            <li>
-              <Link href="/register" className="hover:text-foreground">
-                {t('registerLink')}
-              </Link>
-            </li>
-            <li>
-              <Link href="/guest" className="hover:text-foreground">
-                {t('guestLink')}
-              </Link>
-            </li>
           </ul>
         </div>
       </div>
 
-      <div className="border-t px-4 py-5 text-center sm:px-6">
-        <p className="text-muted-foreground text-xs">{t('copyright', { year })}</p>
+      <div className="border-t px-4 py-5 sm:px-6">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-3 sm:flex-row">
+          <p className="text-muted-foreground text-xs">{t('copyright', { year })}</p>
+          <div className="text-muted-foreground flex items-center gap-4 text-xs">
+            <Link href="/terms" className="hover:text-foreground hover:underline">
+              {t('termsLink')}
+            </Link>
+            <Link href="/privacy" className="hover:text-foreground hover:underline">
+              {t('privacyLink')}
+            </Link>
+          </div>
+        </div>
       </div>
     </footer>
   );
