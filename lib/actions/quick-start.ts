@@ -11,18 +11,33 @@ import { sendInvitationWhatsApp } from '@/lib/whatsapp/notify';
 import { normalizePhone } from '@/lib/utils/phone';
 import { normalizeDigits } from '@/lib/utils/digits';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
-import { eventTypes } from '@/lib/validations/events';
+import { eventTypes, eventLocales, eventVisibilities } from '@/lib/validations/events';
 import type { QuestionInput } from '@/lib/validations/questions';
 
+/**
+ * Exactly the fields the authenticated dashboard's EventForm has —
+ * nothing added, nothing missing. See event-form.tsx for the reference:
+ * name, type, description, eventDate, rsvpDeadline, locationText,
+ * locationMapUrl, coverImageUrl, primaryLocale, visibility, password
+ * protection — plus custom questions for the Link track. isQrEnabled and
+ * eventEndDate aren't here because the real form doesn't expose them
+ * either (they round-trip silently there too); institutional fields
+ * aren't here because Institutional isn't part of this flow.
+ */
 export type QuickStartDraft = {
   track: 'invitation' | 'rsvp';
   name: string;
   type: string;
   description: string;
   eventDate: string;
+  rsvpDeadline: string;
   locationText: string;
+  locationMapUrl: string;
   coverImageUrl: string;
-  isQrEnabled: boolean;
+  primaryLocale: string;
+  visibility: string;
+  isPasswordProtected: boolean;
+  password: string;
   questions: QuestionInput[];
   guestName: string;
   guestPhone: string;
@@ -39,12 +54,16 @@ function canonicalPhone(raw: string): string | null {
   return result.ok ? result.e164 : normalizeDigits(trimmed);
 }
 
+function toIsoOrUndefined(value: string): string | undefined {
+  if (!value || Number.isNaN(Date.parse(value))) return undefined;
+  return new Date(value).toISOString();
+}
+
 /**
  * The only place in the whole /start flow that writes to the database —
  * called right after login (see FinishCreating). Creates the real event
- * with everything the organizer filled in before authenticating (cover
- * image, QR setting, custom questions for the Link track), then — if they
- * gave a test contact — adds that guest and sends them the actual
+ * with everything the organizer filled in before authenticating, then —
+ * if they gave a test contact — adds that guest and sends them the actual
  * invitation (real Accept/Decline/Maybe buttons, real QR), exactly what a
  * guest would get. This *is* the free trial; there's no separate
  * lightweight preview message.
@@ -61,6 +80,7 @@ export async function createEventFromQuickStartAction(
   draft: QuickStartDraft,
 ): Promise<QuickStartResult> {
   if (!draft.name.trim() || draft.name.length > 150) return { error: 'invalidInput' };
+  if (draft.isPasswordProtected && !draft.password) return { error: 'passwordRequired' };
 
   const supabase = await createClient();
   const {
@@ -71,11 +91,14 @@ export async function createEventFromQuickStartAction(
   const organizationId = await getCurrentOrganizationId(supabase, user.id);
   if (!organizationId) return { error: 'unknown' };
 
-  const locale = (await getLocale()) as 'ar' | 'en';
+  const uiLocale = (await getLocale()) as 'ar' | 'en';
   const eventType = (eventTypes as readonly string[]).includes(draft.type) ? draft.type : 'other';
-  const eventDate =
-    draft.eventDate && !Number.isNaN(Date.parse(draft.eventDate)) ? draft.eventDate : undefined;
-
+  const primaryLocale = (eventLocales as readonly string[]).includes(draft.primaryLocale)
+    ? draft.primaryLocale
+    : 'ar';
+  const visibility = (eventVisibilities as readonly string[]).includes(draft.visibility)
+    ? draft.visibility
+    : 'private';
   let eventId: string;
   let eventSlug: string;
   try {
@@ -83,17 +106,17 @@ export async function createEventFromQuickStartAction(
       name: draft.name,
       type: eventType as (typeof eventTypes)[number],
       description: draft.description || undefined,
-      eventDate,
-      rsvpDeadline: undefined,
+      eventDate: toIsoOrUndefined(draft.eventDate),
+      rsvpDeadline: toIsoOrUndefined(draft.rsvpDeadline),
       locationText: draft.locationText || undefined,
-      locationMapUrl: undefined,
+      locationMapUrl: draft.locationMapUrl || undefined,
       coverImageUrl: draft.coverImageUrl || undefined,
-      primaryLocale: locale,
-      visibility: 'private',
+      primaryLocale: primaryLocale as (typeof eventLocales)[number],
+      visibility: visibility as (typeof eventVisibilities)[number],
       isRsvpEnabled: true,
-      isQrEnabled: draft.isQrEnabled,
-      isPasswordProtected: false,
-      password: undefined,
+      isQrEnabled: false,
+      isPasswordProtected: draft.isPasswordProtected,
+      password: draft.password || undefined,
       eventEndDate: undefined,
       organizationName: undefined,
       organizationLogoUrl: undefined,
@@ -132,13 +155,13 @@ export async function createEventFromQuickStartAction(
           phone: guestPhone,
           email: null,
         });
-        await sendInvitationWhatsApp(eventSlug, guest.id, guest.name ?? '', guestPhone, locale);
+        await sendInvitationWhatsApp(eventSlug, guest.id, guest.name ?? '', guestPhone, uiLocale);
       } catch {
         // Best-effort — the event itself is already created either way.
       }
     }
   }
 
-  revalidatePath(`/${locale}/dashboard/events`);
-  redirect(`/${locale}/dashboard/events/${eventId}`);
+  revalidatePath(`/${uiLocale}/dashboard/events`);
+  redirect(`/${uiLocale}/dashboard/events/${eventId}`);
 }
