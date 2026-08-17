@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import { SamplePreview } from '@/components/marketing/sample-preview';
 import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon, Building2Icon } from 'lucide-react';
 
 type JourneyKey = 'invitation' | 'rsvp' | 'institutional';
@@ -76,8 +75,6 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               {t('primaryCta')}
             </Button>
           </div>
-
-          <SamplePreview />
         </div>
 
         {/* Graphic side — huge cropped serif "INVITE" behind three

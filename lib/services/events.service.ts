@@ -233,6 +233,44 @@ export async function updateEventSettings(
   return data;
 }
 
+export async function getEventDesign(
+  supabase: Client,
+  eventId: string,
+): Promise<EventDesignRow | null> {
+  const { data, error } = await supabase
+    .from('event_designs')
+    .select('*')
+    .eq('event_id', eventId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * `template` is intentionally unvalidated here (the DB column is plain
+ * text, no CHECK constraint) — the set of real values lives app-side in
+ * components/public/event-hero/types.ts, and the public page already
+ * falls back to 'classic' for anything it doesn't recognize. Keeping the
+ * write path this loose means adding a new template later needs no
+ * migration.
+ */
+export async function updateEventDesign(
+  supabase: Client,
+  eventId: string,
+  template: string,
+): Promise<EventDesignRow> {
+  const { data, error } = await supabase
+    .from('event_designs')
+    .update({ template })
+    .eq('event_id', eventId)
+    .select('*')
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
 export async function getPublicEventBySlug(
   supabase: Client,
   slug: string,

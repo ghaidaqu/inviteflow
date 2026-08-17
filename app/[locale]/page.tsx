@@ -1,7 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 import { SiteNav } from '@/components/marketing/site-nav';
 import { HeroJourneys } from '@/components/marketing/hero-journeys';
-import { TrustStrip } from '@/components/marketing/trust-strip';
 import { WhyInviteFlow } from '@/components/marketing/why-inviteflow';
 import { ProductPreviews } from '@/components/marketing/product-previews';
 import { OccasionGallery } from '@/components/marketing/occasion-gallery';
@@ -20,7 +19,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <SiteNav />
       <main className="flex flex-col">
         <HeroJourneys locale={locale} />
-        <TrustStrip />
         <WhyInviteFlow />
         <OccasionGallery />
         <ProductPreviews />

@@ -15,8 +15,10 @@ import {
   getCurrentOrganizationId,
   getEvent,
   updateEventSettings,
+  updateEventDesign,
 } from '@/lib/services/events.service';
 import { replaceQuestions } from '@/lib/services/questions.service';
+import { isEventTemplate } from '@/lib/validations/event-design';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase';
 
@@ -215,6 +217,43 @@ export async function updateEventSettingsAction(
 
   const locale = await getLocale();
   revalidatePath(`/${locale}/dashboard/events/${eventId}/rsvp`);
+  return { success: true };
+}
+
+export type EventDesignActionState = {
+  error?: string;
+  success?: boolean;
+};
+
+export async function updateEventDesignAction(
+  eventId: string,
+  _prevState: EventDesignActionState,
+  formData: FormData,
+): Promise<EventDesignActionState> {
+  const template = String(formData.get('template') ?? '');
+  if (!isEventTemplate(template)) return { error: 'invalidInput' };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'unauthorized' };
+
+  const organizationId = await getCurrentOrganizationId(supabase, user.id);
+  if (!organizationId) return { error: 'unknown' };
+
+  const event = await getEvent(supabase, organizationId, eventId);
+  if (!event) return { error: 'unknown' };
+
+  try {
+    await updateEventDesign(supabase, eventId, template);
+  } catch {
+    return { error: 'unknown' };
+  }
+
+  const locale = await getLocale();
+  revalidatePath(`/${locale}/events/${event.slug}`);
+  revalidatePath(`/${locale}/dashboard/events/${eventId}`);
   return { success: true };
 }
 

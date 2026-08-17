@@ -334,6 +334,15 @@
       "typeRequired": "Please select an event type.",
       "urlInvalid": "Please enter a valid URL.",
       "dateInvalid": "Please enter a valid date and time."
+    },
+    "design": {
+      "title": "Invitation page design",
+      "hint": "Changes how your public invitation page looks, instantly — doesn't affect its data.",
+      "templates": {
+        "classic": "Classic",
+        "editorial": "Elegant Dark",
+        "minimal": "Minimal"
+      }
     }
   },
   "PublicEvent": {
@@ -646,41 +655,24 @@
     "nameLabel": "Event name",
     "namePlaceholder": "e.g. Sara & Ahmad's Wedding",
     "typeLabel": "Event type",
+    "descriptionLabel": "Description (optional)",
     "eventDateLabel": "Date & time (optional)",
     "locationTextLabel": "Location (optional)",
-    "continueButton": "Continue",
-    "tryTitle": "Try a free preview",
-    "tryDescription": "Enter your name and phone number to get a real WhatsApp preview of your invitation — one free preview per number.",
-    "guestNameLabel": "Your name",
-    "guestPhoneLabel": "Your phone number",
-    "sendPreviewButton": "Send preview",
-    "sending": "Sending...",
-    "previewSent": "Preview sent to your WhatsApp!",
-    "previewSentDemo": "Preview prepared (demo mode — actual WhatsApp sending isn't enabled on this site yet).",
-    "finishButton": "Log in to activate your invitation",
+    "coverImageLabel": "Cover image or design (optional)",
+    "qrLabel": "Show a QR code for the invitation link",
+    "trialTitle": "A real trial before you commit",
+    "trialDescription": "Enter a name and phone number — as soon as you log in, they'll get your actual invitation exactly as your other guests would (real Accept/Decline buttons, QR code if enabled). Each account gets a limited number of these trial sends.",
+    "guestNameLabel": "Test guest name (optional)",
+    "guestPhoneLabel": "Their phone number",
+    "finishButton": "Log in and activate your invitation",
     "finishHint": "Free right now — no card required.",
-    "errors": {
-      "invalidInput": "Fill in the event name and your name first.",
-      "invalidPhone": "Invalid phone number.",
-      "rateLimited": "The free preview for this number has already been used.",
-      "sendFailed": "Sending failed, please try again."
-    },
     "finish": {
-      "creating": "Creating your invitation...",
+      "creating": "Creating your invitation and sending the trial...",
       "unauthorized": "You need to log in to finish activating your invitation.",
       "loginButton": "Log in",
       "noDraft": "We couldn't find your invitation details — looks like you landed here from a direct link. Start over?",
       "error": "Something went wrong while creating your invitation, please try again.",
       "backToStart": "Start over"
-    },
-    "sample": {
-      "label": "Want to see what it looks like on your own WhatsApp?",
-      "sampleEventName": "A sample invitation from InviteFlow",
-      "sampleGuestName": "our valued guest",
-      "cta": "Send a sample message",
-      "sending": "Sending...",
-      "sentReal": "Sent to your WhatsApp!",
-      "sentDemo": "Prepared (demo mode — actual sending isn't enabled yet)."
     }
   }
 }
