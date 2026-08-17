@@ -17,7 +17,10 @@ const PANEL_STYLE: Record<
     glassFrom: string;
     glassTo: string;
     panel: string;
-    track: string;
+    /** Invitation/Link go through the no-login-wall quick-start flow;
+     *  Institutional needs a company name/logo up front by design, so it
+     *  keeps going straight to the authenticated dashboard flow. */
+    href: string;
     icon: typeof MailIcon;
   }
 > = {
@@ -25,21 +28,21 @@ const PANEL_STYLE: Record<
     glassFrom: 'rgba(156,42,65,0.1)',
     glassTo: 'rgba(61,9,22,0.22)',
     panel: '#3d0916',
-    track: 'invitation',
+    href: '/start/invitation',
     icon: MailIcon,
   },
   rsvp: {
     glassFrom: 'rgba(80,58,99,0.12)',
     glassTo: 'rgba(28,19,34,0.25)',
     panel: '#1c1322',
-    track: 'rsvp',
+    href: '/start/rsvp',
     icon: LinkIcon,
   },
   institutional: {
     glassFrom: 'rgba(35,44,68,0.12)',
     glassTo: 'rgba(8,10,16,0.25)',
     panel: '#080a10',
-    track: 'institutional',
+    href: '/dashboard/events/new/institutional',
     icon: Building2Icon,
   },
 };
@@ -156,11 +159,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               );
 
               return (
-                <Link
-                  key={key}
-                  href={`/dashboard/events/new/${style.track}`}
-                  className={panelClassName}
-                >
+                <Link key={key} href={style.href} className={panelClassName}>
                   {content}
                 </Link>
               );

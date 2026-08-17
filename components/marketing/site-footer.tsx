@@ -22,12 +22,12 @@ export async function SiteFooter() {
           <h3 className="text-sm font-bold">{t('journeysHeading')}</h3>
           <ul className="text-muted-foreground mt-3 flex flex-col gap-2 text-sm">
             <li>
-              <Link href="/dashboard/events/new/invitation" className="hover:text-foreground">
+              <Link href="/start/invitation" className="hover:text-foreground">
                 {tj('invitation.title')}
               </Link>
             </li>
             <li>
-              <Link href="/dashboard/events/new/rsvp" className="hover:text-foreground">
+              <Link href="/start/rsvp" className="hover:text-foreground">
                 {tj('rsvp.title')}
               </Link>
             </li>
