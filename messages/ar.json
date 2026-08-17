@@ -229,6 +229,8 @@
       "locationTextLabel": "الموقع",
       "locationMapUrlLabel": "حدد الموقع على الخريطة",
       "coverImageUrlLabel": "صورة الغلاف",
+      "organizationNameLabel": "اسم الشركة/الجهة",
+      "organizationLogoLabel": "شعار الشركة",
       "map": {
         "searchPlaceholder": "ابحث عن مكان أو عنوان...",
         "searchNotFound": "ما لقينا هذا المكان، جرّب اسم مختلف.",
@@ -263,7 +265,8 @@
       "submitting": "جارٍ الحفظ...",
       "trackBadge": {
         "invitation": "دعوة رقمية",
-        "rsvp": "دعوة بالرابط"
+        "rsvp": "دعوة بالرابط",
+        "institutional": "دعوة مؤسسية"
       },
       "questionsInlineTitle": "أسئلة الاستطلاع",
       "questionsInlineHint": "أضف الأسئلة اللي تبي ترسلها لضيوفك. تقدر تضيف أو تعدّل عليها لاحقًا من صفحة الإعدادات.",
@@ -286,6 +289,10 @@
       "rsvp": {
         "title": "دعوة بالرابط",
         "description": "رابط تسجيل مباشر — الاسم، الجوال، عدد المرافقين، وأسئلتك الخاصة. مثالي حين تحتاج الأرقام بدقة وسرعة دون تصميم دعوة."
+      },
+      "institutional": {
+        "title": "دعوة مؤسسية",
+        "description": "لجهة أو شركة: اسمك وشعارك يظهران على الدعوة، مع إمكانية رفع تصميم خاص بكم."
       }
     },
     "detail": {
@@ -305,7 +312,21 @@
       "guestsButton": "الضيوف",
       "invitationButton": "الدعوة الرقمية",
       "rsvpSettingsButton": "أسئلة RSVP",
-      "checkInButton": "مسح QR وتسجيل الحضور"
+      "checkInButton": "مسح QR وتسجيل الحضور",
+      "reminders": {
+        "title": "التذكيرات",
+        "hint": "رسالة واتساب تلقائية للمؤكِّدين — قبل المناسبة بيوم وبعدها بيوم. يمكنك إلغاء أي منها قبل موعده.",
+        "kind": {
+          "day_before": "تذكير قبل المناسبة بيوم",
+          "day_after": "رسالة شكر بعد المناسبة بيوم"
+        },
+        "status": {
+          "scheduled": "مجدول",
+          "sent": "أُرسل",
+          "canceled": "مُلغى"
+        },
+        "cancel": "إلغاء"
+      }
     },
     "errors": {
       "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
@@ -343,7 +364,8 @@
     "copyLinkButton": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط",
     "shareMessage": "دعوة: {name}",
-    "rsvpButton": "الرد على الدعوة"
+    "rsvpButton": "الرد على الدعوة",
+    "organizedBy": "من {name}"
   },
   "Rsvp": {
     "pageSubtitle": "يرجى تعبئة النموذج لتأكيد حضورك.",

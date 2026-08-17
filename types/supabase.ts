@@ -112,6 +112,13 @@ export interface Database {
           is_qr_enabled: boolean;
           password_hash: string | null;
           status: EventStatus;
+          /** Opt-in end of a multi-day event; null means single-day/instant. */
+          event_end_date: string | null;
+          /** Institutional track only — company display name and logo. Never
+           *  swaps the WhatsApp sender's own display picture (see the
+           *  migration comment); used for on-page branding only. */
+          organization_name: string | null;
+          organization_logo_url: string | null;
           created_at: string;
           updated_at: string;
           deleted_at: string | null;
@@ -136,6 +143,9 @@ export interface Database {
           is_qr_enabled?: boolean;
           password_hash?: string | null;
           status?: EventStatus;
+          event_end_date?: string | null;
+          organization_name?: string | null;
+          organization_logo_url?: string | null;
           created_at?: string;
           updated_at?: string;
           deleted_at?: string | null;
@@ -195,6 +205,30 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<Database['public']['Tables']['event_designs']['Insert']>;
+        Relationships: [];
+      };
+      event_reminders: {
+        Row: {
+          id: string;
+          event_id: string;
+          kind: 'day_before' | 'day_after';
+          scheduled_at: string;
+          status: 'scheduled' | 'sent' | 'canceled';
+          sent_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          event_id: string;
+          kind: 'day_before' | 'day_after';
+          scheduled_at: string;
+          status?: 'scheduled' | 'sent' | 'canceled';
+          sent_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['event_reminders']['Insert']>;
         Relationships: [];
       };
       guests: {

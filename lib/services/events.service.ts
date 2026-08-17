@@ -4,6 +4,7 @@ import type { EventFormOutput } from '@/lib/validations/events';
 import type { EventSettingsFormOutput } from '@/lib/validations/event-settings';
 import { slugify, randomSuffix } from '@/lib/utils/slug';
 import { hashPassword } from '@/lib/utils/password';
+import { upsertEventReminders } from '@/lib/services/reminders.service';
 
 type Client = SupabaseClient<Database>;
 type EventRow = Database['public']['Tables']['events']['Row'];
@@ -117,11 +118,15 @@ export async function createEvent(
       is_rsvp_enabled: input.isRsvpEnabled,
       is_qr_enabled: input.isQrEnabled,
       password_hash: passwordHash,
+      event_end_date: input.eventEndDate ?? null,
+      organization_name: input.organizationName ?? null,
+      organization_logo_url: input.organizationLogoUrl ?? null,
     })
     .select('*')
     .single();
 
   if (error) throw error;
+  await upsertEventReminders(supabase, data.id, data.event_date);
   return data;
 }
 
@@ -163,6 +168,9 @@ export async function updateEvent(
       is_rsvp_enabled: input.isRsvpEnabled,
       is_qr_enabled: input.isQrEnabled,
       password_hash: passwordHash,
+      event_end_date: input.eventEndDate ?? null,
+      organization_name: input.organizationName ?? null,
+      organization_logo_url: input.organizationLogoUrl ?? null,
     })
     .eq('id', eventId)
     .eq('organization_id', organizationId)
@@ -170,6 +178,7 @@ export async function updateEvent(
     .single();
 
   if (error) throw error;
+  await upsertEventReminders(supabase, data.id, data.event_date);
   return data;
 }
 

@@ -51,6 +51,24 @@ export default async function PublicEventPage({
       </div>
 
       <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-2xl px-4 py-10 duration-700 sm:px-6">
+        {(event.organization_name || event.organization_logo_url) && (
+          <div className="mb-4 flex items-center justify-center gap-2 sm:justify-start">
+            {event.organization_logo_url && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={event.organization_logo_url}
+                alt=""
+                className="bg-card size-8 rounded-full border object-contain p-1"
+              />
+            )}
+            {event.organization_name && (
+              <span className="text-muted-foreground text-sm font-medium">
+                {t('organizedBy', { name: event.organization_name })}
+              </span>
+            )}
+          </div>
+        )}
+
         {event.cover_image_url ? (
           /\.(mp4|webm|mov)$/i.test(event.cover_image_url) ? (
             <video

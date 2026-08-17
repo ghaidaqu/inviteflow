@@ -4,7 +4,7 @@ import { EventForm } from '@/components/dashboard/event-form';
 import { createEventAction } from '@/lib/actions/events';
 import { Link } from '@/i18n/navigation';
 
-const TRACKS = ['invitation', 'rsvp'] as const;
+const TRACKS = ['invitation', 'rsvp', 'institutional'] as const;
 type Track = (typeof TRACKS)[number];
 
 function isTrack(value: string): value is Track {

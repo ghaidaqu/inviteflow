@@ -229,6 +229,8 @@
       "locationTextLabel": "Location",
       "locationMapUrlLabel": "Pin the location on the map",
       "coverImageUrlLabel": "Cover image",
+      "organizationNameLabel": "Company/organization name",
+      "organizationLogoLabel": "Company logo",
       "map": {
         "searchPlaceholder": "Search for a place or address...",
         "searchNotFound": "We couldn't find that place — try a different name.",
@@ -263,7 +265,8 @@
       "submitting": "Saving...",
       "trackBadge": {
         "invitation": "Digital invitation",
-        "rsvp": "Link Invitation"
+        "rsvp": "Link Invitation",
+        "institutional": "Institutional invitation"
       },
       "questionsInlineTitle": "Poll questions",
       "questionsInlineHint": "Add the questions you want to send your guests. You can add or edit more later from the settings page.",
@@ -286,6 +289,10 @@
       "rsvp": {
         "title": "Link Invitation",
         "description": "A direct registration link — name, phone, headcount, and your own questions. Ideal when you need accurate numbers fast, without an invitation design."
+      },
+      "institutional": {
+        "title": "Institutional invitation",
+        "description": "For a company or organization: your name and logo appear on the invitation, with your own custom design if you have one."
       }
     },
     "detail": {
@@ -305,7 +312,21 @@
       "guestsButton": "Guests",
       "invitationButton": "Digital invitation",
       "rsvpSettingsButton": "RSVP questions",
-      "checkInButton": "QR Check-in"
+      "checkInButton": "QR Check-in",
+      "reminders": {
+        "title": "Reminders",
+        "hint": "An automatic WhatsApp message to confirmed guests — one day before the event and one day after. You can cancel either before it goes out.",
+        "kind": {
+          "day_before": "Day-before reminder",
+          "day_after": "Day-after thank-you"
+        },
+        "status": {
+          "scheduled": "Scheduled",
+          "sent": "Sent",
+          "canceled": "Canceled"
+        },
+        "cancel": "Cancel"
+      }
     },
     "errors": {
       "invalidInput": "Please check the information you entered.",
@@ -343,7 +364,8 @@
     "copyLinkButton": "Copy link",
     "linkCopied": "Link copied",
     "shareMessage": "Invitation: {name}",
-    "rsvpButton": "Respond to invitation"
+    "rsvpButton": "Respond to invitation",
+    "organizedBy": "By {name}"
   },
   "Rsvp": {
     "pageSubtitle": "Please fill out the form to confirm your attendance.",

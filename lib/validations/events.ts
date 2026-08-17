@@ -46,6 +46,11 @@ export const eventFormSchema = z.object({
   isQrEnabled: z.boolean(),
   isPasswordProtected: z.boolean(),
   password: optionalText,
+  eventEndDate: optionalDateTime,
+  // Institutional track only — see EventForm's `track` prop. Left
+  // undefined/blank for the other two tracks.
+  organizationName: optionalText,
+  organizationLogoUrl: optionalUrl,
 });
 
 export type EventFormInput = z.input<typeof eventFormSchema>;

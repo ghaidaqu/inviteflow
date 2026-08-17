@@ -3,11 +3,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 
-// Two genuinely separate creation tracks, chosen up front — not two
+// Three genuinely separate creation tracks, chosen up front — not three
 // checkboxes on one giant form. See EventForm's `track` prop and the
 // invitation/RSVP dashboard page split for the same principle applied to
 // managing an existing event. (Ticketing has been removed from the product
-// entirely — it isn't a third disabled card here, it's gone.)
+// entirely — it isn't a disabled card here, it's gone.)
 export default async function NewEventChooserPage({
   params,
 }: {
@@ -22,7 +22,7 @@ export default async function NewEventChooserPage({
       <h1 className="text-2xl font-bold tracking-tight">{t('title')}</h1>
       <p className="text-muted-foreground mt-1 mb-8">{t('subtitle')}</p>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle>{t('invitation.title')}</CardTitle>
@@ -49,6 +49,22 @@ export default async function NewEventChooserPage({
               className="w-full"
               nativeButton={false}
               render={<Link href="/dashboard/events/new/rsvp" />}
+            >
+              {t('startButton')}
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('institutional.title')}</CardTitle>
+            <CardDescription>{t('institutional.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              className="w-full"
+              nativeButton={false}
+              render={<Link href="/dashboard/events/new/institutional" />}
             >
               {t('startButton')}
             </Button>

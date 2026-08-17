@@ -40,6 +40,9 @@ function readFormInput(formData: FormData) {
     isQrEnabled: formData.get('isQrEnabled') === 'true',
     isPasswordProtected: formData.get('isPasswordProtected') === 'true',
     password: formData.get('password'),
+    eventEndDate: formData.get('eventEndDate'),
+    organizationName: formData.get('organizationName'),
+    organizationLogoUrl: formData.get('organizationLogoUrl'),
   };
 }
 

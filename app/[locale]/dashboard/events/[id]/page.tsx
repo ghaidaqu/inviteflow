@@ -2,10 +2,12 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
+import { listEventReminders } from '@/lib/services/reminders.service';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { EventDetailActions } from '@/components/dashboard/event-detail-actions';
 import { CopyLinkButton } from '@/components/dashboard/copy-link-button';
+import { RemindersPanel } from '@/components/dashboard/reminders-panel';
 import { Link } from '@/i18n/navigation';
 import { UsersIcon, MailIcon, CheckCircle2Icon, type LucideIcon } from 'lucide-react';
 
@@ -36,6 +38,7 @@ export default async function EventDetailPage({
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
   const publicLink = `${appUrl}/${event.primary_locale}/events/${event.slug}`;
+  const reminders = await listEventReminders(supabase, id);
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
@@ -136,6 +139,8 @@ export default async function EventDetailPage({
           )}
         </dl>
       )}
+
+      <RemindersPanel eventId={event.id} reminders={reminders} locale={locale} />
     </main>
   );
 }

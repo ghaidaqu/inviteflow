@@ -30,6 +30,7 @@ import { Badge } from '@/components/ui/badge';
 import { InlineQuestionsBuilder } from '@/components/dashboard/inline-questions-builder';
 import { LocationMapPicker } from '@/components/dashboard/location-map-picker';
 import { CoverImageUpload } from '@/components/dashboard/cover-image-upload';
+import { OrgLogoUpload } from '@/components/dashboard/org-logo-upload';
 import type { QuestionInput } from '@/lib/validations/questions';
 import type { Database } from '@/types/supabase';
 
@@ -48,16 +49,19 @@ function toIso(value?: string): string {
   return Number.isNaN(date.getTime()) ? '' : date.toISOString();
 }
 
-type Track = 'invitation' | 'rsvp';
+type Track = 'invitation' | 'rsvp' | 'institutional';
 
-// Presets for the two creation tracks (see the /dashboard/events/new chooser
-// page): the decorated Digital Invitation, and the simpler Link — a
+// Presets for the three creation tracks (see the /dashboard/events/new
+// chooser page): the decorated Digital Invitation, the simpler Link — a
 // registration-only page (name, phone, headcount, custom questions) with no
-// invitation design around it. Both collect RSVP responses; Ticketing has
-// been removed from the product entirely.
+// invitation design around it — and Institutional, which is the same as a
+// Digital Invitation but starts by asking for a company name/logo. All
+// three collect RSVP responses; Ticketing has been removed from the
+// product entirely.
 const TRACK_DEFAULTS: Record<Track, { isRsvpEnabled: boolean }> = {
   invitation: { isRsvpEnabled: true },
   rsvp: { isRsvpEnabled: true },
+  institutional: { isRsvpEnabled: true },
 };
 
 export function EventForm({
@@ -99,10 +103,17 @@ export function EventForm({
       isQrEnabled: event?.is_qr_enabled ?? false,
       isPasswordProtected: Boolean(event?.password_hash),
       password: '',
+      eventEndDate: toDateTimeLocal(event?.event_end_date ?? null),
+      organizationName: event?.organization_name ?? '',
+      organizationLogoUrl: event?.organization_logo_url ?? '',
     },
   });
 
   const isPasswordProtected = useWatch({ control, name: 'isPasswordProtected' });
+  // Shown for a brand-new institutional event, or when editing any event
+  // that already has org branding set (even if it somehow lost the track
+  // context) — never hidden out from under existing data.
+  const isInstitutional = track === 'institutional' || Boolean(event?.organization_name);
 
   function fieldMessage(message?: string) {
     if (!message) return undefined;
@@ -126,6 +137,9 @@ export function EventForm({
     formData.set('isQrEnabled', String(values.isQrEnabled));
     formData.set('isPasswordProtected', String(values.isPasswordProtected));
     formData.set('password', values.password ?? '');
+    formData.set('eventEndDate', toIso(values.eventEndDate));
+    formData.set('organizationName', values.organizationName ?? '');
+    formData.set('organizationLogoUrl', values.organizationLogoUrl ?? '');
 
     if (track === 'rsvp' && !event) {
       // Drop fully-blank draft rows (an empty "add question" click the
@@ -152,6 +166,32 @@ export function EventForm({
       )}
 
       <FieldGroup>
+        {/* Institutional track: asked first, before anything else — see
+            the track's spec ("company name and logo up front"). The logo
+            is shown as on-page branding only; it does not become the
+            sender's WhatsApp display picture (see the migration comment
+            on events.organization_logo_url for why). */}
+        {isInstitutional && (
+          <>
+            <Field data-invalid={!!errors.organizationName}>
+              <FieldLabel htmlFor="organizationName">{t('organizationNameLabel')}</FieldLabel>
+              <Input id="organizationName" {...register('organizationName')} />
+              <FieldError>{fieldMessage(errors.organizationName?.message)}</FieldError>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="organizationLogoUrl">{t('organizationLogoLabel')}</FieldLabel>
+              <Controller
+                control={control}
+                name="organizationLogoUrl"
+                render={({ field }) => (
+                  <OrgLogoUpload value={field.value ?? ''} onChange={field.onChange} />
+                )}
+              />
+            </Field>
+          </>
+        )}
+
         <Field data-invalid={!!errors.name}>
           <FieldLabel htmlFor="name">{t('nameLabel')}</FieldLabel>
           <Input id="name" {...register('name')} />
@@ -294,7 +334,9 @@ export function EventForm({
             createEventAction's server-side check), so there's nothing to
             toggle. Their values still round-trip through
             defaultValues/onSubmit unchanged, which matters for editing an
-            event created before this was the case. */}
+            event created before this was the case. eventEndDate (for
+            multi-day events) similarly has a column and round-trips, but
+            no input control yet — not part of this pass. */}
 
         <Field orientation="horizontal">
           <FieldLabel htmlFor="isPasswordProtected" className="flex-1 font-normal">
