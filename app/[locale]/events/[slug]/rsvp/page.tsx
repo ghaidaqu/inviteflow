@@ -32,7 +32,12 @@ export default async function EventRsvpPage({
     if (!unlocked) return <EventPasswordGate slug={slug} />;
   }
 
-  if (!event.is_rsvp_enabled) notFound();
+  // Same "is there actually a response to give" check as the event page's
+  // RSVP button — a direct/stale link shouldn't reach a status picker with
+  // nothing selectable.
+  if (!event.is_rsvp_enabled || (!settings.allow_attending && !settings.allow_not_attending)) {
+    notFound();
+  }
 
   const questions = await listQuestions(supabase, event.id);
   const t = await getTranslations('Rsvp');

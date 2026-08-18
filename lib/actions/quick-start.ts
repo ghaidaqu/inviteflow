@@ -98,9 +98,6 @@ export async function createEventFromQuickStartAction(
   draft: QuickStartDraft,
 ): Promise<QuickStartResult> {
   if (!draft.name.trim() || draft.name.length > 150) return { error: 'invalidInput' };
-  if (!draft.allowAttending && !draft.allowNotAttending) {
-    return { error: 'atLeastOneStatus' };
-  }
 
   const supabase = await createClient();
   const {
@@ -133,7 +130,13 @@ export async function createEventFromQuickStartAction(
       coverImageUrl: draft.coverImageUrl || undefined,
       primaryLocale: primaryLocale as (typeof eventLocales)[number],
       visibility: visibility as (typeof eventVisibilities)[number],
-      isRsvpEnabled: true,
+      // Neither response option enabled means the organizer doesn't want
+      // RSVP tracking at all for this invite — an announcement, not a
+      // request for a reply. Guest-facing pages already hide the RSVP
+      // option whenever both are off (see events/[slug]/page.tsx), so
+      // this just keeps is_rsvp_enabled honest with that reality from
+      // the start instead of always forcing it on.
+      isRsvpEnabled: draft.allowAttending || draft.allowNotAttending,
       isQrEnabled: draft.isQrEnabled,
       isPasswordProtected: false,
       password: undefined,

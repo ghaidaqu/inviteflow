@@ -26,7 +26,7 @@ export default async function PublicEventPage({
   const result = await getPublicEventBySlug(supabase, slug);
   if (!result) notFound();
 
-  const { event, design } = result;
+  const { event, settings, design } = result;
 
   if (event.password_hash) {
     const cookieStore = await cookies();
@@ -80,7 +80,13 @@ export default async function PublicEventPage({
         </dl>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          {event.is_rsvp_enabled && (
+          {/* Neither is_rsvp_enabled alone nor the two allow_* flags alone
+              are enough — an event created before this distinction existed
+              (or edited to turn both response options off) can have
+              is_rsvp_enabled=true with nothing a guest could actually
+              submit. Both conditions together are what "there's a real
+              response to give" means. */}
+          {event.is_rsvp_enabled && (settings.allow_attending || settings.allow_not_attending) && (
             <Button
               size="lg"
               className="shadow-primary/20 w-full shadow-lg transition-transform hover:-translate-y-0.5 sm:w-fit"

@@ -425,8 +425,7 @@
     "errors": {
       "invalidInput": "Please check the information you entered.",
       "unauthorized": "You must be logged in to do this.",
-      "unknown": "Something went wrong, please try again.",
-      "atLeastOneStatus": "At least one response option must stay enabled (accept or decline)."
+      "unknown": "Something went wrong, please try again."
     },
     "allowResponseLabel": "Allow guests to accept or decline"
   },
@@ -662,7 +661,6 @@
     "trialDescriptionLink": "Once you're logged in you'll get one link for the event — open it yourself to try it, or send it straight to a WhatsApp group. Everyone who opens it registers their own name and phone and answers on their own; you don't need to enter anyone's number now.",
     "guestNameLabel": "Test guest name (optional)",
     "guestPhoneLabel": "Their phone number",
-    "atLeastOneStatusError": "Enable the response option to continue.",
     "finishButton": "Log in and try your invitation free",
     "finish": {
       "creating": "Creating your invitation and sending the trial...",

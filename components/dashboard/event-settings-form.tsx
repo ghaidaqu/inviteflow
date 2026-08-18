@@ -32,13 +32,11 @@ export function EventSettingsForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    watch,
-    formState: { errors },
-  } = useForm<EventSettingsFormInput, unknown, EventSettingsFormOutput>({
+  const { register, handleSubmit, control, watch } = useForm<
+    EventSettingsFormInput,
+    unknown,
+    EventSettingsFormOutput
+  >({
     resolver: zodResolver(eventSettingsFormSchema),
     defaultValues: {
       allowAttending: settings.allow_attending,
@@ -84,12 +82,6 @@ export function EventSettingsForm({
       )}
 
       <FieldGroup>
-        {errors.allowAttending && (
-          <Alert variant="destructive">
-            <AlertDescription>{tErrors('atLeastOneStatus')}</AlertDescription>
-          </Alert>
-        )}
-
         <Field orientation="horizontal">
           <FieldLabel htmlFor="allowAttending" className="flex-1 font-normal">
             {t('allowAttendingLabel')}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
@@ -79,12 +79,6 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
       allowNotAttending: true,
     },
   });
-  // One switch, not two — allowAttending/allowNotAttending always move
-  // together here (see the combined switch below), so watching either
-  // is enough to know whether responding is enabled at all.
-  const allowAttending = useWatch({ control, name: 'allowAttending' });
-  const noStatusEnabled = !allowAttending;
-
   const [questions, setQuestions] = useState<QuestionInput[]>([]);
   const [guestName, setGuestName] = useState('');
   const [guestPhone, setGuestPhone] = useState('');
@@ -97,10 +91,6 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
     if (!values.name.trim()) {
       e.preventDefault();
       setNameError(true);
-      return;
-    }
-    if (noStatusEnabled) {
-      e.preventDefault();
       return;
     }
     const draft: QuickStartDraft = {
@@ -252,39 +242,31 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
             the link, registers that they're coming, and answers the
             questions above; there's no separate "decline" action to toggle.
             Only the invitation track (one send per guest, a real
-            accept/decline reply) needs these two switches. */}
+            accept/decline reply) needs this switch. Turning it off entirely
+            is a real, allowed choice — it just means no response is
+            requested at all (an announcement-only invite); the guest page
+            hides the RSVP option automatically when neither is enabled
+            (see events/[slug]/page.tsx and its /rsvp route). */}
         {track === 'invitation' && (
-          <>
-            {noStatusEnabled && (
-              <p className="text-destructive text-sm">{t('atLeastOneStatusError')}</p>
-            )}
-
-            {/* One switch — accepting and declining aren't two separate
-                settings a guest can be given independently; it's a single
-                "can this guest respond at all" choice. Keeps
-                allowAttending/allowNotAttending in sync so the rest of the
-                pipeline (draft → createEventFromQuickStartAction →
-                event_settings) doesn't need to change. */}
-            <Field orientation="horizontal">
-              <FieldLabel htmlFor="qs-allow-response" className="flex-1 font-normal">
-                {tSettings('allowResponseLabel')}
-              </FieldLabel>
-              <Controller
-                control={control}
-                name="allowAttending"
-                render={({ field }) => (
-                  <Switch
-                    id="qs-allow-response"
-                    checked={field.value}
-                    onCheckedChange={(checked) => {
-                      field.onChange(checked);
-                      setValue('allowNotAttending', checked);
-                    }}
-                  />
-                )}
-              />
-            </Field>
-          </>
+          <Field orientation="horizontal">
+            <FieldLabel htmlFor="qs-allow-response" className="flex-1 font-normal">
+              {tSettings('allowResponseLabel')}
+            </FieldLabel>
+            <Controller
+              control={control}
+              name="allowAttending"
+              render={({ field }) => (
+                <Switch
+                  id="qs-allow-response"
+                  checked={field.value}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked);
+                    setValue('allowNotAttending', checked);
+                  }}
+                />
+              )}
+            />
+          </Field>
         )}
 
         <Field orientation="horizontal">
