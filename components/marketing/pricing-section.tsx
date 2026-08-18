@@ -39,7 +39,7 @@ export async function PricingSection() {
             variant="secondary"
             className="w-full"
             nativeButton={false}
-            render={<Link href="/register" />}
+            render={<Link href="/try" />}
           >
             {t('cta')}
           </Button>

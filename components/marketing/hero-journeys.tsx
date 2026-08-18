@@ -67,7 +67,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               size="lg"
               variant="secondary"
               nativeButton={false}
-              render={<Link href="/register" />}
+              render={<Link href="/try" />}
             >
               {t('primaryCta')}
             </Button>

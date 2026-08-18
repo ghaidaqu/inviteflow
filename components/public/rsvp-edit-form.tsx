@@ -23,7 +23,7 @@ type EventSettings = {
 };
 
 type FormValues = {
-  status: 'attending' | 'not_attending';
+  status: 'attending' | 'not_attending' | '';
   companionsNames: { name: string }[];
   message: string;
 };
@@ -49,10 +49,15 @@ export function RsvpEditForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
+  // data.response comes from a LEFT JOIN (get_rsvp_by_token) — every field
+  // is null, not just absent, when this guest hasn't responded yet at all
+  // (reachable if their invite link is opened before they've tapped
+  // Accept/Decline in WhatsApp). '' keeps RsvpStatusPicker showing neither
+  // option pre-selected rather than crashing or lying about their answer.
   const { register, handleSubmit, control } = useForm<FormValues>({
     defaultValues: {
-      status: data.response.status,
-      companionsNames: data.response.companions_names.map((name) => ({ name })),
+      status: data.response.status ?? '',
+      companionsNames: (data.response.companions_names ?? []).map((name) => ({ name })),
       message: data.response.message ?? '',
     },
   });

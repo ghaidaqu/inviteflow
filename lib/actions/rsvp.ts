@@ -5,7 +5,11 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { rsvpFormSchema, rsvpStatuses } from '@/lib/validations/rsvp';
-import { submitRsvp, updateRsvpByToken } from '@/lib/services/rsvp.service';
+import {
+  submitRsvp,
+  updateRsvpByToken,
+  insertFirstResponseByToken,
+} from '@/lib/services/rsvp.service';
 import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { notifyOrganizerNewRsvp, sendGuestRsvpConfirmation } from '@/lib/email/notify';
@@ -200,14 +204,34 @@ export async function updateRsvpAction(
   if (!allowed) return { error: 'rateLimited' };
 
   try {
-    const result = await updateRsvpByToken(supabase, {
-      token,
-      status: parsed.data.status,
-      companionsCount: parsed.data.companionsNames.length,
-      companionsNames: parsed.data.companionsNames.map((c) => c.name),
-      message: parsed.data.message ?? null,
-      answers: readAnswers(formData),
-    });
+    let result;
+    try {
+      result = await updateRsvpByToken(supabase, {
+        token,
+        status: parsed.data.status,
+        companionsCount: parsed.data.companionsNames.length,
+        companionsNames: parsed.data.companionsNames.map((c) => c.name),
+        message: parsed.data.message ?? null,
+        answers: readAnswers(formData),
+      });
+    } catch (error) {
+      // update_rsvp_by_token is an UPDATE — it raises P0002 for a guest
+      // who has an invitation but no response row yet at all (their
+      // invite link opened, or their first response submitted, before
+      // ever tapping Accept/Decline in WhatsApp). Falls back to creating
+      // that first response instead of failing it.
+      if ((error as { code?: string }).code === 'P0002') {
+        result = await insertFirstResponseByToken(token, {
+          status: parsed.data.status,
+          companionsCount: parsed.data.companionsNames.length,
+          companionsNames: parsed.data.companionsNames.map((c) => c.name),
+          message: parsed.data.message ?? null,
+          answers: readAnswers(formData),
+        });
+      } else {
+        throw error;
+      }
+    }
 
     // Only promote on a genuine new decline — a guest re-submitting an
     // already-'not_attending' response (or flipping back and forth)
@@ -250,7 +274,8 @@ export async function updateRsvpAction(
     }
 
     return { success: true };
-  } catch {
+  } catch (error) {
+    console.error('[rsvp] updateRsvpAction failed', error);
     return { error: 'submitFailed' };
   }
 }

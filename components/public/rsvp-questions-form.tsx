@@ -73,10 +73,15 @@ export function RsvpQuestionsForm({
 
     const formData = new FormData();
     // Preserve the guest's existing invitation response untouched — this
-    // screen only edits question answers.
-    formData.set('status', data.response.status);
+    // screen only edits question answers. status/companions_names can be
+    // null if this guest somehow reaches the questions follow-up before
+    // ever answering Accept/Decline (get_rsvp_by_token LEFT JOINs the
+    // response) — send '' rather than crash; the server rejects an empty
+    // status same as any other invalid one, with a real error message
+    // instead of a client-side throw.
+    formData.set('status', data.response.status ?? '');
     formData.set('message', data.response.message ?? '');
-    formData.set('companionsNames', JSON.stringify(data.response.companions_names));
+    formData.set('companionsNames', JSON.stringify(data.response.companions_names ?? []));
     formData.set(
       'answers',
       JSON.stringify(

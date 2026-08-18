@@ -677,5 +677,19 @@
       "error": "Something went wrong while creating your invitation, please try again.",
       "backToStart": "Start over"
     }
+  },
+  "TryDemo": {
+    "title": "Try an InviteFlow invitation now",
+    "subtitle": "Enter your name and phone, and a real trial invitation lands on your WhatsApp right away.",
+    "nameLabel": "Name",
+    "phoneLabel": "Phone number",
+    "submit": "Send me the invitation",
+    "sending": "Sending...",
+    "errors": {
+      "invalidInput": "Please enter your name.",
+      "phoneInvalid": "Please enter a valid international phone number (e.g. +966501234567).",
+      "rateLimited": "Too many attempts in a short time — please try again shortly.",
+      "unknown": "Something unexpected went wrong. Please try again."
+    }
   }
 }
