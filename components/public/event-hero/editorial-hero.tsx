@@ -2,9 +2,10 @@ import type { EventHeroProps } from './types';
 
 /**
  * Dark, formal, editorial — same near-black band language as the
- * homepage's FinalCta section, with the invitation name set in the site's
- * serif display face. Built for weddings, institutional events, and
- * anything that wants to read as an occasion rather than a casual invite.
+ * homepage's FinalCta section, with the invitation name set in the
+ * site's heavy display treatment (.font-display). Built for weddings,
+ * institutional events, and anything that wants to read as an occasion
+ * rather than a casual invite.
  */
 export function EditorialHero({ event, typeLabel, organizedByLabel }: EventHeroProps) {
   const hasCover = Boolean(event.cover_image_url);
@@ -56,10 +57,7 @@ export function EditorialHero({ event, typeLabel, organizedByLabel }: EventHeroP
           {typeLabel}
         </span>
 
-        <h1
-          className="text-3xl leading-tight font-black tracking-tight text-balance sm:text-5xl"
-          style={{ fontFamily: 'var(--font-playfair)' }}
-        >
+        <h1 className="font-display text-3xl leading-tight text-balance sm:text-5xl">
           {event.name}
         </h1>
 
