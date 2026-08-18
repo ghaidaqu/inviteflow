@@ -5,12 +5,13 @@ import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon, Building2Icon } from
 
 type JourneyKey = 'invitation' | 'rsvp' | 'institutional';
 
-// Three real products, three token-driven surfaces — light card, tinted
-// sky, and the one dark card — instead of three bespoke hex panels. Every
-// color here comes from the shared design system, so `currentColor` alone
-// (via `text-current`/`bg-current`) is enough to theme the icon badge,
-// bullet dots, and index number correctly on all three without a
-// per-card color branch.
+// Three real products, three token-driven surfaces — olive, tinted sky,
+// and the one dark card, matching the approved reference's three-color
+// card grid exactly (not a light/neutral card standing in for one of
+// them). Every color here comes from the shared design system, so
+// `currentColor` alone (via `text-current`/`bg-current`) is enough to
+// theme the icon badge, bullet dots, and index number correctly on all
+// three without a per-card color branch.
 const JOURNEY_STYLE: Record<
   JourneyKey,
   {
@@ -23,7 +24,7 @@ const JOURNEY_STYLE: Record<
   }
 > = {
   invitation: {
-    surface: 'bg-card text-card-foreground',
+    surface: 'bg-primary text-primary-foreground',
     href: '/start/invitation',
     icon: MailIcon,
   },
@@ -70,10 +71,14 @@ export async function HeroJourneys({ locale }: { locale: string }) {
 
         {/* Three real products, three cards — quiet by default, each
             getting the same cyan ring + lift on hover/focus (.hover-glow,
-            defined once in globals.css) plus a crossfade from its icon to
-            three short features. Forced left-to-right order (01 → 02 → 03)
-            regardless of page direction, since these read as a fixed
-            sequence of paths through the product, not a mirrored layout. */}
+            defined once in globals.css). The icon fades out and a content
+            block grows in below the title — features + the discover link,
+            both hidden until then — using a grid-rows 0fr->1fr animation
+            for a real height reveal instead of an opacity-only crossfade,
+            matching the reference's card-reveal motion. Forced
+            left-to-right order (01 → 02 → 03) regardless of page
+            direction, since these read as a fixed sequence of paths
+            through the product, not a mirrored layout. */}
         <div dir="ltr" className="relative z-10 grid grid-cols-3 gap-3 sm:gap-5">
           {JOURNEY_KEYS.map((key, index) => {
             const style = JOURNEY_STYLE[key];
@@ -86,31 +91,9 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                 href={style.href}
                 className={`hover-glow group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-2xl p-3.5 sm:min-h-[280px] sm:p-5 ${style.surface}`}
               >
-                <div className="relative flex-1">
-                  <span className="relative flex size-9 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/15 transition-opacity duration-300 group-hover:opacity-0">
-                    <Icon className="size-4.5" />
-                  </span>
-
-                  {/* dir set explicitly per-locale rather than inheriting
-                      the row's forced dir="ltr" (that one's only there to
-                      keep 01→02→03 card order stable under RTL) — without
-                      it the bullet dot lands on the wrong side of Arabic
-                      text. */}
-                  <div
-                    dir={isRtl ? 'rtl' : 'ltr'}
-                    className="absolute inset-0 hidden flex-col justify-center gap-1.5 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100 group-focus-visible:flex group-focus-visible:opacity-100"
-                  >
-                    {features.map((feature) => (
-                      <span
-                        key={feature}
-                        className="flex items-center gap-1.5 text-xs leading-tight font-medium sm:text-sm"
-                      >
-                        <span className="size-1.5 shrink-0 rounded-full bg-current" />
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                <span className="relative flex size-9 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/15 transition-opacity duration-300 group-hover:opacity-0">
+                  <Icon className="size-4.5" />
+                </span>
 
                 <div className="flex flex-col gap-1.5">
                   <span className="text-xs font-semibold tabular-nums opacity-60">
@@ -119,10 +102,34 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                   <h3 className="font-display text-base leading-snug sm:text-lg">
                     {tt(`${key}.title`)}
                   </h3>
-                  <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
-                    {tt('cta')}
-                    <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                  </span>
+
+                  <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-hover:grid-rows-[1fr] group-focus-visible:grid-rows-[1fr]">
+                    <div className="overflow-hidden">
+                      {/* dir set explicitly per-locale rather than
+                          inheriting the row's forced dir="ltr" (that
+                          one's only there to keep 01→02→03 card order
+                          stable under RTL) — without it the bullet dot
+                          lands on the wrong side of Arabic text. */}
+                      <div
+                        dir={isRtl ? 'rtl' : 'ltr'}
+                        className="flex flex-col gap-1 pt-1.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+                      >
+                        {features.map((feature) => (
+                          <span
+                            key={feature}
+                            className="flex items-center gap-1.5 text-xs leading-tight font-medium sm:text-sm"
+                          >
+                            <span className="size-1.5 shrink-0 rounded-full bg-current" />
+                            {feature}
+                          </span>
+                        ))}
+                        <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
+                          {tt('cta')}
+                          <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </Link>
             );
