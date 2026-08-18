@@ -93,16 +93,21 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           </div>
         </div>
 
-        {/* Three real products, three cards — quiet by default, each
-            getting the same cyan ring + lift on hover/focus (.hover-glow,
-            defined once in globals.css). The icon fades out and a content
-            block grows in below the title — features + the discover link,
-            both hidden until then — using a grid-rows 0fr->1fr animation
-            for a real height reveal instead of an opacity-only crossfade,
-            matching the reference's card-reveal motion. Forced
-            left-to-right order (01 → 02 → 03) regardless of page
-            direction, since these read as a fixed sequence of paths
-            through the product, not a mirrored layout. */}
+        {/* Three real products, three cards — quiet by default on
+            mouse-driven devices, each getting the same cyan ring + lift on
+            hover/focus (.hover-glow, defined once in globals.css). The
+            icon fades out and a content block grows in below the title —
+            features + the discover link, both hidden until then — using a
+            grid-rows 0fr->1fr animation for a real height reveal instead
+            of an opacity-only crossfade, matching the reference's
+            card-reveal motion. That collapsed-until-hover behavior is
+            scoped to pointer-fine (a mouse) only — touch devices have no
+            equivalent of :hover firing from a tap, so on mobile the
+            content is expanded from the start instead of being
+            permanently unreachable. Forced left-to-right order
+            (01 → 02 → 03) regardless of page direction, since these read
+            as a fixed sequence of paths through the product, not a
+            mirrored layout. */}
         <div dir="ltr" className="relative z-10 grid grid-cols-3 gap-3 sm:gap-5">
           {JOURNEY_KEYS.map((key, index) => {
             const style = JOURNEY_STYLE[key];
@@ -115,7 +120,12 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                 href={style.href}
                 className={`hover-glow group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-2xl p-3 sm:min-h-[210px] sm:p-4 ${style.surface}`}
               >
-                <span className="relative flex size-9 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/15 transition-opacity duration-300 group-hover:opacity-0">
+                {/* :hover/:focus-visible never fire from a tap on touch
+                    devices, so a mobile visitor could never see this
+                    reveal at all — pointer-fine scopes the "collapsed
+                    until hover" behavior to devices that actually have a
+                    mouse; touch devices just get it expanded by default. */}
+                <span className="relative flex size-9 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/15 transition-opacity duration-300 pointer-fine:group-hover:opacity-0">
                   <Icon className="size-4.5" />
                 </span>
 
@@ -127,7 +137,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                     {tt(`${key}.title`)}
                   </h3>
 
-                  <div className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-hover:grid-rows-[1fr] group-focus-visible:grid-rows-[1fr]">
+                  <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out pointer-fine:grid-rows-[0fr] pointer-fine:group-hover:grid-rows-[1fr] pointer-fine:group-focus-visible:grid-rows-[1fr]">
                     <div className="overflow-hidden">
                       {/* dir set explicitly per-locale rather than
                           inheriting the row's forced dir="ltr" (that
@@ -136,7 +146,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                           lands on the wrong side of Arabic text. */}
                       <div
                         dir={isRtl ? 'rtl' : 'ltr'}
-                        className="flex flex-col gap-1 pt-1.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+                        className="flex flex-col gap-1 pt-1.5 opacity-100 transition-opacity duration-300 pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-visible:opacity-100"
                       >
                         {features.map((feature) => (
                           <span
