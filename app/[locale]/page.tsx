@@ -1,7 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 import { SiteNav } from '@/components/marketing/site-nav';
 import { HeroJourneys } from '@/components/marketing/hero-journeys';
-import { ProductPreviews } from '@/components/marketing/product-previews';
 import { PricingSection } from '@/components/marketing/pricing-section';
 import { SiteFooter } from '@/components/marketing/site-footer';
 
@@ -21,7 +20,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             sections (why-InviteFlow, an occasion-type tile grid, a
             second CTA band) each repeating a slice of the same pitch. */}
         <HeroJourneys locale={locale} />
-        <ProductPreviews />
         {/* Pricing is the page's closing statement now — it carries the
             dark full-bleed band that final-cta.tsx used to own (deleted:
             its own copy was pure repetition of the hero's CTA once the
