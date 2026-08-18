@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
@@ -36,7 +37,17 @@ import { AddGuestsDialog } from '@/components/dashboard/add-guests-dialog';
 import type { GuestWithResponse } from '@/lib/services/guests.service';
 import { Trash2Icon, DownloadIcon, MessageCircleIcon, PencilIcon } from 'lucide-react';
 
-const STATUS_FILTERS = ['all', 'attending', 'not_attending', 'maybe', 'no_response'] as const;
+// 'waitlisted' filters on the is_waitlisted flag, orthogonal to RSVP
+// status (a waitlisted guest normally has no response yet, since they
+// haven't been invited — but the filter is independent either way).
+const STATUS_FILTERS = [
+  'all',
+  'attending',
+  'not_attending',
+  'maybe',
+  'no_response',
+  'waitlisted',
+] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
 
 const STATUS_VARIANT = {
@@ -45,8 +56,18 @@ const STATUS_VARIANT = {
   maybe: 'secondary',
 } as const;
 
-type GuestRowDraft = { name: string; phone: string; expectedCompanions: string };
-const emptyRow: GuestRowDraft = { name: '', phone: '', expectedCompanions: '' };
+type GuestRowDraft = {
+  name: string;
+  phone: string;
+  expectedCompanions: string;
+  isWaitlisted: boolean;
+};
+const emptyRow: GuestRowDraft = {
+  name: '',
+  phone: '',
+  expectedCompanions: '',
+  isWaitlisted: false,
+};
 
 export function GuestsTable({
   eventId,
@@ -75,8 +96,12 @@ export function GuestsTable({
 
   const filtered = useMemo(() => {
     return guests.filter((guest) => {
-      const status = guest.response?.status ?? 'no_response';
-      if (statusFilter !== 'all' && status !== statusFilter) return false;
+      if (statusFilter === 'waitlisted') {
+        if (!guest.is_waitlisted) return false;
+      } else {
+        const status = guest.response?.status ?? 'no_response';
+        if (statusFilter !== 'all' && status !== statusFilter) return false;
+      }
       if (search) {
         const haystack =
           `${guest.name ?? ''} ${guest.email ?? ''} ${guest.phone ?? ''}`.toLowerCase();
@@ -99,6 +124,7 @@ export function GuestsTable({
       name: guest.name ?? '',
       phone: guest.phone ? formatPhoneForDisplay(guest.phone) : '',
       expectedCompanions: String(guest.expected_companions ?? 0),
+      isWaitlisted: guest.is_waitlisted,
     });
     setEditingGuest(guest);
   }
@@ -114,6 +140,7 @@ export function GuestsTable({
     formData.set('name', editDraft.name);
     formData.set('phone', editDraft.phone);
     formData.set('expectedCompanions', editDraft.expectedCompanions);
+    formData.set('isWaitlisted', editDraft.isWaitlisted ? 'true' : 'false');
 
     startEditing(async () => {
       const result: UpdateGuestActionState = await updateGuestAction(
@@ -232,7 +259,12 @@ export function GuestsTable({
                 return (
                   <tr key={guest.id} className="border-t">
                     <td className="p-3">
-                      <div className="font-medium">{guest.name ?? '—'}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{guest.name ?? '—'}</span>
+                        {guest.is_waitlisted && (
+                          <Badge variant="secondary">{t('waitlist.badge')}</Badge>
+                        )}
+                      </div>
                       <div className="text-muted-foreground text-xs" dir="ltr">
                         {/* Stored as E.164; Saudi numbers read better locally. */}
                         {guest.phone ? formatPhoneForDisplay(guest.phone) : (guest.email ?? '')}
@@ -376,6 +408,18 @@ export function GuestsTable({
                   setEditDraft((d) => ({ ...d, expectedCompanions: e.target.value }))
                 }
                 dir="ltr"
+              />
+            </Field>
+            <Field orientation="horizontal">
+              <FieldLabel htmlFor="edit-guest-waitlisted" className="flex-1 font-normal">
+                {t('waitlist.toggleLabel')}
+              </FieldLabel>
+              <Switch
+                id="edit-guest-waitlisted"
+                checked={editDraft.isWaitlisted}
+                onCheckedChange={(checked) =>
+                  setEditDraft((d) => ({ ...d, isWaitlisted: checked }))
+                }
               />
             </Field>
           </div>

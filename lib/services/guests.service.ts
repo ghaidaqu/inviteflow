@@ -52,6 +52,10 @@ export async function createGuestManually(
     phone: string | null;
     email: string | null;
     expectedCompanions?: number;
+    // Reserve-list guest: not sent an invitation now, only once a
+    // main-list guest declines and frees up their spot. Defaults to false
+    // so every other caller (quick-start, single sends, ...) is unaffected.
+    isWaitlisted?: boolean;
   },
 ): Promise<GuestRow> {
   const { data, error } = await supabase
@@ -62,6 +66,7 @@ export async function createGuestManually(
       phone: input.phone,
       email: input.email,
       expected_companions: input.expectedCompanions ?? 0,
+      is_waitlisted: input.isWaitlisted ?? false,
     })
     .select('*')
     .single();
@@ -73,7 +78,12 @@ export async function createGuestManually(
 export async function updateGuest(
   supabase: Client,
   guestId: string,
-  input: { name: string; phone: string | null; expectedCompanions: number },
+  input: {
+    name: string;
+    phone: string | null;
+    expectedCompanions: number;
+    isWaitlisted: boolean;
+  },
 ): Promise<void> {
   const { error } = await supabase
     .from('guests')
@@ -81,6 +91,7 @@ export async function updateGuest(
       name: input.name,
       phone: input.phone,
       expected_companions: input.expectedCompanions,
+      is_waitlisted: input.isWaitlisted,
     })
     .eq('id', guestId);
 

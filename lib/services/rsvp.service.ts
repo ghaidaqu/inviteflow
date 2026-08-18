@@ -72,7 +72,7 @@ export async function updateRsvpByToken(
     answers: AnswerInput[] | null;
   },
 ) {
-  const { error } = await supabase.rpc('update_rsvp_by_token', {
+  const { data, error } = await supabase.rpc('update_rsvp_by_token', {
     p_secure_token: params.token,
     p_status: params.status,
     p_companions_count: params.companionsCount,
@@ -82,4 +82,7 @@ export async function updateRsvpByToken(
   });
 
   if (error) throw error;
+  // event_id + previous_status let the caller detect a genuine new decline
+  // (to trigger waitlist promotion) versus a repeat/no-op resubmission.
+  return data[0];
 }

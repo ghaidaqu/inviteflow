@@ -29,6 +29,13 @@ export type AddGuestsActionState = {
 
 type GuestRow = { name: string; phone: string; expectedCompanions?: number };
 
+// Truthy-string check for a FormData checkbox/switch value — FormData has
+// no boolean type, so "true"/"on" (however the caller serialized it) both
+// read as checked.
+function readBoolean(value: FormDataEntryValue | null): boolean {
+  return value === 'true' || value === 'on';
+}
+
 // Stored in E.164 so the same person can't be re-added under a different
 // spelling and so WhatsApp gets a number it accepts. An unparseable value is
 // kept as typed rather than dropped — the organizer can still see and fix it.
@@ -71,6 +78,12 @@ export async function addGuestsAction(
   }
   if (!Array.isArray(rows) || rows.length > 1000) return { error: 'invalidInput' };
 
+  // Applies to the whole batch being added, not per-row — matches how the
+  // dialog frames it ("add this list as a reserve list"), not a per-person
+  // toggle. A guest can still be moved individually later from the guest
+  // table's edit dialog.
+  const isWaitlisted = readBoolean(formData.get('isWaitlisted'));
+
   const guestsToAdd = rows
     .map((r) => ({
       name: (r.name ?? '').trim(),
@@ -99,6 +112,7 @@ export async function addGuestsAction(
         phone: guest.phone,
         email: null,
         expectedCompanions: guest.expectedCompanions,
+        isWaitlisted,
       });
     }
   } catch {
@@ -136,6 +150,7 @@ export async function updateGuestAction(
       name,
       phone: canonicalPhone(phoneRaw),
       expectedCompanions: parseCompanions(formData.get('expectedCompanions')),
+      isWaitlisted: readBoolean(formData.get('isWaitlisted')),
     });
   } catch {
     return { error: 'unknown' };

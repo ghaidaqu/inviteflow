@@ -505,7 +505,8 @@
       "attending": "Attending",
       "not_attending": "Not attending",
       "maybe": "Maybe",
-      "no_response": "No response"
+      "no_response": "No response",
+      "waitlisted": "Reserve"
     },
     "status": {
       "attending": "Attending",
@@ -596,7 +597,12 @@
       "unknown": "Something went wrong, please try again.",
       "vcfEmpty": "We couldn't find any contacts in that file."
     },
-    "a11yDeleteGuest": "Delete guest"
+    "a11yDeleteGuest": "Delete guest",
+    "waitlist": {
+      "badge": "Reserve",
+      "toggleLabel": "Add as reserve list",
+      "toggleHint": "They won't be invited now — an invitation is sent automatically only when a main-list guest declines."
+    }
   },
   "Notifications": {
     "title": "Notifications",

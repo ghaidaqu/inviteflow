@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { FieldLabel } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Dialog,
@@ -72,6 +74,10 @@ export function AddGuestsDialog({
   const [singlePhone, setSinglePhone] = useState('');
   const [singleCompanions, setSingleCompanions] = useState('0');
   const [rows, setRows] = useState<ReviewedGuest[]>([]);
+  // Applies to the whole batch, not per-row — "add this list as a reserve
+  // list" rather than picking waitlisted people out of a mixed import. A
+  // guest can still be moved individually afterward from the guest table.
+  const [isWaitlisted, setIsWaitlisted] = useState(false);
   const [contactsSupported, setContactsSupported] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [addedCount, setAddedCount] = useState<number | null>(null);
@@ -91,6 +97,7 @@ export function AddGuestsDialog({
     setSinglePhone('');
     setSingleCompanions('0');
     setRows([]);
+    setIsWaitlisted(false);
     setError(null);
     setAddedCount(null);
   }
@@ -199,6 +206,7 @@ export function AddGuestsDialog({
         })),
       ),
     );
+    formData.set('isWaitlisted', isWaitlisted ? 'true' : 'false');
 
     startSaving(async () => {
       const result: AddGuestsActionState = await addGuestsAction(eventId, {}, formData);
@@ -348,6 +356,20 @@ export function AddGuestsDialog({
           </div>
         ) : (
           <div className="flex flex-col gap-3">
+            <div className="bg-muted/30 flex items-center gap-3 rounded-lg border p-3">
+              <Switch
+                id="add-guests-waitlisted"
+                checked={isWaitlisted}
+                onCheckedChange={setIsWaitlisted}
+              />
+              <div>
+                <FieldLabel htmlFor="add-guests-waitlisted" className="font-medium">
+                  {t('waitlist.toggleLabel')}
+                </FieldLabel>
+                <p className="text-muted-foreground text-xs">{t('waitlist.toggleHint')}</p>
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-2 text-xs">
               <Badge variant="default">{t('summaryImportable', { n: summary.importable })}</Badge>
               {summary.duplicateInList > 0 && (

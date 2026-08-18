@@ -505,7 +505,8 @@
       "attending": "سيحضر",
       "not_attending": "لن يحضر",
       "maybe": "ربما",
-      "no_response": "بدون رد"
+      "no_response": "بدون رد",
+      "waitlisted": "احتياطي"
     },
     "status": {
       "attending": "سيحضر",
@@ -596,7 +597,12 @@
       "unknown": "حدث خطأ ما، يرجى المحاولة مرة أخرى.",
       "vcfEmpty": "ما لقينا أي جهة اتصال في هذا الملف."
     },
-    "a11yDeleteGuest": "حذف الضيف"
+    "a11yDeleteGuest": "حذف الضيف",
+    "waitlist": {
+      "badge": "احتياطي",
+      "toggleLabel": "إضافة كقائمة احتياطية",
+      "toggleHint": "لن يتم إرسال الدعوة لهم الآن — سيتم إرسالها تلقائيًا فقط عند اعتذار أحد الضيوف الأساسيين."
+    }
   },
   "Notifications": {
     "title": "الإشعارات",

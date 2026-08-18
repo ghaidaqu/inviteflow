@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider } from '@/lib/whatsapp';
 import { notifyOrganizerNewRsvp } from '@/lib/email/notify';
+import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
 
 /**
  * Meta WhatsApp Cloud API webhook — this is what makes "accept the
@@ -118,7 +119,11 @@ export async function POST(request: NextRequest) {
       continue;
     }
 
-    const result = data as unknown as { guest_name: string; event_id: string } | null;
+    const result = data as unknown as {
+      guest_name: string;
+      event_id: string;
+      previous_status: 'attending' | 'not_attending' | 'maybe' | null;
+    } | null;
     if (!result) continue;
 
     const confirmText =
@@ -138,11 +143,18 @@ export async function POST(request: NextRequest) {
 
     const { data: event } = await admin
       .from('events')
-      .select('slug')
+      .select('slug, primary_locale')
       .eq('id', result.event_id)
       .single();
     if (event) {
       await notifyOrganizerNewRsvp(event.slug, result.guest_name, status);
+
+      // Only promote on a genuine new decline, not a repeat button tap
+      // (Meta can resend delivery, or a guest can tap Decline twice).
+      if (status === 'not_attending' && result.previous_status !== 'not_attending') {
+        const locale = event.primary_locale === 'en' ? 'en' : 'ar';
+        await promoteNextWaitlistedGuest(admin, result.event_id, event.slug, locale);
+      }
     }
   }
 

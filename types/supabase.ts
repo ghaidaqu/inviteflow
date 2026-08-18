@@ -244,6 +244,10 @@ export interface Database {
           // separate from rsvp_responses.companions_count, which is the
           // guest's own stated number once they actually reply.
           expected_companions: number;
+          // Reserve-list flag: true means this guest hasn't been sent an
+          // invitation yet and is waiting for a main-list guest to decline.
+          // See promote_next_waitlisted_guest().
+          is_waitlisted: boolean;
           created_at: string;
           updated_at: string;
           deleted_at: string | null;
@@ -256,6 +260,7 @@ export interface Database {
           email?: string | null;
           secure_token?: string;
           expected_companions?: number;
+          is_waitlisted?: boolean;
           created_at?: string;
           updated_at?: string;
           deleted_at?: string | null;
@@ -536,7 +541,12 @@ export interface Database {
           p_message: string | null;
           p_answers: Json | null;
         };
-        Returns: { guest_id: string; response_id: string; secure_token: string }[];
+        Returns: {
+          guest_id: string;
+          response_id: string;
+          secure_token: string;
+          event_id: string;
+        }[];
       };
       get_rsvp_by_token: {
         Args: { p_secure_token: string };
@@ -551,7 +561,7 @@ export interface Database {
           p_message: string | null;
           p_answers: Json | null;
         };
-        Returns: boolean;
+        Returns: { event_id: string; event_slug: string; previous_status: RsvpStatus | null }[];
       };
       purchase_tickets_mock: {
         Args: {
@@ -602,6 +612,10 @@ export interface Database {
       respond_via_whatsapp: {
         Args: { p_guest_id: string; p_status: string };
         Returns: Json;
+      };
+      promote_next_waitlisted_guest: {
+        Args: { p_event_id: string };
+        Returns: { guest_id: string; name: string | null; phone: string }[];
       };
     };
     Enums: Record<string, never>;

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { rsvpFormSchema, rsvpStatuses } from '@/lib/validations/rsvp';
 import { submitRsvp, updateRsvpByToken } from '@/lib/services/rsvp.service';
+import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { notifyOrganizerNewRsvp, sendGuestRsvpConfirmation } from '@/lib/email/notify';
 import { sendGuestRsvpConfirmationWhatsApp } from '@/lib/whatsapp/notify';
@@ -96,8 +97,8 @@ export async function submitRsvpAction(
     // instant the response is returned, which would kill a fire-and-forget
     // promise before it finishes.
     await notifyOrganizerNewRsvp(eventSlug, parsed.data.guestName, parsed.data.status);
+    const locale = (await getLocale()) as 'ar' | 'en';
     if (parsed.data.email || parsed.data.phone) {
-      const locale = (await getLocale()) as 'ar' | 'en';
       const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
       const editUrl = `${appUrl}/${locale}/rsvp/${result.secure_token}`;
       if (parsed.data.email) {
@@ -112,6 +113,13 @@ export async function submitRsvpAction(
           locale,
         );
       }
+    }
+
+    // A brand-new submission has no "previous status" to compare against —
+    // any first-time 'not_attending' is a genuine decline, so promote
+    // straight away (see promoteNextWaitlistedGuest's doc comment).
+    if (parsed.data.status === 'not_attending') {
+      await promoteNextWaitlistedGuest(supabase, result.event_id, eventSlug, locale);
     }
 
     return { success: true, secureToken: result.secure_token };
@@ -149,7 +157,7 @@ export async function updateRsvpAction(
   if (!allowed) return { error: 'rateLimited' };
 
   try {
-    await updateRsvpByToken(supabase, {
+    const result = await updateRsvpByToken(supabase, {
       token,
       status: parsed.data.status,
       companionsCount: parsed.data.companionsNames.length,
@@ -157,6 +165,14 @@ export async function updateRsvpAction(
       message: parsed.data.message ?? null,
       answers: readAnswers(formData),
     });
+
+    // Only promote on a genuine new decline — a guest re-submitting an
+    // already-'not_attending' response (or flipping back and forth)
+    // shouldn't burn through the waitlist on every resubmission.
+    if (parsed.data.status === 'not_attending' && result?.previous_status !== 'not_attending') {
+      const locale = (await getLocale()) as 'ar' | 'en';
+      await promoteNextWaitlistedGuest(supabase, result.event_id, result.event_slug, locale);
+    }
 
     return { success: true };
   } catch {
