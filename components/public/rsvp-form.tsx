@@ -8,13 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { RsvpStatusPicker } from '@/components/public/rsvp-status-picker';
 import { submitRsvpAction, type RsvpActionState } from '@/lib/actions/rsvp';
 import { Link } from '@/i18n/navigation';
 import { Trash2Icon, PlusIcon, CheckCircle2Icon, MessageCircleIcon } from 'lucide-react';
@@ -147,7 +141,10 @@ export function RsvpForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="bg-card flex flex-col gap-6 rounded-3xl border p-5 shadow-sm sm:p-7"
+    >
       {serverError && (
         <Alert variant="destructive">
           <AlertDescription>{tErrors(serverError as 'invalidInput')}</AlertDescription>
@@ -178,23 +175,13 @@ export function RsvpForm({
             name="status"
             rules={{ required: true }}
             render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="status" className="w-full">
-                  <SelectValue placeholder={t('statusPlaceholder')}>
-                    {(value: string | null) =>
-                      value ? t(`status.${value}` as 'status.attending') : t('statusPlaceholder')
-                    }
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {settings.allow_attending && (
-                    <SelectItem value="attending">{t('status.attending')}</SelectItem>
-                  )}
-                  {settings.allow_not_attending && (
-                    <SelectItem value="not_attending">{t('status.not_attending')}</SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
+              <RsvpStatusPicker
+                id="status"
+                value={field.value}
+                onChange={field.onChange}
+                allowAttending={settings.allow_attending}
+                allowNotAttending={settings.allow_not_attending}
+              />
             )}
           />
         </Field>

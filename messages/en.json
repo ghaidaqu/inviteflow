@@ -396,7 +396,6 @@
     "phoneLabel": "Phone number",
     "emailLabel": "Email",
     "statusLabel": "Will you attend?",
-    "statusPlaceholder": "Select your response",
     "status": {
       "attending": "Attending",
       "not_attending": "Not attending"

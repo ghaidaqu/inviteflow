@@ -8,13 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { RsvpStatusPicker } from '@/components/public/rsvp-status-picker';
 import { updateRsvpAction, type RsvpActionState } from '@/lib/actions/rsvp';
 import { Link } from '@/i18n/navigation';
 import { Trash2Icon, PlusIcon } from 'lucide-react';
@@ -85,94 +79,89 @@ export function RsvpEditForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-      {serverError && (
-        <Alert variant="destructive">
-          <AlertDescription>{tErrors(serverError as 'invalidInput')}</AlertDescription>
-        </Alert>
-      )}
-      {saved && (
-        <Alert>
-          <AlertDescription>{t('updateSaved')}</AlertDescription>
-        </Alert>
-      )}
+    <div className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-card flex flex-col gap-6 rounded-3xl border p-5 shadow-sm sm:p-7"
+      >
+        {serverError && (
+          <Alert variant="destructive">
+            <AlertDescription>{tErrors(serverError as 'invalidInput')}</AlertDescription>
+          </Alert>
+        )}
+        {saved && (
+          <Alert>
+            <AlertDescription>{t('updateSaved')}</AlertDescription>
+          </Alert>
+        )}
 
-      <FieldGroup>
-        <Field>
-          <FieldLabel htmlFor="status">{t('statusLabel')}</FieldLabel>
-          <Controller
-            control={control}
-            name="status"
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="status" className="w-full">
-                  <SelectValue>
-                    {(value: string | null) =>
-                      value ? t(`status.${value}` as 'status.attending') : ''
-                    }
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {settings.allow_attending && (
-                    <SelectItem value="attending">{t('status.attending')}</SelectItem>
-                  )}
-                  {settings.allow_not_attending && (
-                    <SelectItem value="not_attending">{t('status.not_attending')}</SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </Field>
-
-        {settings.collect_companions && (
-          <div className="flex flex-col gap-2 rounded-lg border p-3">
-            <span className="text-sm font-medium">{t('companionsLabel')}</span>
-            {fields.map((field, index) => (
-              <div key={field.id} className="flex items-center gap-2">
-                <Input
-                  {...register(`companionsNames.${index}.name`)}
-                  placeholder={t('companionNamePlaceholder')}
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="status">{t('statusLabel')}</FieldLabel>
+            <Controller
+              control={control}
+              name="status"
+              render={({ field }) => (
+                <RsvpStatusPicker
+                  id="status"
+                  value={field.value}
+                  onChange={field.onChange}
+                  allowAttending={settings.allow_attending}
+                  allowNotAttending={settings.allow_not_attending}
                 />
+              )}
+            />
+          </Field>
+
+          {settings.collect_companions && (
+            <div className="flex flex-col gap-2 rounded-lg border p-3">
+              <span className="text-sm font-medium">{t('companionsLabel')}</span>
+              {fields.map((field, index) => (
+                <div key={field.id} className="flex items-center gap-2">
+                  <Input
+                    {...register(`companionsNames.${index}.name`)}
+                    placeholder={t('companionNamePlaceholder')}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={t('a11yRemoveCompanion')}
+                    onClick={() => remove(index)}
+                  >
+                    <Trash2Icon />
+                  </Button>
+                </div>
+              ))}
+              {fields.length < settings.max_companions && (
                 <Button
                   type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={t('a11yRemoveCompanion')}
-                  onClick={() => remove(index)}
+                  variant="outline"
+                  size="sm"
+                  className="w-fit"
+                  onClick={() => append({ name: '' })}
                 >
-                  <Trash2Icon />
+                  <PlusIcon /> {t('addCompanion')}
                 </Button>
-              </div>
-            ))}
-            {fields.length < settings.max_companions && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="w-fit"
-                onClick={() => append({ name: '' })}
-              >
-                <PlusIcon /> {t('addCompanion')}
-              </Button>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
 
-        {settings.collect_message && (
-          <Field>
-            <FieldLabel htmlFor="message">{t('messageLabel')}</FieldLabel>
-            <Textarea id="message" rows={3} {...register('message')} />
-          </Field>
-        )}
+          {settings.collect_message && (
+            <Field>
+              <FieldLabel htmlFor="message">{t('messageLabel')}</FieldLabel>
+              <Textarea id="message" rows={3} {...register('message')} />
+            </Field>
+          )}
 
-        <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? t('submitting') : t('saveChanges')}
-        </Button>
-      </FieldGroup>
+          <Button type="submit" disabled={isPending} className="w-full">
+            {isPending ? t('submitting') : t('saveChanges')}
+          </Button>
+        </FieldGroup>
+      </form>
 
       {hasQuestions && (
-        <div className="bg-card flex flex-col gap-3 rounded-xl border p-5 text-center">
+        <div className="bg-card flex flex-col gap-3 rounded-2xl border p-5 text-center shadow-sm">
           <p className="font-medium">{t('questionsFollowUpTitle')}</p>
           <p className="text-muted-foreground text-sm">{t('questionsFollowUpDescription')}</p>
           <Button
@@ -185,6 +174,6 @@ export function RsvpEditForm({
           </Button>
         </div>
       )}
-    </form>
+    </div>
   );
 }

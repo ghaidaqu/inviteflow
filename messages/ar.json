@@ -396,7 +396,6 @@
     "phoneLabel": "رقم الجوال",
     "emailLabel": "البريد الإلكتروني",
     "statusLabel": "هل ستحضر؟",
-    "statusPlaceholder": "اختر ردك",
     "status": {
       "attending": "سأحضر",
       "not_attending": "لن أحضر"
