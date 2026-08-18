@@ -55,15 +55,31 @@ export async function HeroJourneys({ locale }: { locale: string }) {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 sm:gap-14 sm:px-6">
         {/* Text content always sits above the card row — stacked at every
             breakpoint, not just on mobile, so the headline reads as the
-            page's opening statement before the three product cards. */}
-        <div className="animate-in fade-in slide-in-from-bottom-4 relative z-10 flex flex-col items-start gap-6 duration-700">
-          {/* One flowing clause — wraps naturally at whatever width the
-              viewport gives it (text-balance) instead of a hard <br />
-              forcing a break regardless of how the line actually fits. */}
-          <h1 className="font-display text-3xl leading-[1.15] text-balance sm:text-4xl">
-            {t('headlineLine1')} <span className="text-primary">{t('headlineLine2')}</span>
-          </h1>
-          <p className="text-muted-foreground max-w-xl text-lg text-balance">{t('subtitle')}</p>
+            page's opening statement before the three product cards.
+            Internally it mirrors the reference's asymmetric hero: a small
+            eyebrow + big headline on the reading-start side, the subtitle
+            set apart on the other, bottom-aligned — not just stacked
+            straight under each other. */}
+        <div className="animate-in fade-in slide-in-from-bottom-4 relative z-10 flex flex-col gap-6 duration-700">
+          <div className="grid gap-4 sm:grid-cols-[7fr_4fr] sm:items-end sm:gap-10">
+            <div className="flex flex-col gap-3">
+              {/* uppercase/tracking-wide has no meaning for Arabic script
+                  (same reasoning as .font-display) — English keeps the
+                  small-caps-kicker look, Arabic just stays plain. */}
+              <span
+                className={`text-primary font-mono text-xs font-semibold ${isRtl ? '' : 'tracking-[0.14em] uppercase'}`}
+              >
+                {t('eyebrow')}
+              </span>
+              {/* One flowing clause — wraps naturally at whatever width the
+                  viewport gives it (text-balance) instead of a hard <br />
+                  forcing a break regardless of how the line actually fits. */}
+              <h1 className="font-display text-3xl leading-[1.15] text-balance sm:text-4xl">
+                {t('headlineLine1')} <span className="text-primary">{t('headlineLine2')}</span>
+              </h1>
+            </div>
+            <p className="text-muted-foreground text-lg text-balance sm:pb-1">{t('subtitle')}</p>
+          </div>
 
           <div className="flex flex-wrap gap-3">
             <Button
@@ -97,7 +113,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               <Link
                 key={key}
                 href={style.href}
-                className={`hover-glow group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-2xl p-3.5 sm:min-h-[280px] sm:p-5 ${style.surface}`}
+                className={`hover-glow group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-2xl p-3 sm:min-h-[210px] sm:p-4 ${style.surface}`}
               >
                 <span className="relative flex size-9 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/15 transition-opacity duration-300 group-hover:opacity-0">
                   <Icon className="size-4.5" />
