@@ -29,12 +29,7 @@ export default async function QuickStartPage({
   const t = await getTranslations('Events.newChooser');
 
   return (
-    <main className="relative flex-1 overflow-hidden">
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="bg-primary/15 absolute start-[-15%] top-[-10%] size-[30rem] rounded-full blur-3xl" />
-        <div className="bg-accent/25 absolute end-[-10%] top-[20%] size-[22rem] rounded-full blur-3xl" />
-      </div>
-
+    <main className="flex-1">
       <div className="mx-auto w-full max-w-lg px-4 py-10 sm:px-6">
         <Link href="/" className="text-muted-foreground hover:text-primary text-sm hover:underline">
           {t('title')}

@@ -15,14 +15,7 @@ export async function AuthCard({
   const t = await getTranslations('Auth');
 
   return (
-    <main className="relative flex flex-1 items-center justify-center overflow-hidden px-4 py-12">
-      {/* Same warm brand backdrop as the homepage, so auth doesn't feel like a
-          separate, uncared-for app. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="bg-primary/20 absolute start-[-15%] top-[-20%] size-[26rem] rounded-full blur-3xl" />
-        <div className="bg-accent/30 absolute end-[-20%] bottom-[-15%] size-[24rem] rounded-full blur-3xl" />
-      </div>
-
+    <main className="relative flex flex-1 items-center justify-center px-4 py-12">
       {/* An explicit, unmissable way back — not just the wordmark below,
           which reads as a logo first and a link second. Fixed to the
           viewport corner so it's reachable without scrolling on a long
