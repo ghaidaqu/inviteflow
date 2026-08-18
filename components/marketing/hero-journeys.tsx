@@ -50,17 +50,17 @@ export async function HeroJourneys({ locale }: { locale: string }) {
 
   return (
     <section id="journeys" className="relative overflow-hidden py-14 sm:py-20">
-      <div className="mx-auto grid w-full max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-8">
-        {/* Text content — first in DOM order lands on the reading-start
-            side under RTL (the right), mirroring the reference's LTR
-            layout rather than copying its literal left/right placement. */}
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 sm:gap-14 sm:px-6">
+        {/* Text content always sits above the card row — stacked at every
+            breakpoint, not just on mobile, so the headline reads as the
+            page's opening statement before the three product cards. */}
         <div className="animate-in fade-in slide-in-from-bottom-4 relative z-10 flex flex-col items-start gap-6 duration-700">
           <h1 className="font-display text-4xl leading-[1.1] text-balance sm:text-6xl">
             {t('headlineLine1')}
             <br />
             <span className="text-primary">{t('headlineLine2')}</span>
           </h1>
-          <p className="text-muted-foreground max-w-md text-lg text-balance">{t('subtitle')}</p>
+          <p className="text-muted-foreground max-w-xl text-lg text-balance">{t('subtitle')}</p>
 
           <div className="flex flex-wrap gap-3">
             <Button
