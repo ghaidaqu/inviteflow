@@ -40,17 +40,18 @@ export function ClassicHero({ event, typeLabel, organizedByLabel }: EventHeroPro
           />
         )
       ) : (
-        <div className="from-primary/15 via-accent/20 to-primary/10 mb-6 flex aspect-[2/1] w-full flex-col items-center justify-center rounded-2xl bg-gradient-to-br p-6 text-center shadow-sm">
+        // Warm, welcoming wash — primary and secondary only, never the
+        // accent cyan (that stays reserved for hover/focus/selected
+        // states across the app, not a resting background).
+        <div className="from-primary/15 via-secondary/30 to-primary/10 mb-6 flex aspect-[2/1] w-full flex-col items-center justify-center rounded-2xl bg-gradient-to-br p-6 text-center shadow-sm">
           <Badge className="mb-3">{typeLabel}</Badge>
-          <h1 className="text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
-            {event.name}
-          </h1>
+          <h1 className="font-display text-3xl text-balance sm:text-4xl">{event.name}</h1>
         </div>
       )}
 
       {event.cover_image_url && (
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <h1 className="text-3xl font-extrabold tracking-tight">{event.name}</h1>
+          <h1 className="font-display text-3xl">{event.name}</h1>
           <Badge>{typeLabel}</Badge>
         </div>
       )}

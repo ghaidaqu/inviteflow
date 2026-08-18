@@ -7,8 +7,11 @@ import { eventTemplates, type EventTemplate } from '@/lib/validations/event-desi
 import { CheckIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+// Kept in sync with each template's actual background treatment in
+// components/public/event-hero/*.tsx so this preview doesn't lie about
+// what the guest page will look like.
 const SWATCH_CLASS: Record<EventTemplate, string> = {
-  classic: 'bg-gradient-to-br from-primary/20 via-accent/25 to-primary/10 text-foreground',
+  classic: 'bg-gradient-to-br from-primary/15 via-secondary/30 to-primary/10 text-foreground',
   editorial: 'bg-foreground text-background',
   minimal: 'bg-card text-foreground border',
 };

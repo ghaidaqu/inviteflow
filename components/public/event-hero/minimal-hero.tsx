@@ -48,9 +48,7 @@ export function MinimalHero({ event, typeLabel, organizedByLabel }: EventHeroPro
         {typeLabel}
       </span>
 
-      <h1 className="text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
-        {event.name}
-      </h1>
+      <h1 className="font-display text-3xl text-balance sm:text-4xl">{event.name}</h1>
 
       <span aria-hidden className="bg-border h-px w-12" />
 
