@@ -13,9 +13,9 @@
       "startLink": "Start free"
     },
     "hero": {
-      "headlineLine1": "Every occasion",
-      "headlineLine2": "deserves to be told",
-      "subtitle": "And your invitation is its first detail — exceptional design, a stunning guest experience, effortless simplicity.",
+      "headlineLine1": "An invitation",
+      "headlineLine2": "that gets answered",
+      "subtitle": "Send it on WhatsApp. They reply with one tap — no sign-up, no separate app, just a design worthy of the occasion.",
       "primaryCta": "Start free"
     },
     "trustStrip": {
@@ -42,10 +42,10 @@
     "why": {
       "title": "Why InviteFlow?",
       "statement": "Built from the ground up for Arabic-speaking users — not a translated foreign tool.",
-      "point1": "Easy to use — no complexity.",
-      "point2": "Elegant designs for any occasion.",
-      "point3": "Your data, always saved and secure.",
-      "point4": "Manage your invitation and guests in one place."
+      "point1": "One tap to RSVP, right inside WhatsApp.",
+      "point2": "Three design languages — from classic to minimal.",
+      "point3": "Your data and your guests' data, kept secure.",
+      "point4": "Watch responses arrive in real time, from one dashboard."
     },
     "previews": {
       "title": "See what it actually looks like",
@@ -56,7 +56,7 @@
     },
     "occasions": {
       "title": "For which occasion?",
-      "subtitle": "Works with almost any kind of event"
+      "subtitle": "From weddings to conferences — one design system, fit for each."
     },
     "pricing": {
       "title": "Pricing",
@@ -85,21 +85,21 @@
       "cta": "Discover",
       "invitation": {
         "title": "Digital Invitation",
-        "description": "A personal invite for every guest",
+        "description": "Every guest gets their own invite",
         "feature1": "Addressed to each guest",
         "feature2": "RSVP confirmation",
         "feature3": "Entry QR code"
       },
       "rsvp": {
         "title": "Link Invitation",
-        "description": "One link, shared your way",
+        "description": "One link reaches everyone",
         "feature1": "One link for the event",
         "feature2": "Details and location",
         "feature3": "RSVP confirmation"
       },
       "institutional": {
         "title": "Institutional Invitation",
-        "description": "An experience designed around your brand",
+        "description": "Fully wrapped in your organization's identity",
         "feature1": "Designed to your identity",
         "feature2": "Guest management",
         "feature3": "Attendance reports"

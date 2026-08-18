@@ -48,7 +48,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
   const ArrowIcon = isRtl ? ArrowLeftIcon : ArrowRightIcon;
 
   return (
-    <section className="relative overflow-hidden py-14 sm:py-20">
+    <section id="journeys" className="relative overflow-hidden py-14 sm:py-20">
       <div className="mx-auto grid w-full max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-8">
         {/* Text content — first in DOM order lands on the reading-start
             side under RTL (the right), mirroring the reference's LTR
