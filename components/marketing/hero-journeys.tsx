@@ -33,8 +33,10 @@ const JOURNEY_STYLE: Record<
     href: '/start/rsvp',
     icon: LinkIcon,
   },
+  // The reference's dark card uses a warm dusty rose for its text, not
+  // plain cream — see --dark-card-foreground's doc comment in globals.css.
   institutional: {
-    surface: 'bg-foreground text-background',
+    surface: 'bg-foreground text-dark-card-foreground',
     href: '/dashboard/events/new/institutional',
     icon: Building2Icon,
   },

@@ -39,6 +39,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-dark-card-foreground: var(--dark-card-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -73,6 +74,11 @@
   --primary-foreground: #f7f5ee;
   --secondary: #a7c4d3;
   --secondary-foreground: #1a2a30;
+  /* The approved reference doesn't put plain cream text on the dark card
+     (unlike text-background elsewhere) — it uses this warm dusty rose
+     specifically there, one of the studio identity's real distinguishing
+     details. Only the institutional/dark journey card uses this. */
+  --dark-card-foreground: #c9a29a;
   --muted: #ddd6c4;
   --muted-foreground: #6b6355;
   --accent: #35c6d9;
