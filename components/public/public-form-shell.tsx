@@ -24,7 +24,7 @@ export function PublicFormShell({
         <div className="bg-primary/10 text-primary mb-4 flex size-12 items-center justify-center rounded-2xl">
           {icon}
         </div>
-        <h1 className="mb-1 text-2xl font-extrabold tracking-tight text-balance">{title}</h1>
+        <h1 className="font-display mb-1 text-2xl text-balance">{title}</h1>
         {subtitle && <p className="text-muted-foreground mb-6">{subtitle}</p>}
         {children}
       </div>

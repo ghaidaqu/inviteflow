@@ -31,7 +31,7 @@ export async function AuthCard({
       <div className="animate-in fade-in zoom-in-95 slide-in-from-bottom-2 w-full max-w-md duration-500 ease-out">
         <Link
           href="/"
-          className="text-primary mb-6 flex items-center justify-center gap-1.5 text-lg font-bold"
+          className="font-display text-primary mb-6 flex items-center justify-center gap-1.5 text-lg"
         >
           <SparklesIcon className="size-5" />
           InviteFlow
@@ -39,7 +39,7 @@ export async function AuthCard({
 
         <Card className="border-border/60 bg-card/90 shadow-primary/5 w-full shadow-xl backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-2xl font-extrabold tracking-tight">{title}</CardTitle>
+            <CardTitle className="font-display text-2xl">{title}</CardTitle>
             {subtitle && <CardDescription>{subtitle}</CardDescription>}
           </CardHeader>
           <CardContent className="flex flex-col gap-4">{children}</CardContent>

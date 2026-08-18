@@ -10,7 +10,7 @@ export function SiteNav() {
   return (
     <header className="border-border/60 bg-background/90 sticky top-0 z-40 border-b backdrop-blur-sm">
       <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-4 py-5 sm:px-6">
-        <Link href="/" className="text-lg font-bold tracking-tight">
+        <Link href="/" className="font-display text-lg">
           InviteFlow
         </Link>
 
