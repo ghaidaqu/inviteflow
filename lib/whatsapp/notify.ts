@@ -1,6 +1,7 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider, isWhatsAppConfigured } from './index';
+import { generateAndUploadQr } from '@/lib/services/qr.service';
 import type { ResultsSummary } from '@/lib/services/results.service';
 
 type Locale = 'ar' | 'en';
@@ -22,7 +23,7 @@ async function getEventName(eventSlug: string): Promise<string | null> {
 export async function sendGuestRsvpConfirmationWhatsApp(
   eventSlug: string,
   phone: string,
-  status: 'attending' | 'not_attending' | 'maybe',
+  status: 'attending' | 'not_attending',
   editUrl: string,
   locale: Locale,
 ) {
@@ -31,8 +32,8 @@ export async function sendGuestRsvpConfirmationWhatsApp(
 
   const statusText =
     locale === 'ar'
-      ? { attending: 'سيحضر', not_attending: 'لن يحضر', maybe: 'ربما' }[status]
-      : { attending: 'Attending', not_attending: 'Not attending', maybe: 'Maybe' }[status];
+      ? { attending: 'سيحضر', not_attending: 'لن يحضر' }[status]
+      : { attending: 'Attending', not_attending: 'Not attending' }[status];
 
   const text =
     locale === 'ar'
@@ -51,7 +52,7 @@ export async function sendGuestRsvpConfirmationWhatsApp(
  * This is "الدعوة الرقمية" (digital invitation) done right per how guests
  * actually behave: nobody visits a website just to tap "accept" — when the
  * event has RSVP enabled, the message carries tappable reply buttons
- * (Accept/Decline/Maybe) so the guest can respond without ever leaving
+ * (Accept/Decline) so the guest can respond without ever leaving
  * WhatsApp. The tap comes back via app/api/webhooks/whatsapp/route.ts. If
  * RSVP is off (a pure announcement, per the organizer's choice), this is
  * just an informational message with the event link and no buttons.
@@ -68,9 +69,7 @@ export async function sendInvitationWhatsApp(
   const admin = createAdminClient();
   const { data: event } = await admin
     .from('events')
-    .select(
-      'name, is_rsvp_enabled, event_settings(allow_attending, allow_not_attending, allow_maybe)',
-    )
+    .select('name, is_rsvp_enabled, event_settings(allow_attending, allow_not_attending)')
     .eq('slug', eventSlug)
     .single();
   if (!event) return { ok: false, configured: true };
@@ -96,7 +95,6 @@ export async function sendInvitationWhatsApp(
   const settings = event.event_settings as unknown as {
     allow_attending: boolean;
     allow_not_attending: boolean;
-    allow_maybe: boolean;
   } | null;
 
   const buttons: { id: string; title: string }[] = [];
@@ -110,12 +108,6 @@ export async function sendInvitationWhatsApp(
     buttons.push({
       id: `rsvp_decline:${guestId}`,
       title: locale === 'ar' ? 'اعتذار' : 'Decline',
-    });
-  }
-  if (settings?.allow_maybe && buttons.length < 3) {
-    buttons.push({
-      id: `rsvp_maybe:${guestId}`,
-      title: locale === 'ar' ? 'ربما' : 'Maybe',
     });
   }
 
@@ -133,11 +125,47 @@ export async function sendInvitationWhatsApp(
   }
 }
 
+/**
+ * Sent once a guest's response becomes 'attending' on an event with entry
+ * QR enabled — every caller is responsible for only calling this on a
+ * genuine new acceptance (see the previous_status guards in rsvp.ts and
+ * the WhatsApp webhook route), not on a repeat confirmation of a status
+ * that was already 'attending'.
+ *
+ * The QR encodes the guest's own RSVP link (the same one already sent in
+ * the ordinary confirmation message) rather than inventing a separate
+ * "entry pass" page — that link already shows their name and status, so
+ * scanning it is a real, working thing to do with no new infrastructure.
+ * Best-effort: a failed QR send never fails the RSVP itself.
+ */
+export async function sendGuestQrWhatsApp(
+  eventName: string,
+  guestId: string,
+  guestName: string,
+  phone: string,
+  editUrl: string,
+  locale: Locale,
+): Promise<void> {
+  const qrUrl = await generateAndUploadQr(`guest-${guestId}`, editUrl);
+  if (!qrUrl) return;
+
+  const caption =
+    locale === 'ar'
+      ? `رمز دخولك لـ "${eventName}" يا ${guestName} — أظهره عند الوصول.`
+      : `Your entry QR for "${eventName}", ${guestName} — show it when you arrive.`;
+
+  try {
+    await whatsAppProvider.send({ to: phone, text: caption, imageUrl: qrUrl });
+  } catch (error) {
+    console.error('[whatsapp] QR send failed', error);
+  }
+}
+
 function summaryText(locale: Locale, summary: ResultsSummary): string {
   const rsvpLine =
     locale === 'ar'
-      ? `سيحضر: ${summary.attendingCount} — لن يحضر: ${summary.notAttendingCount} — ربما: ${summary.maybeCount}`
-      : `Attending: ${summary.attendingCount} — Not attending: ${summary.notAttendingCount} — Maybe: ${summary.maybeCount}`;
+      ? `سيحضر: ${summary.attendingCount} — لن يحضر: ${summary.notAttendingCount}`
+      : `Attending: ${summary.attendingCount} — Not attending: ${summary.notAttendingCount}`;
 
   const questionLines = summary.questions
     .filter((q) => q.tally)

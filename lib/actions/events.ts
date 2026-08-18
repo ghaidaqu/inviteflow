@@ -189,7 +189,6 @@ export async function updateEventSettingsAction(
   const parsed = eventSettingsFormSchema.safeParse({
     allowAttending: formData.get('allowAttending') === 'true',
     allowNotAttending: formData.get('allowNotAttending') === 'true',
-    allowMaybe: formData.get('allowMaybe') === 'true',
     collectCompanions: formData.get('collectCompanions') === 'true',
     maxCompanions: formData.get('maxCompanions'),
     collectMessage: formData.get('collectMessage') === 'true',

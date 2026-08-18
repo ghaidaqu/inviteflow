@@ -4,7 +4,6 @@ export const eventSettingsFormSchema = z
   .object({
     allowAttending: z.boolean(),
     allowNotAttending: z.boolean(),
-    allowMaybe: z.boolean(),
     collectCompanions: z.boolean(),
     maxCompanions: z.coerce.number().int().min(0).max(50),
     collectMessage: z.boolean(),
@@ -12,7 +11,7 @@ export const eventSettingsFormSchema = z
   })
   // At least one response option has to be open, or a guest who opens the
   // RSVP form has nothing they're allowed to submit.
-  .refine((v) => v.allowAttending || v.allowNotAttending || v.allowMaybe, {
+  .refine((v) => v.allowAttending || v.allowNotAttending, {
     message: 'atLeastOneStatus',
     path: ['allowAttending'],
   });

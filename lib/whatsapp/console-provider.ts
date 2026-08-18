@@ -5,6 +5,7 @@ export const consoleWhatsAppProvider: WhatsAppProvider = {
     console.log('[whatsapp:console] WhatsApp Cloud API not configured — message not sent', {
       to: message.to,
       buttons: message.buttons?.map((b) => b.title),
+      imageUrl: message.imageUrl,
     });
   },
 };

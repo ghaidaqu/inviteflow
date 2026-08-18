@@ -8,13 +8,12 @@ export type DashboardStats = {
   totalGuests: number;
   attendingCount: number;
   notAttendingCount: number;
-  maybeCount: number;
   noResponseCount: number;
   latestResponses: {
     id: string;
     guestName: string;
     eventName: string;
-    status: 'attending' | 'not_attending' | 'maybe';
+    status: 'attending' | 'not_attending';
     respondedAt: string;
   }[];
 };
@@ -24,7 +23,6 @@ const EMPTY_STATS: DashboardStats = {
   totalGuests: 0,
   attendingCount: 0,
   notAttendingCount: 0,
-  maybeCount: 0,
   noResponseCount: 0,
   latestResponses: [],
 };
@@ -60,7 +58,6 @@ export async function getDashboardStats(
 
   const attendingCount = responses.filter((r) => r.status === 'attending').length;
   const notAttendingCount = responses.filter((r) => r.status === 'not_attending').length;
-  const maybeCount = responses.filter((r) => r.status === 'maybe').length;
   const noResponseCount = Math.max(guests.length - responses.length, 0);
 
   const latestResponseRows = responses.slice(0, 20);
@@ -85,7 +82,6 @@ export async function getDashboardStats(
     totalGuests: guests.length,
     attendingCount,
     notAttendingCount,
-    maybeCount,
     noResponseCount,
     latestResponses,
   };

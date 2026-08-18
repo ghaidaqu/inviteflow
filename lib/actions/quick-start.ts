@@ -25,8 +25,8 @@ import type { QuestionInput } from '@/lib/validations/questions';
  * event-form.tsx and event-settings-form.tsx for the reference: name,
  * type, description, eventDate, rsvpDeadline, locationText,
  * locationMapUrl, coverImageUrl, primaryLocale, visibility, password
- * protection, isQrEnabled, allowAttending/allowNotAttending/allowMaybe —
- * plus custom questions for the Link track. eventEndDate isn't here
+ * protection, isQrEnabled, allowAttending/allowNotAttending — plus
+ * custom questions for the Link track. eventEndDate isn't here
  * because the real form doesn't expose it either (it round-trips
  * silently there too); institutional fields aren't here because
  * Institutional isn't part of this flow.
@@ -55,7 +55,6 @@ export type QuickStartDraft = {
   isQrEnabled: boolean;
   allowAttending: boolean;
   allowNotAttending: boolean;
-  allowMaybe: boolean;
   questions: QuestionInput[];
   guestName: string;
   guestPhone: string;
@@ -82,7 +81,7 @@ function toIsoOrUndefined(value: string): string | undefined {
  * called right after login (see FinishCreating). Creates the real event
  * with everything the organizer filled in before authenticating, then —
  * if they gave a test contact — adds that guest and sends them the actual
- * invitation (real Accept/Decline/Maybe buttons, real QR), exactly what a
+ * invitation (real Accept/Decline buttons, real QR), exactly what a
  * guest would get. This *is* the free trial; there's no separate
  * lightweight preview message.
  *
@@ -99,7 +98,7 @@ export async function createEventFromQuickStartAction(
 ): Promise<QuickStartResult> {
   if (!draft.name.trim() || draft.name.length > 150) return { error: 'invalidInput' };
   if (draft.isPasswordProtected && !draft.password) return { error: 'passwordRequired' };
-  if (!draft.allowAttending && !draft.allowNotAttending && !draft.allowMaybe) {
+  if (!draft.allowAttending && !draft.allowNotAttending) {
     return { error: 'atLeastOneStatus' };
   }
 
@@ -149,17 +148,16 @@ export async function createEventFromQuickStartAction(
   }
 
   // event_settings is auto-created by a DB trigger with its own defaults
-  // (all three response options on) the moment the event row is inserted
+  // (both response options on) the moment the event row is inserted
   // above — only touch it if the organizer actually changed something,
   // preserving the trigger's defaults for every other setting.
-  if (!draft.allowAttending || !draft.allowNotAttending || !draft.allowMaybe) {
+  if (!draft.allowAttending || !draft.allowNotAttending) {
     try {
       const settings = await getEventSettings(supabase, eventId);
       if (settings) {
         await updateEventSettings(supabase, eventId, {
           allowAttending: draft.allowAttending,
           allowNotAttending: draft.allowNotAttending,
-          allowMaybe: draft.allowMaybe,
           collectCompanions: settings.collect_companions,
           maxCompanions: settings.max_companions,
           collectMessage: settings.collect_message,

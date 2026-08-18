@@ -24,9 +24,15 @@ export function createWhatsAppCloudApiProvider(
   phoneNumberId: string,
 ): WhatsAppProvider {
   return {
-    async send({ to, text, buttons }: WhatsAppMessage) {
-      const body =
-        buttons && buttons.length > 0
+    async send({ to, text, buttons, imageUrl }: WhatsAppMessage) {
+      const body = imageUrl
+        ? {
+            messaging_product: 'whatsapp',
+            to: normalizeNumber(to),
+            type: 'image',
+            image: { link: imageUrl, caption: text },
+          }
+        : buttons && buttons.length > 0
           ? {
               messaging_product: 'whatsapp',
               to: normalizeNumber(to),

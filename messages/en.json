@@ -202,7 +202,6 @@
       "totalGuests": "Total guests",
       "attending": "Attending",
       "notAttending": "Not attending",
-      "maybe": "Maybe",
       "noResponse": "No response",
       "totalRevenue": "Revenue (mock)",
       "checkedIn": "Checked in",
@@ -212,8 +211,7 @@
       "noData": "No data yet.",
       "status": {
         "attending": "Attending",
-        "not_attending": "Not attending",
-        "maybe": "Maybe"
+        "not_attending": "Not attending"
       }
     }
   },
@@ -402,8 +400,7 @@
     "statusPlaceholder": "Select your response",
     "status": {
       "attending": "Attending",
-      "not_attending": "Not attending",
-      "maybe": "Maybe"
+      "not_attending": "Not attending"
     },
     "companionsLabel": "Companions",
     "companionNamePlaceholder": "Companion name",
@@ -441,8 +438,6 @@
     "allowAttendingLabel": "Allow accepting the invitation",
     "allowNotAttendingLabel": "Allow declining the invitation",
     "allowNotAttendingHint": "If off, a guest can only accept — there is no decline option.",
-    "allowMaybeLabel": "Allow a \"Maybe\" option",
-    "allowMaybeHint": "Turn off for a simple invitation (accept or decline only), no third option.",
     "collectCompanionsLabel": "Collect companion names",
     "collectCompanionsHint": "Turn on if guests can bring additional people.",
     "maxCompanionsLabel": "Maximum companions",
@@ -456,7 +451,7 @@
       "invalidInput": "Please check the information you entered.",
       "unauthorized": "You must be logged in to do this.",
       "unknown": "Something went wrong, please try again.",
-      "atLeastOneStatus": "At least one response option must stay enabled (accept, decline, or maybe)."
+      "atLeastOneStatus": "At least one response option must stay enabled (accept or decline)."
     }
   },
   "Questions": {
@@ -531,14 +526,12 @@
       "all": "All responses",
       "attending": "Attending",
       "not_attending": "Not attending",
-      "maybe": "Maybe",
       "no_response": "No response",
       "waitlisted": "Reserve"
     },
     "status": {
       "attending": "Attending",
       "not_attending": "Not attending",
-      "maybe": "Maybe",
       "no_response": "No response"
     },
     "exportCsv": "Export CSV",
@@ -693,7 +686,7 @@
     "trialDescriptionLink": "Once you're logged in you'll get one link for the event — open it yourself to try it, or send it straight to a WhatsApp group. Everyone who opens it registers their own name and phone and answers on their own; you don't need to enter anyone's number now.",
     "guestNameLabel": "Test guest name (optional)",
     "guestPhoneLabel": "Their phone number",
-    "atLeastOneStatusError": "Enable at least one response option (accept, decline, or maybe).",
+    "atLeastOneStatusError": "Enable at least one response option (accept or decline).",
     "finishButton": "Log in and activate your invitation",
     "finishHint": "Free right now — no card required.",
     "finish": {

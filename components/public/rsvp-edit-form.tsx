@@ -23,14 +23,13 @@ import type { RsvpByToken } from '@/lib/services/rsvp.service';
 type EventSettings = {
   allow_attending: boolean;
   allow_not_attending: boolean;
-  allow_maybe: boolean;
   collect_companions: boolean;
   max_companions: number;
   collect_message: boolean;
 };
 
 type FormValues = {
-  status: 'attending' | 'not_attending' | 'maybe';
+  status: 'attending' | 'not_attending';
   companionsNames: { name: string }[];
   message: string;
 };
@@ -119,9 +118,6 @@ export function RsvpEditForm({
                   )}
                   {settings.allow_not_attending && (
                     <SelectItem value="not_attending">{t('status.not_attending')}</SelectItem>
-                  )}
-                  {settings.allow_maybe && (
-                    <SelectItem value="maybe">{t('status.maybe')}</SelectItem>
                   )}
                 </SelectContent>
               </Select>

@@ -19,6 +19,14 @@ export type WhatsAppMessage = {
    * see app/api/webhooks/whatsapp/route.ts for where the tap comes back.
    */
   buttons?: WhatsAppButton[];
+  /**
+   * Sends an image message instead of text — `text` becomes the image's
+   * caption. Must be a public HTTPS URL Meta's servers can fetch (not a
+   * data: URI); see lib/services/qr.service.ts for the one caller that
+   * uses this, sending a guest their entry QR. Mutually exclusive with
+   * `buttons` — Meta's API doesn't support both on one message.
+   */
+  imageUrl?: string;
 };
 
 /**

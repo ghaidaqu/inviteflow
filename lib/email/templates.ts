@@ -5,8 +5,8 @@ type Locale = 'ar' | 'en';
 function summaryHtml(locale: Locale, summary: ResultsSummary): string {
   const rsvpLines =
     locale === 'ar'
-      ? `<p>سيحضر: <strong>${summary.attendingCount}</strong> — لن يحضر: <strong>${summary.notAttendingCount}</strong> — ربما: <strong>${summary.maybeCount}</strong></p>`
-      : `<p>Attending: <strong>${summary.attendingCount}</strong> — Not attending: <strong>${summary.notAttendingCount}</strong> — Maybe: <strong>${summary.maybeCount}</strong></p>`;
+      ? `<p>سيحضر: <strong>${summary.attendingCount}</strong> — لن يحضر: <strong>${summary.notAttendingCount}</strong></p>`
+      : `<p>Attending: <strong>${summary.attendingCount}</strong> — Not attending: <strong>${summary.notAttendingCount}</strong></p>`;
 
   const questionsHtml = summary.questions
     .filter((q) => q.tally)
@@ -22,9 +22,9 @@ function summaryHtml(locale: Locale, summary: ResultsSummary): string {
   return rsvpLines + questionsHtml;
 }
 
-const RSVP_STATUS_LABEL: Record<Locale, Record<'attending' | 'not_attending' | 'maybe', string>> = {
-  ar: { attending: 'سيحضر', not_attending: 'لن يحضر', maybe: 'ربما' },
-  en: { attending: 'Attending', not_attending: 'Not attending', maybe: 'Maybe' },
+const RSVP_STATUS_LABEL: Record<Locale, Record<'attending' | 'not_attending', string>> = {
+  ar: { attending: 'سيحضر', not_attending: 'لن يحضر' },
+  en: { attending: 'Attending', not_attending: 'Not attending' },
 };
 
 function wrap(locale: Locale, bodyHtml: string): string {
@@ -42,7 +42,7 @@ function wrap(locale: Locale, bodyHtml: string): string {
 
 export function organizerNewRsvpEmail(
   locale: Locale,
-  params: { eventName: string; guestName: string; status: 'attending' | 'not_attending' | 'maybe' },
+  params: { eventName: string; guestName: string; status: 'attending' | 'not_attending' },
 ) {
   const statusLabel = RSVP_STATUS_LABEL[locale][params.status];
   if (locale === 'ar') {

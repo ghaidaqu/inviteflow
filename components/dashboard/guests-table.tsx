@@ -40,20 +40,12 @@ import { Trash2Icon, DownloadIcon, MessageCircleIcon, PencilIcon } from 'lucide-
 // 'waitlisted' filters on the is_waitlisted flag, orthogonal to RSVP
 // status (a waitlisted guest normally has no response yet, since they
 // haven't been invited — but the filter is independent either way).
-const STATUS_FILTERS = [
-  'all',
-  'attending',
-  'not_attending',
-  'maybe',
-  'no_response',
-  'waitlisted',
-] as const;
+const STATUS_FILTERS = ['all', 'attending', 'not_attending', 'no_response', 'waitlisted'] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
 
 const STATUS_VARIANT = {
   attending: 'default',
   not_attending: 'destructive',
-  maybe: 'secondary',
 } as const;
 
 type GuestRowDraft = {

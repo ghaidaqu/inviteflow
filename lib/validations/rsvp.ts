@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
-export const rsvpStatuses = ['attending', 'not_attending', 'maybe'] as const;
+// A response is a clear yes or no — no 'maybe'. It muddied both the
+// organizer's headcount and the guest's own decision, so it's gone from
+// the whole system, not just hidden from the UI (see the migration that
+// drops event_settings.allow_maybe and tightens the status constraint).
+export const rsvpStatuses = ['attending', 'not_attending'] as const;
 
 export const rsvpFormSchema = z.object({
   guestName: z.string().trim().min(1, { error: 'nameRequired' }).max(150),

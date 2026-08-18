@@ -22,7 +22,6 @@ import { Trash2Icon, PlusIcon, CheckCircle2Icon, MessageCircleIcon } from 'lucid
 type EventSettings = {
   allow_attending: boolean;
   allow_not_attending: boolean;
-  allow_maybe: boolean;
   collect_companions: boolean;
   max_companions: number;
   collect_message: boolean;
@@ -32,7 +31,7 @@ type FormValues = {
   guestName: string;
   phone: string;
   email: string;
-  status: 'attending' | 'not_attending' | 'maybe' | '';
+  status: 'attending' | 'not_attending' | '';
   companionsNames: { name: string }[];
   message: string;
 };
@@ -193,9 +192,6 @@ export function RsvpForm({
                   )}
                   {settings.allow_not_attending && (
                     <SelectItem value="not_attending">{t('status.not_attending')}</SelectItem>
-                  )}
-                  {settings.allow_maybe && (
-                    <SelectItem value="maybe">{t('status.maybe')}</SelectItem>
                   )}
                 </SelectContent>
               </Select>

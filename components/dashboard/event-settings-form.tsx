@@ -43,7 +43,6 @@ export function EventSettingsForm({
     defaultValues: {
       allowAttending: settings.allow_attending,
       allowNotAttending: settings.allow_not_attending,
-      allowMaybe: settings.allow_maybe,
       collectCompanions: settings.collect_companions,
       maxCompanions: settings.max_companions,
       collectMessage: settings.collect_message,
@@ -59,7 +58,6 @@ export function EventSettingsForm({
     const formData = new FormData();
     formData.set('allowAttending', String(values.allowAttending));
     formData.set('allowNotAttending', String(values.allowNotAttending));
-    formData.set('allowMaybe', String(values.allowMaybe));
     formData.set('collectCompanions', String(values.collectCompanions));
     formData.set('maxCompanions', String(values.maxCompanions));
     formData.set('collectMessage', String(values.collectMessage));
@@ -119,20 +117,6 @@ export function EventSettingsForm({
                 checked={field.value}
                 onCheckedChange={field.onChange}
               />
-            )}
-          />
-        </Field>
-
-        <Field orientation="horizontal">
-          <FieldLabel htmlFor="allowMaybe" className="flex-1 font-normal">
-            {t('allowMaybeLabel')}
-            <FieldDescription>{t('allowMaybeHint')}</FieldDescription>
-          </FieldLabel>
-          <Controller
-            control={control}
-            name="allowMaybe"
-            render={({ field }) => (
-              <Switch id="allowMaybe" checked={field.value} onCheckedChange={field.onChange} />
             )}
           />
         </Field>

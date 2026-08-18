@@ -55,7 +55,7 @@ async function safeSend(to: string, subject: string, html: string) {
 export async function notifyOrganizerNewRsvp(
   eventSlug: string,
   guestName: string,
-  status: 'attending' | 'not_attending' | 'maybe',
+  status: 'attending' | 'not_attending',
 ) {
   const contact = await getOrganizerContact(eventSlug);
   if (!contact) return;

@@ -42,7 +42,6 @@ type FormValues = {
   isQrEnabled: boolean;
   allowAttending: boolean;
   allowNotAttending: boolean;
-  allowMaybe: boolean;
 };
 
 /**
@@ -80,19 +79,12 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
       isQrEnabled: false,
       allowAttending: true,
       allowNotAttending: true,
-      // Off by default — a real invitation asks for a clear yes or no.
-      // Still a real toggle, not removed outright: an organizer who
-      // genuinely wants a soft "maybe" option (a big flexible event, say)
-      // can still turn it on, but that's now a deliberate choice instead
-      // of the starting behavior.
-      allowMaybe: false,
     },
   });
   const isPasswordProtected = useWatch({ control, name: 'isPasswordProtected' });
   const allowAttending = useWatch({ control, name: 'allowAttending' });
   const allowNotAttending = useWatch({ control, name: 'allowNotAttending' });
-  const allowMaybe = useWatch({ control, name: 'allowMaybe' });
-  const noStatusEnabled = !allowAttending && !allowNotAttending && !allowMaybe;
+  const noStatusEnabled = !allowAttending && !allowNotAttending;
 
   const [questions, setQuestions] = useState<QuestionInput[]>([]);
   const [guestName, setGuestName] = useState('');
@@ -292,20 +284,6 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
                 checked={field.value}
                 onCheckedChange={field.onChange}
               />
-            )}
-          />
-        </Field>
-
-        <Field orientation="horizontal">
-          <FieldLabel htmlFor="qs-allow-maybe" className="flex-1 font-normal">
-            {tSettings('allowMaybeLabel')}
-            <FieldDescription>{tSettings('allowMaybeHint')}</FieldDescription>
-          </FieldLabel>
-          <Controller
-            control={control}
-            name="allowMaybe"
-            render={({ field }) => (
-              <Switch id="qs-allow-maybe" checked={field.value} onCheckedChange={field.onChange} />
             )}
           />
         </Field>

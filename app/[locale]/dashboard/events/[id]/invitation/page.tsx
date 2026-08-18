@@ -10,10 +10,10 @@ import { EventSettingsForm } from '@/components/dashboard/event-settings-form';
 import { Link } from '@/i18n/navigation';
 
 // "الدعوة الرقمية" — a lightweight, personal invitation to an occasion:
-// does the organizer even need a response, and if so is it a simple
-// accept/decline or does "maybe" make sense? This is deliberately separate
-// from /rsvp (the question/poll-based tool for organizing an event) — see
-// EventSettings translations and the RSVP page for that distinction.
+// does the organizer even need a response, and if so a simple
+// accept/decline. This is deliberately separate from /rsvp (the
+// question/poll-based tool for organizing an event) — see EventSettings
+// translations and the RSVP page for that distinction.
 export default async function EventInvitationSettingsPage({
   params,
 }: {

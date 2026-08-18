@@ -83,7 +83,7 @@
       "privacyLink": "سياسة الخصوصية"
     },
     "tracks": {
-      "cta": "اكتشفي",
+      "cta": "اكتشف",
       "invitation": {
         "title": "دعوة رقمية",
         "description": "دعوة شخصية لكل ضيف",
@@ -202,7 +202,6 @@
       "totalGuests": "عدد المدعوين",
       "attending": "سيحضرون",
       "notAttending": "اعتذروا",
-      "maybe": "ربما",
       "noResponse": "لم يردوا",
       "totalRevenue": "الإيرادات (تجريبي)",
       "checkedIn": "الحاضرون فعليًا",
@@ -212,8 +211,7 @@
       "noData": "لا توجد بيانات بعد.",
       "status": {
         "attending": "سيحضر",
-        "not_attending": "لن يحضر",
-        "maybe": "ربما"
+        "not_attending": "لن يحضر"
       }
     }
   },
@@ -402,8 +400,7 @@
     "statusPlaceholder": "اختر ردك",
     "status": {
       "attending": "سأحضر",
-      "not_attending": "لن أحضر",
-      "maybe": "ربما"
+      "not_attending": "لن أحضر"
     },
     "companionsLabel": "المرافقون",
     "companionNamePlaceholder": "اسم المرافق",
@@ -441,8 +438,6 @@
     "allowAttendingLabel": "السماح بالموافقة على الحضور",
     "allowNotAttendingLabel": "السماح بالاعتذار عن الحضور",
     "allowNotAttendingHint": "إن عطّلتها، لن يقدر الضيف إلا الموافقة — لا يوجد رد اعتذار.",
-    "allowMaybeLabel": "السماح بخيار \"ربما\"",
-    "allowMaybeHint": "أطفئه لدعوة بسيطة (قبول أو اعتذار فقط، بدون خيار ثالث).",
     "collectCompanionsLabel": "جمع أسماء المرافقين",
     "collectCompanionsHint": "شغّله لو الدعوة تسمح للضيف يجيب معه أشخاص إضافيين.",
     "maxCompanionsLabel": "الحد الأقصى للمرافقين",
@@ -456,7 +451,7 @@
       "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
       "unauthorized": "يجب تسجيل الدخول للقيام بهذا.",
       "unknown": "حدث خطأ ما، يرجى المحاولة مرة أخرى.",
-      "atLeastOneStatus": "يجب تفعيل خيار رد واحد على الأقل (موافقة أو اعتذار أو ربما)."
+      "atLeastOneStatus": "يجب تفعيل خيار رد واحد على الأقل (موافقة أو اعتذار)."
     }
   },
   "Questions": {
@@ -531,14 +526,12 @@
       "all": "كل الردود",
       "attending": "سيحضر",
       "not_attending": "لن يحضر",
-      "maybe": "ربما",
       "no_response": "بدون رد",
       "waitlisted": "احتياطي"
     },
     "status": {
       "attending": "سيحضر",
       "not_attending": "لن يحضر",
-      "maybe": "ربما",
       "no_response": "بدون رد"
     },
     "exportCsv": "تصدير CSV",
@@ -693,7 +686,7 @@
     "trialDescriptionLink": "بعد ما تسجّل دخولك بتحصل على رابط واحد للمناسبة — افتحه بنفسك لتجربته، أو أرسله مباشرة لقروب الواتساب. كل من يفتح الرابط يسجّل اسمه ورقم جواله ويجاوب بنفسه؛ ما تحتاج تدخل رقم جوال أي أحد الآن.",
     "guestNameLabel": "اسم الضيف التجريبي (اختياري)",
     "guestPhoneLabel": "رقم جواله",
-    "atLeastOneStatusError": "فعّل خيار رد واحد على الأقل (موافقة أو اعتذار أو ربما).",
+    "atLeastOneStatusError": "فعّل خيار رد واحد على الأقل (موافقة أو اعتذار).",
     "finishButton": "سجّل الدخول وفعّل دعوتك",
     "finishHint": "مجانًا الآن — بدون بطاقة بنكية.",
     "finish": {

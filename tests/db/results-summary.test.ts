@@ -51,11 +51,11 @@ describe('results summary aggregation (custom_answers tally)', () => {
     optionAId = opts[0].id;
     optionBId = opts[1].id;
 
-    // Three guests: attending+yes+chicken, attending+no+meat, maybe+yes+chicken.
+    // Three guests: attending+yes+chicken, attending+no+meat, not_attending+yes+chicken.
     for (const [name, status, yes, optionId] of [
       ['Guest A', 'attending', true, optionAId],
       ['Guest B', 'attending', false, optionBId],
-      ['Guest C', 'maybe', true, optionAId],
+      ['Guest C', 'not_attending', true, optionAId],
     ] as const) {
       const { rows: guestRows } = await db.query<{ id: string }>(
         `insert into public.guests (event_id, name) values ('${eventId}', '${name}') returning id;`,
@@ -81,9 +81,9 @@ describe('results summary aggregation (custom_answers tally)', () => {
       `select status from public.rsvp_responses where event_id = '${eventId}';`,
     );
     const attending = rows.filter((r) => r.status === 'attending').length;
-    const maybe = rows.filter((r) => r.status === 'maybe').length;
+    const notAttending = rows.filter((r) => r.status === 'not_attending').length;
     expect(attending).toBe(2);
-    expect(maybe).toBe(1);
+    expect(notAttending).toBe(1);
   });
 
   it('tallies yes_no answers correctly', async () => {

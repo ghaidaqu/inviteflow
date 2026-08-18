@@ -19,7 +19,7 @@ export type EventType =
 export type EventVisibility = 'public' | 'private';
 export type EventStatus = 'draft' | 'published' | 'ended';
 export type Locale = 'ar' | 'en';
-export type RsvpStatus = 'attending' | 'not_attending' | 'maybe';
+export type RsvpStatus = 'attending' | 'not_attending';
 export type CustomQuestionType =
   'short_text' | 'long_text' | 'yes_no' | 'single_choice' | 'multi_choice' | 'number';
 export type TicketTypeStatus = 'active' | 'paused' | 'ended';
@@ -159,7 +159,6 @@ export interface Database {
           event_id: string;
           allow_attending: boolean;
           allow_not_attending: boolean;
-          allow_maybe: boolean;
           collect_guest_name: boolean;
           collect_companions: boolean;
           max_companions: number;
@@ -172,7 +171,6 @@ export interface Database {
           event_id: string;
           allow_attending?: boolean;
           allow_not_attending?: boolean;
-          allow_maybe?: boolean;
           collect_guest_name?: boolean;
           collect_companions?: boolean;
           max_companions?: number;

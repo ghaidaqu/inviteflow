@@ -136,13 +136,25 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                       <Icon className="size-4.5" />
                     </span>
 
-                    <div className="absolute inset-0 hidden flex-col items-start justify-center gap-1.5 p-3 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100">
+                    {/* dir set explicitly per-locale rather than inheriting
+                        the row's forced dir="ltr" (that one's only there to
+                        keep 01→02→03 card order stable under RTL) — without
+                        it the bullet dot lands on the wrong side of Arabic
+                        text. Solid panel-color backdrop instead of floating
+                        over the translucent glass wash above, since white
+                        text read poorly against how light that gets near
+                        the top of the gradient. */}
+                    <div
+                      dir={isRtl ? 'rtl' : 'ltr'}
+                      className="absolute inset-0 hidden flex-col items-start justify-center gap-1.5 p-3 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100"
+                      style={{ backgroundColor: style.panel }}
+                    >
                       {features.map((feature) => (
                         <span
                           key={feature}
-                          className="flex items-center gap-1.5 text-[11px] leading-tight font-medium text-white/90 sm:text-xs"
+                          className="flex items-center gap-1.5 text-[11px] leading-tight font-medium text-white sm:text-xs"
                         >
-                          <span className="size-1 shrink-0 rounded-full bg-white/70" />
+                          <span className="size-1.5 shrink-0 rounded-full bg-white" />
                           {feature}
                         </span>
                       ))}

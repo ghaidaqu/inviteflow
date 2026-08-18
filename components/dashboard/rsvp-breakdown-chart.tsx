@@ -6,12 +6,10 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 export function RsvpBreakdownChart({
   attending,
   notAttending,
-  maybe,
   noResponse,
 }: {
   attending: number;
   notAttending: number;
-  maybe: number;
   noResponse: number;
 }) {
   const t = useTranslations('Dashboard.overview');
@@ -19,7 +17,6 @@ export function RsvpBreakdownChart({
   const data = [
     { name: t('attending'), value: attending, fill: 'var(--color-chart-1)' },
     { name: t('notAttending'), value: notAttending, fill: 'var(--color-chart-2)' },
-    { name: t('maybe'), value: maybe, fill: 'var(--color-chart-3)' },
     { name: t('noResponse'), value: noResponse, fill: 'var(--color-chart-4)' },
   ];
 

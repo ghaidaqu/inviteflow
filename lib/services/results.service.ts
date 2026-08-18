@@ -14,7 +14,6 @@ export type QuestionTally = {
 export type ResultsSummary = {
   attendingCount: number;
   notAttendingCount: number;
-  maybeCount: number;
   totalResponses: number;
   questions: QuestionTally[];
 };
@@ -31,7 +30,6 @@ export async function getResultsSummary(
 
   const attendingCount = responses.filter((r) => r.status === 'attending').length;
   const notAttendingCount = responses.filter((r) => r.status === 'not_attending').length;
-  const maybeCount = responses.filter((r) => r.status === 'maybe').length;
 
   const { data: questions, error: questionsError } = await supabase
     .from('custom_questions')
@@ -119,7 +117,6 @@ export async function getResultsSummary(
   return {
     attendingCount,
     notAttendingCount,
-    maybeCount,
     totalResponses: responses.length,
     questions: questionTallies,
   };

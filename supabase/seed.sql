@@ -89,7 +89,7 @@ begin
   returning id into v_guest2_id;
 
   insert into public.rsvp_responses (event_id, guest_id, status, companions_count)
-  values (v_wedding_id, v_guest2_id, 'maybe', 0);
+  values (v_wedding_id, v_guest2_id, 'not_attending', 0);
 
   -- Event 2: published conference with ticketing -----------------------------
   insert into public.events (

@@ -2,14 +2,41 @@
 
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { rsvpFormSchema, rsvpStatuses } from '@/lib/validations/rsvp';
 import { submitRsvp, updateRsvpByToken } from '@/lib/services/rsvp.service';
 import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { notifyOrganizerNewRsvp, sendGuestRsvpConfirmation } from '@/lib/email/notify';
-import { sendGuestRsvpConfirmationWhatsApp } from '@/lib/whatsapp/notify';
+import { sendGuestRsvpConfirmationWhatsApp, sendGuestQrWhatsApp } from '@/lib/whatsapp/notify';
 import type { Json } from '@/types/supabase';
+
+/**
+ * Fetched through the service-role client rather than the caller's own
+ * (anon) `supabase` — both submitRsvpAction and updateRsvpAction run
+ * unauthenticated, and `events` SELECT is RLS-restricted to
+ * public+published events, which would silently fail to resolve this for
+ * a private event. Best-effort: returns null on any error, and every
+ * caller treats that as "skip the QR send", never as a reason to fail
+ * the RSVP itself.
+ */
+async function getQrEligibility(
+  eventId: string,
+): Promise<{ isQrEnabled: boolean; eventName: string } | null> {
+  try {
+    const admin = createAdminClient();
+    const { data } = await admin
+      .from('events')
+      .select('name, is_qr_enabled')
+      .eq('id', eventId)
+      .single();
+    if (!data) return null;
+    return { isQrEnabled: data.is_qr_enabled, eventName: data.name };
+  } catch {
+    return null;
+  }
+}
 
 export type RsvpActionState = {
   error?: string;
@@ -112,6 +139,22 @@ export async function submitRsvpAction(
           editUrl,
           locale,
         );
+
+        // A brand-new submission has no "previous status" to compare
+        // against — any first-time 'attending' is a genuine acceptance.
+        if (parsed.data.status === 'attending') {
+          const eligibility = await getQrEligibility(result.event_id);
+          if (eligibility?.isQrEnabled) {
+            await sendGuestQrWhatsApp(
+              eligibility.eventName,
+              result.guest_id,
+              parsed.data.guestName,
+              parsed.data.phone,
+              editUrl,
+              locale,
+            );
+          }
+        }
       }
     }
 
@@ -172,6 +215,38 @@ export async function updateRsvpAction(
     if (parsed.data.status === 'not_attending' && result?.previous_status !== 'not_attending') {
       const locale = (await getLocale()) as 'ar' | 'en';
       await promoteNextWaitlistedGuest(supabase, result.event_id, result.event_slug, locale);
+    }
+
+    // Same "genuine new transition" guard for the QR send — a guest
+    // re-submitting an already-'attending' edit (changing their companion
+    // count, say) shouldn't get a fresh QR every time.
+    if (parsed.data.status === 'attending' && result?.previous_status !== 'attending') {
+      try {
+        const admin = createAdminClient();
+        const { data: guest } = await admin
+          .from('guests')
+          .select('id, name, phone')
+          .eq('secure_token', token)
+          .single();
+        if (guest?.phone) {
+          const eligibility = await getQrEligibility(result.event_id);
+          if (eligibility?.isQrEnabled) {
+            const locale = (await getLocale()) as 'ar' | 'en';
+            const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+            const editUrl = `${appUrl}/${locale}/rsvp/${token}`;
+            await sendGuestQrWhatsApp(
+              eligibility.eventName,
+              guest.id,
+              guest.name ?? '',
+              guest.phone,
+              editUrl,
+              locale,
+            );
+          }
+        }
+      } catch {
+        // Best-effort — the RSVP update itself already succeeded.
+      }
     }
 
     return { success: true };

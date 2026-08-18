@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider } from '@/lib/whatsapp';
 import { notifyOrganizerNewRsvp } from '@/lib/email/notify';
+import { sendGuestQrWhatsApp } from '@/lib/whatsapp/notify';
 import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
 
 /**
@@ -24,10 +25,9 @@ import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
  * double-checked against a real button tap once connected.
  */
 
-const STATUS_BY_ACTION: Record<string, 'attending' | 'not_attending' | 'maybe'> = {
+const STATUS_BY_ACTION: Record<string, 'attending' | 'not_attending'> = {
   rsvp_accept: 'attending',
   rsvp_decline: 'not_attending',
-  rsvp_maybe: 'maybe',
 };
 
 export async function GET(request: NextRequest) {
@@ -122,16 +122,15 @@ export async function POST(request: NextRequest) {
     const result = data as unknown as {
       guest_name: string;
       event_id: string;
-      previous_status: 'attending' | 'not_attending' | 'maybe' | null;
+      guest_secure_token: string;
+      previous_status: 'attending' | 'not_attending' | null;
     } | null;
     if (!result) continue;
 
     const confirmText =
       status === 'attending'
         ? 'تم تسجيل ردك: موافق. شكرًا لك!'
-        : status === 'not_attending'
-          ? 'تم تسجيل ردك: اعتذار. شكرًا لإخبارنا.'
-          : 'تم تسجيل ردك: ربما. شكرًا لك!';
+        : 'تم تسجيل ردك: اعتذار. شكرًا لإخبارنا.';
 
     if (message.from) {
       try {
@@ -143,17 +142,36 @@ export async function POST(request: NextRequest) {
 
     const { data: event } = await admin
       .from('events')
-      .select('slug, primary_locale')
+      .select('name, slug, primary_locale, is_qr_enabled')
       .eq('id', result.event_id)
       .single();
     if (event) {
+      const locale = event.primary_locale === 'en' ? 'en' : 'ar';
       await notifyOrganizerNewRsvp(event.slug, result.guest_name, status);
 
-      // Only promote on a genuine new decline, not a repeat button tap
-      // (Meta can resend delivery, or a guest can tap Decline twice).
+      // Both guards below only fire on a genuine new transition, not a
+      // repeat button tap (Meta can resend delivery, or a guest can tap
+      // the same button twice).
       if (status === 'not_attending' && result.previous_status !== 'not_attending') {
-        const locale = event.primary_locale === 'en' ? 'en' : 'ar';
         await promoteNextWaitlistedGuest(admin, result.event_id, event.slug, locale);
+      }
+
+      if (
+        status === 'attending' &&
+        result.previous_status !== 'attending' &&
+        event.is_qr_enabled &&
+        message.from
+      ) {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+        const editUrl = `${appUrl}/${locale}/rsvp/${result.guest_secure_token}`;
+        await sendGuestQrWhatsApp(
+          event.name,
+          guestId,
+          result.guest_name,
+          message.from,
+          editUrl,
+          locale,
+        );
       }
     }
   }

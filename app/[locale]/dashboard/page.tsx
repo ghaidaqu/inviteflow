@@ -15,7 +15,6 @@ import {
 const RESPONSE_STATUS_VARIANT = {
   attending: 'default',
   not_attending: 'destructive',
-  maybe: 'secondary',
 } as const;
 
 export default async function DashboardPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -36,7 +35,6 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         totalGuests: 0,
         attendingCount: 0,
         notAttendingCount: 0,
-        maybeCount: 0,
         noResponseCount: 0,
         latestResponses: [],
       };
@@ -107,7 +105,6 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         <RsvpBreakdownChart
           attending={stats.attendingCount}
           notAttending={stats.notAttendingCount}
-          maybe={stats.maybeCount}
           noResponse={stats.noResponseCount}
         />
       </div>

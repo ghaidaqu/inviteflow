@@ -9,7 +9,7 @@ export type RsvpByToken = {
   event: { id: string; slug: string; name: string; rsvp_deadline: string | null };
   response: {
     id: string;
-    status: 'attending' | 'not_attending' | 'maybe';
+    status: 'attending' | 'not_attending';
     companions_count: number;
     companions_names: string[];
     message: string | null;
@@ -25,7 +25,7 @@ export async function submitRsvp(
     guestName: string;
     phone: string | null;
     email: string | null;
-    status: 'attending' | 'not_attending' | 'maybe';
+    status: 'attending' | 'not_attending';
     companionsCount: number;
     companionsNames: string[];
     message: string | null;
@@ -59,7 +59,7 @@ export async function updateRsvpByToken(
   supabase: Client,
   params: {
     token: string;
-    status: 'attending' | 'not_attending' | 'maybe';
+    status: 'attending' | 'not_attending';
     companionsCount: number;
     companionsNames: string[];
     message: string | null;

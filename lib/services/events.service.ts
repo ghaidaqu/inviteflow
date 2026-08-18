@@ -221,7 +221,6 @@ export async function updateEventSettings(
     .update({
       allow_attending: input.allowAttending,
       allow_not_attending: input.allowNotAttending,
-      allow_maybe: input.allowMaybe,
       collect_companions: input.collectCompanions,
       max_companions: input.maxCompanions,
       collect_message: input.collectMessage,
