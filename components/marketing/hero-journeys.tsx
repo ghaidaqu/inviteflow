@@ -55,10 +55,11 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             breakpoint, not just on mobile, so the headline reads as the
             page's opening statement before the three product cards. */}
         <div className="animate-in fade-in slide-in-from-bottom-4 relative z-10 flex flex-col items-start gap-6 duration-700">
+          {/* One flowing clause — wraps naturally at whatever width the
+              viewport gives it (text-balance) instead of a hard <br />
+              forcing a break regardless of how the line actually fits. */}
           <h1 className="font-display text-4xl leading-[1.1] text-balance sm:text-6xl">
-            {t('headlineLine1')}
-            <br />
-            <span className="text-primary">{t('headlineLine2')}</span>
+            {t('headlineLine1')} <span className="text-primary">{t('headlineLine2')}</span>
           </h1>
           <p className="text-muted-foreground max-w-xl text-lg text-balance">{t('subtitle')}</p>
 
