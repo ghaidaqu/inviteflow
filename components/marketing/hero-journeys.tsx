@@ -129,10 +129,29 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                             {feature}
                           </span>
                         ))}
-                        <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
-                          {tt('cta')}
-                          <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                        </span>
+                        {/* Invitation/rsvp lead with login because their
+                            trial is the real thing — the guest's own
+                            design, sent for real, 3 times per account —
+                            unlike the homepage's separate anonymous demo
+                            (/try). Institutional has no such trial: it
+                            goes straight to the dashboard's setup flow, so
+                            it keeps the plain "Discover" label. */}
+                        {key === 'institutional' ? (
+                          <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
+                            {tt('cta')}
+                            <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                          </span>
+                        ) : (
+                          <span className="mt-1 flex flex-col gap-0.5">
+                            <span className="text-[11px] font-medium opacity-70">
+                              {tt('ctaCaption')}
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 text-sm font-semibold">
+                              {tt('ctaLogin')}
+                              <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                            </span>
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
