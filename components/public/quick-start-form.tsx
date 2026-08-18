@@ -37,21 +37,21 @@ type FormValues = {
   coverImageUrl: string;
   primaryLocale: string;
   visibility: string;
-  isPasswordProtected: boolean;
-  password: string;
   isQrEnabled: boolean;
   allowAttending: boolean;
   allowNotAttending: boolean;
 };
 
 /**
- * The full, real event-creation form — exactly the same fields as the
+ * The full, real event-creation form — the same core fields as the
  * authenticated dashboard's EventForm (see event-form.tsx: same
- * name/type/description/dates/location/map/cover/locale/visibility/
- * password fields, plus custom questions for the Link track) — just
- * reachable with no login wall. Nothing is persisted until the organizer
- * authenticates (see /finish): this is local React state the whole way
- * through, handed off to auth via sessionStorage.
+ * name/type/description/dates/location/map/cover/locale/visibility,
+ * plus custom questions for the Link track) — just reachable with no
+ * login wall. Password protection is intentionally left out of this
+ * quick flow; it's still available from the dashboard afterward.
+ * Nothing is persisted until the organizer authenticates (see /finish):
+ * this is local React state the whole way through, handed off to auth
+ * via sessionStorage.
  */
 export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
   const t = useTranslations('QuickStart');
@@ -62,7 +62,7 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
   const isRtl = locale === 'ar';
   const ArrowIcon = isRtl ? ArrowLeftIcon : ArrowRightIcon;
 
-  const { register, control, handleSubmit, watch } = useForm<FormValues>({
+  const { register, control, handleSubmit, watch, setValue } = useForm<FormValues>({
     defaultValues: {
       name: '',
       type: 'other',
@@ -74,17 +74,16 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
       coverImageUrl: '',
       primaryLocale: locale === 'en' ? 'en' : 'ar',
       visibility: 'private',
-      isPasswordProtected: false,
-      password: '',
       isQrEnabled: false,
       allowAttending: true,
       allowNotAttending: true,
     },
   });
-  const isPasswordProtected = useWatch({ control, name: 'isPasswordProtected' });
+  // One switch, not two — allowAttending/allowNotAttending always move
+  // together here (see the combined switch below), so watching either
+  // is enough to know whether responding is enabled at all.
   const allowAttending = useWatch({ control, name: 'allowAttending' });
-  const allowNotAttending = useWatch({ control, name: 'allowNotAttending' });
-  const noStatusEnabled = !allowAttending && !allowNotAttending;
+  const noStatusEnabled = !allowAttending;
 
   const [questions, setQuestions] = useState<QuestionInput[]>([]);
   const [guestName, setGuestName] = useState('');
@@ -260,35 +259,27 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
               <p className="text-destructive text-sm">{t('atLeastOneStatusError')}</p>
             )}
 
+            {/* One switch — accepting and declining aren't two separate
+                settings a guest can be given independently; it's a single
+                "can this guest respond at all" choice. Keeps
+                allowAttending/allowNotAttending in sync so the rest of the
+                pipeline (draft → createEventFromQuickStartAction →
+                event_settings) doesn't need to change. */}
             <Field orientation="horizontal">
-              <FieldLabel htmlFor="qs-allow-attending" className="flex-1 font-normal">
-                {tSettings('allowAttendingLabel')}
+              <FieldLabel htmlFor="qs-allow-response" className="flex-1 font-normal">
+                {tSettings('allowResponseLabel')}
               </FieldLabel>
               <Controller
                 control={control}
                 name="allowAttending"
                 render={({ field }) => (
                   <Switch
-                    id="qs-allow-attending"
+                    id="qs-allow-response"
                     checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                )}
-              />
-            </Field>
-
-            <Field orientation="horizontal">
-              <FieldLabel htmlFor="qs-allow-not-attending" className="flex-1 font-normal">
-                {tSettings('allowNotAttendingLabel')}
-              </FieldLabel>
-              <Controller
-                control={control}
-                name="allowNotAttending"
-                render={({ field }) => (
-                  <Switch
-                    id="qs-allow-not-attending"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
+                    onCheckedChange={(checked) => {
+                      field.onChange(checked);
+                      setValue('allowNotAttending', checked);
+                    }}
                   />
                 )}
               />
@@ -308,30 +299,6 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
             )}
           />
         </Field>
-
-        <Field orientation="horizontal">
-          <FieldLabel htmlFor="qs-password-protected" className="flex-1 font-normal">
-            {tForm('isPasswordProtectedLabel')}
-          </FieldLabel>
-          <Controller
-            control={control}
-            name="isPasswordProtected"
-            render={({ field }) => (
-              <Switch
-                id="qs-password-protected"
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            )}
-          />
-        </Field>
-
-        {isPasswordProtected && (
-          <Field>
-            <FieldLabel htmlFor="qs-password">{tForm('passwordLabel')}</FieldLabel>
-            <Input id="qs-password" type="text" autoComplete="off" {...register('password')} />
-          </Field>
-        )}
       </FieldGroup>
 
       <div className="border-t pt-6">
@@ -379,7 +346,6 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
           {t('finishButton')}
           <ArrowIcon className="size-4 rtl:rotate-180" />
         </Button>
-        <p className="text-muted-foreground mt-2 text-center text-xs">{t('finishHint')}</p>
       </div>
     </form>
   );

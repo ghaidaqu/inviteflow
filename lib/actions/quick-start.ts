@@ -24,12 +24,15 @@ import type { QuestionInput } from '@/lib/validations/questions';
  * the response-option/QR toggles that live in event settings — see
  * event-form.tsx and event-settings-form.tsx for the reference: name,
  * type, description, eventDate, rsvpDeadline, locationText,
- * locationMapUrl, coverImageUrl, primaryLocale, visibility, password
- * protection, isQrEnabled, allowAttending/allowNotAttending — plus
- * custom questions for the Link track. eventEndDate isn't here
- * because the real form doesn't expose it either (it round-trips
- * silently there too); institutional fields aren't here because
- * Institutional isn't part of this flow.
+ * locationMapUrl, coverImageUrl, primaryLocale, visibility,
+ * isQrEnabled, allowAttending/allowNotAttending — plus custom
+ * questions for the Link track. eventEndDate isn't here because the
+ * real form doesn't expose it either (it round-trips silently there
+ * too); institutional fields aren't here because Institutional isn't
+ * part of this flow. Password protection isn't offered in this quick
+ * flow either — it's still a real event setting, just not one worth
+ * asking about before someone has even tried the product; organizers
+ * who want it can turn it on later from the dashboard.
  *
  * guestName/guestPhone only apply to the 'invitation' track — a Digital
  * Invitation is sent to one guest at a time, so testing it means sending
@@ -50,8 +53,6 @@ export type QuickStartDraft = {
   coverImageUrl: string;
   primaryLocale: string;
   visibility: string;
-  isPasswordProtected: boolean;
-  password: string;
   isQrEnabled: boolean;
   allowAttending: boolean;
   allowNotAttending: boolean;
@@ -97,7 +98,6 @@ export async function createEventFromQuickStartAction(
   draft: QuickStartDraft,
 ): Promise<QuickStartResult> {
   if (!draft.name.trim() || draft.name.length > 150) return { error: 'invalidInput' };
-  if (draft.isPasswordProtected && !draft.password) return { error: 'passwordRequired' };
   if (!draft.allowAttending && !draft.allowNotAttending) {
     return { error: 'atLeastOneStatus' };
   }
@@ -135,8 +135,8 @@ export async function createEventFromQuickStartAction(
       visibility: visibility as (typeof eventVisibilities)[number],
       isRsvpEnabled: true,
       isQrEnabled: draft.isQrEnabled,
-      isPasswordProtected: draft.isPasswordProtected,
-      password: draft.password || undefined,
+      isPasswordProtected: false,
+      password: undefined,
       eventEndDate: undefined,
       organizationName: undefined,
       organizationLogoUrl: undefined,
