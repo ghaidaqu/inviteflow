@@ -24,7 +24,7 @@ export async function DashboardHeader({
   return (
     <header className="bg-background flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3 sm:px-6">
       <div className="flex items-center gap-6">
-        <Link href="/" className="text-lg font-bold tracking-tight">
+        <Link href="/" className="font-display text-lg">
           InviteFlow
         </Link>
         <nav className="flex items-center gap-4 text-sm">
