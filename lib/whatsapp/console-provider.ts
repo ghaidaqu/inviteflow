@@ -6,6 +6,7 @@ export const consoleWhatsAppProvider: WhatsAppProvider = {
       to: message.to,
       buttons: message.buttons?.map((b) => b.title),
       imageUrl: message.imageUrl,
+      headerImageUrl: message.headerImageUrl,
     });
   },
 };

@@ -5,7 +5,9 @@ import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { getRsvpByToken } from '@/lib/services/rsvp.service';
 import { listQuestions } from '@/lib/services/questions.service';
 import { RsvpEditForm } from '@/components/public/rsvp-edit-form';
+import { PublicFormShell } from '@/components/public/public-form-shell';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { MailIcon } from 'lucide-react';
 
 export default async function RsvpEditPage({
   params,
@@ -36,10 +38,11 @@ export default async function RsvpEditPage({
     : false;
 
   return (
-    <main className="mx-auto w-full max-w-xl px-4 py-8 sm:px-6">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">{data.event.name}</h1>
-      <p className="text-muted-foreground mb-6">{t('editPageSubtitle')}</p>
-
+    <PublicFormShell
+      icon={<MailIcon className="size-6" />}
+      title={data.event.name}
+      subtitle={t('editPageSubtitle')}
+    >
       {deadlinePassed || !settings.allow_guest_edit ? (
         <Alert variant="destructive">
           <AlertDescription>{t('editingClosed')}</AlertDescription>
@@ -52,6 +55,6 @@ export default async function RsvpEditPage({
           hasQuestions={questions.length > 0}
         />
       )}
-    </main>
+    </PublicFormShell>
   );
 }

@@ -5,7 +5,9 @@ import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { getRsvpByToken } from '@/lib/services/rsvp.service';
 import { listQuestions } from '@/lib/services/questions.service';
 import { RsvpQuestionsForm } from '@/components/public/rsvp-questions-form';
+import { PublicFormShell } from '@/components/public/public-form-shell';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { MessageCircleIcon } from 'lucide-react';
 
 // The standalone "RSVP" step — answering the organizer's own questions,
 // deliberately separate from /rsvp/[token] (which only edits the
@@ -28,10 +30,11 @@ export default async function RsvpQuestionsPage({
   const t = await getTranslations('Rsvp');
 
   return (
-    <main className="mx-auto w-full max-w-xl px-4 py-8 sm:px-6">
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">{data.event.name}</h1>
-      <p className="text-muted-foreground mb-6">{t('rsvpQuestionsPageSubtitle')}</p>
-
+    <PublicFormShell
+      icon={<MessageCircleIcon className="size-6" />}
+      title={data.event.name}
+      subtitle={t('rsvpQuestionsPageSubtitle')}
+    >
       {questions.length === 0 ? (
         <Alert>
           <AlertDescription>{t('noQuestions')}</AlertDescription>
@@ -39,6 +42,6 @@ export default async function RsvpQuestionsPage({
       ) : (
         <RsvpQuestionsForm token={token} data={data} questions={questions} />
       )}
-    </main>
+    </PublicFormShell>
   );
 }

@@ -27,6 +27,16 @@ export type WhatsAppMessage = {
    * `buttons` — Meta's API doesn't support both on one message.
    */
   imageUrl?: string;
+  /**
+   * Unlike `imageUrl`, this is a header image shown ABOVE the text on an
+   * interactive button message — combinable with `buttons`. Used for the
+   * invitation send itself (the event's cover image, if it has one),
+   * matching how every competitor's WhatsApp invite actually looks: a
+   * real invitation card, not a plain-text message. Ignored if `buttons`
+   * isn't also set (there's no non-interactive "image + text" message
+   * shape this maps to — use `imageUrl` for that instead).
+   */
+  headerImageUrl?: string;
 };
 
 /**

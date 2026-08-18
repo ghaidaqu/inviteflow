@@ -94,7 +94,10 @@ export function RsvpQuestionsForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="bg-card flex flex-col gap-6 rounded-3xl border p-5 shadow-sm sm:p-7"
+    >
       {serverError && (
         <Alert variant="destructive">
           <AlertDescription>{tErrors(serverError as 'invalidInput')}</AlertDescription>

@@ -52,10 +52,14 @@ export async function sendGuestRsvpConfirmationWhatsApp(
  * This is "الدعوة الرقمية" (digital invitation) done right per how guests
  * actually behave: nobody visits a website just to tap "accept" — when the
  * event has RSVP enabled, the message carries tappable reply buttons
- * (Accept/Decline) so the guest can respond without ever leaving
+ * (Accept/Decline, plus a Location button when the event has a map pin
+ * set) so the guest can respond and find the venue without ever leaving
  * WhatsApp. The tap comes back via app/api/webhooks/whatsapp/route.ts. If
- * RSVP is off (a pure announcement, per the organizer's choice), this is
- * just an informational message with the event link and no buttons.
+ * the event has a cover image, it's sent as the message's header — a
+ * real invitation card, not a plain-text message (matching how every
+ * competitor's WhatsApp invite actually looks). If RSVP is off (a pure
+ * announcement, per the organizer's choice), this is just an
+ * informational message with the event link and no buttons.
  */
 export async function sendInvitationWhatsApp(
   eventSlug: string,
@@ -69,13 +73,21 @@ export async function sendInvitationWhatsApp(
   const admin = createAdminClient();
   const { data: event } = await admin
     .from('events')
-    .select('name, is_rsvp_enabled, event_settings(allow_attending, allow_not_attending)')
+    .select(
+      'name, is_rsvp_enabled, cover_image_url, location_map_url, event_settings(allow_attending, allow_not_attending)',
+    )
     .eq('slug', eventSlug)
     .single();
   if (!event) return { ok: false, configured: true };
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
   const link = `${appUrl}/${locale}/events/${eventSlug}`;
+  // Cover images can be video too (CoverImageUpload accepts both) — a
+  // video isn't a valid WhatsApp message header image, so only pass it
+  // through when it's actually a static image.
+  const headerImageUrl = /\.(png|jpe?g|webp|gif)(\?|$)/i.test(event.cover_image_url ?? '')
+    ? event.cover_image_url!
+    : undefined;
 
   if (!event.is_rsvp_enabled) {
     // Pure announcement — no response expected, so no buttons.
@@ -84,7 +96,11 @@ export async function sendInvitationWhatsApp(
         ? `مرحبًا ${guestName}! أنت مدعو لـ "${event.name}". التفاصيل: ${link}`
         : `Hi ${guestName}! You're invited to "${event.name}". Details: ${link}`;
     try {
-      await whatsAppProvider.send({ to: phone, text });
+      if (headerImageUrl) {
+        await whatsAppProvider.send({ to: phone, text, imageUrl: headerImageUrl });
+      } else {
+        await whatsAppProvider.send({ to: phone, text });
+      }
       return { ok: true, configured: true };
     } catch (error) {
       console.error('[whatsapp] invitation send failed', error);
@@ -110,6 +126,15 @@ export async function sendInvitationWhatsApp(
       title: locale === 'ar' ? 'اعتذار' : 'Decline',
     });
   }
+  // Third button slot: a direct "where is it" shortcut when the organizer
+  // pinned a location — tapping it doesn't touch the RSVP status at all,
+  // the webhook just replies with the map link (see route.ts).
+  if (event.location_map_url && buttons.length < 3) {
+    buttons.push({
+      id: `rsvp_location:${guestId}`,
+      title: locale === 'ar' ? 'الموقع' : 'Location',
+    });
+  }
 
   const text =
     locale === 'ar'
@@ -117,7 +142,7 @@ export async function sendInvitationWhatsApp(
       : `Hi ${guestName}! You're invited to "${event.name}". Respond right here:\n\nDetails: ${link}`;
 
   try {
-    await whatsAppProvider.send({ to: phone, text, buttons });
+    await whatsAppProvider.send({ to: phone, text, buttons, headerImageUrl });
     return { ok: true, configured: true };
   } catch (error) {
     console.error('[whatsapp] invitation send failed', error);

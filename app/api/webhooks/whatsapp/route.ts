@@ -103,6 +103,33 @@ export async function POST(request: NextRequest) {
     if (!message.interactive || message.interactive.type !== 'button_reply' || !buttonId) continue;
 
     const [action, guestId] = buttonId.split(':');
+
+    // The "location" button doesn't touch the RSVP status at all — just
+    // looks up the guest's event and replies with the map link, entirely
+    // separate from the accept/decline flow below.
+    if (action === 'rsvp_location' && guestId && message.from) {
+      const { data: guest } = await admin
+        .from('guests')
+        .select('event_id, events(location_text, location_map_url)')
+        .eq('id', guestId)
+        .single();
+      const event = guest?.events as unknown as {
+        location_text: string | null;
+        location_map_url: string | null;
+      } | null;
+      if (event?.location_map_url) {
+        const text = event.location_text
+          ? `📍 ${event.location_text}\n${event.location_map_url}`
+          : `📍 ${event.location_map_url}`;
+        try {
+          await whatsAppProvider.send({ to: message.from, text });
+        } catch (sendError) {
+          console.error('[whatsapp webhook] location reply failed', sendError);
+        }
+      }
+      continue;
+    }
+
     const status = action ? STATUS_BY_ACTION[action] : undefined;
     if (!status || !guestId) {
       console.error('[whatsapp webhook] unrecognized button id', buttonId);
