@@ -22,19 +22,10 @@ export function SiteNav() {
             {t('journeysLink')}
           </a>
           <a
-            href="#templates"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t('templatesLink')}
-          </a>
-          <a
             href="#pricing"
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             {t('pricingLink')}
-          </a>
-          <a href="#why" className="text-muted-foreground hover:text-foreground transition-colors">
-            {t('aboutLink')}
           </a>
         </div>
 

@@ -29,7 +29,7 @@ const JOURNEY_STYLE: Record<
     icon: MailIcon,
   },
   rsvp: {
-    surface: 'bg-secondary/45 text-secondary-foreground',
+    surface: 'bg-secondary text-secondary-foreground',
     href: '/start/rsvp',
     icon: LinkIcon,
   },

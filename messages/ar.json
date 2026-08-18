@@ -6,16 +6,14 @@
   "HomePage": {
     "nav": {
       "journeysLink": "المنتجات",
-      "templatesLink": "قوالب",
       "pricingLink": "الأسعار",
-      "aboutLink": "عن المنصة",
       "loginLink": "تسجيل الدخول",
       "startLink": "جرب مجاناً"
     },
     "hero": {
       "headlineLine1": "دعوة توصل",
       "headlineLine2": "بلا تعقيد",
-      "subtitle": "ترسلها على واتساب، ويردّون بضغطة زر — بدون تسجيل دخول، ببيانات آمنة، وبتصميم يليق بالمناسبة.",
+      "subtitle": "من الزفاف إلى المؤتمر، ترسلها على واتساب فيردّ ضيوفك بضغطة واحدة — بلا تسجيل، وبتصميم يليق بكل مناسبة.",
       "primaryCta": "جرب مجاناً"
     },
     "trustStrip": {
@@ -45,10 +43,6 @@
       "invitationLabel": "دعوة رقمية",
       "invitationSample": "يسعدنا حضوركم حفل زفاف سارة وأحمد",
       "invitationStatus": "بانتظار ردك"
-    },
-    "occasions": {
-      "title": "لأي مناسبة؟",
-      "subtitle": "من الزفاف إلى المؤتمرات — بتصميم يليق بكل واحدة."
     },
     "pricing": {
       "title": "الأسعار",

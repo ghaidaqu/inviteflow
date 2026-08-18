@@ -6,16 +6,14 @@
   "HomePage": {
     "nav": {
       "journeysLink": "Products",
-      "templatesLink": "Templates",
       "pricingLink": "Pricing",
-      "aboutLink": "About",
       "loginLink": "Log in",
       "startLink": "Try free"
     },
     "hero": {
       "headlineLine1": "An invitation",
       "headlineLine2": "that gets answered",
-      "subtitle": "Send it on WhatsApp. They reply with one tap — no sign-up, your data kept secure, and a design worthy of the occasion.",
+      "subtitle": "From weddings to conferences, send it on WhatsApp and your guests reply with a single tap — no sign-up, and a design fit for every occasion.",
       "primaryCta": "Try free"
     },
     "trustStrip": {
@@ -45,10 +43,6 @@
       "invitationLabel": "Digital invitation",
       "invitationSample": "Join us to celebrate Sara & Ahmad's wedding",
       "invitationStatus": "Awaiting your response"
-    },
-    "occasions": {
-      "title": "For which occasion?",
-      "subtitle": "From weddings to conferences — one design system, fit for each."
     },
     "pricing": {
       "title": "Pricing",
