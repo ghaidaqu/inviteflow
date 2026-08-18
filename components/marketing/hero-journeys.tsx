@@ -60,7 +60,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           {/* One flowing clause — wraps naturally at whatever width the
               viewport gives it (text-balance) instead of a hard <br />
               forcing a break regardless of how the line actually fits. */}
-          <h1 className="font-display text-4xl leading-[1.1] text-balance sm:text-6xl">
+          <h1 className="font-display text-3xl leading-[1.15] text-balance sm:text-4xl">
             {t('headlineLine1')} <span className="text-primary">{t('headlineLine2')}</span>
           </h1>
           <p className="text-muted-foreground max-w-xl text-lg text-balance">{t('subtitle')}</p>
