@@ -31,7 +31,7 @@ export async function LegalPage({
         {tLegal('backHome')}
       </Link>
 
-      <h1 className="mt-4 text-3xl font-extrabold tracking-tight">{t('title')}</h1>
+      <h1 className="mt-4 text-3xl font-bold tracking-tight">{t('title')}</h1>
       <p className="text-muted-foreground mt-1 text-sm">{tLegal('lastUpdated')}</p>
       <p className="text-muted-foreground mt-6 text-lg text-balance">{t('intro')}</p>
 

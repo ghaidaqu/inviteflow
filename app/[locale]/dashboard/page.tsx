@@ -77,7 +77,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">{t('title')}</h1>
+      <h1 className="text-2xl font-bold tracking-tight">{t('title')}</h1>
 
       <div className="animate-in fade-in slide-in-from-bottom-1 mt-6 grid grid-cols-2 gap-3 duration-300 ease-out sm:grid-cols-3 lg:grid-cols-4">
         {statCards.map((card) => {

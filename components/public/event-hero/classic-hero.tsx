@@ -51,7 +51,7 @@ export function ClassicHero({ event, typeLabel, organizedByLabel }: EventHeroPro
 
       {event.cover_image_url && (
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <h1 className="font-display text-3xl">{event.name}</h1>
+          <h1 className="font-display text-3xl text-balance sm:text-4xl">{event.name}</h1>
           <Badge>{typeLabel}</Badge>
         </div>
       )}
