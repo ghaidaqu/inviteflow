@@ -10,13 +10,13 @@
       "pricingLink": "Pricing",
       "aboutLink": "About",
       "loginLink": "Log in",
-      "startLink": "Start free"
+      "startLink": "Try free"
     },
     "hero": {
       "headlineLine1": "An invitation",
       "headlineLine2": "that gets answered",
       "subtitle": "Send it on WhatsApp. They reply with one tap — no sign-up, your data kept secure, and a design worthy of the occasion.",
-      "primaryCta": "Start free"
+      "primaryCta": "Try free"
     },
     "trustStrip": {
       "item1Title": "Direct WhatsApp",
@@ -57,7 +57,7 @@
       "planPoint1": "Unlimited digital invitations",
       "planPoint2": "No monthly subscription",
       "planPoint3": "Create your account and start right away",
-      "cta": "Start free"
+      "cta": "Try free"
     },
     "footer": {
       "tagline": "Built Arabic-first for your digital invitations — from weddings to institutional events.",
