@@ -5,18 +5,16 @@ import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon, Building2Icon } from
 
 type JourneyKey = 'invitation' | 'rsvp' | 'institutional';
 
-// Three distinct editorial panel treatments — deep red, muted purple, and
-// dark ink navy — deliberately different from each other (these are three
-// separate products) and deliberately NOT the site's neon/glow language.
-// No photography: the panel top is a translucent wash of its own color so
-// the giant "INVITE" type behind the row reads faintly through the glass —
-// that layering is the entire effect, not a background image.
-const PANEL_STYLE: Record<
+// Three real products, three token-driven surfaces — light card, tinted
+// sky, and the one dark card — instead of three bespoke hex panels. Every
+// color here comes from the shared design system, so `currentColor` alone
+// (via `text-current`/`bg-current`) is enough to theme the icon badge,
+// bullet dots, and index number correctly on all three without a
+// per-card color branch.
+const JOURNEY_STYLE: Record<
   JourneyKey,
   {
-    glassFrom: string;
-    glassTo: string;
-    panel: string;
+    surface: string;
     /** Invitation/Link go through the no-login-wall quick-start flow;
      *  Institutional needs a company name/logo up front by design, so it
      *  keeps going straight to the authenticated dashboard flow. */
@@ -25,23 +23,17 @@ const PANEL_STYLE: Record<
   }
 > = {
   invitation: {
-    glassFrom: 'rgba(156,42,65,0.1)',
-    glassTo: 'rgba(61,9,22,0.22)',
-    panel: '#3d0916',
+    surface: 'bg-card text-card-foreground',
     href: '/start/invitation',
     icon: MailIcon,
   },
   rsvp: {
-    glassFrom: 'rgba(80,58,99,0.12)',
-    glassTo: 'rgba(28,19,34,0.25)',
-    panel: '#1c1322',
+    surface: 'bg-secondary/45 text-secondary-foreground',
     href: '/start/rsvp',
     icon: LinkIcon,
   },
   institutional: {
-    glassFrom: 'rgba(35,44,68,0.12)',
-    glassTo: 'rgba(8,10,16,0.25)',
-    panel: '#080a10',
+    surface: 'bg-foreground text-background',
     href: '/dashboard/events/new/institutional',
     icon: Building2Icon,
   },
@@ -62,7 +54,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             side under RTL (the right), mirroring the reference's LTR
             layout rather than copying its literal left/right placement. */}
         <div className="animate-in fade-in slide-in-from-bottom-4 relative z-10 flex flex-col items-start gap-6 duration-700">
-          <h1 className="text-4xl leading-[1.1] font-extrabold tracking-tight text-balance sm:text-6xl">
+          <h1 className="font-display text-4xl leading-[1.1] text-balance sm:text-6xl">
             {t('headlineLine1')}
             <br />
             <span className="text-primary">{t('headlineLine2')}</span>
@@ -76,131 +68,65 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           </div>
         </div>
 
-        {/* Graphic side — huge cropped serif "INVITE" behind three
-            overlapping editorial panels. All three panels are the same
-            fixed height and share one flex row (no per-card stagger) so
-            their tops and bottoms line up in one straight band; the type
-            peeks out above/below that band, cropped at the section edges.
-            Sized to actually fit the column width so letters read cleanly
-            instead of being amputated at the container edge. */}
-        {/* Heights are the exact space the composition needs: the card row
-            sits flush at the bottom (justify-end) and the "INVITE" type is
-            absolutely positioned above it — no translate-y needed to pull
-            the row up, which used to leave ~60px of dead space below it
-            (moves the cards visually but not in layout). */}
-        <div className="relative flex min-h-[380px] flex-col justify-end overflow-hidden sm:min-h-[532px] lg:min-h-[545px]">
-          <span
-            aria-hidden
-            className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(3.5rem,23.5vw,7rem)] leading-none font-black tracking-normal whitespace-nowrap select-none sm:pt-8 sm:text-[clamp(6rem,25vw,12rem)] lg:text-[clamp(4.5rem,13vw,10rem)]"
-            style={{ fontFamily: 'var(--font-playfair)' }}
-          >
-            INVITE
-          </span>
+        {/* Three real products, three cards — quiet by default, each
+            getting the same cyan ring + lift on hover/focus (.hover-glow,
+            defined once in globals.css) plus a crossfade from its icon to
+            three short features. Forced left-to-right order (01 → 02 → 03)
+            regardless of page direction, since these read as a fixed
+            sequence of paths through the product, not a mirrored layout. */}
+        <div dir="ltr" className="relative z-10 grid grid-cols-3 gap-3 sm:gap-5">
+          {JOURNEY_KEYS.map((key, index) => {
+            const style = JOURNEY_STYLE[key];
+            const Icon = style.icon;
+            const features = [tt(`${key}.feature1`), tt(`${key}.feature2`), tt(`${key}.feature3`)];
 
-          {/* Forced left-to-right order (01 burgundy → 02 navy → 03 purple)
-              regardless of page direction, matching the reference exactly
-              instead of mirroring under RTL. Sits flush at the column's
-              bottom and overlaps the "INVITE" text behind it. */}
-          <div
-            dir="ltr"
-            className="relative z-10 flex h-[280px] items-stretch justify-center gap-2 sm:h-[340px] sm:gap-6 lg:h-[380px]"
-          >
-            {JOURNEY_KEYS.map((key, index) => {
-              const style = PANEL_STYLE[key];
-              const Icon = style.icon;
-              const features = [
-                tt(`${key}.feature1`),
-                tt(`${key}.feature2`),
-                tt(`${key}.feature3`),
-              ];
-              // Three cards, sized (with their gaps) to span the same width
-              // as the "INVITE" type behind them — see the mobile-hero pass
-              // in git history for how these percentages were measured.
-              const panelClassName =
-                'group flex w-[30%] flex-col overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 ease-out hover:-translate-y-2 sm:w-[29%]';
+            return (
+              <Link
+                key={key}
+                href={style.href}
+                className={`hover-glow group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-2xl p-3.5 sm:min-h-[280px] sm:p-5 ${style.surface}`}
+              >
+                <div className="relative flex-1">
+                  <span className="relative flex size-9 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/15 transition-opacity duration-300 group-hover:opacity-0">
+                    <Icon className="size-4.5" />
+                  </span>
 
-              const content = (
-                <>
-                  {/* Glass top: the icon by default, crossfading into the
-                      three short features on hover — the one thing added
-                      on top of the original design. Both layers sit inside
-                      this fixed-flex-1 area so the panel's own height
-                      never changes when this happens. */}
+                  {/* dir set explicitly per-locale rather than inheriting
+                      the row's forced dir="ltr" (that one's only there to
+                      keep 01→02→03 card order stable under RTL) — without
+                      it the bullet dot lands on the wrong side of Arabic
+                      text. */}
                   <div
-                    className="relative flex flex-1 items-start overflow-hidden p-3 backdrop-blur-[1px]"
-                    style={{
-                      background: `linear-gradient(160deg, ${style.glassFrom}, ${style.glassTo})`,
-                    }}
+                    dir={isRtl ? 'rtl' : 'ltr'}
+                    className="absolute inset-0 hidden flex-col justify-center gap-1.5 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100 group-focus-visible:flex group-focus-visible:opacity-100"
                   >
-                    <span className="relative flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-0">
-                      <Icon className="size-4.5" />
-                    </span>
-
-                    {/* dir set explicitly per-locale rather than inheriting
-                        the row's forced dir="ltr" (that one's only there to
-                        keep 01→02→03 card order stable under RTL) — without
-                        it the bullet dot lands on the wrong side of Arabic
-                        text. Solid panel-color backdrop instead of floating
-                        over the translucent glass wash above, since white
-                        text read poorly against how light that gets near
-                        the top of the gradient. */}
-                    <div
-                      dir={isRtl ? 'rtl' : 'ltr'}
-                      className="absolute inset-0 hidden flex-col items-start justify-center gap-1.5 p-3 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100"
-                      style={{ backgroundColor: style.panel }}
-                    >
-                      {features.map((feature) => (
-                        <span
-                          key={feature}
-                          className="flex items-center gap-1.5 text-[11px] leading-tight font-medium text-white sm:text-xs"
-                        >
-                          <span className="size-1.5 shrink-0 rounded-full bg-white" />
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
+                    {features.map((feature) => (
+                      <span
+                        key={feature}
+                        className="flex items-center gap-1.5 text-xs leading-tight font-medium sm:text-sm"
+                      >
+                        <span className="size-1.5 shrink-0 rounded-full bg-current" />
+                        {feature}
+                      </span>
+                    ))}
                   </div>
+                </div>
 
-                  {/* Wave divider — deliberately large amplitude (not a
-                      subtle wobble) so the panel visibly rises up and
-                      covers a real portion of the photo, per explicit
-                      direction. Fill = panel color; negative margin pulls
-                      it up over the photo underneath. */}
-                  <svg
-                    aria-hidden
-                    viewBox="0 0 100 40"
-                    preserveAspectRatio="none"
-                    className="relative -mb-px block h-10 w-full"
-                    style={{ marginTop: -34 }}
-                  >
-                    <path d="M0,40 L0,22 Q25,-6 50,16 T100,18 L100,40 Z" fill={style.panel} />
-                  </svg>
-
-                  <div
-                    className="flex flex-col gap-1.5 p-2.5 text-white sm:gap-2 sm:p-4"
-                    style={{ backgroundColor: style.panel }}
-                  >
-                    <span className="text-[0.65rem] font-semibold text-white/60 tabular-nums sm:text-xs">
-                      0{index + 1}
-                    </span>
-                    <h3 className="text-sm leading-snug font-bold tracking-tight sm:text-lg">
-                      {tt(`${key}.title`)}
-                    </h3>
-                    <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
-                      {tt('cta')}
-                      <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                    </span>
-                  </div>
-                </>
-              );
-
-              return (
-                <Link key={key} href={style.href} className={panelClassName}>
-                  {content}
-                </Link>
-              );
-            })}
-          </div>
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-xs font-semibold tabular-nums opacity-60">
+                    0{index + 1}
+                  </span>
+                  <h3 className="font-display text-base leading-snug sm:text-lg">
+                    {tt(`${key}.title`)}
+                  </h3>
+                  <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
+                    {tt('cta')}
+                    <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
