@@ -57,84 +57,44 @@
 
 :root {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  /* Editorial "warm ivory / near-black / deep red" identity for the public
-     site — a premium-editorial direction (reference: warm ivory #F7F4EF,
-     near-black #111217 text, deep red #9E1730 accent), replacing the
-     earlier rose/burgundy SaaS palette. The dashboard app deliberately
-     stays on the separate dark theme below (see dashboard/layout.tsx) —
-     this is the public marketing/auth surface's palette. */
-  --background: #f7f4ef;
-  --foreground: #111217;
-  --card: #fffdfa;
-  --card-foreground: #111217;
-  --popover: #fffdfa;
-  --popover-foreground: #111217;
-  --primary: #9e1730;
-  --primary-foreground: #fffdfa;
-  --secondary: #ede7dd;
-  --secondary-foreground: #111217;
-  --muted: #ede7dd;
-  --muted-foreground: #6b6560;
-  --accent: #9e1730;
-  --accent-foreground: #fffdfa;
-  --destructive: #9e1730;
-  --border: #e2dbcd;
-  --input: #e2dbcd;
-  --ring: #9e173080;
-  --chart-1: #9e1730;
-  --chart-2: #3a3f4b;
-  --chart-3: #4b3a54;
-  --chart-4: #c9a15a;
-  --chart-5: #6b6560;
-  --radius: 0.6rem;
-  --sidebar: #fffdfa;
-  --sidebar-foreground: #111217;
-  --sidebar-primary: #9e1730;
-  --sidebar-primary-foreground: #fffdfa;
-  --sidebar-accent: #ede7dd;
-  --sidebar-accent-foreground: #111217;
-  --sidebar-border: #e2dbcd;
-  --sidebar-ring: #9e173080;
-}
-
-/* Dark, dramatic "neon red on black" identity for the dashboard app only
-   (scoped via `.dark` on a wrapper in dashboard/layout.tsx, not globally)
-   — near-black surfaces, a glowing crimson accent, high-contrast white
-   text. Every dashboard page inherits it automatically through the
-   existing semantic tokens (bg-background, bg-card, bg-primary, etc.)
-   with no per-component changes needed. */
-.dark {
-  --background: oklch(0.12 0.015 20);
-  --foreground: oklch(0.97 0.005 60);
-  --card: oklch(0.17 0.02 18);
-  --card-foreground: oklch(0.97 0.005 60);
-  --popover: oklch(0.17 0.02 18);
-  --popover-foreground: oklch(0.97 0.005 60);
-  --primary: oklch(0.6 0.26 18);
-  --primary-foreground: oklch(0.99 0.005 60);
-  --secondary: oklch(0.22 0.03 18);
-  --secondary-foreground: oklch(0.97 0.005 60);
-  --muted: oklch(0.19 0.02 18);
-  --muted-foreground: oklch(0.65 0.03 30);
-  --accent: oklch(0.4 0.16 8);
-  --accent-foreground: oklch(0.97 0.005 60);
-  --destructive: oklch(0.65 0.24 20);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.6 0.26 18 / 50%);
-  --chart-1: oklch(0.6 0.26 18);
-  --chart-2: oklch(0.45 0.18 5);
-  --chart-3: oklch(0.5 0.2 15);
-  --chart-4: oklch(0.7 0.15 350);
-  --chart-5: oklch(0.4 0.12 20);
-  --sidebar: oklch(0.14 0.018 18);
-  --sidebar-foreground: oklch(0.97 0.005 60);
-  --sidebar-primary: oklch(0.6 0.26 18);
-  --sidebar-primary-foreground: oklch(0.99 0.005 60);
-  --sidebar-accent: oklch(0.22 0.03 18);
-  --sidebar-accent-foreground: oklch(0.97 0.005 60);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.6 0.26 18 / 50%);
+  /* Studio identity: warm parchment, olive primary, pale-sky secondary, a
+     near-black card for contrast, and one reserved accent — vivid cyan —
+     that appears ONLY on hover/focus/selected states, never as a resting
+     surface color. Replaces the earlier ivory/near-black/burgundy editorial
+     palette wholesale (colors + radius), not a blend with it. One theme,
+     applied everywhere (dashboard included) — no separate dark palette. */
+  --background: #eae5d8;
+  --foreground: #211c16;
+  --card: #f2eee2;
+  --card-foreground: #211c16;
+  --popover: #f2eee2;
+  --popover-foreground: #211c16;
+  --primary: #767a4f;
+  --primary-foreground: #f7f5ee;
+  --secondary: #a7c4d3;
+  --secondary-foreground: #1a2a30;
+  --muted: #ddd6c4;
+  --muted-foreground: #6b6355;
+  --accent: #35c6d9;
+  --accent-foreground: #14232a;
+  --destructive: #b3452e;
+  --border: #d8d0ba;
+  --input: #d8d0ba;
+  --ring: #35c6d9;
+  --chart-1: #767a4f;
+  --chart-2: #b3452e;
+  --chart-3: #35c6d9;
+  --chart-4: #8c8271;
+  --chart-5: #a7c4d3;
+  --radius: 0.5rem;
+  --sidebar: #f2eee2;
+  --sidebar-foreground: #211c16;
+  --sidebar-primary: #767a4f;
+  --sidebar-primary-foreground: #f7f5ee;
+  --sidebar-accent: #ddd6c4;
+  --sidebar-accent-foreground: #211c16;
+  --sidebar-border: #d8d0ba;
+  --sidebar-ring: #35c6d9;
 }
 
 html[dir='rtl'] {
@@ -252,17 +212,45 @@ html[dir='rtl'] {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Neon text glow for the hero headline — a soft layered red halo behind
-   crisp white text, matching the dark neon-red identity. */
-.text-glow {
-  text-shadow:
-    0 0 20px oklch(0.6 0.26 18 / 55%),
-    0 0 48px oklch(0.6 0.26 18 / 35%);
+/* The one interactive "spend your boldness here" moment: every hoverable
+   card/tile in the new identity gets the same cyan ring + glow + lift on
+   hover AND keyboard focus, defined once instead of copy-pasted per
+   component with divergent box-shadow values. */
+.hover-glow {
+  transition:
+    box-shadow 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+.hover-glow:hover,
+.hover-glow:focus-visible {
+  box-shadow:
+    0 0 0 3px color-mix(in oklch, var(--accent) 70%, transparent),
+    0 0 32px color-mix(in oklch, var(--accent) 35%, transparent);
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hover-glow {
+    transition: none;
+  }
+  .hover-glow:hover,
+  .hover-glow:focus-visible {
+    transform: none;
+  }
 }
 
-/* Matching glow for primary CTA buttons — same red, as a box-shadow halo. */
-.shadow-glow {
-  box-shadow:
-    0 0 16px oklch(0.6 0.26 18 / 45%),
-    0 0 40px oklch(0.6 0.26 18 / 25%);
+/* Heavy display treatment reserved for section headlines and hero titles
+   only — never body copy, buttons, or table text, or the whole app reads
+   shouty. Weight + tight tracking + uppercase carry the "bold display"
+   feel using the existing self-hosted variable fonts (Geist to 900, Cairo
+   to 1000) instead of loading a new font file. Uppercase/negative tracking
+   has no meaning for Arabic script, so RTL keeps the weight but drops
+   both. */
+.font-display {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+html[dir='rtl'] .font-display {
+  letter-spacing: 0;
+  text-transform: none;
 }
