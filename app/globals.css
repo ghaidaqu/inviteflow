@@ -71,16 +71,18 @@
   --popover: #f8f5eb;
   --popover-foreground: #211c16;
   --primary: #767a4f;
-  --primary-foreground: #f7f5ee;
+  --primary-foreground: #f4f0e2;
   --secondary: #a7c4d3;
-  --secondary-foreground: #1a2a30;
+  --secondary-foreground: #1c2b32;
   /* The approved reference doesn't put plain cream text on the dark card
      (unlike text-background elsewhere) — it uses this warm dusty rose
      specifically there, one of the studio identity's real distinguishing
      details. Only the institutional/dark journey card uses this. */
   --dark-card-foreground: #c9a29a;
   --muted: #ddd6c4;
-  --muted-foreground: #6b6355;
+  /* Reference's --ink-soft exactly — the body/nav-link/subtitle text
+     color, distinct from --muted-foreground's earlier approximation. */
+  --muted-foreground: #5b5548;
   --accent: #35c6d9;
   --accent-foreground: #14232a;
   --destructive: #b3452e;
