@@ -6,12 +6,14 @@ import { routing } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { GlobeIcon } from 'lucide-react';
 
-const LOCALE_LABEL: Record<string, string> = {
-  ar: 'العربية',
-  en: 'English',
-};
-
-export function LanguageSwitcher() {
+/**
+ * Icon-only, deliberately — the globe glyph is understood everywhere
+ * without a language-specific label sitting next to it (writing "English"
+ * only in English, or "العربية" only in Arabic, is itself a small
+ * inconsistency the icon avoids entirely). aria-label still carries the
+ * real accessible name for screen readers.
+ */
+export function LanguageSwitcher({ className }: { className?: string }) {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -22,12 +24,12 @@ export function LanguageSwitcher() {
   return (
     <Button
       variant="outline"
-      size="sm"
+      size="icon"
+      className={className}
       aria-label={t('languageSwitcher')}
       onClick={() => router.replace(pathname, { locale: otherLocale })}
     >
       <GlobeIcon />
-      {LOCALE_LABEL[otherLocale]}
     </Button>
   );
 }

@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 export function SiteNav() {
   const t = useTranslations('HomePage.nav');
@@ -39,6 +40,7 @@ export function SiteNav() {
           <Button size="sm" variant="secondary" nativeButton={false} render={<Link href="/try" />}>
             {t('startLink')}
           </Button>
+          <LanguageSwitcher />
         </div>
       </nav>
     </header>
