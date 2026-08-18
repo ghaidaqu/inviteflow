@@ -335,7 +335,8 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
       </FieldGroup>
 
       <div className="border-t pt-6">
-        <h2 className="text-lg font-bold tracking-tight">
+        <span className="text-primary text-sm font-semibold">{t('tryFreeLabel')}</span>
+        <h2 className="mt-1 text-lg font-bold tracking-tight">
           {t(track === 'invitation' ? 'trialTitle' : 'trialTitleLink')}
         </h2>
         <p className="text-muted-foreground mt-1 text-sm">

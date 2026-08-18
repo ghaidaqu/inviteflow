@@ -671,7 +671,8 @@
       "noDraft": "We couldn't find your invitation details — looks like you landed here from a direct link. Start over?",
       "error": "Something went wrong while creating your invitation, please try again.",
       "backToStart": "Start over"
-    }
+    },
+    "tryFreeLabel": "Try your invitation, free"
   },
   "TryDemo": {
     "title": "Try an InviteFlow invitation now",
