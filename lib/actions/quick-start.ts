@@ -4,7 +4,12 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
-import { getCurrentOrganizationId, createEvent } from '@/lib/services/events.service';
+import {
+  getCurrentOrganizationId,
+  createEvent,
+  getEventSettings,
+  updateEventSettings,
+} from '@/lib/services/events.service';
 import { createGuestManually } from '@/lib/services/guests.service';
 import { replaceQuestions } from '@/lib/services/questions.service';
 import { sendInvitationWhatsApp } from '@/lib/whatsapp/notify';
@@ -15,14 +20,23 @@ import { eventTypes, eventLocales, eventVisibilities } from '@/lib/validations/e
 import type { QuestionInput } from '@/lib/validations/questions';
 
 /**
- * Exactly the fields the authenticated dashboard's EventForm has —
- * nothing added, nothing missing. See event-form.tsx for the reference:
- * name, type, description, eventDate, rsvpDeadline, locationText,
+ * Exactly the fields the authenticated dashboard's EventForm has, plus
+ * the response-option/QR toggles that live in event settings — see
+ * event-form.tsx and event-settings-form.tsx for the reference: name,
+ * type, description, eventDate, rsvpDeadline, locationText,
  * locationMapUrl, coverImageUrl, primaryLocale, visibility, password
- * protection — plus custom questions for the Link track. isQrEnabled and
- * eventEndDate aren't here because the real form doesn't expose them
- * either (they round-trip silently there too); institutional fields
- * aren't here because Institutional isn't part of this flow.
+ * protection, isQrEnabled, allowAttending/allowNotAttending/allowMaybe —
+ * plus custom questions for the Link track. eventEndDate isn't here
+ * because the real form doesn't expose it either (it round-trips
+ * silently there too); institutional fields aren't here because
+ * Institutional isn't part of this flow.
+ *
+ * guestName/guestPhone only apply to the 'invitation' track — a Digital
+ * Invitation is sent to one guest at a time, so testing it means sending
+ * a real one. The Link track has no equivalent: it's a single public URL
+ * the organizer shares themselves (to a WhatsApp group, typically), and
+ * everyone who's coming opens it and registers their own name and phone
+ * — there's no "test guest" to name up front.
  */
 export type QuickStartDraft = {
   track: 'invitation' | 'rsvp';
@@ -38,6 +52,10 @@ export type QuickStartDraft = {
   visibility: string;
   isPasswordProtected: boolean;
   password: string;
+  isQrEnabled: boolean;
+  allowAttending: boolean;
+  allowNotAttending: boolean;
+  allowMaybe: boolean;
   questions: QuestionInput[];
   guestName: string;
   guestPhone: string;
@@ -81,6 +99,9 @@ export async function createEventFromQuickStartAction(
 ): Promise<QuickStartResult> {
   if (!draft.name.trim() || draft.name.length > 150) return { error: 'invalidInput' };
   if (draft.isPasswordProtected && !draft.password) return { error: 'passwordRequired' };
+  if (!draft.allowAttending && !draft.allowNotAttending && !draft.allowMaybe) {
+    return { error: 'atLeastOneStatus' };
+  }
 
   const supabase = await createClient();
   const {
@@ -114,7 +135,7 @@ export async function createEventFromQuickStartAction(
       primaryLocale: primaryLocale as (typeof eventLocales)[number],
       visibility: visibility as (typeof eventVisibilities)[number],
       isRsvpEnabled: true,
-      isQrEnabled: false,
+      isQrEnabled: draft.isQrEnabled,
       isPasswordProtected: draft.isPasswordProtected,
       password: draft.password || undefined,
       eventEndDate: undefined,
@@ -125,6 +146,31 @@ export async function createEventFromQuickStartAction(
     eventSlug = event.slug;
   } catch {
     return { error: 'unknown' };
+  }
+
+  // event_settings is auto-created by a DB trigger with its own defaults
+  // (all three response options on) the moment the event row is inserted
+  // above — only touch it if the organizer actually changed something,
+  // preserving the trigger's defaults for every other setting.
+  if (!draft.allowAttending || !draft.allowNotAttending || !draft.allowMaybe) {
+    try {
+      const settings = await getEventSettings(supabase, eventId);
+      if (settings) {
+        await updateEventSettings(supabase, eventId, {
+          allowAttending: draft.allowAttending,
+          allowNotAttending: draft.allowNotAttending,
+          allowMaybe: draft.allowMaybe,
+          collectCompanions: settings.collect_companions,
+          maxCompanions: settings.max_companions,
+          collectMessage: settings.collect_message,
+          allowGuestEdit: settings.allow_guest_edit,
+        });
+      }
+    } catch {
+      // Best-effort, same policy as everything else in this flow — the
+      // event exists either way and settings can be fixed from the
+      // dashboard afterward.
+    }
   }
 
   if (draft.track === 'rsvp') {
@@ -139,8 +185,14 @@ export async function createEventFromQuickStartAction(
     }
   }
 
-  const guestPhone = canonicalPhone(draft.guestPhone);
-  if (draft.guestName.trim() && guestPhone) {
+  // Trial send only applies to the 'invitation' track — a Digital
+  // Invitation goes out to one named guest, so a real test send needs a
+  // real test guest. The Link track has no per-guest send at all: the
+  // organizer gets one public link (already shown on the dashboard page
+  // this redirects to) and shares it themselves; everyone who opens it
+  // registers their own name and phone.
+  const guestPhone = draft.track === 'invitation' ? canonicalPhone(draft.guestPhone) : null;
+  if (draft.track === 'invitation' && draft.guestName.trim() && guestPhone) {
     const trialAllowed = await checkRateLimit(supabase, {
       action: 'quick-start-trial-send',
       scope: user.id,

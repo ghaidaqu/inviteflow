@@ -32,13 +32,17 @@ export function EventSettingsForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const { register, handleSubmit, control, watch } = useForm<
-    EventSettingsFormInput,
-    unknown,
-    EventSettingsFormOutput
-  >({
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm<EventSettingsFormInput, unknown, EventSettingsFormOutput>({
     resolver: zodResolver(eventSettingsFormSchema),
     defaultValues: {
+      allowAttending: settings.allow_attending,
+      allowNotAttending: settings.allow_not_attending,
       allowMaybe: settings.allow_maybe,
       collectCompanions: settings.collect_companions,
       maxCompanions: settings.max_companions,
@@ -53,6 +57,8 @@ export function EventSettingsForm({
     setServerError(null);
     setSaved(false);
     const formData = new FormData();
+    formData.set('allowAttending', String(values.allowAttending));
+    formData.set('allowNotAttending', String(values.allowNotAttending));
     formData.set('allowMaybe', String(values.allowMaybe));
     formData.set('collectCompanions', String(values.collectCompanions));
     formData.set('maxCompanions', String(values.maxCompanions));
@@ -80,6 +86,43 @@ export function EventSettingsForm({
       )}
 
       <FieldGroup>
+        {errors.allowAttending && (
+          <Alert variant="destructive">
+            <AlertDescription>{tErrors('atLeastOneStatus')}</AlertDescription>
+          </Alert>
+        )}
+
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="allowAttending" className="flex-1 font-normal">
+            {t('allowAttendingLabel')}
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="allowAttending"
+            render={({ field }) => (
+              <Switch id="allowAttending" checked={field.value} onCheckedChange={field.onChange} />
+            )}
+          />
+        </Field>
+
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="allowNotAttending" className="flex-1 font-normal">
+            {t('allowNotAttendingLabel')}
+            <FieldDescription>{t('allowNotAttendingHint')}</FieldDescription>
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="allowNotAttending"
+            render={({ field }) => (
+              <Switch
+                id="allowNotAttending"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            )}
+          />
+        </Field>
+
         <Field orientation="horizontal">
           <FieldLabel htmlFor="allowMaybe" className="flex-1 font-normal">
             {t('allowMaybeLabel')}

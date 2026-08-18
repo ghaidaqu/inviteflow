@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription, FieldGroup } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -39,6 +39,10 @@ type FormValues = {
   visibility: string;
   isPasswordProtected: boolean;
   password: string;
+  isQrEnabled: boolean;
+  allowAttending: boolean;
+  allowNotAttending: boolean;
+  allowMaybe: boolean;
 };
 
 /**
@@ -54,6 +58,7 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
   const t = useTranslations('QuickStart');
   const tForm = useTranslations('Events.form');
   const tTypes = useTranslations('Events.types');
+  const tSettings = useTranslations('EventSettings');
   const locale = useLocale();
   const isRtl = locale === 'ar';
   const ArrowIcon = isRtl ? ArrowLeftIcon : ArrowRightIcon;
@@ -72,9 +77,22 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
       visibility: 'private',
       isPasswordProtected: false,
       password: '',
+      isQrEnabled: false,
+      allowAttending: true,
+      allowNotAttending: true,
+      // Off by default — a real invitation asks for a clear yes or no.
+      // Still a real toggle, not removed outright: an organizer who
+      // genuinely wants a soft "maybe" option (a big flexible event, say)
+      // can still turn it on, but that's now a deliberate choice instead
+      // of the starting behavior.
+      allowMaybe: false,
     },
   });
   const isPasswordProtected = useWatch({ control, name: 'isPasswordProtected' });
+  const allowAttending = useWatch({ control, name: 'allowAttending' });
+  const allowNotAttending = useWatch({ control, name: 'allowNotAttending' });
+  const allowMaybe = useWatch({ control, name: 'allowMaybe' });
+  const noStatusEnabled = !allowAttending && !allowNotAttending && !allowMaybe;
 
   const [questions, setQuestions] = useState<QuestionInput[]>([]);
   const [guestName, setGuestName] = useState('');
@@ -90,12 +108,18 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
       setNameError(true);
       return;
     }
+    if (noStatusEnabled) {
+      e.preventDefault();
+      return;
+    }
     const draft: QuickStartDraft = {
       track,
       ...values,
       questions,
-      guestName,
-      guestPhone,
+      // Only the invitation track sends a per-guest trial invite — see
+      // QuickStartDraft's doc comment.
+      guestName: track === 'invitation' ? guestName : '',
+      guestPhone: track === 'invitation' ? guestPhone : '',
     };
     sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
   }
@@ -233,6 +257,73 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
 
         {track === 'rsvp' && <InlineQuestionsBuilder value={questions} onChange={setQuestions} />}
 
+        {noStatusEnabled && (
+          <p className="text-destructive text-sm">{t('atLeastOneStatusError')}</p>
+        )}
+
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="qs-allow-attending" className="flex-1 font-normal">
+            {tSettings('allowAttendingLabel')}
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="allowAttending"
+            render={({ field }) => (
+              <Switch
+                id="qs-allow-attending"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            )}
+          />
+        </Field>
+
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="qs-allow-not-attending" className="flex-1 font-normal">
+            {tSettings('allowNotAttendingLabel')}
+            <FieldDescription>{tSettings('allowNotAttendingHint')}</FieldDescription>
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="allowNotAttending"
+            render={({ field }) => (
+              <Switch
+                id="qs-allow-not-attending"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            )}
+          />
+        </Field>
+
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="qs-allow-maybe" className="flex-1 font-normal">
+            {tSettings('allowMaybeLabel')}
+            <FieldDescription>{tSettings('allowMaybeHint')}</FieldDescription>
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="allowMaybe"
+            render={({ field }) => (
+              <Switch id="qs-allow-maybe" checked={field.value} onCheckedChange={field.onChange} />
+            )}
+          />
+        </Field>
+
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="qs-qr-enabled" className="flex-1 font-normal">
+            {tForm('isQrEnabledLabel')}
+            <FieldDescription>{tForm('isQrEnabledHint')}</FieldDescription>
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="isQrEnabled"
+            render={({ field }) => (
+              <Switch id="qs-qr-enabled" checked={field.value} onCheckedChange={field.onChange} />
+            )}
+          />
+        </Field>
+
         <Field orientation="horizontal">
           <FieldLabel htmlFor="qs-password-protected" className="flex-1 font-normal">
             {tForm('isPasswordProtectedLabel')}
@@ -259,32 +350,38 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
       </FieldGroup>
 
       <div className="border-t pt-6">
-        <h2 className="text-lg font-bold tracking-tight">{t('trialTitle')}</h2>
-        <p className="text-muted-foreground mt-1 text-sm">{t('trialDescription')}</p>
+        <h2 className="text-lg font-bold tracking-tight">
+          {t(track === 'invitation' ? 'trialTitle' : 'trialTitleLink')}
+        </h2>
+        <p className="text-muted-foreground mt-1 text-sm">
+          {t(track === 'invitation' ? 'trialDescription' : 'trialDescriptionLink')}
+        </p>
 
-        <FieldGroup className="mt-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field>
-              <FieldLabel htmlFor="qs-guest-name">{t('guestNameLabel')}</FieldLabel>
-              <Input
-                id="qs-guest-name"
-                value={guestName}
-                onChange={(e) => setGuestName(e.target.value)}
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="qs-guest-phone">{t('guestPhoneLabel')}</FieldLabel>
-              <Input
-                id="qs-guest-phone"
-                type="tel"
-                dir="ltr"
-                placeholder="+9665XXXXXXXX"
-                value={guestPhone}
-                onChange={(e) => setGuestPhone(e.target.value)}
-              />
-            </Field>
-          </div>
-        </FieldGroup>
+        {track === 'invitation' && (
+          <FieldGroup className="mt-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="qs-guest-name">{t('guestNameLabel')}</FieldLabel>
+                <Input
+                  id="qs-guest-name"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="qs-guest-phone">{t('guestPhoneLabel')}</FieldLabel>
+                <Input
+                  id="qs-guest-phone"
+                  type="tel"
+                  dir="ltr"
+                  placeholder="+9665XXXXXXXX"
+                  value={guestPhone}
+                  onChange={(e) => setGuestPhone(e.target.value)}
+                />
+              </Field>
+            </div>
+          </FieldGroup>
+        )}
 
         <Button
           size="lg"

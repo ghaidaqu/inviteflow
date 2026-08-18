@@ -219,6 +219,8 @@ export async function updateEventSettings(
   const { data, error } = await supabase
     .from('event_settings')
     .update({
+      allow_attending: input.allowAttending,
+      allow_not_attending: input.allowNotAttending,
       allow_maybe: input.allowMaybe,
       collect_companions: input.collectCompanions,
       max_companions: input.maxCompanions,

@@ -51,8 +51,7 @@ const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp', 'institutional'];
 
 export async function HeroJourneys({ locale }: { locale: string }) {
   const t = await getTranslations('HomePage.hero');
-  const tj = await getTranslations('HomePage.journeys');
-  const tp = await getTranslations('HomePage.panels');
+  const tt = await getTranslations('HomePage.tracks');
   const isRtl = locale === 'ar';
   const ArrowIcon = isRtl ? ArrowLeftIcon : ArrowRightIcon;
 
@@ -84,7 +83,12 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             peeks out above/below that band, cropped at the section edges.
             Sized to actually fit the column width so letters read cleanly
             instead of being amputated at the container edge. */}
-        <div className="relative flex min-h-[440px] flex-col justify-end overflow-hidden pb-2 sm:min-h-[560px] lg:min-h-[620px]">
+        {/* Heights are the exact space the composition needs: the card row
+            sits flush at the bottom (justify-end) and the "INVITE" type is
+            absolutely positioned above it — no translate-y needed to pull
+            the row up, which used to leave ~60px of dead space below it
+            (moves the cards visually but not in layout). */}
+        <div className="relative flex min-h-[380px] flex-col justify-end overflow-hidden sm:min-h-[532px] lg:min-h-[545px]">
           <span
             aria-hidden
             className="text-foreground pointer-events-none absolute inset-0 flex items-start justify-center pt-6 text-[clamp(3.5rem,23.5vw,7rem)] leading-none font-black tracking-normal whitespace-nowrap select-none sm:pt-8 sm:text-[clamp(6rem,25vw,12rem)] lg:text-[clamp(4.5rem,13vw,10rem)]"
@@ -95,17 +99,20 @@ export async function HeroJourneys({ locale }: { locale: string }) {
 
           {/* Forced left-to-right order (01 burgundy → 02 navy → 03 purple)
               regardless of page direction, matching the reference exactly
-              instead of mirroring under RTL. Pulled up over the "INVITE"
-              text with a transform (negative margin is a no-op here — the
-              flex-end alignment on the single-item row just reclaims the
-              space) so the cards visibly cover roughly its bottom quarter. */}
+              instead of mirroring under RTL. Sits flush at the column's
+              bottom and overlaps the "INVITE" text behind it. */}
           <div
             dir="ltr"
-            className="relative z-10 flex h-[280px] -translate-y-[52px] items-stretch justify-center gap-2 sm:h-[340px] sm:-translate-y-5 sm:gap-6 lg:h-[380px] lg:-translate-y-[67px]"
+            className="relative z-10 flex h-[280px] items-stretch justify-center gap-2 sm:h-[340px] sm:gap-6 lg:h-[380px]"
           >
             {JOURNEY_KEYS.map((key, index) => {
               const style = PANEL_STYLE[key];
               const Icon = style.icon;
+              const features = [
+                tt(`${key}.feature1`),
+                tt(`${key}.feature2`),
+                tt(`${key}.feature3`),
+              ];
               // Three cards, sized (with their gaps) to span the same width
               // as the "INVITE" type behind them — see the mobile-hero pass
               // in git history for how these percentages were measured.
@@ -114,15 +121,32 @@ export async function HeroJourneys({ locale }: { locale: string }) {
 
               const content = (
                 <>
+                  {/* Glass top: the icon by default, crossfading into the
+                      three short features on hover — the one thing added
+                      on top of the original design. Both layers sit inside
+                      this fixed-flex-1 area so the panel's own height
+                      never changes when this happens. */}
                   <div
                     className="relative flex flex-1 items-start overflow-hidden p-3 backdrop-blur-[1px]"
                     style={{
                       background: `linear-gradient(160deg, ${style.glassFrom}, ${style.glassTo})`,
                     }}
                   >
-                    <span className="relative flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm">
+                    <span className="relative flex size-9 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-0">
                       <Icon className="size-4.5" />
                     </span>
+
+                    <div className="absolute inset-0 hidden flex-col items-start justify-center gap-1.5 p-3 opacity-0 transition-opacity duration-300 group-hover:flex group-hover:opacity-100">
+                      {features.map((feature) => (
+                        <span
+                          key={feature}
+                          className="flex items-center gap-1.5 text-[11px] leading-tight font-medium text-white/90 sm:text-xs"
+                        >
+                          <span className="size-1 shrink-0 rounded-full bg-white/70" />
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Wave divider — deliberately large amplitude (not a
@@ -148,10 +172,10 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                       0{index + 1}
                     </span>
                     <h3 className="text-sm leading-snug font-bold tracking-tight sm:text-lg">
-                      {tj(`${key}.title`)}
+                      {tt(`${key}.title`)}
                     </h3>
                     <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
-                      {tp('exploreCta')}
+                      {tt('cta')}
                       <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
                     </span>
                   </div>

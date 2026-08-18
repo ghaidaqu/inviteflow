@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Field, FieldLabel, FieldError, FieldGroup } from '@/components/ui/field';
+import { Field, FieldLabel, FieldError, FieldDescription, FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { InlineQuestionsBuilder } from '@/components/dashboard/inline-questions-builder';
@@ -329,14 +329,27 @@ export function EventForm({
           <InlineQuestionsBuilder value={questions} onChange={setQuestions} />
         )}
 
-        {/* isRsvpEnabled/isQrEnabled toggles aren't exposed in the visible
-            form — every event collects RSVP responses (see
-            createEventAction's server-side check), so there's nothing to
-            toggle. Their values still round-trip through
+        {/* isRsvpEnabled isn't exposed — every event collects RSVP responses
+            (see createEventAction's server-side check), so there's nothing
+            to toggle. Its value still round-trips through
             defaultValues/onSubmit unchanged, which matters for editing an
             event created before this was the case. eventEndDate (for
             multi-day events) similarly has a column and round-trips, but
             no input control yet — not part of this pass. */}
+
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="isQrEnabled" className="flex-1 font-normal">
+            {t('isQrEnabledLabel')}
+            <FieldDescription>{t('isQrEnabledHint')}</FieldDescription>
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="isQrEnabled"
+            render={({ field }) => (
+              <Switch id="isQrEnabled" checked={field.value} onCheckedChange={field.onChange} />
+            )}
+          />
+        </Field>
 
         <Field orientation="horizontal">
           <FieldLabel htmlFor="isPasswordProtected" className="flex-1 font-normal">

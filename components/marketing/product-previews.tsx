@@ -4,14 +4,14 @@ export async function ProductPreviews() {
   const t = await getTranslations('HomePage.previews');
 
   return (
-    <section className="bg-muted/30 py-16 sm:py-24">
+    <section className="bg-muted/30 py-12 sm:py-16">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{t('title')}</h2>
           <p className="text-muted-foreground mt-3 text-base">{t('subtitle')}</p>
         </div>
 
-        <div className="mx-auto mt-12 max-w-sm">
+        <div className="mx-auto mt-8 max-w-sm">
           {/* Invitation preview, framed as a real webpage (browser chrome +
               URL bar) rather than a chat bubble with quick-reply buttons —
               the invitation is a proper link guests open, not a WhatsApp

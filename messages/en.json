@@ -19,9 +19,6 @@
       "primaryCta": "Start free",
       "guestLink": "Or try it as a guest, no sign-up ←"
     },
-    "panels": {
-      "exploreCta": "Explore"
-    },
     "trustStrip": {
       "item1Title": "Direct WhatsApp",
       "item1Label": "Guests never open a separate link",
@@ -84,6 +81,30 @@
       "copyright": "© {year} InviteFlow",
       "termsLink": "Terms",
       "privacyLink": "Privacy"
+    },
+    "tracks": {
+      "cta": "Discover",
+      "invitation": {
+        "title": "Digital Invitation",
+        "description": "A personal invite for every guest",
+        "feature1": "Addressed to each guest",
+        "feature2": "RSVP confirmation",
+        "feature3": "Entry QR code"
+      },
+      "rsvp": {
+        "title": "Link Invitation",
+        "description": "One link, shared your way",
+        "feature1": "One link for the event",
+        "feature2": "Details and location",
+        "feature3": "RSVP confirmation"
+      },
+      "institutional": {
+        "title": "Institutional Invitation",
+        "description": "An experience designed around your brand",
+        "feature1": "Designed to your identity",
+        "feature2": "Guest management",
+        "feature3": "Attendance reports"
+      }
     }
   },
   "Common": {
@@ -250,6 +271,8 @@
       "visibilityLabel": "Visibility",
       "visibilityPublic": "Public",
       "visibilityPrivate": "Private",
+      "isQrEnabledLabel": "Entry QR code",
+      "isQrEnabledHint": "Adds a QR code to the public invitation page — it opens the invitation link itself, and can be printed or scanned at the door.",
       "isPasswordProtectedLabel": "Password-protect this page",
       "passwordLabel": "Password",
       "passwordKeepPlaceholder": "Leave empty to keep the current password",
@@ -415,6 +438,9 @@
   "EventSettings": {
     "invitationPageTitle": "Digital Invitation",
     "invitationPageSubtitle": "A simple personal invitation — you're hosting, and you decide whether you want a headcount of who's coming, or just to share the details without waiting on a response. This is a separate track from RSVP questions.",
+    "allowAttendingLabel": "Allow accepting the invitation",
+    "allowNotAttendingLabel": "Allow declining the invitation",
+    "allowNotAttendingHint": "If off, a guest can only accept — there is no decline option.",
     "allowMaybeLabel": "Allow a \"Maybe\" option",
     "allowMaybeHint": "Turn off for a simple invitation (accept or decline only), no third option.",
     "collectCompanionsLabel": "Collect companion names",
@@ -429,7 +455,8 @@
     "errors": {
       "invalidInput": "Please check the information you entered.",
       "unauthorized": "You must be logged in to do this.",
-      "unknown": "Something went wrong, please try again."
+      "unknown": "Something went wrong, please try again.",
+      "atLeastOneStatus": "At least one response option must stay enabled (accept, decline, or maybe)."
     }
   },
   "Questions": {
@@ -660,20 +687,18 @@
   "QuickStart": {
     "nameLabel": "Event name",
     "namePlaceholder": "e.g. Sara & Ahmad's Wedding",
-    "typeLabel": "Event type",
-    "descriptionLabel": "Description (optional)",
-    "eventDateLabel": "Date & time (optional)",
-    "locationTextLabel": "Location (optional)",
-    "coverImageLabel": "Cover image or design (optional)",
-    "qrLabel": "Show a QR code for the invitation link",
     "trialTitle": "A real trial before you commit",
     "trialDescription": "Enter a name and phone number — as soon as you log in, they'll get your actual invitation exactly as your other guests would (real Accept/Decline buttons, QR code if enabled). Each account gets a limited number of these trial sends.",
+    "trialTitleLink": "One link you share yourself",
+    "trialDescriptionLink": "Once you're logged in you'll get one link for the event — open it yourself to try it, or send it straight to a WhatsApp group. Everyone who opens it registers their own name and phone and answers on their own; you don't need to enter anyone's number now.",
     "guestNameLabel": "Test guest name (optional)",
     "guestPhoneLabel": "Their phone number",
+    "atLeastOneStatusError": "Enable at least one response option (accept, decline, or maybe).",
     "finishButton": "Log in and activate your invitation",
     "finishHint": "Free right now — no card required.",
     "finish": {
       "creating": "Creating your invitation and sending the trial...",
+      "creatingLink": "Creating your event...",
       "unauthorized": "You need to log in to finish activating your invitation.",
       "loginButton": "Log in",
       "noDraft": "We couldn't find your invitation details — looks like you landed here from a direct link. Start over?",

@@ -9,7 +9,7 @@ export async function FinalCta() {
     // A full-bleed near-black band — the "alternate ivory/near-black
     // rhythm" the editorial direction calls for, not another light card.
     <section className="bg-foreground text-background">
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-4 py-20 text-center sm:px-6 sm:py-28">
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 px-4 py-14 text-center sm:px-6 sm:py-20">
         <h2 className="text-3xl font-extrabold tracking-tight text-balance sm:text-5xl">
           {t('title')}
         </h2>

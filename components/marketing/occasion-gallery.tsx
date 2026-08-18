@@ -43,14 +43,14 @@ export async function OccasionGallery() {
   return (
     <section
       id="templates"
-      className="mx-auto w-full max-w-7xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-28"
+      className="mx-auto w-full max-w-7xl scroll-mt-20 px-4 py-12 sm:px-6 sm:py-16"
     >
       <div className="max-w-xl">
         <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{t('title')}</h2>
         <p className="text-muted-foreground mt-3 text-lg">{t('subtitle')}</p>
       </div>
 
-      <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {eventTypes.map((type, index) => {
           const Icon = TYPE_ICONS[type];
           return (

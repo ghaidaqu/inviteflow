@@ -9,7 +9,7 @@ export async function PricingSection() {
   return (
     <section
       id="pricing"
-      className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24"
+      className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-12 sm:px-6 sm:py-16"
     >
       <div className="mx-auto max-w-xl text-center">
         <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">{t('title')}</h2>
@@ -19,7 +19,7 @@ export async function PricingSection() {
       {/* A single, honest tier — no fabricated multi-plan pricing table for
           a product that doesn't have paid subscription tiers. Whitespace
           instead of a heavy bordered/shadowed box. */}
-      <div className="border-border mx-auto mt-10 flex max-w-md flex-col items-center gap-5 border-t pt-8 text-center">
+      <div className="border-border mx-auto mt-8 flex max-w-md flex-col items-center gap-4 border-t pt-6 text-center">
         <h3 className="text-xl font-extrabold">{t('planTitle')}</h3>
         <ul className="mx-auto flex flex-col gap-2.5 text-start">
           {(['planPoint1', 'planPoint2', 'planPoint3'] as const).map((key) => (

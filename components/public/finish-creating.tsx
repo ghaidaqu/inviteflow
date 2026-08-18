@@ -63,7 +63,9 @@ export function FinishCreating({ track }: { track: 'invitation' | 'rsvp' }) {
     return (
       <main className="mx-auto flex min-h-[60vh] w-full max-w-md flex-col items-center justify-center gap-4 px-4 text-center">
         <Loader2Icon className="text-primary size-8 animate-spin" />
-        <p className="text-muted-foreground">{t('creating')}</p>
+        <p className="text-muted-foreground">
+          {t(track === 'invitation' ? 'creating' : 'creatingLink')}
+        </p>
       </main>
     );
   }
