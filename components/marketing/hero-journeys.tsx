@@ -63,7 +63,12 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           <p className="text-muted-foreground max-w-md text-lg text-balance">{t('subtitle')}</p>
 
           <div className="flex flex-wrap gap-3">
-            <Button size="lg" nativeButton={false} render={<Link href="/register" />}>
+            <Button
+              size="lg"
+              variant="secondary"
+              nativeButton={false}
+              render={<Link href="/register" />}
+            >
               {t('primaryCta')}
             </Button>
           </div>

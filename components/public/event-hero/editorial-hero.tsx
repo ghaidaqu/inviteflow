@@ -2,7 +2,7 @@ import type { EventHeroProps } from './types';
 
 /**
  * Dark, formal, editorial — same near-black band language as the
- * homepage's FinalCta section, with the invitation name set in the
+ * homepage's pricing section, with the invitation name set in the
  * site's heavy display treatment (.font-display). Built for weddings,
  * institutional events, and anything that wants to read as an occasion
  * rather than a casual invite.
