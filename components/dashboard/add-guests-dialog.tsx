@@ -66,6 +66,7 @@ export function AddGuestsDialog({
 }) {
   const t = useTranslations('Guests.addGuests');
   const tErrors = useTranslations('Guests.errors');
+  const tGuests = useTranslations('Guests');
 
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState<Stage>('input');
@@ -364,9 +365,9 @@ export function AddGuestsDialog({
               />
               <div>
                 <FieldLabel htmlFor="add-guests-waitlisted" className="font-medium">
-                  {t('waitlist.toggleLabel')}
+                  {tGuests('waitlist.toggleLabel')}
                 </FieldLabel>
-                <p className="text-muted-foreground text-xs">{t('waitlist.toggleHint')}</p>
+                <p className="text-muted-foreground text-xs">{tGuests('waitlist.toggleHint')}</p>
               </div>
             </div>
 
