@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Field, FieldLabel, FieldDescription, FieldGroup } from '@/components/ui/field';
+import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -249,49 +249,56 @@ export function QuickStartForm({ track }: { track: 'invitation' | 'rsvp' }) {
 
         {track === 'rsvp' && <InlineQuestionsBuilder value={questions} onChange={setQuestions} />}
 
-        {noStatusEnabled && (
-          <p className="text-destructive text-sm">{t('atLeastOneStatusError')}</p>
+        {/* The link track has no accept/decline step at all — a guest opens
+            the link, registers that they're coming, and answers the
+            questions above; there's no separate "decline" action to toggle.
+            Only the invitation track (one send per guest, a real
+            accept/decline reply) needs these two switches. */}
+        {track === 'invitation' && (
+          <>
+            {noStatusEnabled && (
+              <p className="text-destructive text-sm">{t('atLeastOneStatusError')}</p>
+            )}
+
+            <Field orientation="horizontal">
+              <FieldLabel htmlFor="qs-allow-attending" className="flex-1 font-normal">
+                {tSettings('allowAttendingLabel')}
+              </FieldLabel>
+              <Controller
+                control={control}
+                name="allowAttending"
+                render={({ field }) => (
+                  <Switch
+                    id="qs-allow-attending"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+            </Field>
+
+            <Field orientation="horizontal">
+              <FieldLabel htmlFor="qs-allow-not-attending" className="flex-1 font-normal">
+                {tSettings('allowNotAttendingLabel')}
+              </FieldLabel>
+              <Controller
+                control={control}
+                name="allowNotAttending"
+                render={({ field }) => (
+                  <Switch
+                    id="qs-allow-not-attending"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+            </Field>
+          </>
         )}
-
-        <Field orientation="horizontal">
-          <FieldLabel htmlFor="qs-allow-attending" className="flex-1 font-normal">
-            {tSettings('allowAttendingLabel')}
-          </FieldLabel>
-          <Controller
-            control={control}
-            name="allowAttending"
-            render={({ field }) => (
-              <Switch
-                id="qs-allow-attending"
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            )}
-          />
-        </Field>
-
-        <Field orientation="horizontal">
-          <FieldLabel htmlFor="qs-allow-not-attending" className="flex-1 font-normal">
-            {tSettings('allowNotAttendingLabel')}
-            <FieldDescription>{tSettings('allowNotAttendingHint')}</FieldDescription>
-          </FieldLabel>
-          <Controller
-            control={control}
-            name="allowNotAttending"
-            render={({ field }) => (
-              <Switch
-                id="qs-allow-not-attending"
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            )}
-          />
-        </Field>
 
         <Field orientation="horizontal">
           <FieldLabel htmlFor="qs-qr-enabled" className="flex-1 font-normal">
             {tForm('isQrEnabledLabel')}
-            <FieldDescription>{tForm('isQrEnabledHint')}</FieldDescription>
           </FieldLabel>
           <Controller
             control={control}
