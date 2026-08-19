@@ -1,10 +1,11 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { SparklesIcon } from 'lucide-react';
 
 export async function SiteFooter() {
   const t = await getTranslations('HomePage.footer');
   const tj = await getTranslations('HomePage.journeys');
+  const locale = await getLocale();
   const year = new Date().getFullYear();
 
   return (
@@ -22,17 +23,27 @@ export async function SiteFooter() {
           <h3 className="text-sm font-bold">{t('journeysHeading')}</h3>
           <ul className="text-muted-foreground mt-3 flex flex-col gap-2 text-sm">
             <li>
-              <Link href="/start/invitation" className="hover:text-foreground">
+              <Link
+                href={`/register?next=${encodeURIComponent(`/${locale}/start/invitation`)}`}
+                className="hover:text-foreground"
+              >
                 {tj('invitation.title')}
               </Link>
             </li>
             <li>
-              <Link href="/start/rsvp" className="hover:text-foreground">
+              <Link
+                href={`/register?next=${encodeURIComponent(`/${locale}/start/rsvp`)}`}
+                className="hover:text-foreground"
+              >
                 {tj('rsvp.title')}
               </Link>
             </li>
             <li>
-              <Link href="/dashboard/events/new/institutional" className="hover:text-foreground">
+              {/* Same destination as the "المؤسسات" nav link and the old
+                  institutional hero card — one consistent "not ready yet"
+                  story instead of this footer link alone still exposing
+                  the raw dashboard flow. */}
+              <Link href="/institutional" className="hover:text-foreground">
                 {tj('institutional.title')}
               </Link>
             </li>

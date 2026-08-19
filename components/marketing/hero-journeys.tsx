@@ -1,48 +1,48 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon, Building2Icon } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon } from 'lucide-react';
 
-type JourneyKey = 'invitation' | 'rsvp' | 'institutional';
+type JourneyKey = 'invitation' | 'rsvp';
 
-// Three real products, three token-driven surfaces — olive, tinted sky,
-// and the one dark card, matching the approved reference's three-color
-// card grid exactly (not a light/neutral card standing in for one of
-// them). Every color here comes from the shared design system, so
-// `currentColor` alone (via `text-current`/`bg-current`) is enough to
-// theme the icon badge, bullet dots, and index number correctly on all
-// three without a per-card color branch.
+// Two real products, two token-driven surfaces — olive and tinted sky.
+// Institutional used to be a third card here (the reference's dark
+// card), but now that it has its own dedicated /institutional page
+// linked from the nav, repeating it here as a third hero card was pure
+// duplication of the same destination. Every color here comes from the
+// shared design system, so `currentColor` alone (via
+// `text-current`/`bg-current`) is enough to theme the icon badge,
+// bullet dots, and index number correctly on both without a per-card
+// color branch.
 const JOURNEY_STYLE: Record<
   JourneyKey,
   {
     surface: string;
-    /** Invitation/Link go through the no-login-wall quick-start flow;
-     *  Institutional needs a company name/logo up front by design, so it
-     *  keeps going straight to the authenticated dashboard flow. */
-    href: string;
+    /** Sends through /register first — the quick-start wizard itself is
+     *  login-gated (see start/[track]/page.tsx), so there's no point
+     *  landing on it unauthenticated just to bounce straight back to
+     *  /login. A function of locale because the `next` value inside the
+     *  query string isn't auto-prefixed by next-intl's Link the way the
+     *  outer href is — safeNextPath (lib/actions/auth.ts) rejects
+     *  anything that isn't already locale-prefixed, so this has to
+     *  build that itself. */
+    href: (locale: string) => string;
     icon: typeof MailIcon;
   }
 > = {
   invitation: {
     surface: 'bg-primary text-primary-foreground',
-    href: '/start/invitation',
+    href: (locale) => `/register?next=${encodeURIComponent(`/${locale}/start/invitation`)}`,
     icon: MailIcon,
   },
   rsvp: {
     surface: 'bg-secondary text-secondary-foreground',
-    href: '/start/rsvp',
+    href: (locale) => `/register?next=${encodeURIComponent(`/${locale}/start/rsvp`)}`,
     icon: LinkIcon,
-  },
-  // The reference's dark card uses a warm dusty rose for its text, not
-  // plain cream — see --dark-card-foreground's doc comment in globals.css.
-  institutional: {
-    surface: 'bg-foreground text-dark-card-foreground',
-    href: '/dashboard/events/new/institutional',
-    icon: Building2Icon,
   },
 };
 
-const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp', 'institutional'];
+const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp'];
 
 export async function HeroJourneys({ locale }: { locale: string }) {
   const t = await getTranslations('HomePage.hero');
@@ -93,7 +93,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           </div>
         </div>
 
-        {/* Three real products, three cards — quiet by default on
+        {/* Two real products, two cards — quiet by default on
             mouse-driven devices, each getting the same cyan ring + lift on
             hover/focus (.hover-glow, defined once in globals.css). The
             icon fades out and a content block grows in below the title —
@@ -105,10 +105,10 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             equivalent of :hover firing from a tap, so on mobile the
             content is expanded from the start instead of being
             permanently unreachable. Forced left-to-right order
-            (01 → 02 → 03) regardless of page direction, since these read
-            as a fixed sequence of paths through the product, not a
-            mirrored layout. */}
-        <div dir="ltr" className="relative z-10 grid grid-cols-3 gap-3 sm:gap-5">
+            (01 → 02) regardless of page direction, since these read as a
+            fixed sequence of paths through the product, not a mirrored
+            layout. */}
+        <div dir="ltr" className="relative z-10 grid max-w-xl grid-cols-2 gap-3 sm:gap-5">
           {JOURNEY_KEYS.map((key, index) => {
             const style = JOURNEY_STYLE[key];
             const Icon = style.icon;
@@ -117,7 +117,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             return (
               <Link
                 key={key}
-                href={style.href}
+                href={style.href(locale)}
                 className={`hover-glow group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-2xl p-3 sm:min-h-[210px] sm:p-4 ${style.surface}`}
               >
                 {/* :hover/:focus-visible never fire from a tap on touch
@@ -157,29 +157,19 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                             {feature}
                           </span>
                         ))}
-                        {/* Invitation/rsvp lead with login because their
-                            trial is the real thing — the guest's own
-                            design, sent for real, 3 times per account —
-                            unlike the homepage's separate anonymous demo
-                            (/try). Institutional has no such trial: it
-                            goes straight to the dashboard's setup flow, so
-                            it keeps the plain "Discover" label. */}
-                        {key === 'institutional' ? (
-                          <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold">
-                            {tt('cta')}
+                        {/* Both lead with login because their trial is the
+                            real thing — the guest's own design, sent for
+                            real, 3 times per account — unlike the
+                            homepage's separate anonymous demo (/try). */}
+                        <span className="mt-1 flex flex-col gap-0.5">
+                          <span className="text-[11px] font-medium opacity-70">
+                            {tt('ctaCaption')}
+                          </span>
+                          <span className="inline-flex items-center gap-1.5 text-sm font-semibold">
+                            {tt('ctaLogin')}
                             <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
                           </span>
-                        ) : (
-                          <span className="mt-1 flex flex-col gap-0.5">
-                            <span className="text-[11px] font-medium opacity-70">
-                              {tt('ctaCaption')}
-                            </span>
-                            <span className="inline-flex items-center gap-1.5 text-sm font-semibold">
-                              {tt('ctaLogin')}
-                              <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                            </span>
-                          </span>
-                        )}
+                        </span>
                       </div>
                     </div>
                   </div>

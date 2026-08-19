@@ -1,6 +1,7 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { QuickStartForm } from '@/components/public/quick-start-form';
+import { createClient } from '@/lib/supabase/server';
+import { QuickStartWizard } from '@/components/public/quick-start-wizard';
 import { Link } from '@/i18n/navigation';
 
 const TRACKS = ['invitation', 'rsvp'] as const;
@@ -11,11 +12,14 @@ function isTrack(value: string): value is Track {
 }
 
 /**
- * Public "instant start" flow — no login wall. Fill in the event, try one
- * free WhatsApp preview send, then log in only at the very end to
- * activate it (see /start/[track]/finish). Institutional isn't part of
- * this: it needs a company name/logo up front by design, so it keeps
- * going straight to the dashboard's authenticated creation flow.
+ * Authenticated "instant start" flow — the homepage journey cards send
+ * people to /register?next=/start/[track] first, so by the time anyone
+ * reaches this page they're already logged in; this guard is what
+ * actually enforces that (a direct/bookmarked visit without a session
+ * bounces to /login) rather than relying on the homepage link alone.
+ * Institutional isn't part of this: it needs a company name/logo up
+ * front by design, so it keeps going straight to the dashboard's
+ * creation flow.
  */
 export default async function QuickStartPage({
   params,
@@ -25,6 +29,12 @@ export default async function QuickStartPage({
   const { locale, track } = await params;
   setRequestLocale(locale);
   if (!isTrack(track)) notFound();
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect(`/${locale}/login?next=${encodeURIComponent(`/${locale}/start/${track}`)}`);
 
   const t = await getTranslations('Events.newChooser');
 
@@ -41,7 +51,7 @@ export default async function QuickStartPage({
         </div>
 
         <div className="animate-in fade-in slide-in-from-bottom-4 bg-card mt-8 rounded-2xl border p-6 delay-150 duration-700">
-          <QuickStartForm track={track} />
+          <QuickStartWizard track={track} />
         </div>
       </div>
     </main>

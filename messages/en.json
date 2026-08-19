@@ -11,9 +11,9 @@
       "startLink": "Try free"
     },
     "hero": {
-      "headlineLine1": "An invitation",
-      "headlineLine2": "that gets answered",
-      "subtitle": "From weddings to conferences, send it on WhatsApp and your guests reply with a single tap, then track every response easily and reliably the moment it arrives.",
+      "headlineLine1": "You send with a tap,",
+      "headlineLine2": "they reply with a tap",
+      "subtitle": "From weddings to conferences — straight on WhatsApp, with every reply tracked the moment it lands.",
       "primaryCta": "Try free",
       "eyebrow": "WhatsApp invitations"
     },
@@ -40,12 +40,7 @@
     },
     "pricing": {
       "title": "Pricing",
-      "subtitle": "No complexity",
-      "planTitle": "Try free — 3 times on us",
-      "planPoint1": "3 full trial invitations per account",
-      "planPoint2": "No credit card required",
-      "planPoint3": "Your real design, a real send — not a preview",
-      "cta": "Try free"
+      "subtitle": "We're finalizing pricing details now."
     },
     "footer": {
       "tagline": "Your digital invitations platform.",
@@ -57,7 +52,6 @@
       "privacyLink": "Privacy"
     },
     "tracks": {
-      "cta": "Discover",
       "invitation": {
         "title": "Digital Invitation",
         "description": "Every guest gets their own invite",
@@ -71,13 +65,6 @@
         "feature1": "One link for the event",
         "feature2": "They answer your questions",
         "feature3": "You know who's coming"
-      },
-      "institutional": {
-        "title": "Institutional Invitation",
-        "description": "Fully wrapped in your organization's identity",
-        "feature1": "Designed to your identity",
-        "feature2": "Guest management",
-        "feature3": "Attendance reports"
       },
       "ctaCaption": "Try your invitation now, free",
       "ctaLogin": "Log in and create it"
@@ -654,24 +641,33 @@
   },
   "QuickStart": {
     "nameLabel": "Event name",
-    "namePlaceholder": "e.g. Sara & Ahmad's Wedding",
+    "namePlaceholder": "e.g. Sara & Ahmad's wedding",
     "trialTitle": "A real trial before you commit",
-    "trialDescription": "Enter a name and phone number — as soon as you log in, they'll get your actual invitation exactly as your other guests would (real Accept/Decline buttons, QR code if enabled). Each account gets a limited number of these trial sends.",
+    "trialDescription": "Enter a name and phone number — we'll send them your real invitation exactly as it reaches your other guests (Accept/Decline buttons, QR if enabled). A limited number of these trial sends is allowed per account.",
     "trialTitleLink": "One link you share yourself",
-    "trialDescriptionLink": "Once you're logged in you'll get one link for the event — open it yourself to try it, or send it straight to a WhatsApp group. Everyone who opens it registers their own name and phone and answers on their own; you don't need to enter anyone's number now.",
+    "trialDescriptionLink": "You get one link for the event — open it yourself to try it, or send it straight to a WhatsApp group. Everyone who opens it registers their own name and phone and replies themselves; you don't need to enter anyone's number now.",
     "guestNameLabel": "Test guest name (optional)",
     "guestPhoneLabel": "Their phone number",
-    "finishButton": "Log in and try your invitation free",
+    "guestRequiredError": "Enter a name and phone number so we can send them the trial.",
+    "tryFreeLabel": "Try your invitation, free",
+    "tryButton": "Try your invitation now",
+    "approveButton": "Approve without trying",
+    "createButton": "Create your invitation",
+    "nextButton": "Next",
+    "backButton": "Back",
+    "stepLabel": "Step {current} of {total}",
+    "steps": {
+      "basics": "Basics",
+      "datetime": "Date & location",
+      "design": "Design",
+      "settings": "Settings",
+      "trial": "Trial"
+    },
     "finish": {
       "creating": "Creating your invitation and sending the trial...",
-      "creatingLink": "Creating your event...",
-      "unauthorized": "You need to log in to finish activating your invitation.",
-      "loginButton": "Log in",
-      "noDraft": "We couldn't find your invitation details — looks like you landed here from a direct link. Start over?",
-      "error": "Something went wrong while creating your invitation, please try again.",
-      "backToStart": "Start over"
-    },
-    "tryFreeLabel": "Try your invitation, free"
+      "creatingLink": "Creating your invitation...",
+      "error": "Something went wrong creating your invitation, please try again."
+    }
   },
   "TryDemo": {
     "title": "Try an InviteFlow invitation now",
@@ -685,6 +681,37 @@
       "phoneInvalid": "Please enter a valid international phone number (e.g. +966501234567).",
       "rateLimited": "Too many attempts in a short time — please try again shortly.",
       "unknown": "Something unexpected went wrong. Please try again."
+    }
+  },
+  "Institutional": {
+    "nav": "Institutions",
+    "badge": "Coming soon",
+    "title": "Invitations built for organizations",
+    "subtitle": "One identity, multiple teams, detailed attendance reports — for your conferences and large events. We're building it now.",
+    "feature1Title": "Branded to your organization",
+    "feature1Desc": "Your logo and colors on every invitation, not a generic template.",
+    "feature2Title": "Teams and permissions",
+    "feature2Desc": "More than one person managing invitations and guests on the same account.",
+    "feature3Title": "Advanced attendance reports",
+    "feature3Desc": "Real-time stats broken down by department or invited group.",
+    "feature4Title": "Dedicated support",
+    "feature4Desc": "Direct contact with us to get your event ready ahead of time.",
+    "form": {
+      "title": "Have an institutional event coming up?",
+      "subtitle": "Leave your details and we'll reach out as soon as this opens.",
+      "nameLabel": "Name",
+      "organizationLabel": "Organization name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone number (optional)",
+      "messageLabel": "What kind of event? (optional)",
+      "submit": "Register interest",
+      "submitting": "Sending...",
+      "success": "Got it! We'll reach out as soon as this opens.",
+      "errors": {
+        "invalidInput": "Please check the information you entered.",
+        "rateLimited": "Too many attempts in a short time, please try again shortly.",
+        "unknown": "Something went wrong, please try again."
+      }
     }
   }
 }

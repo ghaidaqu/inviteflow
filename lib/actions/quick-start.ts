@@ -79,12 +79,16 @@ function toIsoOrUndefined(value: string): string | undefined {
 
 /**
  * The only place in the whole /start flow that writes to the database —
- * called right after login (see FinishCreating). Creates the real event
- * with everything the organizer filled in before authenticating, then —
- * if they gave a test contact — adds that guest and sends them the actual
- * invitation (real Accept/Decline buttons, real QR), exactly what a
- * guest would get. This *is* the free trial; there's no separate
- * lightweight preview message.
+ * called directly from the wizard's last step (the organizer is already
+ * authenticated by the time they reach the wizard at all, see
+ * app/[locale]/start/[track]/page.tsx's auth guard). Creates the real
+ * event with everything the organizer filled in, then — if `sendTrial`
+ * is true and they gave a test contact — adds that guest and sends them
+ * the actual invitation (real Accept/Decline buttons, real QR), exactly
+ * what a guest would get. This *is* the free trial; there's no separate
+ * lightweight preview message. The wizard's "اعتماد" action calls this
+ * with `sendTrial: false` for someone who wants the event created
+ * without a test send.
  *
  * The auto-send is capped at 3 uses per account (checkRateLimit, scope =
  * user.id, no time window reset needed since this is a lifetime cap on
@@ -96,7 +100,9 @@ function toIsoOrUndefined(value: string): string | undefined {
  */
 export async function createEventFromQuickStartAction(
   draft: QuickStartDraft,
+  options?: { sendTrial?: boolean },
 ): Promise<QuickStartResult> {
+  const sendTrial = options?.sendTrial ?? true;
   if (!draft.name.trim() || draft.name.length > 150) return { error: 'invalidInput' };
 
   const supabase = await createClient();
@@ -193,7 +199,7 @@ export async function createEventFromQuickStartAction(
   // this redirects to) and shares it themselves; everyone who opens it
   // registers their own name and phone.
   const guestPhone = draft.track === 'invitation' ? canonicalPhone(draft.guestPhone) : null;
-  if (draft.track === 'invitation' && draft.guestName.trim() && guestPhone) {
+  if (sendTrial && draft.track === 'invitation' && draft.guestName.trim() && guestPhone) {
     const trialAllowed = await checkRateLimit(supabase, {
       action: 'quick-start-trial-send',
       scope: user.id,

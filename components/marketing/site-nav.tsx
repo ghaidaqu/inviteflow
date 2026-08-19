@@ -7,6 +7,7 @@ import { LanguageSwitcher } from '@/components/language-switcher';
 
 export function SiteNav() {
   const t = useTranslations('HomePage.nav');
+  const tInstitutional = useTranslations('Institutional');
 
   return (
     <header className="border-border/60 bg-background/90 sticky top-0 z-40 border-b backdrop-blur-sm">
@@ -15,7 +16,11 @@ export function SiteNav() {
           InviteFlow
         </Link>
 
-        <div className="hidden items-center gap-8 text-sm font-medium lg:flex">
+        {/* lg (1024px) hid this on perfectly ordinary desktop windows that
+            just aren't maximized — md (768px) still gives real phones
+            their own layout below it, but stops hiding these on an
+            actual laptop/desktop browser. */}
+        <div className="hidden items-center gap-6 text-sm font-medium md:flex">
           <a
             href="#journeys"
             className="text-muted-foreground hover:text-foreground transition-colors"
@@ -28,6 +33,12 @@ export function SiteNav() {
           >
             {t('pricingLink')}
           </a>
+          <Link
+            href="/institutional"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {tInstitutional('nav')}
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">
