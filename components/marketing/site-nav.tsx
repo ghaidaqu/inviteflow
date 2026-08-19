@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { ArrowUpRightIcon } from 'lucide-react';
 
 export function SiteNav() {
   const t = useTranslations('HomePage.nav');
@@ -33,11 +34,19 @@ export function SiteNav() {
           >
             {t('pricingLink')}
           </a>
+          {/* Deliberately not a plain text link like the two above — this
+              leads to what's meant to feel like a separate product
+              ("InviteFlow أعمال"), so it gets its own bordered-pill
+              treatment + opens in a new tab, instead of blending in as
+              just another section of this same site. */}
           <Link
             href="/institutional"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground border-border/60 hover:border-foreground/30 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors"
           >
             {tInstitutional('nav')}
+            <ArrowUpRightIcon className="size-3.5" />
           </Link>
         </div>
 

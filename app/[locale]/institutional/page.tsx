@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { PaletteIcon, UsersIcon, BarChart3Icon, HeadsetIcon } from 'lucide-react';
-import { SiteNav } from '@/components/marketing/site-nav';
-import { SiteFooter } from '@/components/marketing/site-footer';
+import { PaletteIcon, UsersIcon, BarChart3Icon, HeadsetIcon, ArrowUpRightIcon } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import { InstitutionalLeadForm } from '@/components/public/institutional-lead-form';
 
 const FEATURE_ICONS = [PaletteIcon, UsersIcon, BarChart3Icon, HeadsetIcon];
@@ -14,6 +14,14 @@ const FEATURE_ICONS = [PaletteIcon, UsersIcon, BarChart3Icon, HeadsetIcon];
  * actually headed: not ready yet, here's what's coming, leave your
  * details. No login wall, no product to try — just the pitch + a lead
  * form, so nothing here overpromises.
+ *
+ * Deliberately does NOT reuse SiteNav/SiteFooter — the nav link and
+ * footer link that bring people here both open in a new tab specifically
+ * so this reads as a separate destination ("InviteFlow أعمال") rather
+ * than just another section of the main site, and repeating the main
+ * site's own header/footer here would undercut that on arrival. Own
+ * minimal header (wordmark + "أعمال" badge + a way back to the main
+ * site) and footer instead.
  */
 export default async function InstitutionalPage({
   params,
@@ -33,7 +41,28 @@ export default async function InstitutionalPage({
 
   return (
     <>
-      <SiteNav />
+      <header className="bg-foreground text-background sticky top-0 z-40">
+        <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-4 py-5 sm:px-6">
+          <span className="flex items-center gap-2">
+            <span className="font-display text-lg">InviteFlow</span>
+            <span className="bg-background/15 rounded-full px-2.5 py-0.5 text-xs font-semibold">
+              {t('brandBadge')}
+            </span>
+          </span>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="text-background/70 hover:text-background inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
+            >
+              {t('backToMain')}
+              <ArrowUpRightIcon className="size-3.5" />
+            </Link>
+            <LanguageSwitcher className="border-background/25 text-background hover:bg-background/10 bg-transparent" />
+          </div>
+        </nav>
+      </header>
+
       <main className="flex flex-col">
         <section className="relative overflow-hidden py-14 sm:py-20">
           <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 text-center sm:px-6">
@@ -73,7 +102,18 @@ export default async function InstitutionalPage({
           </div>
         </section>
       </main>
-      <SiteFooter />
+
+      <footer className="bg-foreground text-background">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-2 px-4 py-8 text-center sm:px-6">
+          <span className="flex items-center gap-2">
+            <span className="font-display text-sm">InviteFlow</span>
+            <span className="bg-background/15 rounded-full px-2 py-0.5 text-[11px] font-semibold">
+              {t('brandBadge')}
+            </span>
+          </span>
+          <p className="text-background/60 text-xs">{t('footerTagline')}</p>
+        </div>
+      </footer>
     </>
   );
 }

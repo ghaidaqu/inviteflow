@@ -712,6 +712,9 @@
         "rateLimited": "محاولات كثيرة خلال وقت قصير، يرجى المحاولة بعد قليل.",
         "unknown": "حدث خطأ غير متوقع، حاول مرة أخرى."
       }
-    }
+    },
+    "brandBadge": "أعمال",
+    "backToMain": "InviteFlow الشخصي",
+    "footerTagline": "الحل المؤسسي القادم من InviteFlow."
   }
 }

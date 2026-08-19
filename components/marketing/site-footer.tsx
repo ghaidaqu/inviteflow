@@ -39,11 +39,16 @@ export async function SiteFooter() {
               </Link>
             </li>
             <li>
-              {/* Same destination as the "المؤسسات" nav link and the old
-                  institutional hero card — one consistent "not ready yet"
-                  story instead of this footer link alone still exposing
-                  the raw dashboard flow. */}
-              <Link href="/institutional" className="hover:text-foreground">
+              {/* Same destination + same new-tab treatment as the
+                  "المؤسسات" nav link — it's meant to read as a separate
+                  product ("InviteFlow أعمال"), not another section of
+                  this site. */}
+              <Link
+                href="/institutional"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground"
+              >
                 {tj('institutional.title')}
               </Link>
             </li>

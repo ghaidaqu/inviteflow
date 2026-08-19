@@ -712,6 +712,9 @@
         "rateLimited": "Too many attempts in a short time, please try again shortly.",
         "unknown": "Something went wrong, please try again."
       }
-    }
+    },
+    "brandBadge": "Business",
+    "backToMain": "InviteFlow Personal",
+    "footerTagline": "The institutional solution coming from InviteFlow."
   }
 }
