@@ -5,8 +5,6 @@
   },
   "HomePage": {
     "nav": {
-      "journeysLink": "المنتجات",
-      "pricingLink": "الأسعار",
       "loginLink": "تسجيل الدخول",
       "startLink": "جرب مجاناً"
     },

@@ -17,28 +17,17 @@ export function SiteNav() {
           InviteFlow
         </Link>
 
-        {/* lg (1024px) hid this on perfectly ordinary desktop windows that
-            just aren't maximized — md (768px) still gives real phones
-            their own layout below it, but stops hiding these on an
-            actual laptop/desktop browser. */}
-        <div className="hidden items-center gap-6 text-sm font-medium md:flex">
-          <a
-            href="#journeys"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t('journeysLink')}
-          </a>
-          <a
-            href="#pricing"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t('pricingLink')}
-          </a>
-          {/* Deliberately not a plain text link like the two above — this
-              leads to what's meant to feel like a separate product
-              ("InviteFlow أعمال"), so it gets its own bordered-pill
-              treatment + opens in a new tab, instead of blending in as
-              just another section of this same site. */}
+        {/* "المنتجات"/"الأسعار" (in-page section anchors) removed — the
+            homepage no longer needs its own section nav here. المؤسسات
+            moved into this action cluster since it no longer has section
+            links to sit beside; grouped first, closest to the logo, since
+            it's a destination (a different product) rather than an
+            action on this page like the two that follow it. */}
+        <div className="flex items-center gap-3">
+          {/* Deliberately not a plain text link — this leads to what's
+              meant to feel like a separate product ("InviteFlow أعمال"),
+              so it gets its own bordered-pill treatment + opens in a new
+              tab, instead of blending in as an action on this site. */}
           <Link
             href="/institutional"
             target="_blank"
@@ -48,9 +37,6 @@ export function SiteNav() {
             {tInstitutional('nav')}
             <ArrowUpRightIcon className="size-3.5" />
           </Link>
-        </div>
-
-        <div className="flex items-center gap-3">
           <Link
             href="/login"
             className="text-muted-foreground hover:text-foreground hidden text-sm font-medium sm:inline"

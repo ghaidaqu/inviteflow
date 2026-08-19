@@ -5,8 +5,6 @@
   },
   "HomePage": {
     "nav": {
-      "journeysLink": "Products",
-      "pricingLink": "Pricing",
       "loginLink": "Log in",
       "startLink": "Try free"
     },

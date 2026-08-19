@@ -137,7 +137,14 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                     {tt(`${key}.title`)}
                   </h3>
 
-                  <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out pointer-fine:grid-rows-[0fr] pointer-fine:group-hover:grid-rows-[1fr] pointer-fine:group-focus-visible:grid-rows-[1fr]">
+                  {/* Feature bullets are a hover-only bonus for mouse users
+                      — `hidden` (not just pre-hover-hidden) on touch, so
+                      they never stack into the mobile resting card at all.
+                      Cramming all three lines onto a small touch card just
+                      because there's no hover to gate them behind reads as
+                      clutter, and the card's title + CTA already say
+                      enough to act on without them. */}
+                  <div className="hidden transition-[grid-template-rows] duration-300 ease-out pointer-fine:grid pointer-fine:grid-rows-[0fr] pointer-fine:group-hover:grid-rows-[1fr] pointer-fine:group-focus-visible:grid-rows-[1fr]">
                     <div className="overflow-hidden">
                       {/* dir set explicitly per-locale rather than
                           inheriting the row's forced dir="ltr" (that
@@ -146,7 +153,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                           lands on the wrong side of Arabic text. */}
                       <div
                         dir={isRtl ? 'rtl' : 'ltr'}
-                        className="flex flex-col gap-1 pt-1.5 opacity-100 transition-opacity duration-300 pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-visible:opacity-100"
+                        className="flex flex-col gap-1 pt-1.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
                       >
                         {features.map((feature) => (
                           <span
@@ -157,20 +164,29 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                             {feature}
                           </span>
                         ))}
-                        {/* Both lead with login because their trial is the
-                            real thing — the guest's own design, sent for
-                            real, 3 times per account — unlike the
-                            homepage's separate anonymous demo (/try). */}
-                        <span className="mt-1 flex flex-col gap-0.5">
-                          <span className="text-[11px] font-medium opacity-70">
-                            {tt('ctaCaption')}
-                          </span>
-                          <span className="inline-flex items-center gap-1.5 text-sm font-semibold">
-                            {tt('ctaLogin')}
-                            <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                          </span>
-                        </span>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* The CTA is the actual next step, not a bonus detail —
+                      it stays on by default on touch (no hover to wait
+                      for), and joins the same hover reveal as the features
+                      on desktop so the resting desktop card stays just as
+                      quiet as before. Both lead with login because their
+                      trial is the real thing — the guest's own design,
+                      sent for real, 3 times per account — unlike the
+                      homepage's separate anonymous demo (/try). */}
+                  <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out pointer-fine:grid-rows-[0fr] pointer-fine:group-hover:grid-rows-[1fr] pointer-fine:group-focus-visible:grid-rows-[1fr]">
+                    <div className="overflow-hidden">
+                      <span className="mt-1 flex flex-col gap-0.5 pt-1.5 opacity-100 transition-opacity duration-300 pointer-fine:pt-0 pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-visible:opacity-100">
+                        <span className="text-[11px] font-medium opacity-70">
+                          {tt('ctaCaption')}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 text-sm font-semibold">
+                          {tt('ctaLogin')}
+                          <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                        </span>
+                      </span>
                     </div>
                   </div>
                 </div>
