@@ -217,7 +217,7 @@ html[dir='rtl'] {
    it, a light card (bg-card, only a few % lighter than the page cream)
    has zero visible edge and reads as missing entirely, not just quiet.
    Hover/focus swaps that resting shadow for the one interactive "spend
-   your boldness here" moment: a cyan ring + glow + lift, defined once
+   your boldness here" moment: a teal ring + glow + lift, defined once
    instead of copy-pasted per component with divergent values. */
 .hover-glow {
   box-shadow:
