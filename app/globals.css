@@ -56,7 +56,11 @@
 }
 
 :root {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* One font for the whole app — Amiri leads everywhere (headline, body,
+     dashboard, the wordmark), not just section titles via .font-display.
+     Cairo/Geist stay only as a silent fallback for the rare glyph Amiri
+     doesn't cover, never as a visible second typeface. */
+  --font-sans: var(--font-amiri), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   /* مهلّي identity: warm sand/parchment, terracotta primary, a muted teal
      secondary (the "link" track's own color, doubling as the reserved
      interactive accent — no separate neon accent color), deep coffee-brown
@@ -103,13 +107,13 @@
 }
 
 html[dir='rtl'] {
-  /* Cairo is self-hosted as two subset files (see lib/fonts.ts): Arabic
-     first so Arabic text uses it, Latin next so digits and Latin words
-     inside Arabic copy stay in the same typeface instead of dropping to
-     Geist. The browser resolves this per glyph, left to right. */
+  /* Amiri covers Arabic and Latin in one file, so RTL doesn't need Cairo's
+     two-subset stacking trick — it only needed that because Cairo itself
+     ships Arabic and Latin as separate files. Cairo/Geist stay after it
+     purely as a fallback for any glyph Amiri lacks. */
   --font-sans:
-    var(--font-cairo-arabic), var(--font-cairo-latin), var(--font-geist-sans), ui-sans-serif,
-    system-ui, sans-serif;
+    var(--font-amiri), var(--font-cairo-arabic), var(--font-cairo-latin), var(--font-geist-sans),
+    ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -240,15 +244,10 @@ html[dir='rtl'] {
   }
 }
 
-/* Display treatment reserved for section headlines, hero titles, and the
-   wordmark — never body copy, buttons, table text, or dialog/card titles
-   (those stay on --font-heading, i.e. plain Cairo), or the app stops
-   reading like a functional tool wherever it's dense. Amiri is a classic
-   Arabic book-typesetting face — literary and warm rather than a generic
-   sans blown up big, self-hosted per lib/fonts.ts. Uppercase/negative
-   tracking never applied here (meaningless for Arabic, and Amiri is a
-   serif, not the old sans-at-900 trick) — weight alone carries it. */
+/* Amiri is the one font for the whole app now (see --font-sans above), so
+   this is no longer a font-family switch — just the bold cut for section
+   headlines, hero titles, and the wordmark, distinguishing them from body
+   copy by weight alone rather than by typeface. */
 .font-display {
-  font-family: var(--font-amiri), 'Amiri', serif;
   font-weight: 700;
 }
