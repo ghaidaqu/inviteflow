@@ -51,12 +51,17 @@ export default async function InstitutionalPage({
           </span>
 
           <div className="flex items-center gap-3">
+            {/* "InviteFlow الشخصي" wraps to two lines at narrow widths and
+                collides with the wordmark+badge on the other side — a
+                short label below sm keeps this a one-line row; the fuller
+                context only fits (and is only needed) once there's room. */}
             <Link
               href="/"
-              className="text-background/70 hover:text-background inline-flex items-center gap-1.5 text-sm font-medium transition-colors"
+              className="text-background/70 hover:text-background inline-flex items-center gap-1.5 text-sm font-medium whitespace-nowrap transition-colors"
             >
-              {t('backToMain')}
-              <ArrowUpRightIcon className="size-3.5" />
+              <span className="sm:hidden">{t('backToMainShort')}</span>
+              <span className="hidden sm:inline">{t('backToMain')}</span>
+              <ArrowUpRightIcon className="size-3.5 shrink-0" />
             </Link>
             <LanguageSwitcher className="border-background/25 text-background hover:bg-background/10 bg-transparent" />
           </div>

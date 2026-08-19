@@ -713,6 +713,7 @@
     },
     "brandBadge": "Business",
     "backToMain": "InviteFlow Personal",
+    "backToMainShort": "Home",
     "footerTagline": "The institutional solution coming from InviteFlow."
   }
 }
