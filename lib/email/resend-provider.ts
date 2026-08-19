@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import type { EmailProvider, EmailMessage } from './provider';
 
-const FROM_ADDRESS = process.env.EMAIL_FROM || 'InviteFlow <onboarding@resend.dev>';
+const FROM_ADDRESS = process.env.EMAIL_FROM || 'مهلّي <onboarding@resend.dev>';
 
 export function createResendProvider(apiKey: string): EmailProvider {
   const resend = new Resend(apiKey);

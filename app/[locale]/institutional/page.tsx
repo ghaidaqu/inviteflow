@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { PaletteIcon, UsersIcon, BarChart3Icon, HeadsetIcon, ArrowUpRightIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { BrandMark } from '@/components/brand-mark';
 import { InstitutionalLeadForm } from '@/components/public/institutional-lead-form';
 
 const FEATURE_ICONS = [PaletteIcon, UsersIcon, BarChart3Icon, HeadsetIcon];
@@ -17,7 +18,7 @@ const FEATURE_ICONS = [PaletteIcon, UsersIcon, BarChart3Icon, HeadsetIcon];
  *
  * Deliberately does NOT reuse SiteNav/SiteFooter — the nav link and
  * footer link that bring people here both open in a new tab specifically
- * so this reads as a separate destination ("InviteFlow أعمال") rather
+ * so this reads as a separate destination ("مهلّي أعمال") rather
  * than just another section of the main site, and repeating the main
  * site's own header/footer here would undercut that on arrival. Own
  * minimal header (wordmark + "أعمال" badge + a way back to the main
@@ -32,6 +33,7 @@ export default async function InstitutionalPage({
   setRequestLocale(locale);
 
   const t = await getTranslations('Institutional');
+  const tBrand = await getTranslations('Brand');
 
   const features = [1, 2, 3, 4].map((n) => ({
     title: t(`feature${n}Title` as 'feature1Title'),
@@ -44,14 +46,17 @@ export default async function InstitutionalPage({
       <header className="bg-foreground text-background sticky top-0 z-40">
         <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-4 py-5 sm:px-6">
           <span className="flex items-center gap-2">
-            <span className="font-display text-lg">InviteFlow</span>
+            <span className="font-display flex items-center gap-1.5 text-lg">
+              <BrandMark className="size-5" />
+              {tBrand('name')}
+            </span>
             <span className="bg-background/15 rounded-full px-2.5 py-0.5 text-xs font-semibold">
               {t('brandBadge')}
             </span>
           </span>
 
           <div className="flex items-center gap-3">
-            {/* "InviteFlow الشخصي" wraps to two lines at narrow widths and
+            {/* "مهلّي الشخصي" wraps to two lines at narrow widths and
                 collides with the wordmark+badge on the other side — a
                 short label below sm keeps this a one-line row; the fuller
                 context only fits (and is only needed) once there's room. */}
@@ -111,7 +116,10 @@ export default async function InstitutionalPage({
       <footer className="bg-foreground text-background">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-2 px-4 py-8 text-center sm:px-6">
           <span className="flex items-center gap-2">
-            <span className="font-display text-sm">InviteFlow</span>
+            <span className="font-display flex items-center gap-1.5 text-sm">
+              <BrandMark className="size-4" />
+              {tBrand('name')}
+            </span>
             <span className="bg-background/15 rounded-full px-2 py-0.5 text-[11px] font-semibold">
               {t('brandBadge')}
             </span>

@@ -4,17 +4,20 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { BrandMark } from '@/components/brand-mark';
 import { ArrowUpRightIcon } from 'lucide-react';
 
 export function SiteNav() {
   const t = useTranslations('HomePage.nav');
   const tInstitutional = useTranslations('Institutional');
+  const tBrand = useTranslations('Brand');
 
   return (
     <header className="border-border/60 bg-background/90 sticky top-0 z-40 border-b backdrop-blur-sm">
       <nav className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-4 py-5 sm:px-6">
-        <Link href="/" className="font-display text-lg">
-          InviteFlow
+        <Link href="/" className="font-display flex items-center gap-1.5 text-lg">
+          <BrandMark className="size-5" />
+          {tBrand('name')}
         </Link>
 
         {/* "المنتجات"/"الأسعار" (in-page section anchors) removed — the
@@ -25,7 +28,7 @@ export function SiteNav() {
             action on this page like the two that follow it. */}
         <div className="flex items-center gap-3">
           {/* Deliberately not a plain text link — this leads to what's
-              meant to feel like a separate product ("InviteFlow أعمال"),
+              meant to feel like a separate product ("مهلّي أعمال"),
               so it gets its own bordered-pill treatment + opens in a new
               tab, instead of blending in as an action on this site. */}
           <Link

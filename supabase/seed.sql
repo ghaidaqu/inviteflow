@@ -16,7 +16,7 @@ declare
   v_response1_id uuid;
   v_ticket_type_id uuid;
 begin
-  -- Demo organizer account: demo@inviteflow.app / password123
+  -- Demo organizer account: demo@mahalli.app / password123
   insert into auth.users (
     id, instance_id, aud, role, email, encrypted_password,
     email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
@@ -27,7 +27,7 @@ begin
     '00000000-0000-0000-0000-000000000000',
     'authenticated',
     'authenticated',
-    'demo@inviteflow.app',
+    'demo@mahalli.app',
     crypt('password123', gen_salt('bf')),
     now(),
     '{"provider":"email","providers":["email"]}',
@@ -43,12 +43,12 @@ begin
 
   -- Organization ------------------------------------------------------------
   insert into public.organizations (owner_id, name, slug)
-  values (v_owner_id, 'InviteFlow Demo', 'inviteflow-demo')
+  values (v_owner_id, 'مهلّي (تجريبي)', 'mahalli-demo')
   on conflict (slug) do nothing
   returning id into v_org_id;
 
   if v_org_id is null then
-    select id into v_org_id from public.organizations where slug = 'inviteflow-demo';
+    select id into v_org_id from public.organizations where slug = 'mahalli-demo';
   end if;
 
   -- Event 1: published wedding with RSVP + custom questions -----------------

@@ -1,7 +1,10 @@
 {
   "Metadata": {
-    "title": "InviteFlow — Elegant Digital Invitations",
+    "title": "Mahalli — Elegant Digital Invitations",
     "description": "Elegant digital invitations with instant WhatsApp RSVP confirmation — for occasions that deserve the details done right."
+  },
+  "Brand": {
+    "name": "Mahalli"
   },
   "HomePage": {
     "nav": {
@@ -9,11 +12,11 @@
       "startLink": "Try free"
     },
     "hero": {
-      "headlineLine1": "You send with a tap,",
-      "headlineLine2": "they reply with a tap",
-      "subtitle": "From weddings to conferences — straight on WhatsApp, with every reply tracked the moment it lands.",
+      "headlineLine1": "Every invitation...",
+      "headlineLine2": "an open door",
+      "subtitle": "The same welcome you know, just reaching your guests faster and more precisely.",
       "primaryCta": "Try free",
-      "eyebrow": "WhatsApp invitations"
+      "eyebrow": "Digital invitations, Gulf hospitality style"
     },
     "trustStrip": {
       "item1Title": "Direct WhatsApp",
@@ -45,7 +48,7 @@
       "journeysHeading": "Product",
       "accountHeading": "Account",
       "loginLink": "Log in",
-      "copyright": "© {year} InviteFlow",
+      "copyright": "© {year} Mahalli",
       "termsLink": "Terms",
       "privacyLink": "Privacy"
     },
@@ -66,6 +69,15 @@
       },
       "ctaCaption": "Try your invitation now, free",
       "ctaLogin": "Log in and create it"
+    },
+    "closing": {
+      "headlineLine1": "You send with a tap,",
+      "headlineLine2": "they reply with a tap",
+      "subtitle": "From weddings to conferences — straight on WhatsApp, with every reply tracked the moment it lands."
+    },
+    "ways": {
+      "eyebrow": "Invitation options",
+      "title": "A digital invitation, or a link invitation"
     }
   },
   "Common": {
@@ -606,9 +618,9 @@
     "lastUpdated": "Last updated: August 18, 2026",
     "terms": {
       "title": "Terms of Service",
-      "intro": "These terms govern your use of InviteFlow. The platform is currently in a trial phase — by using it, you agree to the terms below.",
+      "intro": "These terms govern your use of Mahalli. The platform is currently in a trial phase — by using it, you agree to the terms below.",
       "section1Heading": "1. Who uses the platform",
-      "section1Body": "InviteFlow serves two kinds of users: organizers (who create an account to manage their events) and guests (who use an invitation link to respond, with no account needed). These terms apply to both, as relevant to how they use the platform.",
+      "section1Body": "Mahalli serves two kinds of users: organizers (who create an account to manage their events) and guests (who use an invitation link to respond, with no account needed). These terms apply to both, as relevant to how they use the platform.",
       "section2Heading": "2. Your account and responsibility",
       "section2Body": "You're responsible for the accuracy of your event and guest data, and for keeping your account credentials secure. Don't use the platform to send abusive or unlawful content, or to collect guest data without their knowledge.",
       "section3Heading": "3. Service limits",
@@ -618,7 +630,7 @@
       "section5Heading": "5. Changes and suspension",
       "section5Body": "We may update these terms or the platform's features as we continue building it, and we'll aim to notify you of any material change. Any account used in violation of these terms may be suspended.",
       "section6Heading": "6. Contact",
-      "section6Body": "For any question about these terms, reach us at support@inviteflow.app."
+      "section6Body": "For any question about these terms, reach us at support@mahalli.app."
     },
     "privacy": {
       "title": "Privacy Policy",
@@ -634,7 +646,7 @@
       "section5Heading": "5. Data security",
       "section5Body": "Data is stored in Supabase (a secure PostgreSQL-based infrastructure), protected by row-level access policies. No full-privilege admin key is ever used from inside the browser.",
       "section6Heading": "6. Your rights",
-      "section6Body": "Any guest can edit or delete their response via their own private link at any time before the deadline. To request full deletion of your data from any event, reach us at support@inviteflow.app."
+      "section6Body": "Any guest can edit or delete their response via their own private link at any time before the deadline. To request full deletion of your data from any event, reach us at support@mahalli.app."
     }
   },
   "QuickStart": {
@@ -668,7 +680,7 @@
     }
   },
   "TryDemo": {
-    "title": "Try an InviteFlow invitation now",
+    "title": "Try an Mahalli invitation now",
     "subtitle": "Enter your name and phone, and a real trial invitation lands on your WhatsApp right away.",
     "nameLabel": "Name",
     "phoneLabel": "Phone number",
@@ -712,8 +724,8 @@
       }
     },
     "brandBadge": "Business",
-    "backToMain": "InviteFlow Personal",
+    "backToMain": "Mahalli Personal",
     "backToMainShort": "Home",
-    "footerTagline": "The institutional solution coming from InviteFlow."
+    "footerTagline": "The institutional solution coming from Mahalli."
   }
 }

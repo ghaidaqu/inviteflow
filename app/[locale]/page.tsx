@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import { SiteNav } from '@/components/marketing/site-nav';
 import { HeroJourneys } from '@/components/marketing/hero-journeys';
+import { ClosingStatement } from '@/components/marketing/closing-statement';
 import { PricingSection } from '@/components/marketing/pricing-section';
 import { SiteFooter } from '@/components/marketing/site-footer';
 
@@ -14,16 +15,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <>
       <SiteNav />
       <main className="flex flex-col">
-        {/* The hero subtitle alone carries the whole pitch now — WhatsApp
-            mechanics, no sign-up, and occasion range ("from weddings to
-            conferences") — replacing what used to be three separate
-            sections (why-InviteFlow, an occasion-type tile grid, a
-            second CTA band) each repeating a slice of the same pitch. */}
+        {/* Photo hero (an entrance, "كل دعوة... باب مفتوح") leads now
+            instead of the plain-text headline — a strong image earns the
+            opening slot better than typography alone. The two-track
+            "ways" list sits right under it, inside the same component,
+            since choosing a path is the very next thing a visitor needs.
+            The original headline ("ترسلها بضغطة...") didn't disappear —
+            it moved to ClosingStatement, a quiet reprise right before
+            pricing instead of the opening statement. */}
         <HeroJourneys locale={locale} />
-        {/* Pricing is the page's closing statement now — it carries the
-            dark full-bleed band that final-cta.tsx used to own (deleted:
-            its own copy was pure repetition of the hero's CTA once the
-            hero subtitle became comprehensive enough on its own). */}
+        <ClosingStatement />
         <PricingSection />
       </main>
       <SiteFooter />

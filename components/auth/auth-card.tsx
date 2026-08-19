@@ -13,6 +13,7 @@ export async function AuthCard({
   children: React.ReactNode;
 }) {
   const t = await getTranslations('Auth');
+  const tBrand = await getTranslations('Brand');
 
   return (
     <main className="relative flex flex-1 items-center justify-center px-4 py-12">
@@ -34,7 +35,7 @@ export async function AuthCard({
           className="font-display text-primary mb-6 flex items-center justify-center gap-1.5 text-lg"
         >
           <SparklesIcon className="size-5" />
-          InviteFlow
+          {tBrand('name')}
         </Link>
 
         <Card className="border-border/60 bg-card/90 shadow-primary/5 w-full shadow-xl backdrop-blur-sm">

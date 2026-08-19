@@ -20,12 +20,12 @@ export type TryDemoState = { error?: string; token?: string };
  * top-level "جرب مجاناً" nav/hero/pricing buttons point here.
  *
  * All demo requests share one dedicated event (created once, reused after)
- * under the same 'inviteflow-demo' organization the seed data already
+ * under the same 'mahalli-demo' organization the seed data already
  * uses — never mixed with the real "sara-ahmad-wedding" portfolio demo
  * event, so this feature's guest list stays its own thing.
  */
 
-const DEMO_ORG_SLUG = 'inviteflow-demo';
+const DEMO_ORG_SLUG = 'mahalli-demo';
 const DEMO_EVENT_SLUG = 'trial-demo';
 
 async function getOrCreateDemoEvent(

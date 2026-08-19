@@ -1,10 +1,11 @@
 import { getTranslations, getLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { SparklesIcon } from 'lucide-react';
+import { BrandMark } from '@/components/brand-mark';
 
 export async function SiteFooter() {
   const t = await getTranslations('HomePage.footer');
   const tj = await getTranslations('HomePage.journeys');
+  const tBrand = await getTranslations('Brand');
   const locale = await getLocale();
   const year = new Date().getFullYear();
 
@@ -13,8 +14,8 @@ export async function SiteFooter() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 sm:grid-cols-3 sm:px-6">
         <div className="flex flex-col gap-3 sm:col-span-1">
           <span className="font-display text-primary flex items-center gap-1.5 text-lg">
-            <SparklesIcon className="size-5" />
-            InviteFlow
+            <BrandMark className="size-5" />
+            {tBrand('name')}
           </span>
           <p className="text-muted-foreground max-w-xs text-sm">{t('tagline')}</p>
         </div>
@@ -41,7 +42,7 @@ export async function SiteFooter() {
             <li>
               {/* Same destination + same new-tab treatment as the
                   "المؤسسات" nav link — it's meant to read as a separate
-                  product ("InviteFlow أعمال"), not another section of
+                  product ("مهلّي أعمال"), not another section of
                   this site. */}
               <Link
                 href="/institutional"

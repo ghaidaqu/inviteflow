@@ -48,12 +48,16 @@ export const geistMono = localFont({
   display: 'swap',
 });
 
-// Decorative editorial serif — used only for the huge cropped "INVITE"
-// background typography on the homepage, never for real body/UI text.
-export const playfair = localFont({
-  src: './../public/fonts/playfair-latin.woff2',
-  variable: '--font-playfair',
-  weight: '700 900',
+// Display serif for marketing headlines only (hero, section titles, the
+// wordmark) — a classic Arabic book-typesetting face, not a UI font.
+// Dashboard/forms/tables keep Cairo for dense-text legibility; this is
+// scoped to `.font-display` in globals.css, not the base --font-sans stack.
+export const amiri = localFont({
+  src: [
+    { path: './../public/fonts/amiri-400.woff2', weight: '400', style: 'normal' },
+    { path: './../public/fonts/amiri-700.woff2', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-amiri',
   display: 'swap',
 });
 
@@ -62,5 +66,5 @@ export const fontVariables = [
   cairoLatin.variable,
   geistSans.variable,
   geistMono.variable,
-  playfair.variable,
+  amiri.variable,
 ].join(' ');

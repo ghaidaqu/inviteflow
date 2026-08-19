@@ -33,7 +33,7 @@ function wrap(locale: Locale, bodyHtml: string): string {
 <html lang="${locale}" dir="${dir}">
   <body style="font-family: system-ui, sans-serif; background: #f8f8f8; padding: 24px;">
     <div style="max-width: 480px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 24px; border: 1px solid #eee;">
-      <div style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">InviteFlow</div>
+      <div style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">مهلّي</div>
       ${bodyHtml}
     </div>
   </body>

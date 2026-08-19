@@ -24,7 +24,7 @@ export function buildIcsContent({
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//InviteFlow//EN',
+    'PRODID:-//Mahalli//EN',
     'CALSCALE:GREGORIAN',
     'BEGIN:VEVENT',
     `UID:${uid}`,

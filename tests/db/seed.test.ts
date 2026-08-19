@@ -17,9 +17,7 @@ describe('seed data', () => {
   }, 30_000);
 
   it('creates the demo organizer and organization', async () => {
-    const org = await db.query(
-      `select * from public.organizations where slug = 'inviteflow-demo';`,
-    );
+    const org = await db.query(`select * from public.organizations where slug = 'mahalli-demo';`);
     expect(org.rows).toHaveLength(1);
   });
 
@@ -54,9 +52,7 @@ describe('seed data', () => {
     const seedSql = readFileSync(SEED_PATH, 'utf-8');
     await expect(db.exec(seedSql)).resolves.not.toThrow();
 
-    const orgs = await db.query(
-      `select * from public.organizations where slug = 'inviteflow-demo';`,
-    );
+    const orgs = await db.query(`select * from public.organizations where slug = 'mahalli-demo';`);
     expect(orgs.rows).toHaveLength(1);
   });
 });

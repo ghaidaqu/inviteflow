@@ -1,23 +1,21 @@
+import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon } from 'lucide-react';
+import heroDoorway from '@/public/images/marketing/hero-doorway.jpg';
 
 type JourneyKey = 'invitation' | 'rsvp';
 
-// Two real products, two token-driven surfaces — olive and tinted sky.
-// Institutional used to be a third card here (the reference's dark
-// card), but now that it has its own dedicated /institutional page
-// linked from the nav, repeating it here as a third hero card was pure
-// duplication of the same destination. Every color here comes from the
-// shared design system, so `currentColor` alone (via
-// `text-current`/`bg-current`) is enough to theme the icon badge,
-// bullet dots, and index number correctly on both without a per-card
-// color branch.
+// Two real products, two token-driven colors — primary (rust) for the
+// digital-invitation track, secondary (teal) for the link track. Every
+// color here comes from the shared design system, so `currentColor`
+// alone (via `text-current`) is enough to theme the icon badge and CTA
+// link on both without a per-card color branch.
 const JOURNEY_STYLE: Record<
   JourneyKey,
   {
-    surface: string;
+    color: string;
     /** Sends through /register first — the quick-start wizard itself is
      *  login-gated (see start/[track]/page.tsx), so there's no point
      *  landing on it unauthenticated just to bounce straight back to
@@ -31,12 +29,12 @@ const JOURNEY_STYLE: Record<
   }
 > = {
   invitation: {
-    surface: 'bg-primary text-primary-foreground',
+    color: 'text-primary',
     href: (locale) => `/register?next=${encodeURIComponent(`/${locale}/start/invitation`)}`,
     icon: MailIcon,
   },
   rsvp: {
-    surface: 'bg-secondary text-secondary-foreground',
+    color: 'text-secondary',
     href: (locale) => `/register?next=${encodeURIComponent(`/${locale}/start/rsvp`)}`,
     icon: LinkIcon,
   },
@@ -46,42 +44,46 @@ const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp'];
 
 export async function HeroJourneys({ locale }: { locale: string }) {
   const t = await getTranslations('HomePage.hero');
+  const tw = await getTranslations('HomePage.ways');
   const tt = await getTranslations('HomePage.tracks');
   const isRtl = locale === 'ar';
   const ArrowIcon = isRtl ? ArrowLeftIcon : ArrowRightIcon;
 
   return (
-    <section id="journeys" className="relative overflow-hidden py-14 sm:py-20">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 sm:gap-14 sm:px-6">
-        {/* Text content always sits above the card row — stacked at every
-            breakpoint, not just on mobile, so the headline reads as the
-            page's opening statement before the three product cards.
-            Internally it mirrors the reference's asymmetric hero: a small
-            eyebrow + big headline on the reading-start side, the subtitle
-            set apart on the other, bottom-aligned — not just stacked
-            straight under each other. */}
-        <div className="animate-in fade-in slide-in-from-bottom-4 relative z-10 flex flex-col gap-6 duration-700">
-          <div className="grid gap-4 sm:grid-cols-[7fr_4fr] sm:items-end sm:gap-10">
-            <div className="flex flex-col gap-3">
-              {/* uppercase/tracking-wide has no meaning for Arabic script
-                  (same reasoning as .font-display) — English keeps the
-                  small-caps-kicker look, Arabic just stays plain. */}
-              <span
-                className={`text-primary font-mono text-xs font-semibold ${isRtl ? '' : 'tracking-[0.14em] uppercase'}`}
-              >
-                {t('eyebrow')}
-              </span>
-              {/* One flowing clause — wraps naturally at whatever width the
-                  viewport gives it (text-balance) instead of a hard <br />
-                  forcing a break regardless of how the line actually fits. */}
-              <h1 className="font-display text-3xl leading-[1.15] text-balance sm:text-4xl">
-                {t('headlineLine1')} <span className="text-primary">{t('headlineLine2')}</span>
-              </h1>
-            </div>
-            <p className="text-muted-foreground text-lg text-balance sm:pb-1">{t('subtitle')}</p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
+    <>
+      {/* Full-bleed photo hero — an entrance, not a person, so the image
+          reads as "welcome" for every guest and organizer regardless of
+          who they are, rather than defaulting to one gender's likeness
+          the way most hospitality stock photography does. Dark gradient
+          scrim keeps the cream headline legible over the busy stonework
+          without flattening the photo into a plain color block. */}
+      <section className="relative flex min-h-[88vh] items-center justify-center overflow-hidden">
+        <Image
+          src={heroDoorway}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+          style={{ objectPosition: 'center 65%' }}
+        />
+        <div
+          aria-hidden
+          className="from-foreground/95 via-foreground/45 to-foreground/25 absolute inset-0 bg-gradient-to-t"
+        />
+        <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 text-center sm:px-6">
+          <span className="text-primary-foreground/90 flex items-center gap-2 text-sm font-semibold">
+            <span className="bg-primary-foreground/60 h-px w-6" />
+            {t('eyebrow')}
+            <span className="bg-primary-foreground/60 h-px w-6" />
+          </span>
+          <h1 className="font-display text-primary-foreground text-4xl leading-[1.3] text-balance sm:text-6xl">
+            {t('headlineLine1')} <span className="text-primary">{t('headlineLine2')}</span>
+          </h1>
+          <p className="text-primary-foreground/85 max-w-xl text-lg text-balance">
+            {t('subtitle')}
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
             <Button
               size="lg"
               variant="secondary"
@@ -92,109 +94,54 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             </Button>
           </div>
         </div>
+      </section>
 
-        {/* Two real products, two cards — quiet by default on
-            mouse-driven devices, each getting the same cyan ring + lift on
-            hover/focus (.hover-glow, defined once in globals.css). The
-            icon fades out and a content block grows in below the title —
-            features + the discover link, both hidden until then — using a
-            grid-rows 0fr->1fr animation for a real height reveal instead
-            of an opacity-only crossfade, matching the reference's
-            card-reveal motion. That collapsed-until-hover behavior is
-            scoped to pointer-fine (a mouse) only — touch devices have no
-            equivalent of :hover firing from a tap, so on mobile the
-            content is expanded from the start instead of being
-            permanently unreachable. Forced left-to-right order
-            (01 → 02) regardless of page direction, since these read as a
-            fixed sequence of paths through the product, not a mirrored
-            layout. */}
-        <div dir="ltr" className="relative z-10 grid max-w-xl grid-cols-2 gap-3 sm:gap-5">
-          {JOURNEY_KEYS.map((key, index) => {
-            const style = JOURNEY_STYLE[key];
-            const Icon = style.icon;
-            const features = [tt(`${key}.feature1`), tt(`${key}.feature2`), tt(`${key}.feature3`)];
+      {/* Two real products, presented as a quiet icon-led list rather than
+          a pair of boxed cards — no borders/background, just an icon,
+          color-coded label, title, description, and the actual next
+          step, separated by a single hairline between the two rows. */}
+      <section className="py-14 sm:py-20">
+        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
+          <div className="mb-10 flex flex-col gap-2">
+            <span className="text-primary text-sm font-semibold">{tw('eyebrow')}</span>
+            <h2 className="font-display text-2xl sm:text-3xl">{tw('title')}</h2>
+          </div>
 
-            return (
-              <Link
-                key={key}
-                href={style.href(locale)}
-                className={`hover-glow group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-2xl p-3 sm:min-h-[210px] sm:p-4 ${style.surface}`}
-              >
-                {/* :hover/:focus-visible never fire from a tap on touch
-                    devices, so a mobile visitor could never see this
-                    reveal at all — pointer-fine scopes the "collapsed
-                    until hover" behavior to devices that actually have a
-                    mouse; touch devices just get it expanded by default. */}
-                <span className="relative flex size-9 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/15 transition-opacity duration-300 pointer-fine:group-hover:opacity-0">
-                  <Icon className="size-4.5" />
-                </span>
+          <div className="flex flex-col">
+            {JOURNEY_KEYS.map((key, index) => {
+              const style = JOURNEY_STYLE[key];
+              const Icon = style.icon;
 
-                <div className="flex flex-col gap-1.5">
-                  <span className="text-xs font-semibold tabular-nums opacity-60">
-                    0{index + 1}
+              return (
+                <Link
+                  key={key}
+                  href={style.href(locale)}
+                  className={`hover-glow group grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl py-6 ${index > 0 ? 'border-border/60 border-t' : ''} ${style.color}`}
+                >
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/20">
+                    <Icon className="size-5" />
                   </span>
-                  <h3 className="font-display text-base leading-snug sm:text-lg">
-                    {tt(`${key}.title`)}
-                  </h3>
-
-                  {/* Feature bullets are a hover-only bonus for mouse users
-                      — `hidden` (not just pre-hover-hidden) on touch, so
-                      they never stack into the mobile resting card at all.
-                      Cramming all three lines onto a small touch card just
-                      because there's no hover to gate them behind reads as
-                      clutter, and the card's title + CTA already say
-                      enough to act on without them. */}
-                  <div className="hidden transition-[grid-template-rows] duration-300 ease-out pointer-fine:grid pointer-fine:grid-rows-[0fr] pointer-fine:group-hover:grid-rows-[1fr] pointer-fine:group-focus-visible:grid-rows-[1fr]">
-                    <div className="overflow-hidden">
-                      {/* dir set explicitly per-locale rather than
-                          inheriting the row's forced dir="ltr" (that
-                          one's only there to keep 01→02→03 card order
-                          stable under RTL) — without it the bullet dot
-                          lands on the wrong side of Arabic text. */}
-                      <div
-                        dir={isRtl ? 'rtl' : 'ltr'}
-                        className="flex flex-col gap-1 pt-1.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
-                      >
-                        {features.map((feature) => (
-                          <span
-                            key={feature}
-                            className="flex items-center gap-1.5 text-xs leading-tight font-medium sm:text-sm"
-                          >
-                            <span className="size-1.5 shrink-0 rounded-full bg-current" />
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* The CTA is the actual next step, not a bonus detail —
-                      it stays on by default on touch (no hover to wait
-                      for), and joins the same hover reveal as the features
-                      on desktop so the resting desktop card stays just as
-                      quiet as before. Both lead with login because their
-                      trial is the real thing — the guest's own design,
-                      sent for real, 3 times per account — unlike the
-                      homepage's separate anonymous demo (/try). */}
-                  <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out pointer-fine:grid-rows-[0fr] pointer-fine:group-hover:grid-rows-[1fr] pointer-fine:group-focus-visible:grid-rows-[1fr]">
-                    <div className="overflow-hidden">
-                      <span className="mt-1 flex flex-col gap-0.5 pt-1.5 opacity-100 transition-opacity duration-300 pointer-fine:pt-0 pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-visible:opacity-100">
-                        <span className="text-[11px] font-medium opacity-70">
-                          {tt('ctaCaption')}
-                        </span>
-                        <span className="inline-flex items-center gap-1.5 text-sm font-semibold">
-                          {tt('ctaLogin')}
-                          <ArrowIcon className="size-3.5 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+                  <span className="flex flex-col gap-1">
+                    <span className="text-xs font-semibold tracking-wide">
+                      {tt(`${key}.title`)}
+                    </span>
+                    <span className="font-display text-foreground text-lg sm:text-xl">
+                      {tt(`${key}.description`)}
+                    </span>
+                    <span className="text-muted-foreground text-sm">
+                      {tt(`${key}.feature1`)} · {tt(`${key}.feature2`)} · {tt(`${key}.feature3`)}
+                    </span>
+                  </span>
+                  <span className="hidden items-center gap-1.5 text-sm font-semibold sm:flex">
+                    {tt('ctaLogin')}
+                    <ArrowIcon className="size-4 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

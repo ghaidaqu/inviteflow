@@ -39,7 +39,6 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --color-dark-card-foreground: var(--dark-card-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -58,51 +57,49 @@
 
 :root {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  /* Studio identity: warm parchment, olive primary, pale-sky secondary, a
-     near-black card for contrast, and one reserved accent — vivid cyan —
-     that appears ONLY on hover/focus/selected states, never as a resting
-     surface color. Replaces the earlier ivory/near-black/burgundy editorial
-     palette wholesale (colors + radius), not a blend with it. One theme,
-     applied everywhere (dashboard included) — no separate dark palette. */
-  --background: #eae5d8;
-  --foreground: #211c16;
-  --card: #f8f5eb;
-  --card-foreground: #211c16;
-  --popover: #f8f5eb;
-  --popover-foreground: #211c16;
-  --primary: #767a4f;
-  --primary-foreground: #f4f0e2;
-  --secondary: #a7c4d3;
-  --secondary-foreground: #1c2b32;
-  /* The approved reference doesn't put plain cream text on the dark card
-     (unlike text-background elsewhere) — it uses this warm dusty rose
-     specifically there, one of the studio identity's real distinguishing
-     details. Only the institutional/dark journey card uses this. */
-  --dark-card-foreground: #c9a29a;
-  --muted: #ddd6c4;
-  /* Reference's --ink-soft exactly — the body/nav-link/subtitle text
-     color, distinct from --muted-foreground's earlier approximation. */
-  --muted-foreground: #5b5548;
-  --accent: #35c6d9;
-  --accent-foreground: #14232a;
-  --destructive: #b3452e;
-  --border: #d8d0ba;
-  --input: #d8d0ba;
-  --ring: #35c6d9;
-  --chart-1: #767a4f;
-  --chart-2: #b3452e;
-  --chart-3: #35c6d9;
-  --chart-4: #8c8271;
-  --chart-5: #a7c4d3;
+  /* مهلّي identity: warm sand/parchment, terracotta primary, a muted teal
+     secondary (the "link" track's own color, doubling as the reserved
+     interactive accent — no separate neon accent color), deep coffee-brown
+     ink. Replaces the earlier olive/sky/cyan studio palette wholesale
+     (colors only — radius stays, it's a shared app-wide constant, not part
+     of either brand identity). One theme, applied everywhere (dashboard
+     included) — no separate dark palette. */
+  --background: #ede2c8;
+  --foreground: #382616;
+  --card: #f6efdc;
+  --card-foreground: #382616;
+  --popover: #f6efdc;
+  --popover-foreground: #382616;
+  --primary: #96471f;
+  --primary-foreground: #f6efdc;
+  --secondary: #3d6576;
+  --secondary-foreground: #f6efdc;
+  --muted: #e3d3ac;
+  --muted-foreground: #6b5640;
+  /* Reserved for hover/focus/selected states only, same as the old cyan
+     was — just reusing the secondary teal instead of a 5th color, since
+     the new identity is deliberately a tight warm palette (rust + teal +
+     brown + sand), no separate neon pop. */
+  --accent: #3d6576;
+  --accent-foreground: #f6efdc;
+  --destructive: #a6321f;
+  --border: #c7b285;
+  --input: #c7b285;
+  --ring: #3d6576;
+  --chart-1: #96471f;
+  --chart-2: #3d6576;
+  --chart-3: #7c3a1f;
+  --chart-4: #9c8863;
+  --chart-5: #345762;
   --radius: 0.5rem;
-  --sidebar: #f8f5eb;
-  --sidebar-foreground: #211c16;
-  --sidebar-primary: #767a4f;
-  --sidebar-primary-foreground: #f7f5ee;
-  --sidebar-accent: #ddd6c4;
-  --sidebar-accent-foreground: #211c16;
-  --sidebar-border: #d8d0ba;
-  --sidebar-ring: #35c6d9;
+  --sidebar: #f6efdc;
+  --sidebar-foreground: #382616;
+  --sidebar-primary: #96471f;
+  --sidebar-primary-foreground: #f6efdc;
+  --sidebar-accent: #e3d3ac;
+  --sidebar-accent-foreground: #382616;
+  --sidebar-border: #c7b285;
+  --sidebar-ring: #3d6576;
 }
 
 html[dir='rtl'] {
@@ -127,7 +124,7 @@ html[dir='rtl'] {
        body's own background rather than a separate fixed/z-indexed
        pseudo-element — simpler, and needs no positioning at all since
        it just tiles down the document like any other background-image. */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.13  0 0 0 0 0.11  0 0 0 0 0.09  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.22  0 0 0 0 0.15  0 0 0 0 0.09  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-blend-mode: multiply;
   }
   html {
@@ -243,19 +240,15 @@ html[dir='rtl'] {
   }
 }
 
-/* Heavy display treatment reserved for section headlines and hero titles
-   only — never body copy, buttons, or table text, or the whole app reads
-   shouty. Weight + tight tracking + uppercase carry the "bold display"
-   feel using the existing self-hosted variable fonts (Geist to 900, Cairo
-   to 1000) instead of loading a new font file. Uppercase/negative tracking
-   has no meaning for Arabic script, so RTL keeps the weight but drops
-   both. */
+/* Display treatment reserved for section headlines, hero titles, and the
+   wordmark — never body copy, buttons, table text, or dialog/card titles
+   (those stay on --font-heading, i.e. plain Cairo), or the app stops
+   reading like a functional tool wherever it's dense. Amiri is a classic
+   Arabic book-typesetting face — literary and warm rather than a generic
+   sans blown up big, self-hosted per lib/fonts.ts. Uppercase/negative
+   tracking never applied here (meaningless for Arabic, and Amiri is a
+   serif, not the old sans-at-900 trick) — weight alone carries it. */
 .font-display {
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-}
-html[dir='rtl'] .font-display {
-  letter-spacing: 0;
-  text-transform: none;
+  font-family: var(--font-amiri), 'Amiri', serif;
+  font-weight: 700;
 }

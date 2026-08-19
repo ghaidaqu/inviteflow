@@ -8,7 +8,7 @@ import { uploadCoverImageAction } from '@/lib/actions/uploads';
 import { ImageUpIcon, XIcon, Loader2Icon } from 'lucide-react';
 
 // The organizer's choice is genuinely theirs here — this doesn't replace
-// InviteFlow's own templates (that's a separate, later "pick a design"
+// Mahalli's own templates (that's a separate, later "pick a design"
 // step), it just makes "I already have my own invitation image/design"
 // an actual upload instead of requiring them to have it hosted somewhere
 // else already and paste a URL in.

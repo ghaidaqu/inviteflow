@@ -20,12 +20,13 @@ export async function DashboardHeader({
   initialUnreadCount: number;
 }) {
   const t = await getTranslations('Dashboard');
+  const tBrand = await getTranslations('Brand');
 
   return (
     <header className="bg-background flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3 sm:px-6">
       <div className="flex items-center gap-6">
         <Link href="/" className="font-display text-lg">
-          InviteFlow
+          {tBrand('name')}
         </Link>
         <nav className="flex items-center gap-4 text-sm">
           <Link href="/dashboard" className="text-muted-foreground hover:text-foreground">
