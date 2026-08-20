@@ -74,13 +74,15 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             {t('eyebrow')}
             <span className="bg-primary-foreground/60 h-px w-6" />
           </span>
-          {/* A busy photo behind the headline made the accent word read as
-              two different colors depending on what's directly behind each
-              letter — a stronger, more uniform scrim above plus a text
-              shadow here keep the rust accent looking like one consistent
-              color regardless of the archway's own varying tones. */}
-          <h1 className="font-display text-primary-foreground text-4xl leading-[1.3] text-balance drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)] sm:text-6xl">
-            {t('headlineLine1')} <span className="text-primary">{t('headlineLine2')}</span>
+          {/* One solid color for the whole headline, not a two-tone accent
+              split — a photo backdrop is the wrong place to run an accent
+              color against, since whatever's directly behind each letter
+              (dark wood, warm stone, deep shadow) shifts how identical rust
+              pixels actually read, no matter how uniform the CSS color
+              value is. The accent color still does its job everywhere else
+              on the page, on plain backgrounds where it reads cleanly. */}
+          <h1 className="font-display text-primary-foreground text-4xl leading-[1.3] text-balance drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] sm:text-6xl">
+            {t('headlineLine1')} {t('headlineLine2')}
           </h1>
           <p className="text-primary-foreground/85 max-w-xl text-lg text-balance">
             {t('subtitle')}

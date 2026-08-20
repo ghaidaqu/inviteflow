@@ -13,11 +13,11 @@ export async function SiteFooter() {
     <footer className="border-t">
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 sm:grid-cols-3 sm:px-6">
         <div className="flex flex-col gap-3 sm:col-span-1">
+          <p className="text-muted-foreground max-w-xs text-sm">{t('tagline')}</p>
           <span className="font-display text-primary flex items-center gap-1.5 text-lg">
             <BrandMark className="size-5" />
             {tBrand('name')}
           </span>
-          <p className="text-muted-foreground max-w-xs text-sm">{t('tagline')}</p>
         </div>
 
         <div>

@@ -424,13 +424,13 @@ export function QuickStartWizard({ track }: { track: 'invitation' | 'rsvp' }) {
               <Button type="button" variant="outline" onClick={() => submit(false)}>
                 {t('approveButton')}
               </Button>
-              <Button type="button" onClick={() => submit(true)}>
+              <Button type="button" variant="secondary" onClick={() => submit(true)}>
                 {t('tryButton')}
                 <ArrowIcon className="size-4 rtl:rotate-180" />
               </Button>
             </div>
           ) : (
-            <Button type="button" onClick={() => submit(false)}>
+            <Button type="button" variant="secondary" onClick={() => submit(false)}>
               {t('createButton')}
               <ArrowIcon className="size-4 rtl:rotate-180" />
             </Button>
