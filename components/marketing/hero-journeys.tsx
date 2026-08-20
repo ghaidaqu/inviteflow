@@ -7,15 +7,14 @@ import heroDoorway from '@/public/images/marketing/hero-doorway.jpg';
 
 type JourneyKey = 'invitation' | 'rsvp';
 
-// Two real products, two token-driven colors — primary (rust) for the
-// digital-invitation track, secondary (teal) for the link track. Every
-// color here comes from the shared design system, so `currentColor`
-// alone (via `text-current`) is enough to theme the icon badge and CTA
-// link on both without a per-card color branch.
+// Two real products, one color — both tracks read as the same brand
+// (primary/rust) now instead of being split rust-vs-teal, per explicit
+// feedback that the two-color split made the page feel inconsistent.
+// `currentColor` (via `text-current`) still themes the icon badge and CTA
+// link — it's just always primary now, not a per-card branch.
 const JOURNEY_STYLE: Record<
   JourneyKey,
   {
-    color: string;
     /** Sends through /register first — the quick-start wizard itself is
      *  login-gated (see start/[track]/page.tsx), so there's no point
      *  landing on it unauthenticated just to bounce straight back to
@@ -29,12 +28,10 @@ const JOURNEY_STYLE: Record<
   }
 > = {
   invitation: {
-    color: 'text-primary',
     href: (locale) => `/register?next=${encodeURIComponent(`/${locale}/start/invitation`)}`,
     icon: MailIcon,
   },
   rsvp: {
-    color: 'text-secondary',
     href: (locale) => `/register?next=${encodeURIComponent(`/${locale}/start/rsvp`)}`,
     icon: LinkIcon,
   },
@@ -69,7 +66,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
         />
         <div
           aria-hidden
-          className="from-foreground/95 via-foreground/45 to-foreground/25 absolute inset-0 bg-gradient-to-t"
+          className="from-foreground/95 via-foreground/70 to-foreground/45 absolute inset-0 bg-gradient-to-t"
         />
         <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 text-center sm:px-6">
           <span className="text-primary-foreground/90 flex items-center gap-2 text-sm font-semibold">
@@ -77,7 +74,12 @@ export async function HeroJourneys({ locale }: { locale: string }) {
             {t('eyebrow')}
             <span className="bg-primary-foreground/60 h-px w-6" />
           </span>
-          <h1 className="font-display text-primary-foreground text-4xl leading-[1.3] text-balance sm:text-6xl">
+          {/* A busy photo behind the headline made the accent word read as
+              two different colors depending on what's directly behind each
+              letter — a stronger, more uniform scrim above plus a text
+              shadow here keep the rust accent looking like one consistent
+              color regardless of the archway's own varying tones. */}
+          <h1 className="font-display text-primary-foreground text-4xl leading-[1.3] text-balance drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)] sm:text-6xl">
             {t('headlineLine1')} <span className="text-primary">{t('headlineLine2')}</span>
           </h1>
           <p className="text-primary-foreground/85 max-w-xl text-lg text-balance">
@@ -98,8 +100,10 @@ export async function HeroJourneys({ locale }: { locale: string }) {
 
       {/* Two real products, presented as a quiet icon-led list rather than
           a pair of boxed cards — no borders/background, just an icon,
-          color-coded label, title, description, and the actual next
-          step, separated by a single hairline between the two rows. */}
+          label, title, description, and the actual next step, separated
+          by a single hairline between the two rows. Both rows share the
+          same primary color now (not split rust-vs-teal per track) —
+          one consistent accent across the page. */}
       <section className="py-14 sm:py-20">
         <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
           <div className="mb-10 flex flex-col gap-2">
@@ -116,7 +120,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                 <Link
                   key={key}
                   href={style.href(locale)}
-                  className={`hover-glow group grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl py-6 ${index > 0 ? 'border-border/60 border-t' : ''} ${style.color}`}
+                  className={`hover-glow group text-primary grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl py-6 ${index > 0 ? 'border-border/60 border-t' : ''}`}
                 >
                   <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/20">
                     <Icon className="size-5" />

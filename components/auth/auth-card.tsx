@@ -1,7 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from '@/i18n/navigation';
-import { SparklesIcon, ArrowLeftIcon } from 'lucide-react';
+import { BrandMark } from '@/components/brand-mark';
+import { ArrowLeftIcon } from 'lucide-react';
 
 export async function AuthCard({
   title,
@@ -34,7 +35,7 @@ export async function AuthCard({
           href="/"
           className="font-display text-primary mb-6 flex items-center justify-center gap-1.5 text-lg"
         >
-          <SparklesIcon className="size-5" />
+          <BrandMark className="size-5" />
           {tBrand('name')}
         </Link>
 

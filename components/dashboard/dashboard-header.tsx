@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { NotificationsBell } from '@/components/dashboard/notifications-bell';
+import { BrandMark } from '@/components/brand-mark';
 import type { Database } from '@/types/supabase';
 
 type NotificationRow = Database['public']['Tables']['notifications']['Row'];
@@ -25,7 +26,8 @@ export async function DashboardHeader({
   return (
     <header className="bg-background flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3 sm:px-6">
       <div className="flex items-center gap-6">
-        <Link href="/" className="font-display text-lg">
+        <Link href="/" className="font-display flex items-center gap-1.5 text-lg">
+          <BrandMark className="size-5" />
           {tBrand('name')}
         </Link>
         <nav className="flex items-center gap-4 text-sm">
