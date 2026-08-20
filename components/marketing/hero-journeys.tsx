@@ -46,7 +46,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           generated one. Dark gradient scrim keeps the cream headline
           legible over the doorway detail without flattening the photo
           into a plain color block. */}
-      <section className="relative flex min-h-[88vh] items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-[68vh] items-center justify-center overflow-hidden">
         <Image
           src={heroDoorway}
           alt=""
