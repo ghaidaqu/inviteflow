@@ -37,9 +37,12 @@ export async function HeroJourneys({ locale }: { locale: string }) {
       {/* Full-bleed photo hero — an entrance, not a person, so the image
           reads as "welcome" for every guest and organizer regardless of
           who they are, rather than defaulting to one gender's likeness
-          the way most hospitality stock photography does. Dark gradient
-          scrim keeps the cream headline legible over the busy stonework
-          without flattening the photo into a plain color block. */}
+          the way most hospitality stock photography does. A grand,
+          warmly-lit archway with an actual red carpet leading in — a real,
+          unlicensed-content-free photo (Unsplash), not a stock image of a
+          specific venue and not a generated one. Dark gradient scrim keeps
+          the cream headline legible over the stonework without flattening
+          the photo into a plain color block. */}
       <section className="relative flex min-h-[88vh] items-center justify-center overflow-hidden">
         <Image
           src={heroDoorway}
