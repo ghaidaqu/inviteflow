@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { QuickStartWizard } from '@/components/public/quick-start-wizard';
@@ -12,14 +12,16 @@ function isTrack(value: string): value is Track {
 }
 
 /**
- * Authenticated "instant start" flow — the homepage journey cards send
- * people to /register?next=/start/[track] first, so by the time anyone
- * reaches this page they're already logged in; this guard is what
- * actually enforces that (a direct/bookmarked visit without a session
- * bounces to /login) rather than relying on the homepage link alone.
- * Institutional isn't part of this: it needs a company name/logo up
- * front by design, so it keeps going straight to the dashboard's
- * creation flow.
+ * The "instant start" flow — open to anyone, no account required to walk
+ * through it. The homepage journey cards send people straight here now,
+ * not through /register first: filling in an event you might not even
+ * finish shouldn't demand an account before you've seen anything. The
+ * account only gets asked for at the wizard's very last step, when there's
+ * an actual invitation to create — see quick-start-wizard.tsx, which
+ * stashes the filled-in draft and sends the organizer to /register at
+ * that point, then finishes the job the moment they're back. Institutional
+ * isn't part of this: it needs a company name/logo up front by design, so
+ * it keeps going straight to the dashboard's creation flow.
  */
 export default async function QuickStartPage({
   params,
@@ -34,7 +36,6 @@ export default async function QuickStartPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect(`/${locale}/login?next=${encodeURIComponent(`/${locale}/start/${track}`)}`);
 
   const t = await getTranslations('Events.newChooser');
 
@@ -51,7 +52,7 @@ export default async function QuickStartPage({
         </div>
 
         <div className="animate-in fade-in slide-in-from-bottom-4 bg-card mt-8 rounded-2xl border p-6 delay-150 duration-700">
-          <QuickStartWizard track={track} />
+          <QuickStartWizard track={track} isAuthenticated={!!user} />
         </div>
       </div>
     </main>

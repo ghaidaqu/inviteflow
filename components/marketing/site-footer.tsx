@@ -1,4 +1,4 @@
-import { getTranslations, getLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { BrandMark } from '@/components/brand-mark';
 
@@ -6,7 +6,6 @@ export async function SiteFooter() {
   const t = await getTranslations('HomePage.footer');
   const tj = await getTranslations('HomePage.journeys');
   const tBrand = await getTranslations('Brand');
-  const locale = await getLocale();
   const year = new Date().getFullYear();
 
   return (
@@ -24,18 +23,12 @@ export async function SiteFooter() {
           <h3 className="text-sm font-bold">{t('journeysHeading')}</h3>
           <ul className="text-muted-foreground mt-3 flex flex-col gap-2 text-sm">
             <li>
-              <Link
-                href={`/register?next=${encodeURIComponent(`/${locale}/start/invitation`)}`}
-                className="hover:text-foreground"
-              >
+              <Link href="/start/invitation" className="hover:text-foreground">
                 {tj('invitation.title')}
               </Link>
             </li>
             <li>
-              <Link
-                href={`/register?next=${encodeURIComponent(`/${locale}/start/rsvp`)}`}
-                className="hover:text-foreground"
-              >
+              <Link href="/start/rsvp" className="hover:text-foreground">
                 {tj('rsvp.title')}
               </Link>
             </li>

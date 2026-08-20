@@ -12,29 +12,15 @@ type JourneyKey = 'invitation' | 'rsvp';
 // feedback that the two-color split made the page feel inconsistent.
 // `currentColor` (via `text-current`) still themes the icon badge and CTA
 // link — it's just always primary now, not a per-card branch.
-const JOURNEY_STYLE: Record<
-  JourneyKey,
-  {
-    /** Sends through /register first — the quick-start wizard itself is
-     *  login-gated (see start/[track]/page.tsx), so there's no point
-     *  landing on it unauthenticated just to bounce straight back to
-     *  /login. A function of locale because the `next` value inside the
-     *  query string isn't auto-prefixed by next-intl's Link the way the
-     *  outer href is — safeNextPath (lib/actions/auth.ts) rejects
-     *  anything that isn't already locale-prefixed, so this has to
-     *  build that itself. */
-    href: (locale: string) => string;
-    icon: typeof MailIcon;
-  }
-> = {
-  invitation: {
-    href: (locale) => `/register?next=${encodeURIComponent(`/${locale}/start/invitation`)}`,
-    icon: MailIcon,
-  },
-  rsvp: {
-    href: (locale) => `/register?next=${encodeURIComponent(`/${locale}/start/rsvp`)}`,
-    icon: LinkIcon,
-  },
+//
+// Goes straight into the wizard, no login first — see
+// start/[track]/page.tsx: the wizard itself is open to anonymous visitors
+// now, and only asks for an account at its very last step. Landing
+// unauthenticated on an empty form used to be pointless when the page
+// immediately bounced to /login; now it's the whole point.
+const JOURNEY_STYLE: Record<JourneyKey, { href: string; icon: typeof MailIcon }> = {
+  invitation: { href: '/start/invitation', icon: MailIcon },
+  rsvp: { href: '/start/rsvp', icon: LinkIcon },
 };
 
 const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp'];
@@ -121,7 +107,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
               return (
                 <Link
                   key={key}
-                  href={style.href(locale)}
+                  href={style.href}
                   className={`hover-glow group text-primary grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl py-6 ${index > 0 ? 'border-border/60 border-t' : ''}`}
                 >
                   <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/20">
@@ -139,7 +125,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                     </span>
                   </span>
                   <span className="hidden items-center gap-1.5 text-sm font-semibold sm:flex">
-                    {tt('ctaLogin')}
+                    {tt('ctaStart')}
                     <ArrowIcon className="size-4 transition-transform ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
                   </span>
                 </Link>

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -42,23 +43,56 @@ type FormValues = {
 const STEP_IDS = ['basics', 'datetime', 'design', 'settings', 'trial'] as const;
 type StepId = (typeof STEP_IDS)[number];
 
+// Where an in-progress, not-yet-authenticated draft is parked while the
+// organizer goes through /register — sessionStorage rather than
+// localStorage because a half-filled draft from a different event
+// shouldn't quietly resurrect itself in a future unrelated tab. Keyed by
+// track since the two tracks have different final actions/fields.
+function draftKey(track: 'invitation' | 'rsvp') {
+  return `mahalli:quick-start-draft:${track}`;
+}
+
+type StoredDraft = {
+  values: FormValues;
+  questions: QuestionInput[];
+  guestName: string;
+  guestPhone: string;
+  sendTrial: boolean;
+};
+
 /**
  * The full, real event-creation form — the same core fields as the
- * authenticated dashboard's EventForm — reached only after the organizer
- * has already logged in (see the page-level auth guard in
- * app/[locale]/start/[track]/page.tsx). Presented as steps with
- * Next/Back instead of one long scroll: a single page with every field
- * visible at once read like a test to fill out, not something you'd
- * enjoy doing. Each step keeps the same react-hook-form instance —
- * there's no per-step form boundary, just conditional rendering of one
- * step's fields at a time, so nothing is lost moving back and forth.
+ * authenticated dashboard's EventForm. Open to anyone, logged in or not:
+ * only the very last step's action (try/create/approve) needs an
+ * account, so that's the only point this ever asks for one. Presented as
+ * steps with Next/Back instead of one long scroll: a single page with
+ * every field visible at once read like a test to fill out, not
+ * something you'd enjoy doing. Each step keeps the same react-hook-form
+ * instance — there's no per-step form boundary, just conditional
+ * rendering of one step's fields at a time, so nothing is lost moving
+ * back and forth.
+ *
+ * Anonymous finish: submit() stashes the filled-in draft in
+ * sessionStorage and sends the organizer to /register?next=/start/track
+ * instead of calling the server action (which requires a session
+ * anyway). The restore effect below runs when this page mounts again
+ * post-login, refills every field from the stash, and re-fires the same
+ * action automatically — the organizer never has to notice the detour or
+ * press the button twice.
  */
-export function QuickStartWizard({ track }: { track: 'invitation' | 'rsvp' }) {
+export function QuickStartWizard({
+  track,
+  isAuthenticated,
+}: {
+  track: 'invitation' | 'rsvp';
+  isAuthenticated: boolean;
+}) {
   const t = useTranslations('QuickStart');
   const tForm = useTranslations('Events.form');
   const tTypes = useTranslations('Events.types');
   const tSettings = useTranslations('EventSettings');
   const locale = useLocale();
+  const router = useRouter();
   const isRtl = locale === 'ar';
   const ArrowIcon = isRtl ? ArrowLeftIcon : ArrowRightIcon;
   const BackArrowIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
@@ -88,9 +122,92 @@ export function QuickStartWizard({ track }: { track: 'invitation' | 'rsvp' }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [isPending, startTransition] = useTransition();
   const [submitError, setSubmitError] = useState<string | null>(null);
+  // Starts false on both server and client — flips true only once the
+  // effect below actually finds a draft to resume, never from the
+  // isAuthenticated prop directly, so an ordinary authenticated visit
+  // with nothing to restore never shows a spinner before the form.
+  const [isRestoring, setIsRestoring] = useState(false);
+  const hasCheckedDraftRef = useRef(false);
 
   const steps: readonly StepId[] = STEP_IDS;
   const stepId = steps[stepIndex]!;
+
+  // Takes questions/guestName/guestPhone as explicit arguments rather
+  // than reading them off component state — the restore path below calls
+  // this in the same tick as the setQuestions/setGuestName/setGuestPhone
+  // calls that populate them, and those setters don't mutate the
+  // current closure's values, only schedule a future render. Reading
+  // state directly here would silently submit the pre-restore (empty)
+  // values instead of the restored draft.
+  function runCreate(
+    values: FormValues,
+    sendTrial: boolean,
+    guest: { questions: QuestionInput[]; guestName: string; guestPhone: string },
+  ) {
+    startTransition(async () => {
+      const result = await createEventFromQuickStartAction(
+        {
+          track,
+          ...values,
+          questions: guest.questions,
+          guestName: track === 'invitation' ? guest.guestName : '',
+          guestPhone: track === 'invitation' ? guest.guestPhone : '',
+        },
+        { sendTrial },
+      );
+      // No success branch: the action redirects internally when it works.
+      if (result?.error) setSubmitError(t('finish.error'));
+    });
+  }
+
+  // Picks back up a draft parked before the /register detour — only ever
+  // matters right after that round trip, so it's a one-shot check on
+  // mount, not something that re-runs as the organizer edits fields.
+  // Guarded on isAuthenticated: an anonymous visit never has a draft of
+  // its own to restore (nothing gets stashed until submit() sends them
+  // away), and racing this against a session that hasn't loaded yet
+  // would just silently drop the restore.
+  useEffect(() => {
+    if (hasCheckedDraftRef.current) return;
+    hasCheckedDraftRef.current = true;
+
+    if (!isAuthenticated) return;
+
+    let raw: string | null = null;
+    try {
+      raw = sessionStorage.getItem(draftKey(track));
+      if (raw) sessionStorage.removeItem(draftKey(track));
+    } catch {
+      // Private-mode/quota failures just mean nothing to restore.
+    }
+    if (!raw) return;
+
+    let draft: StoredDraft;
+    try {
+      draft = JSON.parse(raw) as StoredDraft;
+    } catch {
+      return;
+    }
+
+    // Setting isRestoring here (rather than leaving it false) is what
+    // keeps this transition spinner-to-spinner instead of flashing the
+    // now-filled final step for a frame before runCreate's own isPending
+    // takes over.
+    setIsRestoring(true);
+    (Object.keys(draft.values) as Array<keyof FormValues>).forEach((key) => {
+      setValue(key, draft.values[key]);
+    });
+    setQuestions(draft.questions);
+    setGuestName(draft.guestName);
+    setGuestPhone(draft.guestPhone);
+    setStepIndex(steps.length - 1);
+    runCreate(draft.values, draft.sendTrial, {
+      questions: draft.questions,
+      guestName: draft.guestName,
+      guestPhone: draft.guestPhone,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- one-shot restore-on-mount, not a reactive effect
+  }, []);
 
   async function goNext() {
     if (stepId === 'basics') {
@@ -113,23 +230,36 @@ export function QuickStartWizard({ track }: { track: 'invitation' | 'rsvp' }) {
     setSubmitError(null);
 
     const values = watch();
-    startTransition(async () => {
-      const result = await createEventFromQuickStartAction(
-        {
-          track,
-          ...values,
-          questions,
-          guestName: track === 'invitation' ? guestName : '',
-          guestPhone: track === 'invitation' ? guestPhone : '',
-        },
-        { sendTrial },
-      );
-      // No success branch: the action redirects internally when it works.
-      if (result?.error) setSubmitError(t('finish.error'));
-    });
+
+    if (!isAuthenticated) {
+      // Park everything filled in so far and send the organizer to log
+      // in — the account is only needed now, at the very last step, not
+      // before. `next` brings them straight back to this exact page; the
+      // restore effect above finishes the job the moment they're back
+      // and authenticated, no second click needed.
+      try {
+        sessionStorage.setItem(
+          draftKey(track),
+          JSON.stringify({
+            values,
+            questions,
+            guestName,
+            guestPhone,
+            sendTrial,
+          } satisfies StoredDraft),
+        );
+      } catch {
+        // sessionStorage can fail (private mode, quota) — they'll just
+        // need to re-fill after logging in instead of resuming.
+      }
+      router.push(`/register?next=${encodeURIComponent(`/${locale}/start/${track}`)}`);
+      return;
+    }
+
+    runCreate(values, sendTrial, { questions, guestName, guestPhone });
   }
 
-  if (isPending) {
+  if (isPending || isRestoring) {
     return (
       <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 text-center">
         <Loader2Icon className="text-primary size-8 animate-spin" />
