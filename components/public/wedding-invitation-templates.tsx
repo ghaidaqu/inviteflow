@@ -1,4 +1,6 @@
 import { forwardRef } from 'react';
+import { useTranslations } from 'next-intl';
+import { BrandMark } from '@/components/brand-mark';
 
 /**
  * The editable content + look of a template-generated cover — shared by
@@ -24,30 +26,46 @@ export type WeddingCardData = {
 export const WEDDING_TEMPLATE_IDS = ['floral', 'classic'] as const;
 export type WeddingTemplateId = (typeof WEDDING_TEMPLATE_IDS)[number];
 
-export const WEDDING_CARD_WIDTH = 750;
-export const WEDDING_CARD_HEIGHT = 1200;
+// The two designs are deliberately different shapes, not just different
+// colors — نسائي stays the tall portrait card a phone screen shows
+// full-height; رجالي is a wide landscape card instead, closer to a
+// printed formal announcement than a phone wallpaper.
+export const WEDDING_TEMPLATE_DIMENSIONS: Record<
+  WeddingTemplateId,
+  { width: number; height: number }
+> = {
+  floral: { width: 750, height: 1200 },
+  classic: { width: 1600, height: 1100 },
+};
 
-// Curated background/accent pairs rather than a bare color wheel for the
-// primary picker — every pair here already reads as an intentional,
-// legible combination (checked for contrast against `textColor`), so
-// swapping between them can't produce something illegible the way two
-// independently-chosen colors could. A native color input still sits
-// beside these for real "أي لون أبيه" freedom.
+// Curated background/accent pairs for the color picker. `mahalli` mirrors
+// the site's own --primary/--secondary/--background tokens exactly and is
+// what both templates default to — a template-generated cover should look
+// like it belongs to this product out of the box, not like a generic
+// wedding-card palette that happens to be selectable. The other four stay
+// as real alternate looks for organizers who want something else, not as
+// competing defaults.
 export const WEDDING_PALETTES: Array<{
   id: string;
   backgroundColor: string;
   accentColor: string;
   textColor: string;
 }> = [
+  { id: 'mahalli', backgroundColor: '#f6efdc', accentColor: '#96471f', textColor: '#382616' },
   { id: 'blush', backgroundColor: '#f7ecec', accentColor: '#b96b7a', textColor: '#4a2f33' },
   { id: 'ivoryGold', backgroundColor: '#f5eee0', accentColor: '#a9824f', textColor: '#3d3222' },
   { id: 'sage', backgroundColor: '#eef1e6', accentColor: '#6b7d52', textColor: '#333d26' },
-  { id: 'mahalli', backgroundColor: '#f6efdc', accentColor: '#96471f', textColor: '#382616' },
   { id: 'dusk', backgroundColor: '#eef0f3', accentColor: '#3d6576', textColor: '#26333a' },
 ];
 
+// The site's own secondary (teal) token — used as a second accent inside
+// both templates (a hairline, a label color) alongside the primary/rust
+// `accentColor`, the same two-color pairing the rest of the app uses
+// rather than a single accent doing every job.
+const BRAND_SECONDARY = '#3d6576';
+
 export function defaultWeddingCardData(templateId: WeddingTemplateId): WeddingCardData {
-  const palette = WEDDING_PALETTES[templateId === 'floral' ? 0 : 3]!;
+  const palette = WEDDING_PALETTES[0]!; // mahalli — same default for both templates
   if (templateId === 'floral') {
     return {
       eyebrow: 'بكل الحب نتشرف بدعوتكم',
@@ -71,20 +89,20 @@ export function defaultWeddingCardData(templateId: WeddingTemplateId): WeddingCa
 }
 
 /**
- * Floral / feminine — soft blush ground, layered circle-and-petal corner
- * ornaments (drawn as plain SVG shapes rather than an illustration
- * asset, so there's nothing to source or license), the couple's names
- * as the one large accent-colored line, and a three-item icon row for
- * date/location/time echoing the reference card's layout.
+ * Floral / feminine — portrait card, warm cream ground (site tokens by
+ * default), rust corner line-art, the couple's names as the one large
+ * accent-colored line, and a three-item fact row for date/location/time.
+ * Ends in the same مهلّي credit line as the classic design below.
  */
 export const FloralWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingCardData }>(
   function FloralWeddingTemplate({ data }, ref) {
+    const { width, height } = WEDDING_TEMPLATE_DIMENSIONS.floral;
     return (
       <div
         ref={ref}
         style={{
-          width: WEDDING_CARD_WIDTH,
-          height: WEDDING_CARD_HEIGHT,
+          width,
+          height,
           background: `linear-gradient(160deg, ${data.backgroundColor} 0%, color-mix(in srgb, ${data.backgroundColor}, white 30%) 100%)`,
           color: data.textColor,
           fontFamily: 'var(--font-amiri), serif',
@@ -104,7 +122,7 @@ export const FloralWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingC
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 28,
+            gap: 26,
             padding: '0 72px',
             textAlign: 'center',
           }}
@@ -134,30 +152,34 @@ export const FloralWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingC
               alignItems: 'flex-start',
             }}
           >
-            <CardFact label="التاريخ" value={data.dateText} color={data.accentColor} />
-            <CardFact label="الموقع" value={data.locationText} color={data.accentColor} />
-            <CardFact label="الوقت" value={data.timeText} color={data.accentColor} />
+            <CardFact label="التاريخ" value={data.dateText} color={BRAND_SECONDARY} />
+            <CardFact label="الموقع" value={data.locationText} color={BRAND_SECONDARY} />
+            <CardFact label="الوقت" value={data.timeText} color={BRAND_SECONDARY} />
           </div>
         </div>
+
+        <CardCredit textColor={data.textColor} />
       </div>
     );
   },
 );
 
 /**
- * Classical / formal — plain cream ground, a thin+thick double-line
- * frame (the "كرت نجد"-style border), and the invitation read as one
- * formal block of centered prose rather than separated fields — this is
- * the register a lot of Gulf wedding cards are actually written in.
+ * Classical / formal — wide landscape card, a thin+thick double-line
+ * frame (the "كرت نجد"-style border), the invitation read as one formal
+ * block of centered prose, and date/time/location laid out as a row
+ * instead of stacked lines since the landscape shape has the width for
+ * it. Ends in the same مهلّي credit line as the floral design above.
  */
 export const ClassicWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingCardData }>(
   function ClassicWeddingTemplate({ data }, ref) {
+    const { width, height } = WEDDING_TEMPLATE_DIMENSIONS.classic;
     return (
       <div
         ref={ref}
         style={{
-          width: WEDDING_CARD_WIDTH,
-          height: WEDDING_CARD_HEIGHT,
+          width,
+          height,
           backgroundColor: data.backgroundColor,
           color: data.textColor,
           fontFamily: 'var(--font-amiri), serif',
@@ -188,41 +210,49 @@ export const ClassicWeddingTemplate = forwardRef<HTMLDivElement, { data: Wedding
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 36,
-            padding: '0 96px',
+            gap: 28,
+            padding: '0 140px',
             textAlign: 'center',
           }}
         >
-          <p style={{ fontSize: 28, margin: 0, color: data.accentColor }}>{data.eyebrow}</p>
+          <p style={{ fontSize: 26, margin: 0, color: data.accentColor }}>{data.eyebrow}</p>
 
           <h1
             style={{
-              fontSize: 58,
+              fontSize: 56,
               fontWeight: 700,
               margin: 0,
-              lineHeight: 1.4,
+              lineHeight: 1.35,
             }}
           >
             {data.title}
           </h1>
 
-          <p style={{ fontSize: 26, margin: 0, lineHeight: 1.7, maxWidth: 480 }}>{data.subtitle}</p>
+          <p style={{ fontSize: 24, margin: 0, lineHeight: 1.6, maxWidth: 640 }}>{data.subtitle}</p>
 
           <div
             style={{
-              marginTop: 20,
+              marginTop: 12,
               width: 96,
               height: 1,
-              backgroundColor: data.accentColor,
+              backgroundColor: BRAND_SECONDARY,
             }}
           />
 
-          <div style={{ fontSize: 26, lineHeight: 2 }}>
-            <p style={{ margin: 0 }}>{data.dateText}</p>
-            <p style={{ margin: 0 }}>{data.timeText}</p>
-            <p style={{ margin: 0, color: data.accentColor }}>{data.locationText}</p>
+          <div
+            style={{
+              display: 'flex',
+              gap: 56,
+              fontSize: 22,
+            }}
+          >
+            <CardFact label="التاريخ" value={data.dateText} color={BRAND_SECONDARY} />
+            <CardFact label="الوقت" value={data.timeText} color={BRAND_SECONDARY} />
+            <CardFact label="الموقع" value={data.locationText} color={BRAND_SECONDARY} />
           </div>
         </div>
+
+        <CardCredit textColor={data.textColor} />
       </div>
     );
   },
@@ -238,7 +268,35 @@ function CardFact({ label, value, color }: { label: string; value: string; color
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
       <span style={{ fontSize: 16, color, fontWeight: 700 }}>{label}</span>
-      <span style={{ fontSize: 20, maxWidth: 160 }}>{value}</span>
+      <span style={{ fontSize: 20, maxWidth: 220 }}>{value}</span>
+    </div>
+  );
+}
+
+// The مهلّي credit line — same brand mark and wordmark colors as the rest
+// of the site (not the card's own customizable accentColor), since this
+// is a signature of who made the card, not part of the couple's own
+// content. Sits low and quiet (reduced opacity, small size) rather than
+// competing with the invitation itself for attention.
+function CardCredit({ textColor }: { textColor: string }) {
+  const t = useTranslations('Brand');
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: 28,
+        insetInline: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        opacity: 0.55,
+      }}
+    >
+      <BrandMark style={{ width: 18, height: 18 }} />
+      <span style={{ fontSize: 18, color: textColor, fontFamily: 'var(--font-amiri), serif' }}>
+        {t('name')}
+      </span>
     </div>
   );
 }

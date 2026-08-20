@@ -11,14 +11,17 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { uploadCoverImageAction } from '@/lib/actions/uploads';
 import {
   WEDDING_TEMPLATE_COMPONENTS,
+  WEDDING_TEMPLATE_DIMENSIONS,
   WEDDING_PALETTES,
-  WEDDING_CARD_WIDTH,
-  WEDDING_CARD_HEIGHT,
   defaultWeddingCardData,
   type WeddingCardData,
   type WeddingTemplateId,
 } from '@/components/public/wedding-invitation-templates';
 import { ArrowRightIcon, DownloadIcon, Loader2Icon } from 'lucide-react';
+
+// Bounding box the live preview scales into — see previewScale below.
+const PREVIEW_MAX_WIDTH = 220;
+const PREVIEW_MAX_HEIGHT = 260;
 
 /**
  * The editing surface for one of the two built-in wedding designs —
@@ -47,6 +50,14 @@ export function CoverTemplateEditor({
   const [error, setError] = useState<string | null>(null);
 
   const Template = WEDDING_TEMPLATE_COMPONENTS[templateId];
+  const { width: cardWidth, height: cardHeight } = WEDDING_TEMPLATE_DIMENSIONS[templateId];
+  // Fit the card into a bounding box rather than a fixed width — نسائي is
+  // portrait and رجالي is landscape, so scaling both to the same width
+  // would make one preview far taller than the other instead of both
+  // reading as "a card, previewed small."
+  const previewScale = Math.min(PREVIEW_MAX_WIDTH / cardWidth, PREVIEW_MAX_HEIGHT / cardHeight);
+  const previewWidth = cardWidth * previewScale;
+  const previewHeight = cardHeight * previewScale;
 
   function set<K extends keyof WeddingCardData>(key: K, value: WeddingCardData[K]) {
     setData((prev) => ({ ...prev, [key]: value }));
@@ -59,8 +70,8 @@ export function CoverTemplateEditor({
       if (!node) return;
       try {
         const dataUrl = await toPng(node, {
-          width: WEDDING_CARD_WIDTH,
-          height: WEDDING_CARD_HEIGHT,
+          width: cardWidth,
+          height: cardHeight,
           pixelRatio: 2,
           cacheBust: true,
         });
@@ -105,22 +116,23 @@ export function CoverTemplateEditor({
 
       <div className="grid gap-4 sm:grid-cols-[minmax(0,220px)_1fr]">
         {/* Live preview, scaled down to fit the form — the ref target is
-            rendered at its real 750x1200 size (transform: scale only
-            affects layout, not the captured pixels) so the exported PNG
-            stays full resolution regardless of how small it previews
-            here. */}
+            rendered at its real full size (transform: scale only affects
+            layout, not the captured pixels) so the exported PNG stays
+            full resolution regardless of how small it previews here.
+            Scaled into a bounding box, not a fixed width, since نسائي
+            (portrait) and رجالي (landscape) are different shapes. */}
         <div className="mx-auto w-fit overflow-hidden rounded-lg border sm:mx-0">
           <div
             style={{
-              width: 220,
-              height: (220 * WEDDING_CARD_HEIGHT) / WEDDING_CARD_WIDTH,
+              width: previewWidth,
+              height: previewHeight,
               overflow: 'hidden',
               position: 'relative',
             }}
           >
             <div
               style={{
-                transform: `scale(${220 / WEDDING_CARD_WIDTH})`,
+                transform: `scale(${previewScale})`,
                 transformOrigin: 'top left',
                 position: 'absolute',
                 top: 0,

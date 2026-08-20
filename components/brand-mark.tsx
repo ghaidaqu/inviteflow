@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react';
+
 /**
  * The مهلّي mark: a tilted square (diamond) with a center dot — the same
  * small ornament used as a section divider throughout the marketing
@@ -7,9 +9,9 @@
  * invitation" track's color) — so the mark itself quietly carries both
  * halves of the product instead of being an arbitrary shape.
  */
-export function BrandMark({ className }: { className?: string }) {
+export function BrandMark({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} aria-hidden="true">
+    <svg viewBox="0 0 20 20" className={className} style={style} aria-hidden="true">
       <path d="M10 1.5 L18.5 10 L10 18.5 L1.5 10 Z" fill="var(--primary)" />
       <circle cx="10" cy="10" r="2.75" fill="var(--secondary)" />
     </svg>

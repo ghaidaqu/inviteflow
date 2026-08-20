@@ -8,8 +8,7 @@ import {
   FloralWeddingTemplate,
   ClassicWeddingTemplate,
   defaultWeddingCardData,
-  WEDDING_CARD_WIDTH,
-  WEDDING_CARD_HEIGHT,
+  WEDDING_TEMPLATE_DIMENSIONS,
   type WeddingTemplateId,
 } from '@/components/public/wedding-invitation-templates';
 import { ImageUpIcon, SparklesIcon } from 'lucide-react';
@@ -20,6 +19,11 @@ const GALLERY_ITEMS: Array<{ id: WeddingTemplateId; Component: typeof FloralWedd
   { id: 'floral', Component: FloralWeddingTemplate },
   { id: 'classic', Component: ClassicWeddingTemplate },
 ];
+
+// Thumbnail width in px — نسائي (portrait) and رجالي (landscape) each
+// keep their own real aspect ratio at this width, so the two gallery
+// tiles end up genuinely different shapes, same as the real cards.
+const THUMB_WIDTH = 128;
 
 /**
  * Wraps the plain file-upload cover field with a second path: pick one of
@@ -84,31 +88,37 @@ export function CoverImagePicker({
         <div className="flex flex-col gap-2">
           <p className="text-muted-foreground text-xs">{t('galleryHint')}</p>
           <div className="flex flex-wrap gap-3">
-            {GALLERY_ITEMS.map(({ id, Component }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setMode({ editing: id })}
-                className="hover-glow group flex flex-col gap-2 rounded-lg"
-              >
-                <div
-                  className="border-border w-28 overflow-hidden rounded-lg border"
-                  style={{ aspectRatio: `${WEDDING_CARD_WIDTH} / ${WEDDING_CARD_HEIGHT}` }}
+            {GALLERY_ITEMS.map(({ id, Component }) => {
+              const { width: cardWidth, height: cardHeight } = WEDDING_TEMPLATE_DIMENSIONS[id];
+              const scale = THUMB_WIDTH / cardWidth;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setMode({ editing: id })}
+                  className="hover-glow group flex flex-col gap-2 rounded-lg"
                 >
                   <div
-                    style={{
-                      width: WEDDING_CARD_WIDTH,
-                      height: WEDDING_CARD_HEIGHT,
-                      transform: 'scale(0.1493)',
-                      transformOrigin: 'top left',
-                    }}
+                    className="border-border overflow-hidden rounded-lg border"
+                    style={{ width: THUMB_WIDTH, aspectRatio: `${cardWidth} / ${cardHeight}` }}
                   >
-                    <Component data={defaultWeddingCardData(id)} />
+                    <div
+                      style={{
+                        width: cardWidth,
+                        height: cardHeight,
+                        transform: `scale(${scale})`,
+                        transformOrigin: 'top left',
+                      }}
+                    >
+                      <Component data={defaultWeddingCardData(id)} />
+                    </div>
                   </div>
-                </div>
-                <span className="text-foreground text-xs font-medium">{t(`templates.${id}`)}</span>
-              </button>
-            ))}
+                  <span className="text-foreground text-xs font-medium">
+                    {t(`templates.${id}`)}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
