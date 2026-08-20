@@ -236,6 +236,34 @@
           "rateLimited": "محاولات رفع كثيرة خلال وقت قصير، انتظر شوي وحاول مرة ثانية."
         }
       },
+      "coverTemplates": {
+        "uploadTab": "ارفع تصميمك",
+        "galleryTab": "اختر من تصاميمنا",
+        "galleryHint": "تصميم زواج جاهز، عدّل النص والألوان بالضبط زي ما تبي.",
+        "templates": {
+          "floral": "نسائي",
+          "classic": "رجالي"
+        },
+        "backToGallery": "رجوع للتصاميم",
+        "applyButton": "تحميل الدعوة",
+        "exporting": "جارٍ التحميل...",
+        "exportFailed": "تعذّر تحميل الدعوة، حاول مرة أخرى.",
+        "colorLabel": "الألوان",
+        "customColor": "لون مخصص",
+        "palettes": {
+          "blush": "وردي",
+          "ivoryGold": "عاجي وذهبي",
+          "sage": "أخضر زيتي",
+          "mahalli": "بني مهلّي",
+          "dusk": "كحلي"
+        },
+        "eyebrowLabel": "السطر العلوي",
+        "titleLabel": "الاسم الرئيسي",
+        "subtitleLabel": "السطر الثانوي",
+        "dateLabel": "التاريخ",
+        "timeLabel": "الوقت",
+        "locationLabel": "الموقع"
+      },
       "primaryLocaleLabel": "اللغة الأساسية",
       "localeAr": "العربية",
       "localeEn": "الإنجليزية",

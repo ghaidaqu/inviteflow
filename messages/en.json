@@ -236,6 +236,34 @@
           "rateLimited": "Too many uploads in a short time — wait a moment and try again."
         }
       },
+      "coverTemplates": {
+        "uploadTab": "Upload your design",
+        "galleryTab": "Choose one of ours",
+        "galleryHint": "A ready-made wedding design — edit the text and colors exactly how you want.",
+        "templates": {
+          "floral": "Feminine",
+          "classic": "Masculine"
+        },
+        "backToGallery": "Back to designs",
+        "applyButton": "Download invitation",
+        "exporting": "Downloading...",
+        "exportFailed": "Couldn't create the invitation, please try again.",
+        "colorLabel": "Colors",
+        "customColor": "Custom color",
+        "palettes": {
+          "blush": "Blush",
+          "ivoryGold": "Ivory & gold",
+          "sage": "Sage",
+          "mahalli": "Mahalli brown",
+          "dusk": "Dusk"
+        },
+        "eyebrowLabel": "Top line",
+        "titleLabel": "Main name",
+        "subtitleLabel": "Second line",
+        "dateLabel": "Date",
+        "timeLabel": "Time",
+        "locationLabel": "Location"
+      },
       "primaryLocaleLabel": "Primary language",
       "localeAr": "Arabic",
       "localeEn": "English",

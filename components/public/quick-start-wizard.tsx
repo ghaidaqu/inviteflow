@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { CoverImageUpload } from '@/components/dashboard/cover-image-upload';
+import { CoverImagePicker } from '@/components/public/cover-image-picker';
 import { LocationMapPicker } from '@/components/dashboard/location-map-picker';
 import { InlineQuestionsBuilder } from '@/components/dashboard/inline-questions-builder';
 import { eventTypes, eventLocales, eventVisibilities } from '@/lib/validations/events';
@@ -369,9 +370,16 @@ export function QuickStartWizard({
               <Controller
                 control={control}
                 name="coverImageUrl"
-                render={({ field }) => (
-                  <CoverImageUpload value={field.value} onChange={field.onChange} />
-                )}
+                render={({ field }) =>
+                  // The template gallery is wedding-specific content, so it
+                  // only replaces the plain upload on the invitation track —
+                  // the link track keeps the same upload-only field it had.
+                  track === 'invitation' ? (
+                    <CoverImagePicker value={field.value} onChange={field.onChange} />
+                  ) : (
+                    <CoverImageUpload value={field.value} onChange={field.onChange} />
+                  )
+                }
               />
             </Field>
 
