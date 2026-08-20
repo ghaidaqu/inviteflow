@@ -26,25 +26,27 @@ export type WeddingCardData = {
 export const WEDDING_TEMPLATE_IDS = ['floral', 'classic'] as const;
 export type WeddingTemplateId = (typeof WEDDING_TEMPLATE_IDS)[number];
 
-// The two designs are deliberately different shapes, not just different
-// colors — نسائي stays the tall portrait card a phone screen shows
-// full-height; رجالي is a wide landscape card instead, closer to a
-// printed formal announcement than a phone wallpaper.
+// Real Saudi/Gulf invitation cards — رجالي and نسائي alike — are almost
+// always the same tall "story" shape (checked against actual designs from
+// a real invitation studio, not guessed): what tells them apart is tone
+// and color, not aspect ratio. A landscape رجالي card was a wrong guess
+// at that convention; both are 1080x1920 now, the same shape a phone
+// screen or a WhatsApp status already is.
 export const WEDDING_TEMPLATE_DIMENSIONS: Record<
   WeddingTemplateId,
   { width: number; height: number }
 > = {
-  floral: { width: 750, height: 1200 },
-  classic: { width: 1600, height: 1100 },
+  floral: { width: 1080, height: 1920 },
+  classic: { width: 1080, height: 1920 },
 };
 
-// Curated background/accent pairs for the color picker. `mahalli` mirrors
-// the site's own --primary/--secondary/--background tokens exactly and is
-// what both templates default to — a template-generated cover should look
-// like it belongs to this product out of the box, not like a generic
-// wedding-card palette that happens to be selectable. The other four stay
-// as real alternate looks for organizers who want something else, not as
-// competing defaults.
+// Curated background/accent/text triples for the color picker. `mahalli`
+// mirrors the site's own --primary/--secondary/--background tokens and is
+// نسائي's default; `formalDark` mirrors the site's own dark --foreground
+// tone with a warm gold accent and is رجالي's default — real men's cards
+// read dark-and-formal, women's read light-and-decorative, so the two
+// defaults are deliberately different even though both stay selectable
+// for either template. The middle three stay as extra alternate looks.
 export const WEDDING_PALETTES: Array<{
   id: string;
   backgroundColor: string;
@@ -56,16 +58,11 @@ export const WEDDING_PALETTES: Array<{
   { id: 'ivoryGold', backgroundColor: '#f5eee0', accentColor: '#a9824f', textColor: '#3d3222' },
   { id: 'sage', backgroundColor: '#eef1e6', accentColor: '#6b7d52', textColor: '#333d26' },
   { id: 'dusk', backgroundColor: '#eef0f3', accentColor: '#3d6576', textColor: '#26333a' },
+  { id: 'formalDark', backgroundColor: '#2b1c10', accentColor: '#c9924f', textColor: '#f6efdc' },
 ];
 
-// The site's own secondary (teal) token — used as a second accent inside
-// both templates (a hairline, a label color) alongside the primary/rust
-// `accentColor`, the same two-color pairing the rest of the app uses
-// rather than a single accent doing every job.
-const BRAND_SECONDARY = '#3d6576';
-
 export function defaultWeddingCardData(templateId: WeddingTemplateId): WeddingCardData {
-  const palette = WEDDING_PALETTES[0]!; // mahalli — same default for both templates
+  const palette = templateId === 'floral' ? WEDDING_PALETTES[0]! : WEDDING_PALETTES[5]!;
   if (templateId === 'floral') {
     return {
       eyebrow: 'بكل الحب نتشرف بدعوتكم',
@@ -89,10 +86,12 @@ export function defaultWeddingCardData(templateId: WeddingTemplateId): WeddingCa
 }
 
 /**
- * Floral / feminine — portrait card, warm cream ground (site tokens by
- * default), rust corner line-art, the couple's names as the one large
- * accent-colored line, and a three-item fact row for date/location/time.
- * Ends in the same مهلّي credit line as the classic design below.
+ * Floral / feminine — tall portrait card, warm cream ground by default,
+ * rust floral corner line-art, a diamond-motif border band top and
+ * bottom (the site's own brand-mark shape, not a generic flourish), the
+ * couple's names as the one large accent-colored line, and a boxed
+ * three-item fact row for date/location/time. Ends in the same مهلّي
+ * credit line as the classic design below.
  */
 export const FloralWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingCardData }>(
   function FloralWeddingTemplate({ data }, ref) {
@@ -114,24 +113,31 @@ export const FloralWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingC
         <FloralCorner color={data.accentColor} corner="top-start" />
         <FloralCorner color={data.accentColor} corner="bottom-end" />
 
+        <div style={{ position: 'absolute', top: 88, insetInline: 90 }}>
+          <DiamondBand id="floral-band-top" color={data.accentColor} width={width - 180} />
+        </div>
+        <div style={{ position: 'absolute', bottom: 150, insetInline: 90 }}>
+          <DiamondBand id="floral-band-bottom" color={data.accentColor} width={width - 180} />
+        </div>
+
         <div
           style={{
             position: 'absolute',
-            inset: 0,
+            top: 200,
+            bottom: 240,
+            insetInline: 96,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            gap: 26,
-            padding: '0 72px',
+            justifyContent: 'space-evenly',
             textAlign: 'center',
           }}
         >
-          <p style={{ fontSize: 26, opacity: 0.85, margin: 0 }}>{data.eyebrow}</p>
+          <p style={{ fontSize: 32, opacity: 0.85, margin: 0 }}>{data.eyebrow}</p>
 
           <h1
             style={{
-              fontSize: 88,
+              fontSize: 108,
               fontWeight: 700,
               color: data.accentColor,
               margin: 0,
@@ -141,20 +147,36 @@ export const FloralWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingC
             {data.title}
           </h1>
 
-          <p style={{ fontSize: 30, margin: 0 }}>{data.subtitle}</p>
+          <p style={{ fontSize: 36, margin: 0 }}>{data.subtitle}</p>
+
+          <DiamondDivider color={data.accentColor} />
 
           <div
             style={{
-              marginTop: 24,
               display: 'flex',
-              gap: 48,
-              fontSize: 22,
-              alignItems: 'flex-start',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: 20,
             }}
           >
-            <CardFact label="التاريخ" value={data.dateText} color={BRAND_SECONDARY} />
-            <CardFact label="الموقع" value={data.locationText} color={BRAND_SECONDARY} />
-            <CardFact label="الوقت" value={data.timeText} color={BRAND_SECONDARY} />
+            <CardFact
+              label="التاريخ"
+              value={data.dateText}
+              color={data.accentColor}
+              textColor={data.textColor}
+            />
+            <CardFact
+              label="الموقع"
+              value={data.locationText}
+              color={data.accentColor}
+              textColor={data.textColor}
+            />
+            <CardFact
+              label="الوقت"
+              value={data.timeText}
+              color={data.accentColor}
+              textColor={data.textColor}
+            />
           </div>
         </div>
 
@@ -165,11 +187,13 @@ export const FloralWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingC
 );
 
 /**
- * Classical / formal — wide landscape card, a thin+thick double-line
- * frame (the "كرت نجد"-style border), the invitation read as one formal
- * block of centered prose, and date/time/location laid out as a row
- * instead of stacked lines since the landscape shape has the width for
- * it. Ends in the same مهلّي credit line as the floral design above.
+ * Classical / formal — the same tall portrait shape as the floral design
+ * (real رجالي and نسائي cards are the same shape; tone is what tells them
+ * apart), dark ground with a warm gold accent by default, a double-line
+ * inset frame with small diamond corner accents, the same diamond border
+ * band top and bottom, and the invitation read as one formal block of
+ * centered prose. Ends in the same مهلّي credit line as the floral design
+ * above.
  */
 export const ClassicWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingCardData }>(
   function ClassicWeddingTemplate({ data }, ref) {
@@ -187,39 +211,58 @@ export const ClassicWeddingTemplate = forwardRef<HTMLDivElement, { data: Wedding
           direction: 'rtl',
         }}
       >
+        <div style={{ position: 'absolute', inset: 48, border: `2px solid ${data.accentColor}` }} />
         <div
           style={{
             position: 'absolute',
-            inset: 36,
-            border: `2px solid ${data.accentColor}`,
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 50,
+            inset: 64,
             border: `1px solid ${data.accentColor}`,
           }}
         />
+        {[
+          { top: 40, insetInlineStart: 40 },
+          { top: 40, insetInlineEnd: 40 },
+          { bottom: 40, insetInlineStart: 40 },
+          { bottom: 40, insetInlineEnd: 40 },
+        ].map((pos, i) => (
+          <span
+            key={i}
+            style={{
+              position: 'absolute',
+              width: 16,
+              height: 16,
+              background: data.accentColor,
+              transform: 'rotate(45deg)',
+              ...pos,
+            }}
+          />
+        ))}
+
+        <div style={{ position: 'absolute', top: 100, insetInline: 100 }}>
+          <DiamondBand id="classic-band-top" color={data.accentColor} width={width - 200} />
+        </div>
+        <div style={{ position: 'absolute', bottom: 160, insetInline: 100 }}>
+          <DiamondBand id="classic-band-bottom" color={data.accentColor} width={width - 200} />
+        </div>
 
         <div
           style={{
             position: 'absolute',
-            inset: 0,
+            top: 220,
+            bottom: 260,
+            insetInline: 130,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            gap: 28,
-            padding: '0 140px',
+            justifyContent: 'space-evenly',
             textAlign: 'center',
           }}
         >
-          <p style={{ fontSize: 26, margin: 0, color: data.accentColor }}>{data.eyebrow}</p>
+          <p style={{ fontSize: 30, margin: 0, color: data.accentColor }}>{data.eyebrow}</p>
 
           <h1
             style={{
-              fontSize: 56,
+              fontSize: 68,
               fontWeight: 700,
               margin: 0,
               lineHeight: 1.35,
@@ -228,27 +271,36 @@ export const ClassicWeddingTemplate = forwardRef<HTMLDivElement, { data: Wedding
             {data.title}
           </h1>
 
-          <p style={{ fontSize: 24, margin: 0, lineHeight: 1.6, maxWidth: 640 }}>{data.subtitle}</p>
+          <p style={{ fontSize: 30, margin: 0, lineHeight: 1.6, maxWidth: 720 }}>{data.subtitle}</p>
 
-          <div
-            style={{
-              marginTop: 12,
-              width: 96,
-              height: 1,
-              backgroundColor: BRAND_SECONDARY,
-            }}
-          />
+          <DiamondDivider color={data.accentColor} />
 
           <div
             style={{
               display: 'flex',
-              gap: 56,
-              fontSize: 22,
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: 20,
             }}
           >
-            <CardFact label="التاريخ" value={data.dateText} color={BRAND_SECONDARY} />
-            <CardFact label="الوقت" value={data.timeText} color={BRAND_SECONDARY} />
-            <CardFact label="الموقع" value={data.locationText} color={BRAND_SECONDARY} />
+            <CardFact
+              label="التاريخ"
+              value={data.dateText}
+              color={data.accentColor}
+              textColor={data.textColor}
+            />
+            <CardFact
+              label="الوقت"
+              value={data.timeText}
+              color={data.accentColor}
+              textColor={data.textColor}
+            />
+            <CardFact
+              label="الموقع"
+              value={data.locationText}
+              color={data.accentColor}
+              textColor={data.textColor}
+            />
           </div>
         </div>
 
@@ -264,11 +316,59 @@ export const WEDDING_TEMPLATE_COMPONENTS: Record<WeddingTemplateId, typeof Flora
     classic: ClassicWeddingTemplate,
   };
 
-function CardFact({ label, value, color }: { label: string; value: string; color: string }) {
+// A boxed fact — rounded card in a soft tint of the card's own accent
+// color, a small diamond bullet beside the label (the brand-mark shape
+// again, not a generic pin/calendar icon), the value beneath. Real
+// invitation cards box their date/time/location facts like this rather
+// than running them as plain stacked text.
+function CardFact({
+  label,
+  value,
+  color,
+  textColor,
+}: {
+  label: string;
+  value: string;
+  color: string;
+  textColor: string;
+}) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-      <span style={{ fontSize: 16, color, fontWeight: 700 }}>{label}</span>
-      <span style={{ fontSize: 20, maxWidth: 220 }}>{value}</span>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 10,
+        minWidth: 200,
+        padding: '20px 24px',
+        borderRadius: 18,
+        background: `color-mix(in srgb, ${color}, transparent 90%)`,
+        border: `1px solid color-mix(in srgb, ${color}, transparent 65%)`,
+      }}
+    >
+      <span
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          fontSize: 22,
+          color,
+          fontWeight: 700,
+        }}
+      >
+        <span
+          aria-hidden
+          style={{
+            display: 'inline-block',
+            width: 9,
+            height: 9,
+            background: color,
+            transform: 'rotate(45deg)',
+          }}
+        />
+        {label}
+      </span>
+      <span style={{ fontSize: 26, color: textColor, maxWidth: 260 }}>{value}</span>
     </div>
   );
 }
@@ -284,20 +384,68 @@ function CardCredit({ textColor }: { textColor: string }) {
     <div
       style={{
         position: 'absolute',
-        bottom: 28,
+        bottom: 50,
         insetInline: 0,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
-        opacity: 0.55,
+        gap: 10,
+        opacity: 0.6,
       }}
     >
-      <BrandMark style={{ width: 18, height: 18 }} />
-      <span style={{ fontSize: 18, color: textColor, fontFamily: 'var(--font-amiri), serif' }}>
+      <BrandMark style={{ width: 24, height: 24 }} />
+      <span style={{ fontSize: 24, color: textColor, fontFamily: 'var(--font-amiri), serif' }}>
         {t('name')}
       </span>
     </div>
+  );
+}
+
+// A small mid-card divider — hairline, diamond, hairline — marking the
+// transition from the couple's names/blessing block to the date/time/
+// location facts, the same way a real card breaks those two sections
+// with a rule rather than running straight from one into the other.
+function DiamondDivider({ color }: { color: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }} aria-hidden>
+      <span style={{ width: 64, height: 1, background: color, opacity: 0.6 }} />
+      <span
+        style={{
+          width: 10,
+          height: 10,
+          background: color,
+          transform: 'rotate(45deg)',
+        }}
+      />
+      <span style={{ width: 64, height: 1, background: color, opacity: 0.6 }} />
+    </div>
+  );
+}
+
+// A thin repeating-diamond band bounded by two hairlines — the same
+// diamond shape as the brand mark, tiled, standing in for the geometric
+// border strips real invitation cards use rather than copying their
+// specific pattern.
+function DiamondBand({ id, color, width }: { id: string; color: string; width: number }) {
+  return (
+    <svg width={width} height={40} viewBox={`0 0 ${width} 40`} aria-hidden>
+      <defs>
+        <pattern id={id} width="52" height="40" patternUnits="userSpaceOnUse">
+          <rect
+            x="13"
+            y="13"
+            width="14"
+            height="14"
+            fill={color}
+            opacity="0.75"
+            transform="rotate(45 20 20)"
+          />
+        </pattern>
+      </defs>
+      <line x1="0" y1="6" x2={width} y2="6" stroke={color} strokeWidth="1.5" opacity="0.55" />
+      <rect x="0" y="0" width={width} height="40" fill={`url(#${id})`} />
+      <line x1="0" y1="34" x2={width} y2="34" stroke={color} strokeWidth="1.5" opacity="0.55" />
+    </svg>
   );
 }
 
@@ -305,8 +453,8 @@ function FloralCorner({ color, corner }: { color: string; corner: 'top-start' | 
   const isTop = corner === 'top-start';
   return (
     <svg
-      width="260"
-      height="260"
+      width="340"
+      height="340"
       viewBox="0 0 260 260"
       style={{
         position: 'absolute',
