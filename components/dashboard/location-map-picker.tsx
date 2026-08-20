@@ -18,6 +18,16 @@ type NominatimResult = {
   display_name: string;
 };
 
+// Soft-biases search results toward the Gulf (bounded=0 means this nudges
+// ranking rather than excluding everything outside the box — a place
+// outside the region can still match, it just won't be preferred over an
+// equally-good match inside it) and asks for Arabic names first. This is
+// what actually helps "search like Google Maps" for local landmarks —
+// without it, a query like a mall or hotel name gets buried under
+// same-named places worldwide since Nominatim has no notion of "this is
+// an Arabic-first, Gulf-first product" on its own.
+const GULF_VIEWBOX = '34,32,60,12';
+
 /**
  * A real clickable/draggable-pin map (Leaflet + OpenStreetMap tiles — no
  * API key, no billing account needed, unlike Google Maps' JS SDK) instead
@@ -40,6 +50,11 @@ export function LocationMapPicker({
   const [search, setSearch] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState(false);
+  // Multiple candidates to choose from instead of silently jumping to
+  // whatever ranked first — "المطعم الفلاني" often matches several
+  // branches, and picking the wrong one silently would be worse than not
+  // finding it at all.
+  const [results, setResults] = useState<NominatimResult[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,21 +110,26 @@ export function LocationMapPicker({
     if (!search.trim()) return;
     setIsSearching(true);
     setSearchError(false);
+    setResults([]);
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(search)}`,
+        `https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=0` +
+          `&accept-language=ar&viewbox=${GULF_VIEWBOX}&bounded=0` +
+          `&q=${encodeURIComponent(search)}`,
       );
-      const results: NominatimResult[] = await res.json();
-      const first = results[0];
-      if (!first) {
+      const found: NominatimResult[] = await res.json();
+      if (found.length === 0) {
         setSearchError(true);
         return;
       }
-      const lat = Number(first.lat);
-      const lng = Number(first.lon);
-      mapRef.current?.setView([lat, lng], 15);
-      markerRef.current?.setLatLng([lat, lng]);
-      onChange(`https://www.google.com/maps?q=${lat.toFixed(6)},${lng.toFixed(6)}`);
+      // One clear match — apply it straight away, same as before. Several
+      // matches — let the organizer pick which one instead of guessing
+      // for them (see the results list below).
+      if (found.length === 1) {
+        applyResult(found[0]!);
+      } else {
+        setResults(found);
+      }
     } catch {
       setSearchError(true);
     } finally {
@@ -117,12 +137,25 @@ export function LocationMapPicker({
     }
   }
 
+  function applyResult(result: NominatimResult) {
+    const lat = Number(result.lat);
+    const lng = Number(result.lon);
+    mapRef.current?.setView([lat, lng], 15);
+    markerRef.current?.setLatLng([lat, lng]);
+    onChange(`https://www.google.com/maps?q=${lat.toFixed(6)},${lng.toFixed(6)}`);
+    setResults([]);
+    setSearch(result.display_name);
+  }
+
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex gap-2">
+      <div className="relative flex gap-2">
         <Input
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            if (results.length > 0) setResults([]);
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
@@ -134,6 +167,23 @@ export function LocationMapPicker({
         <Button type="button" variant="outline" disabled={isSearching} onClick={handleSearch}>
           <SearchIcon className="size-4" />
         </Button>
+
+        {results.length > 0 && (
+          <ul className="bg-popover absolute inset-x-0 top-full z-10 mt-1 flex flex-col overflow-hidden rounded-lg border shadow-md">
+            {results.map((result) => (
+              <li key={`${result.lat},${result.lon}`}>
+                <button
+                  type="button"
+                  onClick={() => applyResult(result)}
+                  className="hover:bg-muted flex w-full items-start gap-2 px-3 py-2 text-start text-sm"
+                >
+                  <MapPinIcon className="text-muted-foreground mt-0.5 size-3.5 shrink-0" />
+                  <span className="line-clamp-2">{result.display_name}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
       {searchError && <p className="text-destructive text-xs">{t('searchNotFound')}</p>}
       <div

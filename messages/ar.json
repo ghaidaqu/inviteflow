@@ -71,9 +71,9 @@
       "ctaStart": "ابدأ الآن"
     },
     "closing": {
-      "headlineLine1": "ترسلها بضغطة،",
-      "headlineLine2": "ويردّون بضغطة",
-      "subtitle": "من الزفاف إلى المؤتمر — مباشرة على واتساب، وتتابع كل ردّ لحظة وصوله."
+      "headlineLine1": "من الدعوة إلى الحضور،",
+      "headlineLine2": "كل شي أبسط",
+      "subtitle": "أرسل، تابع، واستعد لضيوفك."
     },
     "ways": {
       "eyebrow": "خيارات الدعوة",
@@ -212,7 +212,7 @@
       "eventDateLabel": "التاريخ والوقت",
       "rsvpDeadlineLabel": "الموعد النهائي للرد",
       "locationTextLabel": "الموقع",
-      "locationMapUrlLabel": "حدد الموقع على الخريطة",
+      "locationMapUrlLabel": "حدد الموقع على الخريطة (اختياري)",
       "coverImageUrlLabel": "صورة الغلاف",
       "organizationNameLabel": "اسم الشركة/الجهة",
       "organizationLogoLabel": "شعار الشركة",
@@ -220,7 +220,7 @@
         "searchPlaceholder": "ابحث عن مكان أو عنوان...",
         "searchNotFound": "ما لقينا هذا المكان، جرّب اسم مختلف.",
         "mapLabel": "خريطة تحديد الموقع",
-        "hint": "اضغط على الخريطة أو اسحب الدبوس لتحديد الموقع بدقة."
+        "hint": "اختياري بالكامل — اسم الموقع اللي كتبته فوق كافي. حددها هنا بس إذا تبي رابط خرائط دقيق لضيوفك."
       },
       "upload": {
         "choose": "اختر صورة أو فيديو",

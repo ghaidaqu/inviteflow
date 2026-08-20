@@ -71,9 +71,9 @@
       "ctaStart": "Start now"
     },
     "closing": {
-      "headlineLine1": "You send with a tap,",
-      "headlineLine2": "they reply with a tap",
-      "subtitle": "From weddings to conferences — straight on WhatsApp, with every reply tracked the moment it lands."
+      "headlineLine1": "From invitation to attendance,",
+      "headlineLine2": "everything's simpler",
+      "subtitle": "Send it, track it, and get ready for your guests."
     },
     "ways": {
       "eyebrow": "Invitation options",
@@ -212,7 +212,7 @@
       "eventDateLabel": "Date & time",
       "rsvpDeadlineLabel": "RSVP deadline",
       "locationTextLabel": "Location",
-      "locationMapUrlLabel": "Pin the location on the map",
+      "locationMapUrlLabel": "Pin the location on the map (optional)",
       "coverImageUrlLabel": "Cover image",
       "organizationNameLabel": "Company/organization name",
       "organizationLogoLabel": "Company logo",
@@ -220,7 +220,7 @@
         "searchPlaceholder": "Search for a place or address...",
         "searchNotFound": "We couldn't find that place — try a different name.",
         "mapLabel": "Location picker map",
-        "hint": "Click the map or drag the pin to fine-tune the location."
+        "hint": "Fully optional — the location name you typed above is already enough. Only pin it here if you want an exact map link for your guests."
       },
       "upload": {
         "choose": "Choose image or video",
