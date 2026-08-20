@@ -664,6 +664,7 @@
     "approveButton": "اعتماد بدون تجربة",
     "createButton": "أنشئ دعوتك",
     "nextButton": "التالي",
+    "skipButton": "تخطي",
     "backButton": "رجوع",
     "stepLabel": "الخطوة {current} من {total}",
     "steps": {

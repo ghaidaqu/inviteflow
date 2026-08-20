@@ -664,6 +664,7 @@
     "approveButton": "Approve without trying",
     "createButton": "Create your invitation",
     "nextButton": "Next",
+    "skipButton": "Skip",
     "backButton": "Back",
     "stepLabel": "Step {current} of {total}",
     "steps": {

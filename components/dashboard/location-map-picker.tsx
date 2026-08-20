@@ -122,14 +122,16 @@ export function LocationMapPicker({
         setSearchError(true);
         return;
       }
-      // One clear match — apply it straight away, same as before. Several
-      // matches — let the organizer pick which one instead of guessing
-      // for them (see the results list below).
-      if (found.length === 1) {
-        applyResult(found[0]!);
-      } else {
-        setResults(found);
-      }
+      // Always show the pick(s), even a single one — never apply
+      // silently. A silent auto-apply on the sole match looked like the
+      // search "did nothing" (the only real feedback was the map,
+      // scrolled out of view, quietly moving) and worse, Nominatim's one
+      // match isn't always the right one: searching "برج المملكة" (the
+      // Riyadh landmark) once auto-applied to "برج جدة" in a different
+      // city entirely, with nothing surfaced to catch that. Showing it
+      // as a pick — even a list of one — gives the organizer a visible
+      // result to confirm before it becomes their event's location.
+      setResults(found);
     } catch {
       setSearchError(true);
     } finally {

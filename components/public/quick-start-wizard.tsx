@@ -533,7 +533,14 @@ export function QuickStartWizard({
             the track-specific finishing action(s) instead of Next. The
             invitation track gets two real, distinct actions here (try
             with a real send, or approve without one); the link track has
-            no per-guest trial concept at all, so it just gets one. */}
+            no per-guest trial concept at all, so it just gets one.
+            Skip sits beside Next on every step but the first: nothing on
+            datetime/design/settings was ever actually required to
+            advance (goNext only validates the event name, on 'basics'),
+            but that was only true in the code — an organizer looking at
+            a field with no obvious way past it has no reason to know
+            that. Skip is the same goNext() call under a name that says
+            the quiet part out loud: leaving this blank is fine. */}
         <div className="flex items-center justify-between gap-3 border-t pt-4">
           {stepIndex > 0 ? (
             <Button type="button" variant="outline" onClick={goBack}>
@@ -545,10 +552,17 @@ export function QuickStartWizard({
           )}
 
           {stepId !== 'trial' ? (
-            <Button type="button" onClick={goNext}>
-              {t('nextButton')}
-              <ArrowIcon className="size-4 rtl:rotate-180" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {stepId !== 'basics' && (
+                <Button type="button" variant="ghost" onClick={goNext}>
+                  {t('skipButton')}
+                </Button>
+              )}
+              <Button type="button" onClick={goNext}>
+                {t('nextButton')}
+                <ArrowIcon className="size-4 rtl:rotate-180" />
+              </Button>
+            </div>
           ) : track === 'invitation' ? (
             <div className="flex flex-wrap items-center gap-2">
               <Button type="button" variant="outline" onClick={() => submit(false)}>
