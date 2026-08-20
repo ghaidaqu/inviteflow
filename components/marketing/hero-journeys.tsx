@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeftIcon, ArrowRightIcon, MailIcon, LinkIcon } from 'lucide-react';
-import heroArchway from '@/public/images/marketing/hero-archway.png';
+import heroDoorway from '@/public/images/marketing/hero-doorway.jpg';
 
 type JourneyKey = 'invitation' | 'rsvp';
 
@@ -34,19 +34,15 @@ export async function HeroJourneys({ locale }: { locale: string }) {
 
   return (
     <>
-      {/* Full-bleed hero — an original illustration, not a licensed stock
-          photo: a glowing archway, geometric mashrabiya-pattern doors, and
-          a robed silhouette mid-welcome, on the site's own warm rust/gold
-          palette instead of borrowed art direction. Drawn as a silhouette
-          rather than a rendered face specifically so it reads as "a
-          welcome," not a portrait of one specific person — the closest
-          this gets to the earlier person-free doorway shot's neutrality
-          while still carrying the warmth a bare archway alone didn't.
-          Dark gradient scrim keeps the cream headline legible over the
-          busy doorway detail without flattening the art into a block. */}
+      {/* Full-bleed photo hero — an entrance, not a person, so the image
+          reads as "welcome" for every guest and organizer regardless of
+          who they are, rather than defaulting to one gender's likeness
+          the way most hospitality stock photography does. Dark gradient
+          scrim keeps the cream headline legible over the busy stonework
+          without flattening the photo into a plain color block. */}
       <section className="relative flex min-h-[88vh] items-center justify-center overflow-hidden">
         <Image
-          src={heroArchway}
+          src={heroDoorway}
           alt=""
           fill
           priority
