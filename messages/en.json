@@ -82,7 +82,8 @@
   },
   "Common": {
     "languageSwitcher": "Language",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "backToHome": "Home"
   },
   "PhoneInput": {
     "countryLabel": "Country code",
@@ -97,7 +98,6 @@
     }
   },
   "Auth": {
-    "backToHome": "Home",
     "register": {
       "title": "Log in",
       "subtitle": "Sign in with your phone or email to start creating your digital invitations."

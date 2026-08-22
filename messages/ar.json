@@ -82,7 +82,8 @@
   },
   "Common": {
     "languageSwitcher": "اللغة",
-    "loading": "جارٍ التحميل..."
+    "loading": "جارٍ التحميل...",
+    "backToHome": "الرئيسية"
   },
   "PhoneInput": {
     "countryLabel": "رمز الدولة",
@@ -97,7 +98,6 @@
     }
   },
   "Auth": {
-    "backToHome": "الرئيسية",
     "register": {
       "title": "تسجيل الدخول",
       "subtitle": "سجّل دخولك برقم جوالك أو بريدك لتبدأ بإنشاء دعواتك الرقمية."
