@@ -54,7 +54,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           priority
           sizes="100vw"
           className="object-cover"
-          style={{ objectPosition: 'center 65%' }}
+          style={{ objectPosition: 'center 50%' }}
         />
         <div
           aria-hidden
