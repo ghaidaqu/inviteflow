@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
@@ -514,14 +515,12 @@ export function QuickStartWizard({
                   </Field>
                   <Field data-invalid={guestError}>
                     <FieldLabel htmlFor="qs-guest-phone">{t('guestPhoneLabel')}</FieldLabel>
-                    <Input
+                    <PhoneInput
                       id="qs-guest-phone"
-                      type="tel"
-                      dir="ltr"
-                      placeholder="+9665XXXXXXXX"
+                      aria-invalid={guestError}
                       value={guestPhone}
-                      onChange={(e) => {
-                        setGuestPhone(e.target.value);
+                      onChange={(phone) => {
+                        setGuestPhone(phone);
                         setGuestError(false);
                       }}
                     />

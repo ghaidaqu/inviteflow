@@ -6,6 +6,7 @@ import { useRouter } from '@/i18n/navigation';
 import { sendTryDemoInvitationAction, type TryDemoState } from '@/lib/actions/try-demo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 
 const initialState: TryDemoState = {};
@@ -41,13 +42,12 @@ export function TryDemoForm() {
         </Field>
         <Field data-invalid={state.error === 'phoneInvalid'}>
           <FieldLabel htmlFor="try-phone">{t('phoneLabel')}</FieldLabel>
-          <Input
+          <PhoneInput
             id="try-phone"
             name="phone"
-            type="tel"
-            placeholder="+9665XXXXXXXX"
             autoComplete="tel"
             required
+            aria-invalid={state.error === 'phoneInvalid'}
           />
         </Field>
         {state.error && <p className="text-destructive text-sm">{tErrors(state.error)}</p>}

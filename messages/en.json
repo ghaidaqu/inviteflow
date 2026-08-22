@@ -84,6 +84,18 @@
     "languageSwitcher": "Language",
     "loading": "Loading..."
   },
+  "PhoneInput": {
+    "countryLabel": "Country code",
+    "localPlaceholder": "Phone number",
+    "countries": {
+      "SA": "Saudi Arabia",
+      "AE": "UAE",
+      "KW": "Kuwait",
+      "QA": "Qatar",
+      "BH": "Bahrain",
+      "OM": "Oman"
+    }
+  },
   "Auth": {
     "backToHome": "Home",
     "register": {
@@ -97,17 +109,14 @@
       "passwordLabel": "Password",
       "submit": "Log in",
       "submitting": "Logging in...",
-      "forgotPasswordLink": "Forgot password?",
-      "noAccount": "Don't have an account?",
-      "registerLink": "Create account"
+      "forgotPasswordLink": "Forgot password?"
     },
     "otp": {
       "phoneTab": "Phone number",
       "emailTab": "Email",
       "passwordTab": "Password",
       "phoneLabel": "Phone number",
-      "phonePlaceholder": "+9665XXXXXXXX",
-      "phoneHint": "International format, starting with +",
+      "phoneHint": "We'll send your login code over WhatsApp.",
       "sendPhoneCode": "Send code via WhatsApp",
       "emailLabel": "Email",
       "sendEmailCode": "Send login code",
@@ -559,7 +568,6 @@
       "nameLabel": "Name",
       "namePlaceholder": "e.g. Khaled Alotaibi",
       "phoneLabel": "Phone number",
-      "phonePlaceholder": "05xxxxxxxx",
       "addRow": "Add another guest",
       "pasteList": "Paste a list",
       "pasteListPlaceholder": "One guest per line, e.g.:\nSultan Alharbi 0501234567\nNora Alotaibi, 0559876543\nAbdullah\t+966551112233",

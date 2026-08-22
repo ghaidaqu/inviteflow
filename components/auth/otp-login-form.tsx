@@ -16,6 +16,7 @@ import {
 } from '@/lib/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { Field, FieldLabel, FieldDescription, FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
@@ -114,14 +115,11 @@ export function OtpLoginForm({ method, next }: { method: Method; next?: string }
           {method === 'phone' ? (
             <Field data-invalid={!!fieldError}>
               <FieldLabel htmlFor="otp-phone">{t('phoneLabel')}</FieldLabel>
-              <Input
+              <PhoneInput
                 id="otp-phone"
-                type="tel"
-                inputMode="tel"
-                dir="ltr"
-                placeholder={t('phonePlaceholder')}
+                aria-invalid={!!fieldError}
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={setPhone}
               />
               <FieldDescription>
                 {fieldError ? tValidation(fieldError) : t('phoneHint')}

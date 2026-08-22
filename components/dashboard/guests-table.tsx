@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
@@ -379,11 +380,10 @@ export function GuestsTable({
             </Field>
             <Field>
               <FieldLabel htmlFor="edit-guest-phone">{t('addGuests.phoneLabel')}</FieldLabel>
-              <Input
+              <PhoneInput
                 id="edit-guest-phone"
                 value={editDraft.phone}
-                onChange={(e) => setEditDraft((d) => ({ ...d, phone: e.target.value }))}
-                dir="ltr"
+                onChange={(phone) => setEditDraft((d) => ({ ...d, phone }))}
               />
             </Field>
             <Field>

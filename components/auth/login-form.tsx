@@ -83,16 +83,6 @@ export function LoginForm({ next }: { next?: string }) {
         <Button type="submit" disabled={isPending} className="mt-2 w-full">
           {isPending ? t('submitting') : t('submit')}
         </Button>
-
-        <p className="text-muted-foreground text-center text-sm">
-          {t('noAccount')}{' '}
-          <Link
-            href={next ? `/register?next=${encodeURIComponent(next)}` : '/register'}
-            className="text-primary font-medium underline-offset-4 hover:underline"
-          >
-            {t('registerLink')}
-          </Link>
-        </p>
       </FieldGroup>
     </form>
   );

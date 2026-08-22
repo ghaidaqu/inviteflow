@@ -5,6 +5,7 @@ import { useFieldArray, useForm, Controller } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { Textarea } from '@/components/ui/textarea';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -160,7 +161,13 @@ export function RsvpForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <Field>
             <FieldLabel htmlFor="phone">{t('phoneLabel')}</FieldLabel>
-            <Input id="phone" type="tel" {...register('phone')} />
+            <Controller
+              control={control}
+              name="phone"
+              render={({ field }) => (
+                <PhoneInput id="phone" value={field.value} onChange={field.onChange} />
+              )}
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="email">{t('emailLabel')}</FieldLabel>

@@ -84,6 +84,18 @@
     "languageSwitcher": "اللغة",
     "loading": "جارٍ التحميل..."
   },
+  "PhoneInput": {
+    "countryLabel": "رمز الدولة",
+    "localPlaceholder": "رقم الجوال",
+    "countries": {
+      "SA": "السعودية",
+      "AE": "الإمارات",
+      "KW": "الكويت",
+      "QA": "قطر",
+      "BH": "البحرين",
+      "OM": "عُمان"
+    }
+  },
   "Auth": {
     "backToHome": "الرئيسية",
     "register": {
@@ -97,17 +109,14 @@
       "passwordLabel": "كلمة المرور",
       "submit": "تسجيل الدخول",
       "submitting": "جارٍ الدخول...",
-      "forgotPasswordLink": "نسيت كلمة المرور؟",
-      "noAccount": "ليس لديك حساب؟",
-      "registerLink": "إنشاء حساب"
+      "forgotPasswordLink": "نسيت كلمة المرور؟"
     },
     "otp": {
       "phoneTab": "رقم الجوال",
       "emailTab": "بريد إلكتروني",
       "passwordTab": "كلمة مرور",
       "phoneLabel": "رقم الجوال",
-      "phonePlaceholder": "+9665XXXXXXXX",
-      "phoneHint": "بصيغة دولية، تبدأ بـ +966",
+      "phoneHint": "راح نرسل لك رمز الدخول عبر واتساب.",
       "sendPhoneCode": "أرسل الرمز عبر واتساب",
       "emailLabel": "البريد الإلكتروني",
       "sendEmailCode": "أرسل رمز الدخول",
@@ -559,7 +568,6 @@
       "nameLabel": "الاسم",
       "namePlaceholder": "مثال: خالد العتيبي",
       "phoneLabel": "رقم الجوال",
-      "phonePlaceholder": "05xxxxxxxx",
       "addRow": "إضافة ضيف آخر",
       "pasteList": "لصق قائمة",
       "pasteListPlaceholder": "سطر لكل ضيف، مثل:\nسلطان الحربي 0501234567\nنورة العتيبي، ٠٥٥٩٨٧٦٥٤٣\nعبدالله\t+966551112233",

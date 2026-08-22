@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
@@ -269,12 +270,7 @@ export function AddGuestsDialog({
                 <label className="text-sm font-medium" htmlFor="single-guest-phone">
                   {t('phoneLabel')}
                 </label>
-                <Input
-                  id="single-guest-phone"
-                  dir="ltr"
-                  value={singlePhone}
-                  onChange={(e) => setSinglePhone(e.target.value)}
-                />
+                <PhoneInput id="single-guest-phone" value={singlePhone} onChange={setSinglePhone} />
               </div>
               <div>
                 <label className="text-sm font-medium" htmlFor="single-guest-companions">

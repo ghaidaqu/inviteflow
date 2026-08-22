@@ -8,6 +8,7 @@ import {
 } from '@/lib/actions/institutional-lead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { Textarea } from '@/components/ui/textarea';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { CheckCircle2Icon } from 'lucide-react';
@@ -51,7 +52,7 @@ export function InstitutionalLeadForm() {
         </Field>
         <Field>
           <FieldLabel htmlFor="lead-phone">{t('phoneLabel')}</FieldLabel>
-          <Input id="lead-phone" name="phone" type="tel" dir="ltr" placeholder="+9665XXXXXXXX" />
+          <PhoneInput id="lead-phone" name="phone" />
         </Field>
       </div>
       <Field>
