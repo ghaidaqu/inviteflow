@@ -15,9 +15,10 @@ import {
   WEDDING_PALETTES,
   defaultWeddingCardData,
   type WeddingCardData,
+  type WeddingCardBlockId,
   type WeddingTemplateId,
 } from '@/components/public/wedding-invitation-templates';
-import { ArrowRightIcon, DownloadIcon, Loader2Icon } from 'lucide-react';
+import { ArrowRightIcon, DownloadIcon, Loader2Icon, RotateCcwIcon } from 'lucide-react';
 
 // Bounding box the live preview scales into — see previewScale below.
 // The editor stacks preview-then-form (not side-by-side) since the
@@ -70,11 +71,35 @@ export function CoverTemplateEditor({
     setData((prev) => ({ ...prev, [key]: value }));
   }
 
+  function setBlockOffset(id: WeddingCardBlockId, offset: { x: number; y: number }) {
+    setData((prev) => ({ ...prev, offsets: { ...prev.offsets, [id]: offset } }));
+  }
+
+  const hasCustomPositions = Object.keys(data.offsets).length > 0;
+
   function handleExport() {
     setError(null);
     startExporting(async () => {
       const node = previewRef.current;
       if (!node) return;
+
+      // The dashed drag-outline is an editing affordance, not part of
+      // the invitation — strip it directly on the live DOM right before
+      // capture, synchronously, rather than through a React state flag.
+      // A state toggle (render editable=false, wait a couple of
+      // animation frames, then capture) looked correct but the outline
+      // still showed up in the exported PNG in practice — asking React's
+      // render/commit/paint pipeline to finish in time for an imperative
+      // read straight after is exactly the kind of timing this project
+      // avoids elsewhere too. Mutating the DOM directly has no such gap:
+      // by the next line, the style is already gone.
+      const outlined = [...node.querySelectorAll<HTMLElement>('[data-drag-outline]')];
+      const savedStyles = outlined.map((el) => el.getAttribute('style'));
+      outlined.forEach((el) => {
+        el.style.outline = 'none';
+        el.style.cursor = '';
+      });
+
       try {
         const dataUrl = await toPng(node, {
           width: cardWidth,
@@ -94,6 +119,14 @@ export function CoverTemplateEditor({
         onApply(result.url);
       } catch {
         setError(t('exportFailed'));
+      } finally {
+        // Restore exactly what was there before, whether the export
+        // succeeded, failed, or threw — the organizer may keep editing.
+        outlined.forEach((el, i) => {
+          const saved = savedStyles[i];
+          if (saved === null) el.removeAttribute('style');
+          else el.setAttribute('style', saved);
+        });
       }
     });
   }
@@ -105,15 +138,30 @@ export function CoverTemplateEditor({
           <ArrowRightIcon className="size-4 rtl:rotate-180" />
           {t('backToGallery')}
         </Button>
-        <Button type="button" variant="secondary" onClick={handleExport} disabled={isExporting}>
-          {isExporting ? (
-            <Loader2Icon className="size-4 animate-spin" />
-          ) : (
-            <DownloadIcon className="size-4" />
+        <div className="flex items-center gap-2">
+          {hasCustomPositions && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setData((prev) => ({ ...prev, offsets: {} }))}
+            >
+              <RotateCcwIcon className="size-4" />
+              {t('resetPositions')}
+            </Button>
           )}
-          {isExporting ? t('exporting') : t('applyButton')}
-        </Button>
+          <Button type="button" variant="secondary" onClick={handleExport} disabled={isExporting}>
+            {isExporting ? (
+              <Loader2Icon className="size-4 animate-spin" />
+            ) : (
+              <DownloadIcon className="size-4" />
+            )}
+            {isExporting ? t('exporting') : t('applyButton')}
+          </Button>
+        </div>
       </div>
+
+      <p className="text-muted-foreground -mt-2 text-xs">{t('dragHint')}</p>
 
       {error && (
         <Alert variant="destructive">
@@ -146,7 +194,13 @@ export function CoverTemplateEditor({
                 left: 0,
               }}
             >
-              <Template data={data} ref={previewRef} />
+              <Template
+                data={data}
+                ref={previewRef}
+                editable={!isExporting}
+                scale={previewScale}
+                onOffsetChange={setBlockOffset}
+              />
             </div>
           </div>
         </div>

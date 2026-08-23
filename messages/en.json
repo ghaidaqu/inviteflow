@@ -224,6 +224,8 @@
           "rectangle": "Rectangle invitation"
         },
         "backToGallery": "Back to designs",
+        "dragHint": "Drag any line in the preview to move it.",
+        "resetPositions": "Reset positions",
         "applyButton": "Download invitation",
         "exporting": "Downloading...",
         "exportFailed": "Couldn't create the invitation, please try again.",

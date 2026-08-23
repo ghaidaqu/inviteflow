@@ -1,7 +1,30 @@
-import { forwardRef } from 'react';
+import {
+  forwardRef,
+  useRef,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
 import { useTranslations } from 'next-intl';
 import { BrandMark } from '@/components/brand-mark';
 import { arefRuqaa } from '@/lib/fonts';
+
+export const WEDDING_CARD_BLOCK_IDS = [
+  'eyebrow',
+  'hostBlock',
+  'invitationLine',
+  'coupleBlock',
+  'subtitle',
+  'facts',
+  'closing',
+  'credit',
+] as const;
+export type WeddingCardBlockId = (typeof WEDDING_CARD_BLOCK_IDS)[number];
+
+// One (x, y) nudge per draggable block, in the card's own 1080-wide
+// coordinate space (not screen pixels — see DraggableBlock's `scale`
+// prop for why). Missing/undefined entries mean "still at its default
+// flex position", so an untouched card needs no offsets at all.
+export type WeddingCardOffsets = Partial<Record<WeddingCardBlockId, { x: number; y: number }>>;
 
 /**
  * The editable content + look of a template-generated cover — shared by
@@ -30,6 +53,7 @@ export type WeddingCardData = {
   backgroundColor: string;
   accentColor: string;
   textColor: string;
+  offsets: WeddingCardOffsets;
 };
 
 // Named by shape, not gender — square and rectangle are simply two
@@ -83,9 +107,27 @@ export function defaultWeddingCardData(_templateId: WeddingTemplateId): WeddingC
     dateText: '١٦ يوليو ٢٠٢٦',
     timeText: 'من الساعة ٨:٠٠ م',
     locationText: 'قاعة الأفراح — الرياض',
+    offsets: {},
     ...palette,
   };
 }
+
+type WeddingTemplateProps = {
+  data: WeddingCardData;
+  templateId: WeddingTemplateId;
+  /** Lets the organizer drag any block to nudge its position — on in the
+   * editor's live preview, off everywhere else (gallery thumbnails, the
+   * exported PNG's own render pass) since there's no pointer to drag
+   * with there anyway. */
+  editable?: boolean;
+  /** Screen-to-card scale factor — the editor shows this card scaled
+   * down via `transform: scale()`, so a drag's on-screen pixel delta has
+   * to be divided by this to land the block at the right spot in the
+   * card's own 1080-wide coordinate space. 1 when rendered at real size
+   * (the export pass, gallery thumbnails don't need dragging at all). */
+  scale?: number;
+  onOffsetChange?: (id: WeddingCardBlockId, offset: { x: number; y: number }) => void;
+};
 
 /**
  * One shared layout for both shapes (a plain right-angle double-line
@@ -95,12 +137,28 @@ export function defaultWeddingCardData(_templateId: WeddingTemplateId): WeddingC
  * own width/height so the same JSX scales cleanly to either shape
  * instead of needing two near-duplicate components.
  */
-const WeddingTemplate = forwardRef<
-  HTMLDivElement,
-  { data: WeddingCardData; templateId: WeddingTemplateId }
->(function WeddingTemplate({ data, templateId }, ref) {
+const WeddingTemplate = forwardRef<HTMLDivElement, WeddingTemplateProps>(function WeddingTemplate(
+  { data, templateId, editable, scale = 1, onOffsetChange },
+  ref,
+) {
   const { width, height } = WEDDING_TEMPLATE_DIMENSIONS[templateId];
   const isSquare = templateId === 'square';
+  const offsets = data.offsets;
+
+  function block(id: WeddingCardBlockId, children: React.ReactNode, basePosition?: CSSProperties) {
+    return (
+      <DraggableBlock
+        id={id}
+        offset={offsets[id]}
+        editable={editable}
+        scale={scale}
+        onOffsetChange={onOffsetChange}
+        basePosition={basePosition}
+      >
+        {children}
+      </DraggableBlock>
+    );
+  }
 
   return (
     <div
@@ -131,76 +189,197 @@ const WeddingTemplate = forwardRef<
           textAlign: 'center',
         }}
       >
-        <p
-          className={arefRuqaa.className}
-          style={{
-            fontSize: isSquare ? 40 : 44,
-            color: data.accentColor,
-            margin: 0,
-            lineHeight: 1.4,
-          }}
-        >
-          {data.eyebrow}
-        </p>
+        {block(
+          'eyebrow',
+          <p
+            className={arefRuqaa.className}
+            style={{
+              fontSize: isSquare ? 40 : 44,
+              color: data.accentColor,
+              margin: 0,
+              lineHeight: 1.4,
+            }}
+          >
+            {data.eyebrow}
+          </p>,
+        )}
 
-        <BodyLine color={data.accentColor}>يتشرفُ</BodyLine>
-        <NamesRow left={data.hostName2} right={data.hostName1} color={data.accentColor} />
-        <BodyLine color={data.accentColor}>{data.invitationLine}</BodyLine>
+        {block(
+          'hostBlock',
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
+            <BodyLine color={data.accentColor}>يتشرفُ</BodyLine>
+            <NamesRow left={data.hostName2} right={data.hostName1} color={data.accentColor} />
+          </div>,
+        )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
-          <LabelsRow color={data.accentColor} />
-          <NamesRow
-            left={data.brideFatherName}
-            right={data.groomFullName}
-            color={data.accentColor}
-          />
-        </div>
+        {block(
+          'invitationLine',
+          <BodyLine color={data.accentColor}>{data.invitationLine}</BodyLine>,
+        )}
 
-        <BodyLine color={data.accentColor}>{data.subtitle}</BodyLine>
+        {block(
+          'coupleBlock',
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
+            <LabelsRow color={data.accentColor} />
+            <NamesRow
+              left={data.brideFatherName}
+              right={data.groomFullName}
+              color={data.accentColor}
+            />
+          </div>,
+        )}
+
+        {block('subtitle', <BodyLine color={data.accentColor}>{data.subtitle}</BodyLine>)}
 
         <DiamondDivider color={data.accentColor} />
 
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            alignItems: 'baseline',
-            gap: '6px 32px',
-          }}
-        >
-          <CardFact label="التاريخ" value={data.dateText} color={data.accentColor} />
-          <CardFact label="الموقع" value={data.locationText} color={data.accentColor} />
-          <CardFact label="الوقت" value={data.timeText} color={data.accentColor} />
-        </div>
+        {block(
+          'facts',
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              alignItems: 'baseline',
+              gap: '6px 32px',
+            }}
+          >
+            <CardFact label="التاريخ" value={data.dateText} color={data.accentColor} />
+            <CardFact label="الموقع" value={data.locationText} color={data.accentColor} />
+            <CardFact label="الوقت" value={data.timeText} color={data.accentColor} />
+          </div>,
+        )}
 
-        <p style={{ fontSize: 32, fontWeight: 700, margin: 0, color: data.accentColor }}>
-          {data.closingLine}
-        </p>
+        {block(
+          'closing',
+          <p style={{ fontSize: 32, fontWeight: 700, margin: 0, color: data.accentColor }}>
+            {data.closingLine}
+          </p>,
+        )}
       </div>
 
-      <CardCredit accentColor={data.accentColor} />
+      {block('credit', <CardCredit accentColor={data.accentColor} />, {
+        position: 'absolute',
+        bottom: 58,
+        insetInline: 0,
+        display: 'flex',
+        justifyContent: 'center',
+      })}
     </div>
   );
 });
 
-export const SquareWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingCardData }>(
-  function SquareWeddingTemplate({ data }, ref) {
-    return <WeddingTemplate ref={ref} data={data} templateId="square" />;
-  },
-);
+export const SquareWeddingTemplate = forwardRef<
+  HTMLDivElement,
+  Omit<WeddingTemplateProps, 'templateId'>
+>(function SquareWeddingTemplate(props, ref) {
+  return <WeddingTemplate ref={ref} {...props} templateId="square" />;
+});
 
-export const RectangleWeddingTemplate = forwardRef<HTMLDivElement, { data: WeddingCardData }>(
-  function RectangleWeddingTemplate({ data }, ref) {
-    return <WeddingTemplate ref={ref} data={data} templateId="rectangle" />;
-  },
-);
+export const RectangleWeddingTemplate = forwardRef<
+  HTMLDivElement,
+  Omit<WeddingTemplateProps, 'templateId'>
+>(function RectangleWeddingTemplate(props, ref) {
+  return <WeddingTemplate ref={ref} {...props} templateId="rectangle" />;
+});
 
 export const WEDDING_TEMPLATE_COMPONENTS: Record<WeddingTemplateId, typeof SquareWeddingTemplate> =
   {
     square: SquareWeddingTemplate,
     rectangle: RectangleWeddingTemplate,
   };
+
+/**
+ * Wraps one content block so the organizer can drag it to nudge its
+ * position — `transform: translate()` on top of the block's normal flex
+ * position, so a block that's never been dragged renders exactly where
+ * it always did (an empty `offsets` object is a no-op). Pointer capture
+ * means the drag keeps tracking even if the cursor leaves the block
+ * mid-drag, and `touchAction: 'none'` stops the page from scrolling
+ * under a finger on mobile while dragging.
+ *
+ * `basePosition` exists only for the مهلّي credit block: every other
+ * block stays a normal flex child (translate is enough), but the credit
+ * line is deliberately positioned outside that flex column (see the
+ * `block('credit', …)` call in WeddingTemplate) so it can sit near the
+ * bottom clear of the text above it — CSS `transform` on any element
+ * also makes it a containing block for absolutely-positioned
+ * descendants, so the credit's own position had to move here rather
+ * than staying on CardCredit itself once this wrapper needed a
+ * transform of its own.
+ */
+function DraggableBlock({
+  id,
+  offset,
+  editable,
+  scale = 1,
+  onOffsetChange,
+  basePosition,
+  children,
+}: {
+  id: WeddingCardBlockId;
+  offset?: { x: number; y: number };
+  editable?: boolean;
+  scale?: number;
+  onOffsetChange?: (id: WeddingCardBlockId, offset: { x: number; y: number }) => void;
+  basePosition?: CSSProperties;
+  children: React.ReactNode;
+}) {
+  const drag = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(
+    null,
+  );
+  const x = offset?.x ?? 0;
+  const y = offset?.y ?? 0;
+
+  function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {
+    if (!editable) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    drag.current = { startX: e.clientX, startY: e.clientY, originX: x, originY: y };
+  }
+  function handlePointerMove(e: ReactPointerEvent<HTMLDivElement>) {
+    if (!editable || !drag.current) return;
+    const dx = (e.clientX - drag.current.startX) / scale;
+    const dy = (e.clientY - drag.current.startY) / scale;
+    onOffsetChange?.(id, { x: drag.current.originX + dx, y: drag.current.originY + dy });
+  }
+  function handlePointerUp(e: ReactPointerEvent<HTMLDivElement>) {
+    if (!editable) return;
+    drag.current = null;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+  }
+
+  return (
+    <div
+      style={{
+        width: '100%',
+        ...basePosition,
+        transform: `translate(${x}px, ${y}px)`,
+        cursor: editable ? 'grab' : undefined,
+        touchAction: editable ? 'none' : undefined,
+        outline: editable
+          ? '2px dashed color-mix(in srgb, currentColor 35%, transparent)'
+          : undefined,
+        outlineOffset: editable ? 4 : undefined,
+        borderRadius: editable ? 6 : undefined,
+      }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      // Marks this node so the editor can strip the dashed outline
+      // directly on the live DOM right before html-to-image captures it
+      // — a React state toggle proved unreliable for this (the outline
+      // still showed up in the exported PNG even with a render+paint
+      // wait before capture), so the editor does it imperatively instead
+      // of trusting render timing for something the export must get
+      // exactly right.
+      data-drag-outline={editable ? 'true' : undefined}
+    >
+      {children}
+    </div>
+  );
+}
 
 // One flat size (32px) for every "connective tissue" line below the
 // دعاء opener — يتشرفُ / بدعوتكم.../ وتناول طعام العشاء... — matching a
@@ -272,19 +451,16 @@ function CardFact({ label, value, color }: { label: string; value: string; color
 // The مهلّي credit line — same brand mark and wordmark colors as the rest
 // of the site (not the card's own customizable accentColor), since this
 // is a signature of who made the card, not part of the couple's own
-// content. Positioned on its own, well clear of the text block above it,
-// rather than as the last item in the same flex column.
+// content. Its actual placement (near the bottom, clear of the text
+// block above it) is set by the DraggableBlock wrapper's basePosition
+// in WeddingTemplate, not here — this is just the row's own content.
 function CardCredit({ accentColor }: { accentColor: string }) {
   const t = useTranslations('Brand');
   return (
     <div
       style={{
-        position: 'absolute',
-        bottom: 58,
-        insetInline: 0,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
         gap: 10,
         opacity: 0.7,
       }}
