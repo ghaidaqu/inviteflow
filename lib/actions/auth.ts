@@ -8,11 +8,8 @@ import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { getCurrentOrganizationId, hasAnyEvents } from '@/lib/services/events.service';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase';
+import * as Sentry from '@sentry/nextjs';
 import {
-  registerSchema,
-  loginSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
   phoneOtpRequestSchema,
   phoneOtpVerifySchema,
   emailOtpRequestSchema,
@@ -56,113 +53,10 @@ async function defaultPostAuthPath(
   }
 }
 
-export async function registerAction(
-  _prevState: AuthActionState,
-  formData: FormData,
-): Promise<AuthActionState> {
-  if (!isSupabaseConfigured()) return NOT_CONFIGURED;
-
-  const parsed = registerSchema.safeParse({
-    fullName: formData.get('fullName'),
-    email: formData.get('email'),
-    password: formData.get('password'),
-    confirmPassword: formData.get('confirmPassword'),
-  });
-
-  if (!parsed.success) {
-    return { error: 'invalidInput' };
-  }
-
-  const locale = await getLocale();
-  const supabase = await createClient();
-
-  const { error } = await supabase.auth.signUp({
-    email: parsed.data.email,
-    password: parsed.data.password,
-    options: {
-      data: { full_name: parsed.data.fullName, preferred_locale: locale },
-    },
-  });
-
-  if (error) {
-    return { error: error.code === 'user_already_exists' ? 'emailAlreadyExists' : 'unknown' };
-  }
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const fallback = user
-    ? await defaultPostAuthPath(supabase, user.id, locale)
-    : `/${locale}/dashboard`;
-  redirect(safeNextPath(formData.get('next'), locale) ?? fallback);
-}
-
-export async function loginAction(
-  _prevState: AuthActionState,
-  formData: FormData,
-): Promise<AuthActionState> {
-  if (!isSupabaseConfigured()) return NOT_CONFIGURED;
-
-  const parsed = loginSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
-  });
-
-  if (!parsed.success) {
-    return { error: 'invalidInput' };
-  }
-
-  const locale = await getLocale();
-  const supabase = await createClient();
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email: parsed.data.email,
-    password: parsed.data.password,
-  });
-
-  if (error) {
-    // Supabase returns a distinct code when the account exists and the
-    // password is right, but the signup confirmation email hasn't been
-    // clicked yet — surfacing that specifically instead of folding it into
-    // "wrong email or password" (which sent at least one real user down a
-    // false trail double-checking a password that was never the problem).
-    if (error.code === 'email_not_confirmed') {
-      return { error: 'emailNotConfirmed' };
-    }
-    return { error: 'invalidCredentials' };
-  }
-
-  redirect(safeNextPath(formData.get('next'), locale) ?? `/${locale}/dashboard`);
-}
-
 // Logout moved to app/auth/logout/route.ts — a plain POST route handler
 // instead of a server action, so it can't go stale across a deploy (see
 // that file for why). Keep this file free of a same-named export so no
 // one wires the fragile version back in by accident.
-
-export async function forgotPasswordAction(
-  _prevState: AuthActionState,
-  formData: FormData,
-): Promise<AuthActionState> {
-  if (!isSupabaseConfigured()) return NOT_CONFIGURED;
-
-  const parsed = forgotPasswordSchema.safeParse({ email: formData.get('email') });
-
-  if (!parsed.success) {
-    return { error: 'invalidInput' };
-  }
-
-  const supabase = await createClient();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
-
-  // Always report success even if the email doesn't exist, so this endpoint
-  // can't be used to enumerate registered accounts.
-  await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${appUrl}/auth/confirm?next=/reset-password`,
-  });
-
-  return { success: true };
-}
 
 // Passwordless auth — phone number over WhatsApp OTP, or an email code
 // instead of a password. Both use Supabase's native OTP flow (no custom
@@ -199,7 +93,15 @@ export async function requestPhoneOtpAction(
     options: { channel: 'whatsapp' },
   });
 
-  if (error) return { error: 'otpRequestFailed' };
+  if (error) {
+    // The generic translated message is deliberately vague (Supabase's
+    // own error text isn't user-facing quality), but that vagueness was
+    // hiding real causes from us too — capture the actual error so a
+    // provider-config issue (e.g. WhatsApp/Twilio not set up) shows up
+    // in Sentry instead of just "it broke" reports with no lead.
+    Sentry.captureException(error, { tags: { action: 'requestPhoneOtpAction' } });
+    return { error: 'phoneOtpRequestFailed' };
+  }
   return { success: true };
 }
 
@@ -262,7 +164,13 @@ export async function requestEmailOtpAction(
     options: { shouldCreateUser: true },
   });
 
-  if (error) return { error: 'otpRequestFailed' };
+  if (error) {
+    // Same reasoning as the phone action above — capture the real cause
+    // (e.g. Supabase's own email send failing or rate-limiting) instead
+    // of only ever seeing the generic translated message.
+    Sentry.captureException(error, { tags: { action: 'requestEmailOtpAction' } });
+    return { error: 'emailOtpRequestFailed' };
+  }
   return { success: true };
 }
 
@@ -296,39 +204,4 @@ export async function verifyEmailOtpAction(
     ? await defaultPostAuthPath(supabase, user.id, locale)
     : `/${locale}/dashboard`;
   redirect(safeNextPath(formData.get('next'), locale) ?? fallback);
-}
-
-export async function resetPasswordAction(
-  _prevState: AuthActionState,
-  formData: FormData,
-): Promise<AuthActionState> {
-  if (!isSupabaseConfigured()) return NOT_CONFIGURED;
-
-  const parsed = resetPasswordSchema.safeParse({
-    password: formData.get('password'),
-    confirmPassword: formData.get('confirmPassword'),
-  });
-
-  if (!parsed.success) {
-    return { error: 'invalidInput' };
-  }
-
-  const locale = await getLocale();
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { error: 'sessionExpired' };
-  }
-
-  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
-
-  if (error) {
-    return { error: 'unknown' };
-  }
-
-  redirect(`/${locale}/dashboard`);
 }

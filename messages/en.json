@@ -104,17 +104,11 @@
     },
     "login": {
       "title": "Log in",
-      "subtitle": "Log in to manage your events.",
-      "emailLabel": "Email",
-      "passwordLabel": "Password",
-      "submit": "Log in",
-      "submitting": "Logging in...",
-      "forgotPasswordLink": "Forgot password?"
+      "subtitle": "Log in to manage your events."
     },
     "otp": {
       "phoneTab": "Phone number",
       "emailTab": "Email",
-      "passwordTab": "Password",
       "phoneLabel": "Phone number",
       "phoneHint": "We'll send your login code over WhatsApp.",
       "sendPhoneCode": "Send code via WhatsApp",
@@ -130,33 +124,13 @@
       "changeEmail": "Different email?",
       "resendCode": "Resend code"
     },
-    "forgotPassword": {
-      "title": "Reset your password",
-      "subtitle": "Enter your email and we'll send you a password reset link.",
-      "emailLabel": "Email",
-      "submit": "Send reset link",
-      "submitting": "Sending...",
-      "successMessage": "If that email is registered, a reset link will arrive shortly.",
-      "backToLogin": "Back to login"
-    },
-    "resetPassword": {
-      "title": "Set a new password",
-      "subtitle": "Enter a new password for your account.",
-      "passwordLabel": "New password",
-      "confirmPasswordLabel": "Confirm password",
-      "submit": "Save password",
-      "submitting": "Saving..."
-    },
     "errors": {
       "invalidInput": "Please check the information you entered.",
-      "invalidCredentials": "Incorrect email or password.",
-      "emailNotConfirmed": "Your email hasn't been confirmed yet. Check your inbox and click the confirmation link first.",
-      "emailAlreadyExists": "This email is already registered.",
-      "sessionExpired": "Your session has expired, please request a new link.",
       "authConfirmFailed": "This link is invalid or has expired.",
       "notConfigured": "This project isn't connected to a Supabase database yet.",
       "rateLimited": "Too many attempts in a short time, please try again shortly.",
-      "otpRequestFailed": "Couldn't send the code. If this is the first time, phone login may need extra setup on the platform's side — try email instead.",
+      "phoneOtpRequestFailed": "Couldn't send the code. If this is the first time, phone login may need extra setup on the platform's side — try email instead.",
+      "emailOtpRequestFailed": "Couldn't send a login code to that email. Double-check it's typed correctly and try again, or try logging in with your phone over WhatsApp instead.",
       "otpInvalid": "That code is incorrect or has expired.",
       "unknown": "Something went wrong, please try again."
     },
@@ -165,11 +139,7 @@
       "fullNameTooLong": "Name is too long.",
       "emailInvalid": "Please enter a valid email address.",
       "phoneInvalid": "Please enter a valid phone number in international format (e.g. +966501234567).",
-      "otpInvalid": "The code must be 6 digits.",
-      "passwordTooShort": "Password must be at least 8 characters.",
-      "passwordTooLong": "Password is too long.",
-      "passwordRequired": "Password is required.",
-      "passwordMismatch": "Passwords do not match."
+      "otpInvalid": "The code must be 6 digits."
     }
   },
   "Dashboard": {
