@@ -25,7 +25,15 @@ export function ClassicHero({ event, typeLabel, organizedByLabel }: EventHeroPro
         /\.(mp4|webm|mov)$/i.test(event.cover_image_url) ? (
           <video
             src={event.cover_image_url}
-            className="mb-6 aspect-video w-full rounded-2xl object-cover shadow-lg"
+            // No fixed aspect-ratio box + object-cover: that convention
+            // suits an arbitrary uploaded photo, but it crops a
+            // template-generated invitation (square or the taller
+            // rectangle shape) down to a thin horizontal strip, losing
+            // most of the card. object-contain inside a height cap shows
+            // the whole cover at its own real shape instead — square
+            // stays visibly square, a landscape photo still fills the
+            // width the same way it did before.
+            className="mb-6 max-h-[560px] w-full rounded-2xl object-contain shadow-lg"
             autoPlay
             muted
             loop
@@ -36,7 +44,7 @@ export function ClassicHero({ event, typeLabel, organizedByLabel }: EventHeroPro
           <img
             src={event.cover_image_url}
             alt={event.name}
-            className="mb-6 aspect-video w-full rounded-2xl object-cover shadow-lg"
+            className="mb-6 max-h-[560px] w-full rounded-2xl object-contain shadow-lg"
           />
         )
       ) : (
