@@ -220,8 +220,8 @@
         "galleryTab": "Choose one of ours",
         "galleryHint": "A ready-made wedding design — edit the text and colors exactly how you want.",
         "templates": {
-          "floral": "Feminine",
-          "classic": "Masculine"
+          "square": "Square invitation",
+          "rectangle": "Rectangle invitation"
         },
         "backToGallery": "Back to designs",
         "applyButton": "Download invitation",

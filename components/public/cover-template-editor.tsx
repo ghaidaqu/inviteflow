@@ -51,8 +51,8 @@ export function CoverTemplateEditor({
 
   const Template = WEDDING_TEMPLATE_COMPONENTS[templateId];
   const { width: cardWidth, height: cardHeight } = WEDDING_TEMPLATE_DIMENSIONS[templateId];
-  // Fit the card into a bounding box rather than a fixed width — نسائي is
-  // portrait and رجالي is landscape, so scaling both to the same width
+  // Fit the card into a bounding box rather than a fixed width — مربع is
+  // 1:1 and مستطيل is a taller 2:3, so scaling both to the same width
   // would make one preview far taller than the other instead of both
   // reading as "a card, previewed small."
   const previewScale = Math.min(PREVIEW_MAX_WIDTH / cardWidth, PREVIEW_MAX_HEIGHT / cardHeight);
@@ -119,8 +119,8 @@ export function CoverTemplateEditor({
             rendered at its real full size (transform: scale only affects
             layout, not the captured pixels) so the exported PNG stays
             full resolution regardless of how small it previews here.
-            Scaled into a bounding box, not a fixed width, since نسائي
-            (portrait) and رجالي (landscape) are different shapes. */}
+            Scaled into a bounding box, not a fixed width, since مربع
+            and مستطيل are different shapes. */}
         <div className="mx-auto w-fit overflow-hidden rounded-lg border sm:mx-0">
           <div
             style={{

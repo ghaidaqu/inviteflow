@@ -220,8 +220,8 @@
         "galleryTab": "اختر من تصاميمنا",
         "galleryHint": "تصميم زواج جاهز، عدّل النص والألوان بالضبط زي ما تبي.",
         "templates": {
-          "floral": "نسائي",
-          "classic": "رجالي"
+          "square": "دعوة مربعة",
+          "rectangle": "دعوة مستطيلة"
         },
         "backToGallery": "رجوع للتصاميم",
         "applyButton": "تحميل الدعوة",

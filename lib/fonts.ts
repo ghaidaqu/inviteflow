@@ -68,3 +68,18 @@ export const fontVariables = [
   geistMono.variable,
   amiri.variable,
 ].join(' ');
+
+// Decorative calligraphic face used for exactly one line — the "بسم الله"
+// opener on the wedding-invitation cover templates — never the "one font"
+// site chrome. Deliberately NOT added to `fontVariables`/the root layout:
+// importing it here only registers the @font-face where it's actually
+// used (wedding-invitation-templates.tsx), so it never loads on any other
+// page. Arabic-only subset — the one string it renders has no Latin
+// glyphs, so there's no Latin file to pair it with (contrast Cairo above).
+export const arefRuqaa = localFont({
+  src: './../public/fonts/aref-ruqaa-700.woff2',
+  weight: '700',
+  style: 'normal',
+  variable: '--font-aref-ruqaa',
+  display: 'swap',
+});

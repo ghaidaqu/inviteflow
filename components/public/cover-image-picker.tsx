@@ -5,8 +5,8 @@ import { useTranslations } from 'next-intl';
 import { CoverImageUpload } from '@/components/dashboard/cover-image-upload';
 import { CoverTemplateEditor } from '@/components/public/cover-template-editor';
 import {
-  FloralWeddingTemplate,
-  ClassicWeddingTemplate,
+  SquareWeddingTemplate,
+  RectangleWeddingTemplate,
   defaultWeddingCardData,
   WEDDING_TEMPLATE_DIMENSIONS,
   type WeddingTemplateId,
@@ -15,14 +15,14 @@ import { ImageUpIcon, SparklesIcon } from 'lucide-react';
 
 type Mode = 'upload' | 'gallery' | { editing: WeddingTemplateId };
 
-const GALLERY_ITEMS: Array<{ id: WeddingTemplateId; Component: typeof FloralWeddingTemplate }> = [
-  { id: 'floral', Component: FloralWeddingTemplate },
-  { id: 'classic', Component: ClassicWeddingTemplate },
+const GALLERY_ITEMS: Array<{ id: WeddingTemplateId; Component: typeof SquareWeddingTemplate }> = [
+  { id: 'square', Component: SquareWeddingTemplate },
+  { id: 'rectangle', Component: RectangleWeddingTemplate },
 ];
 
-// Thumbnail width in px — نسائي (portrait) and رجالي (landscape) each
-// keep their own real aspect ratio at this width, so the two gallery
-// tiles end up genuinely different shapes, same as the real cards.
+// Thumbnail width in px — مربع (1:1) and مستطيل (2:3) each keep their own
+// real aspect ratio at this width, so the two gallery tiles end up
+// genuinely different shapes, same as the real cards.
 const THUMB_WIDTH = 128;
 
 /**
