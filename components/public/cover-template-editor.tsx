@@ -20,8 +20,15 @@ import {
 import { ArrowRightIcon, DownloadIcon, Loader2Icon } from 'lucide-react';
 
 // Bounding box the live preview scales into — see previewScale below.
-const PREVIEW_MAX_WIDTH = 220;
-const PREVIEW_MAX_HEIGHT = 260;
+// The editor stacks preview-then-form (not side-by-side) since the
+// quick-start wizard's own container caps out at max-w-lg (512px): a
+// side-by-side split left so little room for the form column that its
+// own 3-across date/time/location row was clipping its own values (a
+// `sm:` breakpoint reacting to viewport width, not this narrow nested
+// column's actual width). Stacked, the preview can be a bit bigger and
+// the form gets the container's full width to work with.
+const PREVIEW_MAX_WIDTH = 260;
+const PREVIEW_MAX_HEIGHT = 320;
 
 /**
  * The editing surface for one of the two built-in wedding designs —
@@ -114,14 +121,14 @@ export function CoverTemplateEditor({
         </Alert>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-[minmax(0,220px)_1fr]">
+      <div className="flex flex-col gap-4">
         {/* Live preview, scaled down to fit the form — the ref target is
             rendered at its real full size (transform: scale only affects
             layout, not the captured pixels) so the exported PNG stays
             full resolution regardless of how small it previews here.
             Scaled into a bounding box, not a fixed width, since مربع
             and مستطيل are different shapes. */}
-        <div className="mx-auto w-fit overflow-hidden rounded-lg border sm:mx-0">
+        <div className="mx-auto w-fit overflow-hidden rounded-lg border">
           <div
             style={{
               width: previewWidth,
@@ -211,7 +218,11 @@ export function CoverTemplateEditor({
                 onChange={(e) => set('subtitle', e.target.value)}
               />
             </Field>
-            <div className="grid gap-4 sm:grid-cols-3">
+            {/* Stacked, not a 3-across grid — this column is narrower than
+                a `sm:` breakpoint accounts for, and these values (e.g.
+                "الخميس ١٦ يوليو ٢٠٢٦") need more than a third of it to
+                show without clipping. */}
+            <div className="flex flex-col gap-4">
               <Field>
                 <FieldLabel htmlFor="tpl-date">{t('dateLabel')}</FieldLabel>
                 <Input
