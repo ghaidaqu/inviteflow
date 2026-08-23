@@ -6,14 +6,24 @@ import { arefRuqaa } from '@/lib/fonts';
 /**
  * The editable content + look of a template-generated cover — shared by
  * both designs below so the editor UI (color swatches, text fields) only
- * has to be built once. `eyebrow` is the calligraphic opening line (a
- * dua, set in Aref Ruqaa — see the font's own comment in lib/fonts.ts),
- * `subtitle` is the line just under the couple's names.
+ * has to be built once. Mirrors the full structure of a real formal
+ * Saudi/Gulf wedding invitation (checked directly against a real
+ * invitation studio's own designs, kart49.com) rather than just a
+ * couple's-names card: a دعاء opener, the two hosting families named as
+ * "يتشرف [x] و [y]", the invitation line, then the groom/bride named
+ * again under "الابن" / "كريمة" (the bride is referred to by her
+ * father's name, not named directly — that's the real convention, not
+ * an omission), before the day/time/location and a closing line.
  */
 export type WeddingCardData = {
   eyebrow: string;
-  title: string;
+  hostName1: string;
+  hostName2: string;
+  invitationLine: string;
+  groomFullName: string;
+  brideFatherName: string;
   subtitle: string;
+  closingLine: string;
   dateText: string;
   timeText: string;
   locationText: string;
@@ -63,9 +73,14 @@ export function defaultWeddingCardData(_templateId: WeddingTemplateId): WeddingC
   const palette = WEDDING_PALETTES[0]!;
   return {
     eyebrow: 'بارك الله لهما وبارك عليهما وجمع بينهما في خير',
-    title: 'سارة & محمد',
-    subtitle: 'يسرّنا دعوتكم لحضور حفل زواجنا',
-    dateText: 'الخميس ١٦ يوليو ٢٠٢٦',
+    hostName1: 'عبدالله محمد',
+    hostName2: 'خالد سالم',
+    invitationLine: 'بدعوتكم لحضور حفل زواج',
+    groomFullName: 'محمد عبدالله',
+    brideFatherName: 'خالد سالم',
+    subtitle: 'وتناول طعام العشاء وذلك بمشيئة الله تعالى مساء يوم الخميس',
+    closingLine: 'شاكرين لكم تلبية الدعوة',
+    dateText: '١٦ يوليو ٢٠٢٦',
     timeText: 'من الساعة ٨:٠٠ م',
     locationText: 'قاعة الأفراح — الرياض',
     ...palette,
@@ -74,14 +89,11 @@ export function defaultWeddingCardData(_templateId: WeddingTemplateId): WeddingC
 
 /**
  * One shared layout for both shapes (a plain right-angle double-line
- * frame in the card's accent color, the دعاء opener in Aref Ruqaa, the
- * couple's names as the one large line, a quiet plain-text fact row —
- * no boxes around the date/time/location, matching the flatter,
- * unboxed convention real cards use — and the مهلّي credit sitting on
- * its own near the bottom, clear of the text above it). Only the two
- * templates' pixel dimensions differ; every size below is a percentage
- * of the card's own width/height so the same JSX scales cleanly to
- * either shape instead of needing two near-duplicate components.
+ * frame in the card's accent color, the دعاء opener in Aref Ruqaa, then
+ * the full formal-invitation body below it). Only the two templates'
+ * pixel dimensions differ; every size below is a fraction of the card's
+ * own width/height so the same JSX scales cleanly to either shape
+ * instead of needing two near-duplicate components.
  */
 const WeddingTemplate = forwardRef<
   HTMLDivElement,
@@ -109,9 +121,9 @@ const WeddingTemplate = forwardRef<
       <div
         style={{
           position: 'absolute',
-          top: 96,
+          top: 90,
           bottom: isSquare ? 150 : 170,
-          insetInline: 120,
+          insetInline: 110,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -122,7 +134,7 @@ const WeddingTemplate = forwardRef<
         <p
           className={arefRuqaa.className}
           style={{
-            fontSize: isSquare ? 50 : 54,
+            fontSize: isSquare ? 40 : 44,
             color: data.accentColor,
             margin: 0,
             lineHeight: 1.4,
@@ -131,20 +143,20 @@ const WeddingTemplate = forwardRef<
           {data.eyebrow}
         </p>
 
-        <h1
-          style={{
-            fontSize: isSquare ? 92 : 100,
-            fontWeight: 700,
-            margin: 0,
-            lineHeight: 1.25,
-          }}
-        >
-          {data.title}
-        </h1>
+        <BodyLine color={data.accentColor}>يتشرفُ</BodyLine>
+        <NamesRow left={data.hostName2} right={data.hostName1} color={data.accentColor} />
+        <BodyLine color={data.accentColor}>{data.invitationLine}</BodyLine>
 
-        <p style={{ fontSize: isSquare ? 32 : 34, margin: 0, lineHeight: 1.6, maxWidth: 720 }}>
-          {data.subtitle}
-        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
+          <LabelsRow color={data.accentColor} />
+          <NamesRow
+            left={data.brideFatherName}
+            right={data.groomFullName}
+            color={data.accentColor}
+          />
+        </div>
+
+        <BodyLine color={data.accentColor}>{data.subtitle}</BodyLine>
 
         <DiamondDivider color={data.accentColor} />
 
@@ -154,13 +166,17 @@ const WeddingTemplate = forwardRef<
             flexWrap: 'wrap',
             justifyContent: 'center',
             alignItems: 'baseline',
-            gap: '10px 40px',
+            gap: '6px 32px',
           }}
         >
           <CardFact label="التاريخ" value={data.dateText} color={data.accentColor} />
           <CardFact label="الموقع" value={data.locationText} color={data.accentColor} />
           <CardFact label="الوقت" value={data.timeText} color={data.accentColor} />
         </div>
+
+        <p style={{ fontSize: 32, fontWeight: 700, margin: 0, color: data.accentColor }}>
+          {data.closingLine}
+        </p>
       </div>
 
       <CardCredit accentColor={data.accentColor} />
@@ -186,15 +202,69 @@ export const WEDDING_TEMPLATE_COMPONENTS: Record<WeddingTemplateId, typeof Squar
     rectangle: RectangleWeddingTemplate,
   };
 
-// A plain fact — label above value, no border/background box around it.
+// One flat size (32px) for every "connective tissue" line below the
+// دعاء opener — يتشرفُ / بدعوتكم.../ وتناول طعام العشاء... — matching a
+// real formal invitation's actual type scale: the دعاء is the one
+// stand-out line (its own font, bigger), everything under it reads at
+// one consistent size rather than a ladder of hero/sub-hero blocks.
+function BodyLine({ children, color }: { children: string; color: string }) {
+  return <p style={{ fontSize: 32, margin: 0, lineHeight: 1.5, color }}>{children}</p>;
+}
+
+// A right/left name pair sharing a name row (e.g. "يتشرف [x] و [y]" or
+// "الابن [x] وكريمة [y]") — a 3-column grid so a matching LabelsRow above
+// it lines up over the correct name even when the two names are very
+// different lengths, instead of each row centering itself independently.
+function NamesRow({ left, right, color }: { left: string; right: string; color: string }) {
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr auto 1fr',
+        alignItems: 'center',
+        columnGap: 16,
+        width: '100%',
+      }}
+    >
+      <span style={{ fontSize: 32, fontWeight: 700, color, textAlign: 'end' }}>{right}</span>
+      <span style={{ fontSize: 32, color }}>و</span>
+      <span style={{ fontSize: 32, fontWeight: 700, color, textAlign: 'start' }}>{left}</span>
+    </div>
+  );
+}
+
+// "الابن" / "كريمة" — fixed relationship labels (not organizer-edited;
+// only the names below them are), sharing the same 3-column grid as the
+// NamesRow beneath so each label sits directly above its name.
+function LabelsRow({ color }: { color: string }) {
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr auto 1fr',
+        alignItems: 'center',
+        columnGap: 16,
+        width: '100%',
+      }}
+    >
+      <span style={{ fontSize: 32, color, textAlign: 'end' }}>الابن</span>
+      <span />
+      <span style={{ fontSize: 32, color, textAlign: 'start' }}>كريمة</span>
+    </div>
+  );
+}
+
+// A plain fact — label then value, no border/background box around it.
 // Boxed date/time/location chips read as an app-generated UI element;
 // real invitation cards (kart49.com, checked directly) just run these as
-// quiet plain text, so that's the convention this follows too.
+// quiet plain text, so that's the convention this follows too. Same
+// flat 32px as every other line — only the accent color on the label
+// marks it as a label, not a bigger/smaller size.
 function CardFact({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-      <span style={{ fontSize: 22, color, fontWeight: 700 }}>{label}</span>
-      <span style={{ fontSize: 26 }}>{value}</span>
+    <div style={{ display: 'flex', alignItems: 'baseline', gap: 5 }}>
+      <span style={{ fontSize: 32, color, fontWeight: 700 }}>{label}</span>
+      <span style={{ fontSize: 32, color }}>{value}</span>
     </div>
   );
 }
@@ -210,7 +280,7 @@ function CardCredit({ accentColor }: { accentColor: string }) {
     <div
       style={{
         position: 'absolute',
-        bottom: 62,
+        bottom: 58,
         insetInline: 0,
         display: 'flex',
         alignItems: 'center',
@@ -219,10 +289,10 @@ function CardCredit({ accentColor }: { accentColor: string }) {
         opacity: 0.7,
       }}
     >
-      <BrandMark style={{ width: 26, height: 26 }} />
+      <BrandMark style={{ width: 30, height: 30 }} />
       <span
         style={{
-          fontSize: 26,
+          fontSize: 32,
           fontWeight: 700,
           color: accentColor,
           fontFamily: 'var(--font-amiri), serif',
@@ -235,23 +305,23 @@ function CardCredit({ accentColor }: { accentColor: string }) {
 }
 
 // A small mid-card divider — hairline, diamond, hairline — marking the
-// transition from the couple's names/blessing block to the date/time/
-// location facts. Kept even though the frame around it went from a
-// diamond motif to a plain square border: this one small diamond still
-// ties back to the brand mark shape without competing with the frame.
+// transition from the names/invitation block to the date/time/location
+// facts. Kept even though the frame around it went from a diamond motif
+// to a plain square border: this one small diamond still ties back to
+// the brand mark shape without competing with the frame.
 function DiamondDivider({ color }: { color: string }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }} aria-hidden>
-      <span style={{ width: 64, height: 1, background: color, opacity: 0.6 }} />
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }} aria-hidden>
+      <span style={{ width: 56, height: 1, background: color, opacity: 0.6 }} />
       <span
         style={{
-          width: 10,
-          height: 10,
+          width: 9,
+          height: 9,
           background: color,
           transform: 'rotate(45deg)',
         }}
       />
-      <span style={{ width: 64, height: 1, background: color, opacity: 0.6 }} />
+      <span style={{ width: 56, height: 1, background: color, opacity: 0.6 }} />
     </div>
   );
 }

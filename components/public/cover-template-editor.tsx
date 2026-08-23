@@ -201,14 +201,54 @@ export function CoverTemplateEditor({
                 onChange={(e) => set('eyebrow', e.target.value)}
               />
             </Field>
+            {/* The two hosting families, named as "يتشرف [x] و [y]" on the
+                card — stacked (not side-by-side) for the same reason the
+                date/time/location row below is: this column is too
+                narrow for a viewport-based breakpoint to size correctly. */}
+            <div className="flex flex-col gap-4">
+              <Field>
+                <FieldLabel htmlFor="tpl-host1">{t('hostName1Label')}</FieldLabel>
+                <Input
+                  id="tpl-host1"
+                  value={data.hostName1}
+                  onChange={(e) => set('hostName1', e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="tpl-host2">{t('hostName2Label')}</FieldLabel>
+                <Input
+                  id="tpl-host2"
+                  value={data.hostName2}
+                  onChange={(e) => set('hostName2', e.target.value)}
+                />
+              </Field>
+            </div>
             <Field>
-              <FieldLabel htmlFor="tpl-title">{t('titleLabel')}</FieldLabel>
+              <FieldLabel htmlFor="tpl-invitation">{t('invitationLineLabel')}</FieldLabel>
               <Input
-                id="tpl-title"
-                value={data.title}
-                onChange={(e) => set('title', e.target.value)}
+                id="tpl-invitation"
+                value={data.invitationLine}
+                onChange={(e) => set('invitationLine', e.target.value)}
               />
             </Field>
+            <div className="flex flex-col gap-4">
+              <Field>
+                <FieldLabel htmlFor="tpl-groom">{t('groomFullNameLabel')}</FieldLabel>
+                <Input
+                  id="tpl-groom"
+                  value={data.groomFullName}
+                  onChange={(e) => set('groomFullName', e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="tpl-bride-father">{t('brideFatherNameLabel')}</FieldLabel>
+                <Input
+                  id="tpl-bride-father"
+                  value={data.brideFatherName}
+                  onChange={(e) => set('brideFatherName', e.target.value)}
+                />
+              </Field>
+            </div>
             <Field>
               <FieldLabel htmlFor="tpl-subtitle">{t('subtitleLabel')}</FieldLabel>
               <Textarea
@@ -248,6 +288,14 @@ export function CoverTemplateEditor({
                 />
               </Field>
             </div>
+            <Field>
+              <FieldLabel htmlFor="tpl-closing">{t('closingLineLabel')}</FieldLabel>
+              <Input
+                id="tpl-closing"
+                value={data.closingLine}
+                onChange={(e) => set('closingLine', e.target.value)}
+              />
+            </Field>
           </FieldGroup>
         </div>
       </div>

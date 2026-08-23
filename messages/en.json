@@ -237,9 +237,14 @@
           "dusk": "Dusk",
           "formalDark": "Formal dark"
         },
-        "eyebrowLabel": "Top line",
-        "titleLabel": "Main name",
-        "subtitleLabel": "Second line",
+        "eyebrowLabel": "Opening blessing (top line)",
+        "hostName1Label": "First host's name",
+        "hostName2Label": "Second host's name",
+        "invitationLineLabel": "Invitation line",
+        "groomFullNameLabel": "Groom's full name",
+        "brideFatherNameLabel": "Bride's father's name",
+        "subtitleLabel": "Line before the date",
+        "closingLineLabel": "Closing line",
         "dateLabel": "Date",
         "timeLabel": "Time",
         "locationLabel": "Location"

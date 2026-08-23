@@ -237,9 +237,14 @@
           "dusk": "كحلي",
           "formalDark": "رسمي غامق"
         },
-        "eyebrowLabel": "السطر العلوي",
-        "titleLabel": "الاسم الرئيسي",
-        "subtitleLabel": "السطر الثانوي",
+        "eyebrowLabel": "الدعاء (السطر العلوي)",
+        "hostName1Label": "اسم مضيف الدعوة الأول",
+        "hostName2Label": "اسم مضيف الدعوة الثاني",
+        "invitationLineLabel": "جملة الدعوة",
+        "groomFullNameLabel": "اسم الابن (العريس) كامل",
+        "brideFatherNameLabel": "اسم والد العروسة",
+        "subtitleLabel": "سطر ما قبل التاريخ",
+        "closingLineLabel": "جملة الختام",
         "dateLabel": "التاريخ",
         "timeLabel": "الوقت",
         "locationLabel": "الموقع"
