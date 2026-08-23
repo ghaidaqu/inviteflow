@@ -232,11 +232,11 @@
         "colorLabel": "الألوان",
         "customColor": "لون مخصص",
         "palettes": {
-          "blush": "وردي",
-          "ivoryGold": "عاجي وذهبي",
-          "sage": "أخضر زيتي",
           "mahalli": "بني مهلّي",
-          "dusk": "كحلي",
+          "burgundy": "عنّابي",
+          "emerald": "أخضر زمردي",
+          "navy": "كحلي",
+          "gold": "ذهبي غامق",
           "formalDark": "رسمي غامق"
         },
         "eyebrowLabel": "الدعاء (السطر العلوي)",

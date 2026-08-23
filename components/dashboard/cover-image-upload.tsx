@@ -63,7 +63,16 @@ export function CoverImageUpload({
           {isVideo ? (
             <video
               src={value}
-              className="h-32 w-56 rounded-lg border object-cover"
+              // No fixed w-56/h-32 box + object-cover: that convention
+              // suited an arbitrary uploaded photo, but a template-
+              // generated square or the taller rectangle invitation
+              // gets hard-cropped by a fixed 224×128 box (roughly half
+              // a square disappears). max-h/max-w + object-contain shows
+              // the whole cover at its own real shape instead — this is
+              // the same fix already applied to the public event page's
+              // own cover display (classic-hero.tsx), for the same
+              // reason.
+              className="max-h-40 max-w-56 rounded-lg border object-contain"
               muted
               loop
               autoPlay
@@ -71,7 +80,11 @@ export function CoverImageUpload({
             />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={value} alt="" className="h-32 w-56 rounded-lg border object-cover" />
+            <img
+              src={value}
+              alt=""
+              className="max-h-40 max-w-56 rounded-lg border object-contain"
+            />
           )}
           <Button
             type="button"

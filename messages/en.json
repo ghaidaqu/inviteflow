@@ -232,11 +232,11 @@
         "colorLabel": "Colors",
         "customColor": "Custom color",
         "palettes": {
-          "blush": "Blush",
-          "ivoryGold": "Ivory & gold",
-          "sage": "Sage",
           "mahalli": "Mahalli brown",
-          "dusk": "Dusk",
+          "burgundy": "Burgundy",
+          "emerald": "Emerald",
+          "navy": "Navy",
+          "gold": "Deep gold",
           "formalDark": "Formal dark"
         },
         "eyebrowLabel": "Opening blessing (top line)",

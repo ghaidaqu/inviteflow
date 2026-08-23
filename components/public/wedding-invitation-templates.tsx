@@ -78,7 +78,19 @@ export const WEDDING_TEMPLATE_DIMENSIONS: Record<
 // is the default for both shapes — a real invitation studio's cards
 // (kart49.com, checked directly) read as one consistent family across
 // their own designs, not a different palette per shape, so there's no
-// reason for ours to fork either. The rest stay selectable alternates.
+// reason for ours to fork either.
+//
+// The rest were re-picked after the first set (soft blush/sage/dusk
+// pastels) read as weak once accentColor became the color of literally
+// everything on the card — the border *and* every line of running
+// text, not just a small accent touch. A pastel that's fine as a 4px
+// accent line washes out at 32px body-text size, and a formal Gulf
+// wedding invitation's own convention (checked again against kart49.com
+// and the earlier X/Twitter references) leans on deep, saturated tones
+// — burgundy, emerald, navy, antique gold — not soft ones. Every accent
+// below is checked against its own cream background: all land at 5.7:1
+// contrast or higher (WCAG AA for normal text is 4.5:1), so none of
+// them go weak the way the old blush/sage/dusk trio did.
 export const WEDDING_PALETTES: Array<{
   id: string;
   backgroundColor: string;
@@ -86,10 +98,10 @@ export const WEDDING_PALETTES: Array<{
   textColor: string;
 }> = [
   { id: 'mahalli', backgroundColor: '#f6efdc', accentColor: '#96471f', textColor: '#382616' },
-  { id: 'blush', backgroundColor: '#f7ecec', accentColor: '#b96b7a', textColor: '#4a2f33' },
-  { id: 'ivoryGold', backgroundColor: '#f5eee0', accentColor: '#a9824f', textColor: '#3d3222' },
-  { id: 'sage', backgroundColor: '#eef1e6', accentColor: '#6b7d52', textColor: '#333d26' },
-  { id: 'dusk', backgroundColor: '#eef0f3', accentColor: '#3d6576', textColor: '#26333a' },
+  { id: 'burgundy', backgroundColor: '#f8f0ee', accentColor: '#7a2332', textColor: '#3d1a20' },
+  { id: 'emerald', backgroundColor: '#eef2ec', accentColor: '#2f5233', textColor: '#1e2b1f' },
+  { id: 'navy', backgroundColor: '#eef1f5', accentColor: '#1f3a5f', textColor: '#17232f' },
+  { id: 'gold', backgroundColor: '#f7f1e2', accentColor: '#7d5518', textColor: '#3a2f14' },
   { id: 'formalDark', backgroundColor: '#2b1c10', accentColor: '#c9924f', textColor: '#f6efdc' },
 ];
 
@@ -258,9 +270,13 @@ const WeddingTemplate = forwardRef<HTMLDivElement, WeddingTemplateProps>(functio
         )}
       </div>
 
+      {/* bottom:110 clears the inner border line (at inset:70, so its
+          own line sits ~70px up from the edge) by a real margin — it
+          was 58 before, which put the credit's own text height right on
+          top of that line instead of above it. */}
       {block('credit', <CardCredit accentColor={data.accentColor} />, {
         position: 'absolute',
-        bottom: 58,
+        bottom: 110,
         insetInline: 0,
         display: 'flex',
         justifyContent: 'center',
