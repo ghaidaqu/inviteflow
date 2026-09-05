@@ -28,6 +28,28 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient();
 
+  // Temporary diagnostic — organizations queries below have worked fine
+  // all session, but profiles queries keep failing with a bare "fetch
+  // failed" (no postgrest error body at all, i.e. failing before a
+  // response even comes back) — isolate whether that's specific to the
+  // profiles table/query or a raw connectivity issue independent of
+  // supabase-js.
+  try {
+    const rawRes = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/profiles?select=id&limit=1`,
+      {
+        headers: {
+          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
+          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+      },
+    );
+    const rawBody = await rawRes.text();
+    console.log('[one-time-seed] raw fetch to profiles', rawRes.status, rawBody.slice(0, 500));
+  } catch (rawError) {
+    console.log('[one-time-seed] raw fetch to profiles threw', String(rawError));
+  }
+
   const { data: existingOrg } = await admin
     .from('organizations')
     .select('id, slug, owner_id')
