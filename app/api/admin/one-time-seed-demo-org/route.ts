@@ -28,28 +28,6 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient();
 
-  // Temporary diagnostic — organizations queries below have worked fine
-  // all session, but profiles queries keep failing with a bare "fetch
-  // failed" (no postgrest error body at all, i.e. failing before a
-  // response even comes back) — isolate whether that's specific to the
-  // profiles table/query or a raw connectivity issue independent of
-  // supabase-js.
-  try {
-    const rawRes = await fetch(
-      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/profiles?select=id&limit=1`,
-      {
-        headers: {
-          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
-        },
-      },
-    );
-    const rawBody = await rawRes.text();
-    console.log('[one-time-seed] raw fetch to profiles', rawRes.status, rawBody.slice(0, 500));
-  } catch (rawError) {
-    console.log('[one-time-seed] raw fetch to profiles threw', String(rawError));
-  }
-
   const { data: existingOrg } = await admin
     .from('organizations')
     .select('id, slug, owner_id')
@@ -59,25 +37,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true, alreadyExisted: true, org: existingOrg });
   }
 
-  // profiles.id mirrors auth.users.id 1:1 (a row is created there per
-  // signup) — reading it via the regular postgrest path instead of the
-  // GoTrue admin API (auth.admin.listUsers()), which failed outright
-  // ("fetch failed") when tried first; this way stays on the same
-  // REST path every other admin query in this codebase already uses
-  // successfully.
-  const { data: earliestProfile, error: profileError } = await admin
-    .from('profiles')
-    .select('id')
-    .order('created_at', { ascending: true })
+  // Both auth.admin.listUsers() and a plain profiles select failed
+  // outright ("fetch failed", no postgrest body at all — i.e. before a
+  // response even comes back) against this project when tried first;
+  // organizations queries have worked fine all session, so borrow the
+  // owner_id off any existing real organization instead of resolving a
+  // user id from scratch — still a genuine, already-registered user,
+  // just reached through a path that's proven to actually work here.
+  const { data: anyOrg, error: anyOrgError } = await admin
+    .from('organizations')
+    .select('owner_id')
     .limit(1)
     .maybeSingle();
-  if (profileError || !earliestProfile) {
+  if (anyOrgError || !anyOrg) {
     return NextResponse.json(
-      { error: 'no existing user to own the demo org', profileError: profileError?.message },
+      {
+        error: 'no existing organization to borrow an owner from',
+        anyOrgError: anyOrgError?.message,
+      },
       { status: 500 },
     );
   }
-  const ownerId = earliestProfile.id;
+  const ownerId = anyOrg.owner_id;
 
   const { data: created, error: insertError } = await admin
     .from('organizations')
