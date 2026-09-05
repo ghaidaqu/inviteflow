@@ -23,28 +23,25 @@ export async function seedDemoOrgAction(secret: string): Promise<{ ok: boolean; 
 
   const admin = createAdminClient();
 
-  const { data: existingOrg, error: existingError } = await admin
+  // Mirrors lib/actions/try-demo.ts's own getOrCreateDemoEvent query
+  // exactly (.single(), not .maybeSingle()) — that one is proven to
+  // work against this project (its own error logging already confirmed
+  // it gets a real response back, just correctly finding zero rows);
+  // the .maybeSingle() version of this same query failed outright with
+  // a raw "TypeError: fetch failed" every time it was tried, as both a
+  // Route Handler and a Server Action.
+  const { data: org } = await admin
     .from('organizations')
     .select('id, slug, owner_id')
     .eq('slug', 'mahalli-demo')
-    .maybeSingle();
-  if (existingError) {
-    return { ok: false, message: `existing lookup failed: ${existingError.message}` };
-  }
-  if (existingOrg) {
-    return { ok: true, message: `already existed: ${JSON.stringify(existingOrg)}` };
+    .single();
+  if (org) {
+    return { ok: true, message: `already existed: ${JSON.stringify(org)}` };
   }
 
-  const { data: anyOrg, error: anyOrgError } = await admin
-    .from('organizations')
-    .select('owner_id')
-    .limit(1)
-    .maybeSingle();
-  if (anyOrgError || !anyOrg) {
-    return {
-      ok: false,
-      message: `no existing organization to borrow an owner from: ${anyOrgError?.message}`,
-    };
+  const { data: anyOrg } = await admin.from('organizations').select('owner_id').limit(1).single();
+  if (!anyOrg) {
+    return { ok: false, message: 'no existing organization to borrow an owner from' };
   }
 
   const { data: created, error: insertError } = await admin
