@@ -6,6 +6,7 @@ import { createGuestManually } from '@/lib/services/guests.service';
 import { sendInvitationWhatsApp } from '@/lib/whatsapp/notify';
 import { normalizePhone } from '@/lib/utils/phone';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
+import * as Sentry from '@sentry/nextjs';
 
 export type TryDemoState = { error?: string; token?: string };
 
@@ -95,7 +96,17 @@ export async function sendTryDemoInvitationAction(
   let event: { id: string; slug: string };
   try {
     event = await getOrCreateDemoEvent(admin);
-  } catch {
+  } catch (error) {
+    // Previously swallowed with no trace at all — every failure here
+    // looked identical to a guest ("حدث خطأ غير متوقع"), with nothing in
+    // the server logs to tell them apart (a missing seed row vs. an RLS
+    // issue vs. a genuine outage). Same treatment as the OTP request
+    // actions already got earlier: capture the real cause, keep the
+    // generic message for the guest.
+    console.error('[try-demo] getOrCreateDemoEvent failed', error);
+    Sentry.captureException(error, {
+      tags: { action: 'sendTryDemoInvitationAction.getOrCreateDemoEvent' },
+    });
     return { error: 'unknown' };
   }
 
@@ -106,16 +117,29 @@ export async function sendTryDemoInvitationAction(
       phone: phone.e164,
       email: null,
     });
-  } catch {
+  } catch (error) {
+    console.error('[try-demo] createGuestManually failed', error);
+    Sentry.captureException(error, {
+      tags: { action: 'sendTryDemoInvitationAction.createGuestManually' },
+    });
     return { error: 'unknown' };
   }
 
   const locale = (await getLocale()) as 'ar' | 'en';
   // Best-effort: a failed/unconfigured WhatsApp send never blocks the
   // guest from reaching their status page — see sendInvitationWhatsApp's
-  // own configured:false path (no WhatsApp Cloud API credentials set in
-  // this environment yet).
-  await sendInvitationWhatsApp(event.slug, guest.id, name, phone.e164, locale);
+  // own configured:false path. But "best-effort" shouldn't mean
+  // "untraceable" — this is the one thing this entire feature exists to
+  // do, so a failure here needs to actually surface somewhere instead of
+  // silently returning success while no message goes out.
+  const sendResult = await sendInvitationWhatsApp(event.slug, guest.id, name, phone.e164, locale);
+  if (!sendResult.ok) {
+    Sentry.captureMessage('try-demo WhatsApp send did not succeed', {
+      level: 'warning',
+      tags: { action: 'sendTryDemoInvitationAction.sendInvitationWhatsApp' },
+      extra: { configured: sendResult.configured, guestId: guest.id },
+    });
+  }
 
   return { token: guest.secure_token };
 }
