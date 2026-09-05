@@ -37,17 +37,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true, alreadyExisted: true, org: existingOrg });
   }
 
-  const { data: usersPage, error: listError } = await admin.auth.admin.listUsers({
-    page: 1,
-    perPage: 1,
-  });
-  if (listError || !usersPage?.users?.length) {
+  // profiles.id mirrors auth.users.id 1:1 (a row is created there per
+  // signup) — reading it via the regular postgrest path instead of the
+  // GoTrue admin API (auth.admin.listUsers()), which failed outright
+  // ("fetch failed") when tried first; this way stays on the same
+  // REST path every other admin query in this codebase already uses
+  // successfully.
+  const { data: earliestProfile, error: profileError } = await admin
+    .from('profiles')
+    .select('id')
+    .order('created_at', { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (profileError || !earliestProfile) {
     return NextResponse.json(
-      { error: 'no existing user to own the demo org', listError: listError?.message },
+      { error: 'no existing user to own the demo org', profileError: profileError?.message },
       { status: 500 },
     );
   }
-  const ownerId = usersPage.users[0]!.id;
+  const ownerId = earliestProfile.id;
 
   const { data: created, error: insertError } = await admin
     .from('organizations')
