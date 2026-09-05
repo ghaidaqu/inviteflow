@@ -40,27 +40,34 @@ export async function seedDemoOrgAction(secret: string): Promise<{ ok: boolean; 
   }
 
   const { data: anyOrg } = await admin.from('organizations').select('owner_id').limit(1).single();
-  let ownerId = anyOrg?.owner_id;
-
-  // Production genuinely has zero organizations/users yet — create one
-  // real auth user (no password, matching this project's passwordless-
-  // OTP-only login; they never actually sign in, this id only exists to
-  // satisfy organizations.owner_id's foreign key) to own the demo org.
-  if (!ownerId) {
-    const { data: userData, error: createUserError } = await admin.auth.admin.createUser({
-      email: 'demo-owner@mahalli.app',
-      email_confirm: true,
-      user_metadata: { full_name: 'Mahalli Demo' },
-    });
-    if (createUserError || !userData.user) {
-      return { ok: false, message: `createUser failed: ${createUserError?.message}` };
-    }
-    ownerId = userData.user.id;
+  if (!anyOrg) {
+    // Production genuinely has zero organizations/users yet, and there's
+    // no way to create one from here: admin.auth.admin.createUser() (the
+    // GoTrue admin API, a different subsystem from the PostgREST calls
+    // above) fails outright with the same raw "fetch failed" that
+    // admin.auth.admin.listUsers() did when tried first — this
+    // environment simply can't reach that endpoint, and there's no
+    // direct Postgres connection available to insert into auth.users
+    // directly either (what supabase/seed.sql does, and why it refuses
+    // to run against a hosted project in the first place).
+    //
+    // The one thing that reliably creates a real auth.users row here is
+    // the app's own real signup/login (OTP) — and this project already
+    // has a DB trigger (see supabase/migrations/
+    // 20260807000009_auto_create_personal_org.sql) that auto-creates a
+    // personal organization for every new user. So: log in once for
+    // real via /login (phone or email OTP), then run this again — it'll
+    // find that organization and borrow its owner_id.
+    return {
+      ok: false,
+      message:
+        'no existing organization or user yet, and none can be created from here — log in once for real via /login (this creates a personal organization automatically), then run this again',
+    };
   }
 
   const { data: created, error: insertError } = await admin
     .from('organizations')
-    .insert({ owner_id: ownerId, name: 'مهلّي (تجريبي)', slug: 'mahalli-demo' })
+    .insert({ owner_id: anyOrg.owner_id, name: 'مهلّي (تجريبي)', slug: 'mahalli-demo' })
     .select('id, slug, owner_id')
     .single();
   if (insertError) {
