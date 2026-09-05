@@ -7,10 +7,23 @@ import { sendGuestQrWhatsApp } from '@/lib/whatsapp/notify';
 import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
 
 /**
- * Meta WhatsApp Cloud API webhook — this is what makes "accept the
- * invitation from inside WhatsApp" actually work: when a guest taps a
- * reply button we sent (see sendInvitationWhatsApp in lib/whatsapp/notify.ts),
- * Meta POSTs the tap here instead of the guest ever visiting the website.
+ * Meta WhatsApp Cloud API webhook — one endpoint, two jobs:
+ *
+ * 1. Inbound messages (`value.messages`) — this is what makes "accept the
+ *    invitation from inside WhatsApp" actually work: when a guest taps a
+ *    reply button sent via sendInvitationWhatsApp (lib/whatsapp/notify.ts),
+ *    Meta POSTs the tap here instead of the guest ever visiting the
+ *    website. Also handles the "location" button (replies with the venue's
+ *    map link) as its own thing, unrelated to the accept/decline flow.
+ *
+ * 2. Delivery-status callbacks (`value.statuses`) — sent/delivered/read/
+ *    failed for messages this number *sent*. Currently just logged in a
+ *    structured shape (see the loop below); no table exists yet to
+ *    persist these against a specific guest/invitation, since Meta's
+ *    payload only carries its own message id, not the request that
+ *    produced it — pairing the two would need the send side
+ *    (cloud-api-provider.ts) to persist its own message id at send time
+ *    first. Wire that up before building anything that reads this data.
  *
  * Configure in Meta for Developers → your app → WhatsApp → Configuration:
  *   Callback URL: https://<your-domain>/api/webhooks/whatsapp
@@ -22,7 +35,8 @@ import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
  * ⚠️ Like the Moyasar webhook, this hasn't been exercised against a live
  * WhatsApp Business account (this environment doesn't have one) — the
  * payload shape follows Meta's published webhook docs but should be
- * double-checked against a real button tap once connected.
+ * double-checked against a real button tap (and a real status callback)
+ * once connected.
  */
 
 const STATUS_BY_ACTION: Record<string, 'attending' | 'not_attending'> = {
@@ -67,6 +81,20 @@ type WhatsAppWebhookBody = {
             button_reply?: { id?: string; title?: string };
           };
         }[];
+        // Delivery-status callbacks for messages *this number sent* (sent/
+        // delivered/read/failed) — a separate array from `messages` above,
+        // which is only ever inbound (a guest's tap or reply). Not
+        // persisted anywhere yet — logged in a shape a future
+        // whatsapp_message_events-style table can take as-is, once
+        // there's an actual reason to keep this history (e.g. an
+        // organizer-facing "delivery status" column).
+        statuses?: {
+          id?: string; // the outbound message's own id (from the earlier send response)
+          status?: 'sent' | 'delivered' | 'read' | 'failed';
+          recipient_id?: string;
+          timestamp?: string;
+          errors?: { code?: number; title?: string }[];
+        }[];
       };
     }[];
   }[];
@@ -93,6 +121,24 @@ export async function POST(request: NextRequest) {
   }
 
   const admin = createAdminClient();
+
+  const statuses = (body.entry ?? []).flatMap((entry) =>
+    (entry.changes ?? []).flatMap((change) => change.value?.statuses ?? []),
+  );
+  for (const s of statuses) {
+    // Structured on purpose (one object per line) so this is a drop-in
+    // source once a table exists to write these into — no guest/event
+    // link exists here yet since Meta only gives back its own message id,
+    // not whatever request this was in response to; that pairing would
+    // need the send side to persist its own message id at send time.
+    console.log('[whatsapp webhook] status', {
+      messageId: s.id,
+      status: s.status,
+      to: s.recipient_id,
+      timestamp: s.timestamp,
+      errors: s.errors,
+    });
+  }
 
   const messages = (body.entry ?? []).flatMap((entry) =>
     (entry.changes ?? []).flatMap((change) => change.value?.messages ?? []),
