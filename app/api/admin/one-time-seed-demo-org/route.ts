@@ -14,12 +14,38 @@ import { createAdminClient } from '@/lib/supabase/admin';
  *
  * This does only the minimal safe equivalent for a hosted project:
  * create the "mahalli-demo" organization row (nothing else from
- * seed.sql), owned by whichever real, already-registered user is
- * oldest in this project's own auth.users — no synthetic user, no
- * password inserted.
+ * seed.sql), owned by whichever real, already-registered user already
+ * owns some other organization — no synthetic user, no password.
  *
  * Delete this route once it's been called successfully once.
  */
+
+// Every query here past the first one in a request has been failing
+// outright with "TypeError: fetch failed" (no postgrest response body
+// at all) against this project — the *first* outbound call in a fresh
+// request always succeeds, every one after it doesn't. That's the
+// signature of a Node/undici keep-alive connection-reuse race, not a
+// real Supabase/network outage (the app's normal traffic — one query
+// per request, mostly — never hits this). A bare retry works around it:
+// the retry gets a new connection instead of the stale pooled one.
+//
+// supabase-js doesn't *throw* this — it catches the raw fetch failure
+// internally and returns it as a normal `{ data: null, error }` result,
+// so retrying only on a thrown exception (the usual pattern) would
+// never actually retry here; this checks `.error` too.
+async function withRetry<D, E>(
+  fn: () => PromiseLike<{ data: D; error: E | null }>,
+  attempts = 3,
+): Promise<{ data: D; error: E | null }> {
+  let last: { data: D; error: E | null } | undefined;
+  for (let i = 0; i < attempts; i++) {
+    last = await fn();
+    if (!last.error) return last;
+    await new Promise((resolve) => setTimeout(resolve, 300 * (i + 1)));
+  }
+  return last!;
+}
+
 export async function POST(request: NextRequest) {
   const secret = request.headers.get('x-admin-secret');
   if (!secret || !process.env.ADMIN_SEED_SECRET || secret !== process.env.ADMIN_SEED_SECRET) {
@@ -28,46 +54,41 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient();
 
-  const { data: existingOrg } = await admin
-    .from('organizations')
-    .select('id, slug, owner_id')
-    .eq('slug', 'mahalli-demo')
-    .maybeSingle();
-  if (existingOrg) {
-    return NextResponse.json({ ok: true, alreadyExisted: true, org: existingOrg });
+  const existingOrgResult = await withRetry(() =>
+    admin
+      .from('organizations')
+      .select('id, slug, owner_id')
+      .eq('slug', 'mahalli-demo')
+      .maybeSingle(),
+  );
+  if (existingOrgResult.data) {
+    return NextResponse.json({ ok: true, alreadyExisted: true, org: existingOrgResult.data });
   }
 
-  // Both auth.admin.listUsers() and a plain profiles select failed
-  // outright ("fetch failed", no postgrest body at all — i.e. before a
-  // response even comes back) against this project when tried first;
-  // organizations queries have worked fine all session, so borrow the
-  // owner_id off any existing real organization instead of resolving a
-  // user id from scratch — still a genuine, already-registered user,
-  // just reached through a path that's proven to actually work here.
-  const { data: anyOrg, error: anyOrgError } = await admin
-    .from('organizations')
-    .select('owner_id')
-    .limit(1)
-    .maybeSingle();
-  if (anyOrgError || !anyOrg) {
+  const anyOrgResult = await withRetry(() =>
+    admin.from('organizations').select('owner_id').limit(1).maybeSingle(),
+  );
+  if (anyOrgResult.error || !anyOrgResult.data) {
     return NextResponse.json(
       {
         error: 'no existing organization to borrow an owner from',
-        anyOrgError: anyOrgError?.message,
+        anyOrgError: anyOrgResult.error?.message,
       },
       { status: 500 },
     );
   }
-  const ownerId = anyOrg.owner_id;
+  const ownerId = anyOrgResult.data.owner_id;
 
-  const { data: created, error: insertError } = await admin
-    .from('organizations')
-    .insert({ owner_id: ownerId, name: 'مهلّي (تجريبي)', slug: 'mahalli-demo' })
-    .select('id, slug, owner_id')
-    .single();
-  if (insertError) {
-    return NextResponse.json({ error: insertError.message }, { status: 500 });
+  const createdResult = await withRetry(() =>
+    admin
+      .from('organizations')
+      .insert({ owner_id: ownerId, name: 'مهلّي (تجريبي)', slug: 'mahalli-demo' })
+      .select('id, slug, owner_id')
+      .single(),
+  );
+  if (createdResult.error) {
+    return NextResponse.json({ error: createdResult.error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, created });
+  return NextResponse.json({ ok: true, created: createdResult.data });
 }
