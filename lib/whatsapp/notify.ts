@@ -136,10 +136,15 @@ export async function sendInvitationWhatsApp(
     });
   }
 
+  // No link here on purpose (unlike the no-RSVP branch above, which needs
+  // one) — the buttons let the guest respond without ever leaving
+  // WhatsApp, and the invitation card image (when there is one) already
+  // carries the date/location/time, so a link would just be a second,
+  // redundant way to see what the buttons and image already cover.
   const text =
     locale === 'ar'
-      ? `مرحبًا ${guestName}! أنت مدعو لـ "${event.name}". رد على الدعوة مباشرة من هنا:\n\nالتفاصيل: ${link}`
-      : `Hi ${guestName}! You're invited to "${event.name}". Respond right here:\n\nDetails: ${link}`;
+      ? `مرحبًا ${guestName}! أنت مدعو لـ "${event.name}". رد على الدعوة مباشرة من هنا 👇`
+      : `Hi ${guestName}! You're invited to "${event.name}". Respond right here 👇`;
 
   try {
     await whatsAppProvider.send({ to: phone, text, buttons, headerImageUrl });
