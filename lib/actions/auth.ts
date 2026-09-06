@@ -23,6 +23,20 @@ export type AuthActionState = {
 
 const NOT_CONFIGURED: AuthActionState = { error: 'notConfigured' };
 
+// Distinguishes "Supabase's own Auth service is unreachable" from every
+// other kind of OTP-request failure. Confirmed live against a real
+// Supabase incident (status.supabase.com: "API Gateway — Degraded
+// Performance", an open "401 errors due to JWT rejections" issue): every
+// request during it threw `AuthRetryableFetchError: fetch failed` with
+// `status: 0` — no HTTP response ever came back, as opposed to a normal
+// rejected-request error (invalid provider config, bad number, etc.),
+// which carries a real status code. Worth telling apart because the fix
+// is completely different: "try again in a bit" (a platform outage) vs.
+// "something's actually misconfigured" (ours to go debug).
+function isProviderOutageError(error: { status?: number; name?: string }): boolean {
+  return error.status === 0 || error.name === 'AuthRetryableFetchError';
+}
+
 // Only ever redirect to a path we generated ourselves (middleware sets
 // `next` to the page the user was headed to before the auth gate). Reject
 // anything that isn't a same-site, locale-prefixed path to rule out this
@@ -105,7 +119,7 @@ export async function requestPhoneOtpAction(
     // visible until that's configured.
     console.error('[auth] requestPhoneOtpAction failed', error);
     Sentry.captureException(error, { tags: { action: 'requestPhoneOtpAction' } });
-    return { error: 'phoneOtpRequestFailed' };
+    return { error: isProviderOutageError(error) ? 'authProviderOutage' : 'phoneOtpRequestFailed' };
   }
   return { success: true };
 }
@@ -131,7 +145,14 @@ export async function verifyPhoneOtpAction(
     type: 'sms',
   });
 
-  if (error) return { error: 'otpInvalid' };
+  if (error) {
+    // Same distinction as the request actions above — a provider outage
+    // here would otherwise tell someone who typed the *correct* code
+    // that it was wrong, which sends them chasing a typo that isn't
+    // there instead of just trying again shortly.
+    console.error('[auth] verifyPhoneOtpAction failed', error);
+    return { error: isProviderOutageError(error) ? 'authProviderOutage' : 'otpInvalid' };
+  }
 
   const {
     data: { user },
@@ -175,7 +196,7 @@ export async function requestEmailOtpAction(
     // of only ever seeing the generic translated message.
     console.error('[auth] requestEmailOtpAction failed', error);
     Sentry.captureException(error, { tags: { action: 'requestEmailOtpAction' } });
-    return { error: 'emailOtpRequestFailed' };
+    return { error: isProviderOutageError(error) ? 'authProviderOutage' : 'emailOtpRequestFailed' };
   }
   return { success: true };
 }
@@ -201,7 +222,10 @@ export async function verifyEmailOtpAction(
     type: 'email',
   });
 
-  if (error) return { error: 'otpInvalid' };
+  if (error) {
+    console.error('[auth] verifyEmailOtpAction failed', error);
+    return { error: isProviderOutageError(error) ? 'authProviderOutage' : 'otpInvalid' };
+  }
 
   const {
     data: { user },

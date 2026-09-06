@@ -131,6 +131,7 @@
       "rateLimited": "Too many attempts in a short time, please try again shortly.",
       "phoneOtpRequestFailed": "Couldn't send the code. If this is the first time, phone login may need extra setup on the platform's side — try email instead.",
       "emailOtpRequestFailed": "Couldn't send a login code to that email. Double-check it's typed correctly and try again, or try logging in with your phone over WhatsApp instead.",
+      "authProviderOutage": "Our login provider is having a temporary issue — this isn't something you did wrong. Please try again in a few minutes.",
       "otpInvalid": "That code is incorrect or has expired.",
       "unknown": "Something went wrong, please try again."
     },
