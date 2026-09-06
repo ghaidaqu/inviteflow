@@ -98,7 +98,12 @@ export async function requestPhoneOtpAction(
     // own error text isn't user-facing quality), but that vagueness was
     // hiding real causes from us too — capture the actual error so a
     // provider-config issue (e.g. WhatsApp/Twilio not set up) shows up
-    // in Sentry instead of just "it broke" reports with no lead.
+    // instead of just "it broke" reports with no lead. Plain
+    // console.error alongside Sentry — NEXT_PUBLIC_SENTRY_DSN isn't set
+    // in this environment, so Sentry.captureException is a silent no-op
+    // right now; `railway logs` is the only place this is actually
+    // visible until that's configured.
+    console.error('[auth] requestPhoneOtpAction failed', error);
     Sentry.captureException(error, { tags: { action: 'requestPhoneOtpAction' } });
     return { error: 'phoneOtpRequestFailed' };
   }
@@ -168,6 +173,7 @@ export async function requestEmailOtpAction(
     // Same reasoning as the phone action above — capture the real cause
     // (e.g. Supabase's own email send failing or rate-limiting) instead
     // of only ever seeing the generic translated message.
+    console.error('[auth] requestEmailOtpAction failed', error);
     Sentry.captureException(error, { tags: { action: 'requestEmailOtpAction' } });
     return { error: 'emailOtpRequestFailed' };
   }
