@@ -1,3 +1,4 @@
+import { isVideoUrl } from '@/lib/utils/media';
 import type { EventHeroProps } from './types';
 
 /**
@@ -9,7 +10,7 @@ import type { EventHeroProps } from './types';
  */
 export function EditorialHero({ event, typeLabel, organizedByLabel }: EventHeroProps) {
   const hasCover = Boolean(event.cover_image_url);
-  const isVideo = hasCover && /\.(mp4|webm|mov)$/i.test(event.cover_image_url!);
+  const isVideo = isVideoUrl(event.cover_image_url);
 
   return (
     <div className="bg-foreground text-background overflow-hidden rounded-2xl shadow-xl">

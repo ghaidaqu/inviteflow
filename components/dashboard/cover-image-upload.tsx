@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { uploadCoverImageAction } from '@/lib/actions/uploads';
+import { isVideoUrl } from '@/lib/utils/media';
 import { ImageUpIcon, XIcon, Loader2Icon } from 'lucide-react';
 
 // The organizer's choice is genuinely theirs here — this doesn't replace
@@ -24,11 +25,7 @@ export function CoverImageUpload({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, startUploading] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  // The organizer might upload either — a still cover photo or a short
-  // background video/reel — so the preview needs to know which it got
-  // back, not just assume <img>. Inferred from the file extension since
-  // that's all a bare URL string gives us once it's saved.
-  const isVideo = /\.(mp4|webm|mov)$/i.test(value);
+  const isVideo = isVideoUrl(value);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -53,7 +50,7 @@ export function CoverImageUpload({
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
+        accept="image/png,image/jpeg,image/webp,image/gif,video/*"
         className="hidden"
         onChange={handleFileChange}
       />

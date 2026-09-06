@@ -13,8 +13,19 @@ export type UploadCoverImageState = {
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
-const VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
-const ALLOWED_TYPES = [...IMAGE_TYPES, ...VIDEO_TYPES];
+
+// Deliberately permissive rather than an explicit format allowlist:
+// rejecting a phone's own recording because its exact codec/container
+// wasn't on a hand-picked list ("مو مدعوم") was worse than accepting
+// anything the browser itself reports as a video and letting playback
+// compatibility on the guest-facing page be a separate, later concern —
+// better an organizer's video is there and occasionally doesn't play on
+// one odd browser than it never uploads at all. mp4/webm/quicktime still
+// get their own clean extension below; anything else falls back to its
+// own MIME subtype as the extension.
+function isVideoType(type: string): boolean {
+  return type.startsWith('video/');
+}
 
 /**
  * Uploads through the service-role client (bypasses storage RLS) rather
@@ -50,9 +61,13 @@ export async function uploadCoverImageAction(
 
   const file = formData.get('file');
   if (!(file instanceof File) || file.size === 0) return { error: 'invalidInput' };
-  const allowedTypes = user ? ALLOWED_TYPES : IMAGE_TYPES;
-  if (!allowedTypes.includes(file.type)) return { error: 'invalidFileType' };
-  const isVideo = VIDEO_TYPES.includes(file.type);
+  const isVideo = isVideoType(file.type);
+  // Signed-in organizers can upload any video the browser itself
+  // recognizes as one (see isVideoType above); anonymous /start uploads
+  // stay image-only regardless — an anonymous upload always has to match
+  // the plain IMAGE_TYPES list exactly.
+  const validType = IMAGE_TYPES.includes(file.type) || (user && isVideo);
+  if (!validType) return { error: 'invalidFileType' };
   if (file.size > (isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES)) return { error: 'fileTooLarge' };
 
   const EXT_BY_TYPE: Record<string, string> = {
@@ -64,7 +79,12 @@ export async function uploadCoverImageAction(
     'video/webm': 'webm',
     'video/quicktime': 'mov',
   };
-  const ext = EXT_BY_TYPE[file.type] ?? 'bin';
+  // Falls back to the MIME subtype itself (e.g. "video/x-matroska" → "x-
+  // matroska") for a video format outside the known list above, rather
+  // than a meaningless ".bin" — sanitized since a MIME subtype can
+  // contain characters ("+", ";") a real filename shouldn't.
+  const ext =
+    EXT_BY_TYPE[file.type] ?? file.type.split('/')[1]?.replace(/[^a-z0-9-]/gi, '') ?? 'bin';
   const path = `${user ? user.id : 'anon'}/${crypto.randomUUID()}.${ext}`;
 
   const admin = createAdminClient();

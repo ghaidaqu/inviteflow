@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { CoverImageUpload } from '@/components/dashboard/cover-image-upload';
-import { CoverImagePicker } from '@/components/public/cover-image-picker';
+import { CoverImagePicker, type CoverPickerMode } from '@/components/public/cover-image-picker';
 import { LocationMapPicker } from '@/components/dashboard/location-map-picker';
 import { InlineQuestionsBuilder } from '@/components/dashboard/inline-questions-builder';
 import { eventTypes, eventLocales, eventVisibilities } from '@/lib/validations/events';
@@ -122,6 +122,10 @@ export function QuickStartWizard({
   const [guestPhone, setGuestPhone] = useState('');
   const [guestError, setGuestError] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
+  // Lifted out of CoverImagePicker so this wizard's own Back button can
+  // tell "deep in the design gallery/editor" apart from "on the design
+  // step at all" — see the goBack override below for why.
+  const [coverPickerMode, setCoverPickerMode] = useState<CoverPickerMode>('upload');
   const [isPending, startTransition] = useTransition();
   const [submitError, setSubmitError] = useState<string | null>(null);
   // Starts false on both server and client — flips true only once the
@@ -219,7 +223,17 @@ export function QuickStartWizard({
     setStepIndex((i) => Math.min(i + 1, steps.length - 1));
   }
 
+  // Deep in the design step's own gallery/editor sub-flow, "Back" should
+  // close that first ("رجوع" reads as "back up one level" to someone who
+  // just opened a template) rather than abandoning the whole step and
+  // its other fields (locale, visibility, …) to jump to the previous
+  // one. Only steps back into the wizard proper once the cover picker is
+  // already back at its flat 'upload' view.
   function goBack() {
+    if (stepId === 'design' && coverPickerMode !== 'upload') {
+      setCoverPickerMode(typeof coverPickerMode === 'object' ? 'gallery' : 'upload');
+      return;
+    }
     setStepIndex((i) => Math.max(i - 1, 0));
   }
 
@@ -376,7 +390,12 @@ export function QuickStartWizard({
                   // only replaces the plain upload on the invitation track —
                   // the link track keeps the same upload-only field it had.
                   track === 'invitation' ? (
-                    <CoverImagePicker value={field.value} onChange={field.onChange} />
+                    <CoverImagePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      mode={coverPickerMode}
+                      onModeChange={setCoverPickerMode}
+                    />
                   ) : (
                     <CoverImageUpload value={field.value} onChange={field.onChange} />
                   )

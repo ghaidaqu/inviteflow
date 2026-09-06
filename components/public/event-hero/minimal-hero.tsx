@@ -1,3 +1,4 @@
+import { isVideoUrl } from '@/lib/utils/media';
 import type { EventHeroProps } from './types';
 
 /**
@@ -26,7 +27,7 @@ export function MinimalHero({ event, typeLabel, organizedByLabel }: EventHeroPro
       )}
 
       {event.cover_image_url &&
-        (/\.(mp4|webm|mov)$/i.test(event.cover_image_url) ? (
+        (isVideoUrl(event.cover_image_url) ? (
           <video
             src={event.cover_image_url}
             className="aspect-square w-40 rounded-full object-cover shadow-sm"

@@ -1,4 +1,5 @@
 import { Badge } from '@/components/ui/badge';
+import { isVideoUrl } from '@/lib/utils/media';
 import type { EventHeroProps } from './types';
 
 /** The original single layout — warm gradient card, rounded cover image. */
@@ -22,7 +23,7 @@ export function ClassicHero({ event, typeLabel, organizedByLabel }: EventHeroPro
       )}
 
       {event.cover_image_url ? (
-        /\.(mp4|webm|mov)$/i.test(event.cover_image_url) ? (
+        isVideoUrl(event.cover_image_url) ? (
           <video
             src={event.cover_image_url}
             // No fixed aspect-ratio box + object-cover: that convention

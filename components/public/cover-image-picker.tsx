@@ -13,7 +13,7 @@ import {
 } from '@/components/public/wedding-invitation-templates';
 import { ImageUpIcon, SparklesIcon } from 'lucide-react';
 
-type Mode = 'upload' | 'gallery' | { editing: WeddingTemplateId };
+export type CoverPickerMode = 'upload' | 'gallery' | { editing: WeddingTemplateId };
 
 const GALLERY_ITEMS: Array<{ id: WeddingTemplateId; Component: typeof SquareWeddingTemplate }> = [
   { id: 'square', Component: SquareWeddingTemplate },
@@ -37,12 +37,28 @@ const THUMB_WIDTH = 128;
 export function CoverImagePicker({
   value,
   onChange,
+  mode: controlledMode,
+  onModeChange,
 }: {
   value: string;
   onChange: (url: string) => void;
+  /**
+   * Lifted to the caller so it can tell the difference between "on the
+   * design step" and "deep inside the gallery/editor sub-flow" — a wizard
+   * embedding this (see QuickStartWizard) needs that to make its own
+   * Back button close the editor first instead of leaving the step
+   * entirely, since "رجوع" reads as "back up one level" to someone who
+   * just opened a template, not "abandon this step's progress and go to
+   * the previous one." Falls back to uncontrolled internal state when
+   * omitted, so simpler embeddings don't have to wire this up.
+   */
+  mode?: CoverPickerMode;
+  onModeChange?: (mode: CoverPickerMode) => void;
 }) {
   const t = useTranslations('Events.form.coverTemplates');
-  const [mode, setMode] = useState<Mode>('upload');
+  const [internalMode, setInternalMode] = useState<CoverPickerMode>('upload');
+  const mode = controlledMode ?? internalMode;
+  const setMode = onModeChange ?? setInternalMode;
 
   if (typeof mode === 'object') {
     return (
