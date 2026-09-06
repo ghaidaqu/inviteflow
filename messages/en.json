@@ -197,10 +197,8 @@
       "organizationNameLabel": "Company/organization name",
       "organizationLogoLabel": "Company logo",
       "map": {
-        "searchPlaceholder": "Search for a place or address...",
-        "searchNotFound": "We couldn't find that place — try a different name.",
         "mapLabel": "Location picker map",
-        "hint": "Fully optional — the location name you typed above is already enough. Only pin it here if you want an exact map link for your guests."
+        "hint": "Fully optional — the location name you typed above is already enough. Click the map or drag the pin only if you want an exact map link for your guests."
       },
       "upload": {
         "choose": "Choose image or video",
