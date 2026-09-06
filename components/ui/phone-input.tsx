@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { normalizeDigits } from '@/lib/utils/digits';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -28,7 +29,7 @@ const GULF_COUNTRIES: GulfCountry[] = [
 const DEFAULT_COUNTRY = GULF_COUNTRIES[0]!;
 
 function parsePhone(value: string): { country: GulfCountry; local: string } {
-  const digits = value.replace(/\D/g, '');
+  const digits = normalizeDigits(value).replace(/\D/g, '');
   for (const country of GULF_COUNTRIES) {
     if (digits.startsWith(country.dial)) {
       return { country, local: digits.slice(country.dial.length) };
@@ -42,7 +43,7 @@ function parsePhone(value: string): { country: GulfCountry; local: string } {
 }
 
 function composePhone(country: GulfCountry, local: string): string {
-  const digits = local.replace(/\D/g, '').replace(/^0/, '');
+  const digits = normalizeDigits(local).replace(/\D/g, '').replace(/^0/, '');
   return digits ? `+${country.dial}${digits}` : '';
 }
 
@@ -133,7 +134,7 @@ export function PhoneInput({
         placeholder={country.code === 'SA' ? '05XXXXXXXX' : t('localPlaceholder')}
         value={local}
         onChange={(e) => {
-          const next = e.target.value.replace(/\D/g, '');
+          const next = normalizeDigits(e.target.value).replace(/\D/g, '');
           setLocal(next);
           emit(country, next);
         }}
