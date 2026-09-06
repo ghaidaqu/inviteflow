@@ -1,7 +1,7 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider, isWhatsAppConfigured } from './index';
-import { generateAndUploadQr } from '@/lib/services/qr.service';
+import { generateAndUploadEntryCard } from '@/lib/services/qr.service';
 import type { ResultsSummary } from '@/lib/services/results.service';
 
 type Locale = 'ar' | 'en';
@@ -166,17 +166,22 @@ export async function sendInvitationWhatsApp(
  * the ordinary confirmation message) rather than inventing a separate
  * "entry pass" page — that link already shows their name and status, so
  * scanning it is a real, working thing to do with no new infrastructure.
+ * The image itself is the branded card from qr.service.ts (approved
+ * design), not a bare QR — the guest/event identity that used to be
+ * missing from a plain QR image lives in this caption text instead, so
+ * the card itself can stay the same generic pass for every guest.
  * Best-effort: a failed QR send never fails the RSVP itself.
  */
 export async function sendGuestQrWhatsApp(
   eventName: string,
   guestId: string,
   guestName: string,
+  partySize: number,
   phone: string,
   editUrl: string,
   locale: Locale,
 ): Promise<void> {
-  const qrUrl = await generateAndUploadQr(`guest-${guestId}`, editUrl);
+  const qrUrl = await generateAndUploadEntryCard(`guest-${guestId}`, editUrl, partySize);
   if (!qrUrl) return;
 
   const caption =

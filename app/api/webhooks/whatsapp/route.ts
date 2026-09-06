@@ -237,10 +237,17 @@ export async function POST(request: NextRequest) {
       ) {
         const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
         const editUrl = `${appUrl}/${locale}/rsvp/${result.guest_secure_token}`;
+        // A button tap never collects companions (there's no form here) —
+        // the pass covers just the guest themself. A companion count added
+        // later via the edit link won't reach an already-sent pass either
+        // (updateRsvpAction only re-sends the QR on a genuine new
+        // attending transition, not on every edit) — a pre-existing
+        // limitation, not something this change introduces.
         await sendGuestQrWhatsApp(
           event.name,
           guestId,
           result.guest_name,
+          1,
           message.from,
           editUrl,
           locale,
