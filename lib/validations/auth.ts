@@ -14,6 +14,11 @@ export const phoneOtpRequestSchema = z.object({
 });
 export type PhoneOtpRequestInput = z.infer<typeof phoneOtpRequestSchema>;
 
+// Must match the "OTP length" set in Supabase's dashboard (Authentication
+// → Providers → Email/Phone) — a mismatch there means the code Supabase
+// actually sends can never pass this regex. Tried dropping this to 4
+// digits for easier typing; Supabase's email OTP length has a hard floor
+// of 6, so this stays at 6 for both phone and email.
 export const otpCodeSchema = z
   .string()
   .trim()
