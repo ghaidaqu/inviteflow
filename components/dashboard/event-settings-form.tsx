@@ -51,6 +51,7 @@ export function EventSettingsForm({
       maxCompanions: settings.max_companions,
       collectMessage: settings.collect_message,
       allowGuestEdit: settings.allow_guest_edit,
+      requirePhone: settings.require_phone,
     },
   });
 
@@ -66,6 +67,7 @@ export function EventSettingsForm({
     formData.set('maxCompanions', String(values.maxCompanions));
     formData.set('collectMessage', String(values.collectMessage));
     formData.set('allowGuestEdit', String(values.allowGuestEdit));
+    formData.set('requirePhone', String(values.requirePhone));
 
     startTransition(async () => {
       const result = await updateEventSettingsAction(eventId, {}, formData);
@@ -122,6 +124,20 @@ export function EventSettingsForm({
                 onCheckedChange={field.onChange}
                 disabled={isPublished}
               />
+            )}
+          />
+        </Field>
+
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="requirePhone" className="flex-1 font-normal">
+            {t('requirePhoneLabel')}
+            <FieldDescription>{t('requirePhoneHint')}</FieldDescription>
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="requirePhone"
+            render={({ field }) => (
+              <Switch id="requirePhone" checked={field.value} onCheckedChange={field.onChange} />
             )}
           />
         </Field>

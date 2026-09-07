@@ -52,12 +52,7 @@ export default async function EventRsvpPage({
       title={event.name}
       subtitle={t('pageSubtitle')}
     >
-      <RsvpForm
-        eventSlug={slug}
-        eventName={event.name}
-        settings={settings}
-        hasQuestions={questions.length > 0}
-      />
+      <RsvpForm eventSlug={slug} eventName={event.name} settings={settings} questions={questions} />
     </PublicFormShell>
   );
 }

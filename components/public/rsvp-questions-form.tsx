@@ -1,36 +1,33 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { useLocale, useTranslations } from 'next-intl';
+import { useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
+import { FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Checkbox } from '@/components/ui/checkbox';
 import { updateRsvpAction, type RsvpActionState } from '@/lib/actions/rsvp';
 import type { QuestionWithOptions } from '@/lib/services/questions.service';
 import type { RsvpByToken } from '@/lib/services/rsvp.service';
+import {
+  CustomQuestionField,
+  hasAllRequiredAnswers,
+} from '@/components/public/custom-question-field';
 
 type FormValues = {
   answers: Record<string, string | string[] | boolean>;
 };
 
 /**
- * The "RSVP" track, standalone — a poll/questionnaire completely separate
- * from the invitation accept/decline (see rsvp-form.tsx). Reuses the same
- * response record (via updateRsvpAction) but resubmits the guest's existing
- * status/companions/message unchanged, so this screen only ever asks about
- * the organizer's own questions.
+ * The standalone edit screen for an existing guest's question answers —
+ * a new guest never sees this separately anymore (see rsvp-form.tsx,
+ * which now collects questions inline on first submission), but someone
+ * revisiting their edit link after already answering still needs a way
+ * to change those answers on their own, without re-submitting their
+ * whole Accept/Decline. Reuses the same response record (via
+ * updateRsvpAction) but resubmits the guest's existing
+ * status/companions/message unchanged, so this screen only ever touches
+ * question answers.
  */
 export function RsvpQuestionsForm({
   token,
@@ -59,14 +56,7 @@ export function RsvpQuestionsForm({
     setServerError(null);
     setSaved(false);
 
-    const missingRequired = questions.some((q) => {
-      if (!q.is_required) return false;
-      const value = values.answers[q.id];
-      // An empty selection array is truthy in JS but still "no answer" —
-      // multi_choice needs its own emptiness check, unlike every other type.
-      return Array.isArray(value) ? value.length === 0 : !value;
-    });
-    if (missingRequired) {
+    if (!hasAllRequiredAnswers(questions, values.answers)) {
       setServerError('answerRequired');
       return;
     }
@@ -116,7 +106,7 @@ export function RsvpQuestionsForm({
 
       <FieldGroup>
         {questions.map((question) => (
-          <CustomQuestionField key={question.id} question={question} control={control} />
+          <CustomQuestionField key={question.id} question={question} control={control as never} />
         ))}
 
         <Button type="submit" disabled={isPending} className="w-full">
@@ -124,187 +114,5 @@ export function RsvpQuestionsForm({
         </Button>
       </FieldGroup>
     </form>
-  );
-}
-
-function CustomQuestionField({
-  question,
-  control,
-}: {
-  question: QuestionWithOptions;
-  control: ReturnType<typeof useForm<FormValues>>['control'];
-}) {
-  const locale = useLocale();
-  const label =
-    locale === 'ar'
-      ? question.question_text_ar
-      : (question.question_text_en ?? question.question_text_ar);
-
-  if (question.type === 'yes_no') {
-    return (
-      <Field orientation="horizontal">
-        <FieldLabel className="flex-1 font-normal">
-          {label}
-          {question.is_required && ' *'}
-        </FieldLabel>
-        <Controller
-          control={control}
-          name={`answers.${question.id}`}
-          render={({ field }) => (
-            <Switch checked={field.value === true} onCheckedChange={field.onChange} />
-          )}
-        />
-      </Field>
-    );
-  }
-
-  if (question.type === 'single_choice') {
-    return (
-      <Field>
-        <FieldLabel>
-          {label}
-          {question.is_required && ' *'}
-        </FieldLabel>
-        <Controller
-          control={control}
-          name={`answers.${question.id}`}
-          render={({ field }) => (
-            <Select value={field.value as string} onValueChange={field.onChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue>
-                  {(value: string | null) => {
-                    const selected = question.options.find((o) => o.id === value);
-                    if (!selected) return '';
-                    return locale === 'ar'
-                      ? selected.option_text_ar
-                      : (selected.option_text_en ?? selected.option_text_ar);
-                  }}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {question.options.map((option) => (
-                  <SelectItem key={option.id} value={option.id}>
-                    {locale === 'ar'
-                      ? option.option_text_ar
-                      : (option.option_text_en ?? option.option_text_ar)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </Field>
-    );
-  }
-
-  if (question.type === 'multi_choice') {
-    return (
-      <Field>
-        <FieldLabel>
-          {label}
-          {question.is_required && ' *'}
-        </FieldLabel>
-        <Controller
-          control={control}
-          name={`answers.${question.id}`}
-          render={({ field }) => {
-            const selected = Array.isArray(field.value) ? (field.value as string[]) : [];
-            return (
-              <div className="flex flex-col gap-2">
-                {question.options.map((option) => {
-                  const optionLabel =
-                    locale === 'ar'
-                      ? option.option_text_ar
-                      : (option.option_text_en ?? option.option_text_ar);
-                  const checked = selected.includes(option.id);
-                  return (
-                    <label
-                      key={option.id}
-                      className="flex cursor-pointer items-center gap-2.5 text-sm"
-                    >
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={(next) => {
-                          field.onChange(
-                            next
-                              ? [...selected, option.id]
-                              : selected.filter((id) => id !== option.id),
-                          );
-                        }}
-                      />
-                      {optionLabel}
-                    </label>
-                  );
-                })}
-              </div>
-            );
-          }}
-        />
-      </Field>
-    );
-  }
-
-  if (question.type === 'number') {
-    return (
-      <Field>
-        <FieldLabel>
-          {label}
-          {question.is_required && ' *'}
-        </FieldLabel>
-        <Controller
-          control={control}
-          name={`answers.${question.id}`}
-          render={({ field }) => (
-            <Input
-              type="number"
-              value={(field.value as string) ?? ''}
-              onChange={(e) => field.onChange(e.target.value)}
-            />
-          )}
-        />
-      </Field>
-    );
-  }
-
-  if (question.type === 'long_text') {
-    return (
-      <Field>
-        <FieldLabel>
-          {label}
-          {question.is_required && ' *'}
-        </FieldLabel>
-        <Controller
-          control={control}
-          name={`answers.${question.id}`}
-          render={({ field }) => (
-            <Textarea
-              rows={3}
-              value={(field.value as string) ?? ''}
-              onChange={(e) => field.onChange(e.target.value)}
-            />
-          )}
-        />
-      </Field>
-    );
-  }
-
-  // short_text is the only type meant to fall back to a plain input.
-  return (
-    <Field>
-      <FieldLabel>
-        {label}
-        {question.is_required && ' *'}
-      </FieldLabel>
-      <Controller
-        control={control}
-        name={`answers.${question.id}`}
-        render={({ field }) => (
-          <Input
-            value={(field.value as string) ?? ''}
-            onChange={(e) => field.onChange(e.target.value)}
-          />
-        )}
-      />
-    </Field>
   );
 }

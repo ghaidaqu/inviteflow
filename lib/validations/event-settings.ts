@@ -13,6 +13,7 @@ export const eventSettingsFormSchema = z.object({
   maxCompanions: z.coerce.number().int().min(0).max(50),
   collectMessage: z.boolean(),
   allowGuestEdit: z.boolean(),
+  requirePhone: z.boolean(),
 });
 
 export type EventSettingsFormInput = z.input<typeof eventSettingsFormSchema>;

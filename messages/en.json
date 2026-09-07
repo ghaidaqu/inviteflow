@@ -442,6 +442,7 @@
     "errors": {
       "invalidInput": "Please check the information you entered.",
       "answerRequired": "Please answer all required questions.",
+      "phoneRequired": "A phone number is required for this event.",
       "notConfigured": "This project isn't connected to a Supabase database yet.",
       "submitFailed": "Couldn't submit your response, please try again.",
       "rateLimited": "Too many attempts in a short time — please try again in a minute."
@@ -455,6 +456,8 @@
     "lockedAfterPublishHint": "This can't change after the event is published and invitations are sent.",
     "allowNotAttendingLabel": "Allow declining the invitation",
     "allowNotAttendingHint": "If off, a guest can only accept — there is no decline option.",
+    "requirePhoneLabel": "Phone number required",
+    "requirePhoneHint": "When on, a guest can't submit their response without a phone number.",
     "collectCompanionsLabel": "Collect companion names",
     "collectCompanionsHint": "Turn on if guests can bring additional people.",
     "maxCompanionsLabel": "Maximum companions",

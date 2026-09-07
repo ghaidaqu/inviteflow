@@ -183,6 +183,7 @@ export async function createEventFromQuickStartAction(
           maxCompanions: settings.max_companions,
           collectMessage: settings.collect_message,
           allowGuestEdit: settings.allow_guest_edit,
+          requirePhone: settings.require_phone,
         });
       }
     } catch {

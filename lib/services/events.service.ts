@@ -225,6 +225,7 @@ export async function updateEventSettings(
       max_companions: input.maxCompanions,
       collect_message: input.collectMessage,
       allow_guest_edit: input.allowGuestEdit,
+      require_phone: input.requirePhone,
     })
     .eq('event_id', eventId)
     .select('*')

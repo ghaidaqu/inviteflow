@@ -189,6 +189,7 @@ export async function setEventStatusAction(
   await setEventStatus(supabase, organizationId, eventId, status);
 
   const locale = await getLocale();
+
   revalidatePath(`/${locale}/dashboard/events`);
   revalidatePath(`/${locale}/dashboard/events/${eventId}`);
 }
@@ -210,6 +211,7 @@ export async function updateEventSettingsAction(
     maxCompanions: formData.get('maxCompanions'),
     collectMessage: formData.get('collectMessage') === 'true',
     allowGuestEdit: formData.get('allowGuestEdit') === 'true',
+    requirePhone: formData.get('requirePhone') === 'true',
   });
   if (!parsed.success) return { error: 'invalidInput' };
 

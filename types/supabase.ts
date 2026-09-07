@@ -164,6 +164,7 @@ export interface Database {
           max_companions: number;
           collect_message: boolean;
           allow_guest_edit: boolean;
+          require_phone: boolean;
           updated_at: string;
         };
         Insert: {
@@ -176,6 +177,7 @@ export interface Database {
           max_companions?: number;
           collect_message?: boolean;
           allow_guest_edit?: boolean;
+          require_phone?: boolean;
           updated_at?: string;
         };
         Update: Partial<Database['public']['Tables']['event_settings']['Insert']>;

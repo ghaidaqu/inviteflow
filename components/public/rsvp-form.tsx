@@ -10,9 +10,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RsvpStatusPicker } from '@/components/public/rsvp-status-picker';
+import {
+  CustomQuestionField,
+  hasAllRequiredAnswers,
+} from '@/components/public/custom-question-field';
 import { submitRsvpAction, type RsvpActionState } from '@/lib/actions/rsvp';
 import { Link } from '@/i18n/navigation';
-import { Trash2Icon, PlusIcon, CheckCircle2Icon, MessageCircleIcon } from 'lucide-react';
+import type { QuestionWithOptions } from '@/lib/services/questions.service';
+import { Trash2Icon, PlusIcon, CheckCircle2Icon } from 'lucide-react';
 
 type EventSettings = {
   allow_attending: boolean;
@@ -20,6 +25,7 @@ type EventSettings = {
   collect_companions: boolean;
   max_companions: number;
   collect_message: boolean;
+  require_phone: boolean;
 };
 
 type FormValues = {
@@ -29,24 +35,29 @@ type FormValues = {
   status: 'attending' | 'not_attending' | '';
   companionsNames: { name: string }[];
   message: string;
+  answers: Record<string, string | string[] | boolean>;
 };
 
-// This form is deliberately "الدعوة الرقمية" only — a simple accept/decline
-// with no custom questions. If the event also has RSVP questions (a
-// separate, poll-style track — see components/public/rsvp-questions-form.tsx
-// and the /rsvp/[token]/questions page), the thank-you screen below offers
-// a distinct, clearly separate follow-up step rather than bundling them
-// into one form.
+// One page, one submission — name, phone/email, response, companions, the
+// organizer's message, and any custom questions all together. This used
+// to be two separate steps (accept/decline first, a distinct "answer the
+// organizer's questions" follow-up after) for the Digital Invitation
+// track's own reasons, but the Link track has no equivalent: everyone who
+// opens this link is already a real prospective guest doing one thing —
+// registering — so splitting it in two just meant most people skipped the
+// second step. submitRsvpAction already accepted answers alongside the
+// rest in one call (see readAnswers() there); this was purely a front-end
+// gap.
 export function RsvpForm({
   eventSlug,
   eventName,
   settings,
-  hasQuestions,
+  questions,
 }: {
   eventSlug: string;
   eventName: string;
   settings: EventSettings;
-  hasQuestions: boolean;
+  questions: QuestionWithOptions[];
 }) {
   const t = useTranslations('Rsvp');
   const tErrors = useTranslations('Rsvp.errors');
@@ -63,6 +74,7 @@ export function RsvpForm({
       status: '',
       companionsNames: [],
       message: '',
+      answers: {},
     },
   });
 
@@ -74,6 +86,14 @@ export function RsvpForm({
       setServerError('invalidInput');
       return;
     }
+    if (settings.require_phone && !values.phone.trim()) {
+      setServerError('phoneRequired');
+      return;
+    }
+    if (!hasAllRequiredAnswers(questions, values.answers)) {
+      setServerError('answerRequired');
+      return;
+    }
 
     const formData = new FormData();
     formData.set('guestName', values.guestName);
@@ -82,7 +102,14 @@ export function RsvpForm({
     formData.set('status', values.status);
     formData.set('message', values.message);
     formData.set('companionsNames', JSON.stringify(values.companionsNames.map((c) => c.name)));
-    formData.set('answers', '[]');
+    formData.set(
+      'answers',
+      JSON.stringify(
+        questions
+          .filter((q) => values.answers[q.id] !== undefined)
+          .map((q) => ({ question_id: q.id, answer_value: values.answers[q.id] })),
+      ),
+    );
 
     startTransition(async () => {
       const result: RsvpActionState = await submitRsvpAction(eventSlug, {}, formData);
@@ -103,7 +130,7 @@ export function RsvpForm({
     }
 
     return (
-      <div className="animate-in fade-in zoom-in-95 flex flex-col gap-4 duration-500 ease-out">
+      <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
         <div className="bg-card flex flex-col items-center gap-3 rounded-2xl border p-6 text-center">
           <div className="bg-primary/10 text-primary flex size-12 items-center justify-center rounded-full">
             <CheckCircle2Icon className="size-6" />
@@ -120,23 +147,6 @@ export function RsvpForm({
             {t('whatsappShareButton')}
           </Button>
         </div>
-
-        {hasQuestions && (
-          <div className="bg-card border-primary/20 flex flex-col items-center gap-3 rounded-2xl border p-6 text-center">
-            <div className="bg-accent/25 text-accent-foreground flex size-12 items-center justify-center rounded-full">
-              <MessageCircleIcon className="size-6" />
-            </div>
-            <p className="text-lg font-bold">{t('questionsFollowUpTitle')}</p>
-            <p className="text-muted-foreground">{t('questionsFollowUpDescription')}</p>
-            <Button
-              className="w-full"
-              nativeButton={false}
-              render={<Link href={`/rsvp/${secureToken}/questions`} />}
-            >
-              {t('questionsFollowUpButton')}
-            </Button>
-          </div>
-        )}
       </div>
     );
   }
@@ -159,11 +169,15 @@ export function RsvpForm({
         </Field>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor="phone">{t('phoneLabel')}</FieldLabel>
+          <Field data-invalid={serverError === 'phoneRequired'}>
+            <FieldLabel htmlFor="phone">
+              {t('phoneLabel')}
+              {settings.require_phone ? ' *' : ''}
+            </FieldLabel>
             <Controller
               control={control}
               name="phone"
+              rules={{ required: settings.require_phone }}
               render={({ field }) => (
                 <PhoneInput id="phone" value={field.value} onChange={field.onChange} />
               )}
@@ -232,6 +246,18 @@ export function RsvpForm({
             <FieldLabel htmlFor="message">{t('messageLabel')}</FieldLabel>
             <Textarea id="message" rows={3} {...register('message')} />
           </Field>
+        )}
+
+        {questions.length > 0 && (
+          <div className="flex flex-col gap-4 border-t pt-4">
+            {questions.map((question) => (
+              <CustomQuestionField
+                key={question.id}
+                question={question}
+                control={control as never}
+              />
+            ))}
+          </div>
         )}
 
         <Button type="submit" disabled={isPending} className="w-full">
