@@ -314,6 +314,7 @@
       "publicLinkLabel": "رابط الدعوة العامة",
       "copyLink": "نسخ الرابط",
       "linkCopied": "تم نسخ الرابط",
+      "copyFailed": "تعذّر النسخ التلقائي — انسخ الرابط أعلاه يدويًا.",
       "backToList": "العودة إلى المناسبات",
       "guestsButton": "الضيوف",
       "invitationButton": "الدعوة الرقمية",
@@ -401,6 +402,7 @@
     "shareWhatsappButton": "مشاركة عبر واتساب",
     "copyLinkButton": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط",
+    "copyFailed": "تعذّر النسخ التلقائي، انسخ الرابط يدويًا:",
     "shareMessage": "دعوة: {name}",
     "rsvpButton": "الرد على الدعوة",
     "organizedBy": "من {name}"

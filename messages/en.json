@@ -314,6 +314,7 @@
       "publicLinkLabel": "Public invitation link",
       "copyLink": "Copy link",
       "linkCopied": "Link copied",
+      "copyFailed": "Couldn't copy automatically — copy the link above manually.",
       "backToList": "Back to events",
       "guestsButton": "Guests",
       "invitationButton": "Digital invitation",
@@ -401,6 +402,7 @@
     "shareWhatsappButton": "Share via WhatsApp",
     "copyLinkButton": "Copy link",
     "linkCopied": "Link copied",
+    "copyFailed": "Couldn't copy automatically, copy the link manually:",
     "shareMessage": "Invitation: {name}",
     "rsvpButton": "Respond to invitation",
     "organizedBy": "By {name}"
