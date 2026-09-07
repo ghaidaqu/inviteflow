@@ -22,9 +22,15 @@ type EventSettingsRow = Database['public']['Tables']['event_settings']['Row'];
 export function EventSettingsForm({
   eventId,
   settings,
+  isPublished,
 }: {
   eventId: string;
   settings: EventSettingsRow;
+  /** Locked once the event is published — guests already got an
+   *  invitation promising one of these response options, so changing it
+   *  afterward would contradict what they already have. Enforced
+   *  server-side too, in updateEventSettingsAction. */
+  isPublished?: boolean;
 }) {
   const t = useTranslations('EventSettings');
   const tErrors = useTranslations('EventSettings.errors');
@@ -85,12 +91,18 @@ export function EventSettingsForm({
         <Field orientation="horizontal">
           <FieldLabel htmlFor="allowAttending" className="flex-1 font-normal">
             {t('allowAttendingLabel')}
+            {isPublished && <FieldDescription>{t('lockedAfterPublishHint')}</FieldDescription>}
           </FieldLabel>
           <Controller
             control={control}
             name="allowAttending"
             render={({ field }) => (
-              <Switch id="allowAttending" checked={field.value} onCheckedChange={field.onChange} />
+              <Switch
+                id="allowAttending"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={isPublished}
+              />
             )}
           />
         </Field>
@@ -108,6 +120,7 @@ export function EventSettingsForm({
                 id="allowNotAttending"
                 checked={field.value}
                 onCheckedChange={field.onChange}
+                disabled={isPublished}
               />
             )}
           />

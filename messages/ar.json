@@ -206,6 +206,7 @@
         "uploading": "جارٍ الرفع...",
         "remove": "إزالة الملف",
         "hint": "صورة (PNG، JPG، WEBP) بحد أقصى 5MB، أو فيديو (MP4، WEBM، MOV) بحد أقصى 50MB.",
+        "lockedHint": "لا يمكن تغيير الصورة بعد نشر المناسبة وإرسال الدعوات.",
         "errors": {
           "invalidInput": "يرجى اختيار ملف صورة أو فيديو.",
           "unauthorized": "يجب تسجيل الدخول لرفع ملف.",
@@ -449,6 +450,7 @@
     "invitationPageTitle": "الدعوة الرقمية",
     "invitationPageSubtitle": "دعوة شخصية مباشرة، منفصلة تمامًا عن أسئلة RSVP: إما لمعرفة عدد الحضور، أو لإيصال التفاصيل دون انتظار رد.",
     "allowAttendingLabel": "السماح بالموافقة على الحضور",
+    "lockedAfterPublishHint": "لا يمكن تغيير هذا بعد نشر المناسبة وإرسال الدعوات.",
     "allowNotAttendingLabel": "السماح بالاعتذار عن الحضور",
     "allowNotAttendingHint": "عند التعطيل، يقتصر رد الضيف على الموافقة فقط، دون خيار الاعتذار.",
     "collectCompanionsLabel": "جمع أسماء المرافقين",

@@ -14,6 +14,7 @@ import {
   softDeleteEvent,
   getCurrentOrganizationId,
   getEvent,
+  getEventSettings,
   updateEventSettings,
   updateEventDesign,
 } from '@/lib/services/events.service';
@@ -137,16 +138,32 @@ export async function updateEventAction(
   const organizationId = await getCurrentOrganizationId(supabase, user.id);
   if (!organizationId) return { error: 'unknown' };
 
-  if (parsed.data.isPasswordProtected && !parsed.data.password) {
-    const existing = await getEvent(supabase, organizationId, eventId);
-    if (!existing?.password_hash) {
-      return { error: 'passwordRequiredForProtection' };
-    }
+  const existing = await getEvent(supabase, organizationId, eventId);
+  if (!existing) return { error: 'unknown' };
+
+  if (parsed.data.isPasswordProtected && !parsed.data.password && !existing.password_hash) {
+    return { error: 'passwordRequiredForProtection' };
   }
+
+  // Cover image and the QR toggle are locked once published — an already-
+  // sent invitation baked in whichever image the guest received and
+  // whether it promised a QR at all; changing either afterward would
+  // desync the event from what guests already have in hand. The UI
+  // disables these two fields the same way (see event-form.tsx); this is
+  // the server-side half of that, so a bypassed/stale client can't change
+  // them either.
+  const eventInput =
+    existing.status === 'published'
+      ? {
+          ...parsed.data,
+          coverImageUrl: existing.cover_image_url ?? undefined,
+          isQrEnabled: existing.is_qr_enabled,
+        }
+      : parsed.data;
 
   const locale = await getLocale();
   try {
-    await updateEvent(supabase, organizationId, eventId, parsed.data);
+    await updateEvent(supabase, organizationId, eventId, eventInput);
   } catch {
     return { error: 'unknown' };
   }
@@ -210,8 +227,26 @@ export async function updateEventSettingsAction(
   const event = await getEvent(supabase, organizationId, eventId);
   if (!event) return { error: 'unknown' };
 
+  // allowAttending/allowNotAttending are locked once published, same
+  // reasoning as the cover image/QR lock in updateEventAction — guests
+  // already got an invitation promising one of these response options;
+  // changing it afterward would contradict what they were already sent.
+  // The other settings here (companions, message, guest-edit) stay
+  // editable throughout.
+  let settingsInput = parsed.data;
+  if (event.status === 'published') {
+    const currentSettings = await getEventSettings(supabase, eventId);
+    if (currentSettings) {
+      settingsInput = {
+        ...parsed.data,
+        allowAttending: currentSettings.allow_attending,
+        allowNotAttending: currentSettings.allow_not_attending,
+      };
+    }
+  }
+
   try {
-    await updateEventSettings(supabase, eventId, parsed.data);
+    await updateEventSettings(supabase, eventId, settingsInput);
   } catch {
     return { error: 'unknown' };
   }

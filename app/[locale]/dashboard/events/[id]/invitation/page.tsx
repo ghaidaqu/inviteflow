@@ -48,7 +48,11 @@ export default async function EventInvitationSettingsPage({
       <p className="text-muted-foreground mb-6">{t('invitationPageSubtitle')}</p>
 
       <div className="bg-card rounded-xl border p-5">
-        <EventSettingsForm eventId={id} settings={settings} />
+        <EventSettingsForm
+          eventId={id}
+          settings={settings}
+          isPublished={event.status === 'published'}
+        />
       </div>
     </main>
   );

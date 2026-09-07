@@ -8,7 +8,6 @@ import {
   eventFormSchema,
   eventLocales,
   eventTypes,
-  eventVisibilities,
   type EventFormInput,
   type EventFormOutput,
 } from '@/lib/validations/events';
@@ -24,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Field, FieldLabel, FieldError, FieldDescription, FieldGroup } from '@/components/ui/field';
+import { Field, FieldLabel, FieldError, FieldGroup } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { InlineQuestionsBuilder } from '@/components/dashboard/inline-questions-builder';
@@ -77,6 +76,10 @@ export function EventForm({
   const tTypes = useTranslations('Events.types');
   const tErrors = useTranslations('Events.errors');
   const tValidation = useTranslations('Events.validation');
+  // Cover image and QR are locked once published — see updateEventAction,
+  // which enforces this server-side too (this is just the matching UI so
+  // the form never promises something the server would then discard).
+  const isPublished = event?.status === 'published';
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
   const [questions, setQuestions] = useState<QuestionInput[]>([]);
@@ -267,7 +270,11 @@ export function EventForm({
             control={control}
             name="coverImageUrl"
             render={({ field }) => (
-              <CoverImageUpload value={field.value ?? ''} onChange={field.onChange} />
+              <CoverImageUpload
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                disabled={isPublished}
+              />
             )}
           />
           <FieldError>{fieldMessage(errors.coverImageUrl?.message)}</FieldError>
@@ -298,32 +305,13 @@ export function EventForm({
             />
           </Field>
 
-          <Field>
-            <FieldLabel htmlFor="visibility">{t('visibilityLabel')}</FieldLabel>
-            <FieldDescription>{t('visibilityHint')}</FieldDescription>
-            <Controller
-              control={control}
-              name="visibility"
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger id="visibility" className="w-full">
-                    <SelectValue>
-                      {(value: string | null) =>
-                        t(value === 'public' ? 'visibilityPublic' : 'visibilityPrivate')
-                      }
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {eventVisibilities.map((visibility) => (
-                      <SelectItem key={visibility} value={visibility}>
-                        {t(visibility === 'public' ? 'visibilityPublic' : 'visibilityPrivate')}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </Field>
+          {/* Not exposed here either — see the same reasoning as the
+              quick-start wizard: this only matters for the Link track
+              (its public page 404s for everyone unless 'public'), and an
+              organizer editing an existing event has no way to tell which
+              track it started as anyway (never persisted). The value
+              still round-trips through defaultValues/onSubmit unchanged
+              above, same pattern as isRsvpEnabled below. */}
         </div>
 
         {track === 'rsvp' && !event && (
@@ -346,7 +334,12 @@ export function EventForm({
             control={control}
             name="isQrEnabled"
             render={({ field }) => (
-              <Switch id="isQrEnabled" checked={field.value} onCheckedChange={field.onChange} />
+              <Switch
+                id="isQrEnabled"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={isPublished}
+              />
             )}
           />
         </Field>

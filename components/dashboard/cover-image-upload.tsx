@@ -16,9 +16,15 @@ import { ImageUpIcon, XIcon, Loader2Icon } from 'lucide-react';
 export function CoverImageUpload({
   value,
   onChange,
+  disabled,
 }: {
   value: string;
   onChange: (url: string) => void;
+  /** Locked once the event is published — see event-form.tsx. Shows the
+   *  current cover (if any) read-only instead of an upload/remove
+   *  control, since already-sent invitations baked in whichever image
+   *  the guest received. */
+  disabled?: boolean;
 }) {
   const t = useTranslations('Events.form.upload');
   const tErrors = useTranslations('Events.form.upload.errors');
@@ -83,22 +89,24 @@ export function CoverImageUpload({
               className="max-h-40 max-w-56 rounded-lg border object-contain"
             />
           )}
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon-sm"
-            className="absolute -end-2 -top-2 rounded-full"
-            onClick={() => onChange('')}
-            aria-label={t('remove')}
-          >
-            <XIcon className="size-3.5" />
-          </Button>
+          {!disabled && (
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon-sm"
+              className="absolute -end-2 -top-2 rounded-full"
+              onClick={() => onChange('')}
+              aria-label={t('remove')}
+            >
+              <XIcon className="size-3.5" />
+            </Button>
+          )}
         </div>
       ) : (
         <Button
           type="button"
           variant="outline"
-          disabled={isUploading}
+          disabled={isUploading || disabled}
           onClick={() => fileInputRef.current?.click()}
           className="w-fit"
         >
@@ -117,7 +125,7 @@ export function CoverImageUpload({
         </Alert>
       )}
 
-      <p className="text-muted-foreground text-xs">{t('hint')}</p>
+      <p className="text-muted-foreground text-xs">{disabled ? t('lockedHint') : t('hint')}</p>
     </div>
   );
 }

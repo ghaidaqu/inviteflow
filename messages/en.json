@@ -206,6 +206,7 @@
         "uploading": "Uploading...",
         "remove": "Remove file",
         "hint": "Image (PNG, JPG, WEBP) up to 5MB, or video (MP4, WEBM, MOV) up to 50MB.",
+        "lockedHint": "The cover can't change after the event is published and invitations are sent.",
         "errors": {
           "invalidInput": "Please choose an image or video file.",
           "unauthorized": "You need to be signed in to upload a file.",
@@ -449,6 +450,7 @@
     "invitationPageTitle": "Digital Invitation",
     "invitationPageSubtitle": "A simple personal invitation — you're hosting, and you decide whether you want a headcount of who's coming, or just to share the details without waiting on a response. This is a separate track from RSVP questions.",
     "allowAttendingLabel": "Allow accepting the invitation",
+    "lockedAfterPublishHint": "This can't change after the event is published and invitations are sent.",
     "allowNotAttendingLabel": "Allow declining the invitation",
     "allowNotAttendingHint": "If off, a guest can only accept — there is no decline option.",
     "collectCompanionsLabel": "Collect companion names",
