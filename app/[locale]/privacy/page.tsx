@@ -5,5 +5,5 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <LegalPage namespace="privacy" sectionCount={6} />;
+  return <LegalPage namespace="privacy" sectionCount={7} />;
 }

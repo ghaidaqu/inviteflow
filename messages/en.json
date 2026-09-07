@@ -693,8 +693,10 @@
       "section4Body": "When an organizer enables WhatsApp or email sending, the confirmation message is sent through the relevant provider (Meta WhatsApp Cloud API, or Resend for email) — only the data needed to deliver that message (the phone number or email, and the message text) is shared with them. We never share your data with anyone else.",
       "section5Heading": "5. Data security",
       "section5Body": "Data is stored in Supabase (a secure PostgreSQL-based infrastructure), protected by row-level access policies. No full-privilege admin key is ever used from inside the browser.",
-      "section6Heading": "6. Your rights",
-      "section6Body": "Any guest can edit or delete their response via their own private link at any time before the deadline. To request full deletion of your data from any event, reach us at support@mahalli.app."
+      "section6Heading": "6. Where your data is stored and cross-border transfer",
+      "section6Body": "Our database servers and the providers we rely on (site hosting, WhatsApp, email) are located outside Saudi Arabia. This means your data is processed and stored on foreign servers, under contractual safeguards with those providers that preserve the same level of protection.",
+      "section7Heading": "7. Your rights under Saudi Arabia's Personal Data Protection Law",
+      "section7Body": "You have the right to access your data, correct it, request its deletion, withdraw your consent, or request a copy of it. Any guest can edit or delete their response via their own private link at any time before the deadline. To exercise any of these rights, or to request full deletion of your data from any event, reach us at support@mahalli.app and we'll respond within a reasonable time. You also have the right to file a complaint with the Saudi Data & AI Authority (SDAIA) if you're not satisfied with how we handled your request."
     }
   },
   "QuickStart": {
