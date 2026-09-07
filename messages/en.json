@@ -697,7 +697,7 @@
     "trialTitle": "A real trial before you commit",
     "trialDescription": "Enter a name and phone number — we'll send them your real invitation exactly as it reaches your other guests (Accept/Decline buttons, QR if enabled). A limited number of these trial sends is allowed per account.",
     "trialTitleLink": "One link you share yourself",
-    "trialDescriptionLink": "You get one link for the event — open it yourself to try it, or send it straight to a WhatsApp group. Everyone who opens it registers their own name and phone and replies themselves; you don't need to enter anyone's number now.",
+    "trialDescriptionLink": "One link your guests share to register themselves — no need to enter their details in advance.",
     "guestNameLabel": "Test guest name (optional)",
     "guestPhoneLabel": "Their phone number",
     "guestRequiredError": "Enter a name and phone number so we can send them the trial.",
