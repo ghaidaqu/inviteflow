@@ -648,7 +648,8 @@
   "NotFound": {
     "title": "Page not found",
     "description": "The link you tried to open doesn't exist or was removed.",
-    "backHome": "Back to homepage"
+    "backHome": "Back to homepage",
+    "goBack": "Go back"
   },
   "ErrorPage": {
     "title": "Something went wrong",

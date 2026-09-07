@@ -15,12 +15,16 @@ export default async function EventRsvpPage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { locale, slug } = await params;
+  const { locale, slug: rawSlug } = await params;
   setRequestLocale(locale);
 
   if (!isSupabaseConfigured()) notFound();
 
   const supabase = await createClient();
+  // See the matching comment in ../page.tsx — a non-ASCII slug arrives
+  // here still percent-encoded, so this has to decode it explicitly
+  // rather than trust Next.js's usual automatic decoding.
+  const slug = decodeURIComponent(rawSlug);
   const result = await getPublicEventBySlug(supabase, slug);
   if (!result) notFound();
 

@@ -17,12 +17,24 @@ export default async function PublicEventPage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { locale, slug } = await params;
+  const { locale, slug: rawSlug } = await params;
   setRequestLocale(locale);
 
   if (!isSupabaseConfigured()) notFound();
 
   const supabase = await createClient();
+  // Confirmed directly in production: a non-ASCII slug (any Arabic event
+  // name, since generateUniqueSlug() only transliterates spaces to
+  // hyphens and otherwise keeps the name's own script) arrives here still
+  // percent-encoded — e.g. literally the string "%D9%86", not the decoded
+  // "ن" — even though the exact same query with the real decoded value
+  // matches a row fine (checked directly against both the anon and
+  // service-role clients). Something upstream of this page (next-intl's
+  // middleware rewrite, most likely) isn't decoding the dynamic segment
+  // the way Next.js normally does for an ASCII slug. Decoding here is a
+  // no-op for an already-decoded ASCII slug and fixes the Arabic case
+  // either way, without needing to chase the exact upstream cause.
+  const slug = decodeURIComponent(rawSlug);
   const result = await getPublicEventBySlug(supabase, slug);
   if (!result) notFound();
 
