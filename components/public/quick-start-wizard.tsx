@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { PhoneInput } from '@/components/ui/phone-input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription, FieldGroup } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -110,7 +110,18 @@ export function QuickStartWizard({
       locationMapUrl: '',
       coverImageUrl: '',
       primaryLocale: locale === 'en' ? 'en' : 'ar',
-      visibility: 'private',
+      // The Link track's entire mechanic is a guest opening this event's
+      // public page themselves to register — getPublicEventBySlug() 404s
+      // it for anyone (organizer included, once shared) unless visibility
+      // is 'public'. Defaulting every track to 'private' meant a Link
+      // event silently shipped guests a dead link unless the organizer
+      // knew to flip this — a real trap, not just a confusing label (see
+      // Events.form.visibilityLabel, which had no explanation at all).
+      // The Digital Invitation track doesn't have this problem: guests
+      // respond via WhatsApp buttons or their own per-guest token link
+      // (get_rsvp_by_token, which isn't visibility-gated), never the
+      // public event page, so 'private' is still the safer default there.
+      visibility: track === 'rsvp' ? 'public' : 'private',
       isQrEnabled: false,
       allowAttending: true,
       allowNotAttending: true,
@@ -430,33 +441,44 @@ export function QuickStartWizard({
                 />
               </Field>
 
-              <Field>
-                <FieldLabel htmlFor="qs-visibility">{tForm('visibilityLabel')}</FieldLabel>
-                <Controller
-                  control={control}
-                  name="visibility"
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger id="qs-visibility" className="w-full">
-                        <SelectValue>
-                          {(value: string | null) =>
-                            tForm(value === 'public' ? 'visibilityPublic' : 'visibilityPrivate')
-                          }
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {eventVisibilities.map((visibility) => (
-                          <SelectItem key={visibility} value={visibility}>
-                            {tForm(
-                              visibility === 'public' ? 'visibilityPublic' : 'visibilityPrivate',
-                            )}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </Field>
+              {/* Digital Invitation guests never open this event's public
+                  page at all — they respond from inside WhatsApp (buttons
+                  or their own per-guest link), so whether that page is
+                  reachable is moot for this track and just one more
+                  setting to explain for nothing. Link Invitation is the
+                  opposite: the public page IS the whole product, so this
+                  stays visible (and defaults to 'public' — see
+                  defaultValues above) only there. */}
+              {track === 'rsvp' && (
+                <Field>
+                  <FieldLabel htmlFor="qs-visibility">{tForm('visibilityLabel')}</FieldLabel>
+                  <FieldDescription>{tForm('visibilityHint')}</FieldDescription>
+                  <Controller
+                    control={control}
+                    name="visibility"
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger id="qs-visibility" className="w-full">
+                          <SelectValue>
+                            {(value: string | null) =>
+                              tForm(value === 'public' ? 'visibilityPublic' : 'visibilityPrivate')
+                            }
+                          </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {eventVisibilities.map((visibility) => (
+                            <SelectItem key={visibility} value={visibility}>
+                              {tForm(
+                                visibility === 'public' ? 'visibilityPublic' : 'visibilityPrivate',
+                              )}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </Field>
+              )}
             </div>
           </FieldGroup>
         )}
@@ -590,16 +612,16 @@ export function QuickStartWizard({
               </Button>
             </div>
           ) : track === 'invitation' ? (
-            // Same visual hierarchy as every other step's nav row (ghost
-            // for the "skip past this" option, primary for the
-            // recommended forward action) — was outline/secondary before,
-            // which read as an inconsistent, muted pairing with neither
-            // button clearly the main one.
+            // Same ghost/prominent hierarchy as every other step's nav row
+            // (was outline/secondary before, an inconsistent pairing with
+            // neither button clearly the main one) — kept on the brand's
+            // blue/secondary color specifically for this one, not the
+            // brown primary the rest of the app's forward actions use.
             <div className="flex flex-wrap items-center gap-2">
               <Button type="button" variant="ghost" onClick={() => submit(false)}>
                 {t('approveButton')}
               </Button>
-              <Button type="button" onClick={() => submit(true)}>
+              <Button type="button" variant="secondary" onClick={() => submit(true)}>
                 {t('tryButton')}
                 <ArrowIcon className="size-4 rtl:rotate-180" />
               </Button>

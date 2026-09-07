@@ -198,7 +198,7 @@
       "organizationLogoLabel": "Company logo",
       "map": {
         "mapLabel": "Location picker map",
-        "hint": "Fully optional — the location name you typed above is already enough. Click the map or drag the pin only if you want an exact map link for your guests.",
+        "hint": "Optional — for an exact map location for your guests.",
         "clearPin": "Remove pin"
       },
       "upload": {
@@ -230,6 +230,8 @@
         "exporting": "Downloading...",
         "exportFailed": "Couldn't create the invitation, please try again.",
         "colorLabel": "Colors",
+        "backgroundColorLabel": "Background color",
+        "fontColorLabel": "Font color",
         "customColor": "Custom color",
         "palettes": {
           "mahalli": "Mahalli brown",
@@ -255,6 +257,7 @@
       "localeAr": "Arabic",
       "localeEn": "English",
       "visibilityLabel": "Visibility",
+      "visibilityHint": "\"Private\" blocks the page entirely, even for your own guests.",
       "visibilityPublic": "Public",
       "visibilityPrivate": "Private",
       "isQrEnabledLabel": "Entry QR code",

@@ -12,7 +12,6 @@ import { uploadCoverImageAction } from '@/lib/actions/uploads';
 import {
   WEDDING_TEMPLATE_COMPONENTS,
   WEDDING_TEMPLATE_DIMENSIONS,
-  WEDDING_PALETTES,
   defaultWeddingCardData,
   type WeddingCardData,
   type WeddingCardBlockId,
@@ -206,41 +205,47 @@ export function CoverTemplateEditor({
         </div>
 
         <div className="flex flex-col gap-4">
-          <div>
-            <FieldLabel className="mb-2 block">{t('colorLabel')}</FieldLabel>
-            <div className="flex flex-wrap gap-2">
-              {WEDDING_PALETTES.map((palette) => (
-                <button
-                  key={palette.id}
-                  type="button"
-                  onClick={() =>
-                    setData((prev) => ({
-                      ...prev,
-                      backgroundColor: palette.backgroundColor,
-                      accentColor: palette.accentColor,
-                      textColor: palette.textColor,
-                    }))
-                  }
-                  aria-label={t(`palettes.${palette.id}`)}
-                  className="hover-glow size-9 shrink-0 overflow-hidden rounded-full border-2"
-                  style={{
-                    borderColor:
-                      data.accentColor === palette.accentColor
-                        ? palette.accentColor
-                        : 'transparent',
-                    background: `linear-gradient(135deg, ${palette.backgroundColor} 50%, ${palette.accentColor} 50%)`,
-                  }}
-                />
-              ))}
+          {/* Was a row of fixed preset palettes (pick one of six canned
+              combos) plus a single "custom" swatch that only touched
+              accentColor — replaced with direct pickers for exactly the
+              two colors an organizer actually thinks in terms of
+              (background, and the color of the text/borders/labels
+              throughout the card, which is accentColor here — textColor
+              itself barely shows on screen, see wedding-invitation-
+              templates.tsx). Any color, any shade, no presets to choose
+              between first. */}
+          <div className="flex gap-4">
+            <div>
+              <FieldLabel htmlFor="cover-bg-color" className="mb-2 block">
+                {t('backgroundColorLabel')}
+              </FieldLabel>
               <label
-                className="border-border flex size-9 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 text-[10px]"
-                title={t('customColor')}
+                className="border-border block size-9 cursor-pointer overflow-hidden rounded-full border-2"
+                style={{ backgroundColor: data.backgroundColor }}
               >
                 <input
+                  id="cover-bg-color"
+                  type="color"
+                  value={data.backgroundColor}
+                  onChange={(e) => set('backgroundColor', e.target.value)}
+                  className="size-12 cursor-pointer border-none p-0 opacity-0"
+                />
+              </label>
+            </div>
+            <div>
+              <FieldLabel htmlFor="cover-text-color" className="mb-2 block">
+                {t('fontColorLabel')}
+              </FieldLabel>
+              <label
+                className="border-border block size-9 cursor-pointer overflow-hidden rounded-full border-2"
+                style={{ backgroundColor: data.accentColor }}
+              >
+                <input
+                  id="cover-text-color"
                   type="color"
                   value={data.accentColor}
                   onChange={(e) => set('accentColor', e.target.value)}
-                  className="size-12 cursor-pointer border-none p-0"
+                  className="size-12 cursor-pointer border-none p-0 opacity-0"
                 />
               </label>
             </div>

@@ -198,7 +198,7 @@
       "organizationLogoLabel": "شعار الشركة",
       "map": {
         "mapLabel": "خريطة تحديد الموقع",
-        "hint": "اختياري بالكامل — اسم الموقع اللي كتبته فوق كافي. انقر على الخريطة أو اسحب الدبّوس بس إذا تبي رابط خرائط دقيق لضيوفك.",
+        "hint": "اختياري — لتحديد موقع دقيق على الخريطة لضيوفك.",
         "clearPin": "إزالة التحديد"
       },
       "upload": {
@@ -230,6 +230,8 @@
         "exporting": "جارٍ التحميل...",
         "exportFailed": "تعذّر تحميل الدعوة، حاول مرة أخرى.",
         "colorLabel": "الألوان",
+        "backgroundColorLabel": "لون الخلفية",
+        "fontColorLabel": "لون الخط",
         "customColor": "لون مخصص",
         "palettes": {
           "mahalli": "بني مهلّي",
@@ -255,6 +257,7 @@
       "localeAr": "العربية",
       "localeEn": "الإنجليزية",
       "visibilityLabel": "ظهور المناسبة",
+      "visibilityHint": "«خاصة» تمنع فتح الصفحة نهائيًا حتى لضيوفك.",
       "visibilityPublic": "عامة",
       "visibilityPrivate": "خاصة",
       "isQrEnabledLabel": "باركود الدخول",

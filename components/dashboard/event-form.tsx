@@ -300,6 +300,7 @@ export function EventForm({
 
           <Field>
             <FieldLabel htmlFor="visibility">{t('visibilityLabel')}</FieldLabel>
+            <FieldDescription>{t('visibilityHint')}</FieldDescription>
             <Controller
               control={control}
               name="visibility"
@@ -340,7 +341,6 @@ export function EventForm({
         <Field orientation="horizontal">
           <FieldLabel htmlFor="isQrEnabled" className="flex-1 font-normal">
             {t('isQrEnabledLabel')}
-            <FieldDescription>{t('isQrEnabledHint')}</FieldDescription>
           </FieldLabel>
           <Controller
             control={control}
