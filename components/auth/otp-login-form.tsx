@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
+import { normalizeDigits } from '@/lib/utils/digits';
 import {
   phoneOtpRequestSchema,
   phoneOtpVerifySchema,
@@ -166,7 +167,7 @@ export function OtpLoginForm({ method, next }: { method: Method; next?: string }
               dir="ltr"
               className="text-center text-lg tracking-[0.5em]"
               value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+              onChange={(e) => setCode(normalizeDigits(e.target.value).replace(/\D/g, ''))}
             />
             {fieldError && <FieldDescription>{tValidation(fieldError)}</FieldDescription>}
           </Field>
