@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import {
   questionsFormSchema,
-  questionTypes,
+  CREATABLE_QUESTION_TYPES,
   type QuestionsFormInput,
 } from '@/lib/validations/questions';
 import { saveQuestionsAction } from '@/lib/actions/questions';
@@ -108,6 +108,11 @@ export function QuestionsEditor({
                 </div>
 
                 <FieldGroup>
+                  {/* One text field, not a separate Arabic/English pair —
+                      see the same reasoning in inline-questions-builder.tsx.
+                      textEn still round-trips through defaultValues/
+                      onSubmit unchanged for any question that already had
+                      one written before this change. */}
                   <Field>
                     <FieldLabel htmlFor={`questions.${index}.textAr`}>
                       {t('questionTextArLabel')}
@@ -115,16 +120,6 @@ export function QuestionsEditor({
                     <Input
                       id={`questions.${index}.textAr`}
                       {...register(`questions.${index}.textAr`)}
-                    />
-                  </Field>
-
-                  <Field>
-                    <FieldLabel htmlFor={`questions.${index}.textEn`}>
-                      {t('questionTextEnLabel')}
-                    </FieldLabel>
-                    <Input
-                      id={`questions.${index}.textEn`}
-                      {...register(`questions.${index}.textEn`)}
                     />
                   </Field>
 
@@ -144,7 +139,7 @@ export function QuestionsEditor({
                               </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                              {questionTypes.map((qType) => (
+                              {CREATABLE_QUESTION_TYPES.map((qType) => (
                                 <SelectItem key={qType} value={qType}>
                                   {t(`types.${qType}`)}
                                 </SelectItem>
@@ -233,11 +228,6 @@ function QuestionOptionsEditor({
             control={control}
             name={`questions.${questionIndex}.options.${optionIndex}.textAr`}
             render={({ field: f }) => <Input {...f} placeholder={t('optionTextArPlaceholder')} />}
-          />
-          <Controller
-            control={control}
-            name={`questions.${questionIndex}.options.${optionIndex}.textEn`}
-            render={({ field: f }) => <Input {...f} placeholder={t('optionTextEnPlaceholder')} />}
           />
           <Button
             type="button"

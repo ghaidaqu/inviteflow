@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { questionTypes } from '@/lib/validations/questions';
+import { CREATABLE_QUESTION_TYPES } from '@/lib/validations/questions';
 import type { QuestionInput } from '@/lib/validations/questions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -107,6 +107,13 @@ export function InlineQuestionsBuilder({
               </div>
 
               <FieldGroup>
+                {/* One text field, not a separate Arabic/English pair —
+                    the site's own language switcher only ever changes the
+                    app's own UI strings, never an organizer's own written
+                    content, so a second "English" input just duplicated
+                    the same box for something that already falls back to
+                    this one everywhere it's shown (see summaryText() in
+                    lib/whatsapp/notify.ts for that fallback). */}
                 <Field>
                   <FieldLabel htmlFor={`inline-q-${index}-ar`}>
                     {t('questionTextArLabel')}
@@ -115,17 +122,6 @@ export function InlineQuestionsBuilder({
                     id={`inline-q-${index}-ar`}
                     value={q.textAr}
                     onChange={(e) => updateQuestion(index, { textAr: e.target.value })}
-                  />
-                </Field>
-
-                <Field>
-                  <FieldLabel htmlFor={`inline-q-${index}-en`}>
-                    {t('questionTextEnLabel')}
-                  </FieldLabel>
-                  <Input
-                    id={`inline-q-${index}-en`}
-                    value={q.textEn}
-                    onChange={(e) => updateQuestion(index, { textEn: e.target.value })}
                   />
                 </Field>
 
@@ -144,7 +140,7 @@ export function InlineQuestionsBuilder({
                         </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
-                        {questionTypes.map((qType) => (
+                        {CREATABLE_QUESTION_TYPES.map((qType) => (
                           <SelectItem key={qType} value={qType}>
                             {t(`types.${qType}`)}
                           </SelectItem>
@@ -177,11 +173,6 @@ export function InlineQuestionsBuilder({
                           value={o.textAr}
                           onChange={(e) => updateOption(index, oIndex, { textAr: e.target.value })}
                           placeholder={t('optionTextArPlaceholder')}
-                        />
-                        <Input
-                          value={o.textEn}
-                          onChange={(e) => updateOption(index, oIndex, { textEn: e.target.value })}
-                          placeholder={t('optionTextEnPlaceholder')}
                         />
                         <Button
                           type="button"

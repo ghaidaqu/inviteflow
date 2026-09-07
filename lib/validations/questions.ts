@@ -9,6 +9,17 @@ export const questionTypes = [
   'number',
 ] as const;
 
+// The full six-type set above still validates and renders for existing
+// questions (long_text/single_choice/number were real, already-created
+// answer types) — but offering all six when writing a *new* question was
+// confusing overlap (short vs. long text, single vs. multi choice) for a
+// distinction organizers didn't actually care about. New questions only
+// ever offer these three: short_text now also stands in for what used to
+// be long_text/number (one free-text answer, digits or words), and
+// multi_choice stands in for single_choice too (the UI itself makes
+// "pick one" the default and doesn't force selecting more).
+export const CREATABLE_QUESTION_TYPES = ['yes_no', 'multi_choice', 'short_text'] as const;
+
 export const questionOptionSchema = z.object({
   id: z.string().optional(),
   textAr: z.string().trim().min(1, { error: 'optionTextRequired' }),
