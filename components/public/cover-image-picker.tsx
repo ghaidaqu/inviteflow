@@ -116,7 +116,25 @@ export function CoverImagePicker({
                 >
                   <div
                     className="border-border overflow-hidden rounded-lg border"
-                    style={{ width: THUMB_WIDTH, aspectRatio: `${cardWidth} / ${cardHeight}` }}
+                    style={{
+                      width: THUMB_WIDTH,
+                      aspectRatio: `${cardWidth} / ${cardHeight}`,
+                      // In RTL (the whole app's default direction), a
+                      // block child wider than its container overflows
+                      // toward the container's *own* start edge (the
+                      // right, in RTL) — governed by this containing
+                      // block's direction, not the child's — so the child
+                      // below ends up positioned far to the left of this
+                      // box instead of flush with its top-left corner,
+                      // and `transformOrigin: 'top left'` then scales the
+                      // real thumbnail off-screen, leaving only this
+                      // empty card background visible. Forcing ltr on the
+                      // *container* is what the scale math actually
+                      // assumes; setting it on the scaled child itself
+                      // doesn't change how this box's own layout placed
+                      // that child to begin with.
+                      direction: 'ltr',
+                    }}
                   >
                     <div
                       style={{

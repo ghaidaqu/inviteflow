@@ -590,11 +590,16 @@ export function QuickStartWizard({
               </Button>
             </div>
           ) : track === 'invitation' ? (
+            // Same visual hierarchy as every other step's nav row (ghost
+            // for the "skip past this" option, primary for the
+            // recommended forward action) — was outline/secondary before,
+            // which read as an inconsistent, muted pairing with neither
+            // button clearly the main one.
             <div className="flex flex-wrap items-center gap-2">
-              <Button type="button" variant="outline" onClick={() => submit(false)}>
+              <Button type="button" variant="ghost" onClick={() => submit(false)}>
                 {t('approveButton')}
               </Button>
-              <Button type="button" variant="secondary" onClick={() => submit(true)}>
+              <Button type="button" onClick={() => submit(true)}>
                 {t('tryButton')}
                 <ArrowIcon className="size-4 rtl:rotate-180" />
               </Button>

@@ -32,7 +32,9 @@ const optionalDateTime = z
   .refine((v) => v === undefined || !Number.isNaN(Date.parse(v)), { error: 'dateInvalid' });
 
 export const eventFormSchema = z.object({
-  name: z.string().trim().min(2, { error: 'nameTooShort' }).max(150, { error: 'nameTooLong' }),
+  // No arbitrary minimum beyond "not empty" — a 2-char floor rejected
+  // genuinely short real names for no real reason.
+  name: z.string().trim().min(1, { error: 'nameTooShort' }).max(150, { error: 'nameTooLong' }),
   type: z.enum(eventTypes, { error: 'typeRequired' }),
   description: optionalText,
   eventDate: optionalDateTime,

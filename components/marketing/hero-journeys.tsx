@@ -98,12 +98,12 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           by a single hairline between the two rows. Both rows share the
           same primary color now (not split rust-vs-teal per track) —
           one consistent accent across the page. */}
-      <section className="py-14 sm:py-20">
+      <section className="pt-8 pb-14 sm:pt-10 sm:pb-20">
         <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-          <div className="mb-10 flex flex-col gap-2">
-            <span className="text-primary text-sm font-semibold">{tw('eyebrow')}</span>
-            <h2 className="font-display text-2xl sm:text-3xl">{tw('title')}</h2>
-          </div>
+          {/* Was an eyebrow + a title restating "دعوة رقمية، أو دعوة
+              برابط" — redundant once the two rows right below already say
+              exactly that, so this is just the one heading now. */}
+          <h2 className="text-primary mb-10 text-sm font-semibold">{tw('eyebrow')}</h2>
 
           <div className="flex flex-col">
             {JOURNEY_KEYS.map((key, index) => {

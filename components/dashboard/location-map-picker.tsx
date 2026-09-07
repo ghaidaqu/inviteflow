@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { MapPinIcon } from 'lucide-react';
+import { MapPinIcon, XIcon } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
 // Riyadh — a reasonable default center for an Arabic-first platform when
@@ -26,6 +26,12 @@ const DEFAULT_ZOOM = 11;
  * a bigger step than this feature is worth right now. Click-or-drag the
  * pin is the one thing that's always correct, so it's the only thing
  * here.
+ *
+ * No pin is shown until there's a real value (an existing saved location)
+ * or the organizer actually clicks the map — a pin sitting on the default
+ * center from the moment the map loads looked like a location had already
+ * been set, and a stray click/drag near it silently saved one nobody
+ * meant to set. The clear (×) button undoes that either way.
  */
 export function LocationMapPicker({
   value,
@@ -56,38 +62,54 @@ export function LocationMapPicker({
         iconAnchor: [12, 41],
       });
 
-      const initial = parseGoogleMapsUrl(value) ?? DEFAULT_CENTER;
-      const map = L.map(containerRef.current).setView(initial, DEFAULT_ZOOM);
+      const existing = parseGoogleMapsUrl(value);
+      const map = L.map(containerRef.current).setView(existing ?? DEFAULT_CENTER, DEFAULT_ZOOM);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
         maxZoom: 19,
       }).addTo(map);
 
-      const marker = L.marker(initial, { icon, draggable: true }).addTo(map);
-      marker.on('dragend', () => {
-        const { lat, lng } = marker.getLatLng();
-        onChange(`https://www.google.com/maps?q=${lat.toFixed(6)},${lng.toFixed(6)}`);
-      });
+      function placeMarker(latlng: import('leaflet').LatLng | import('leaflet').LatLngLiteral) {
+        if (markerRef.current) {
+          markerRef.current.setLatLng(latlng);
+          return;
+        }
+        const marker = L.marker(latlng, { icon, draggable: true }).addTo(map);
+        marker.on('dragend', () => {
+          const { lat, lng } = marker.getLatLng();
+          onChange(`https://www.google.com/maps?q=${lat.toFixed(6)},${lng.toFixed(6)}`);
+        });
+        markerRef.current = marker;
+      }
+
+      if (existing) placeMarker({ lat: existing[0], lng: existing[1] });
+
       map.on('click', (e: import('leaflet').LeafletMouseEvent) => {
-        marker.setLatLng(e.latlng);
+        placeMarker(e.latlng);
         onChange(
           `https://www.google.com/maps?q=${e.latlng.lat.toFixed(6)},${e.latlng.lng.toFixed(6)}`,
         );
       });
 
       mapRef.current = map;
-      markerRef.current = marker;
     });
 
     return () => {
       cancelled = true;
       mapRef.current?.remove();
       mapRef.current = null;
+      markerRef.current = null;
     };
     // Deliberately only on mount — re-centering on every `value` change
     // would fight the user while they're dragging the pin themselves.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function handleClear() {
+    onChange('');
+    markerRef.current?.remove();
+    markerRef.current = null;
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -96,10 +118,22 @@ export function LocationMapPicker({
         className="h-64 w-full overflow-hidden rounded-lg border"
         aria-label={t('mapLabel')}
       />
-      <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
-        <MapPinIcon className="size-3.5 shrink-0" />
-        {t('hint')}
-      </p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+          <MapPinIcon className="size-3.5 shrink-0" />
+          {t('hint')}
+        </p>
+        {value && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="text-muted-foreground hover:text-destructive flex shrink-0 items-center gap-1 text-xs font-medium"
+          >
+            <XIcon className="size-3.5" />
+            {t('clearPin')}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

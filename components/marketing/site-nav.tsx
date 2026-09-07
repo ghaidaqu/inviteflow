@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { BrandMark } from '@/components/brand-mark';
 import { ArrowUpRightIcon } from 'lucide-react';
@@ -42,13 +41,10 @@ export function SiteNav() {
           </Link>
           <Link
             href="/login"
-            className="text-muted-foreground hover:text-foreground hidden text-sm font-medium sm:inline"
+            className="text-muted-foreground hover:text-foreground text-sm font-medium"
           >
             {t('loginLink')}
           </Link>
-          <Button size="sm" variant="secondary" nativeButton={false} render={<Link href="/try" />}>
-            {t('startLink')}
-          </Button>
           <LanguageSwitcher />
         </div>
       </nav>

@@ -46,9 +46,13 @@ export default async function QuickStartPage({
           {t('title')}
         </Link>
 
+        {/* Just the title — the fuller description belongs on the
+            dashboard's track-picker cards (Events.newChooser), where it
+            helps someone choose between three options. Here there's only
+            one track already chosen, so restating it in a paragraph was
+            just extra reading before the actual form. */}
         <div className="animate-in fade-in slide-in-from-bottom-4 mt-2 duration-700">
           <h1 className="text-2xl font-bold tracking-tight">{t(`${track}.title`)}</h1>
-          <p className="text-muted-foreground mt-1">{t(`${track}.description`)}</p>
         </div>
 
         <div className="animate-in fade-in slide-in-from-bottom-4 bg-card mt-8 rounded-2xl border p-6 delay-150 duration-700">

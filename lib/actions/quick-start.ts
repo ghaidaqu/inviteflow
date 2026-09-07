@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 import {
   getCurrentOrganizationId,
   createEvent,
+  setEventStatus,
   getEventSettings,
   updateEventSettings,
 } from '@/lib/services/events.service';
@@ -152,6 +153,17 @@ export async function createEventFromQuickStartAction(
     });
     eventId = event.id;
     eventSlug = event.slug;
+    // createEvent() always inserts as 'draft' (the right default for the
+    // dashboard's own "create event" form, where an organizer expects to
+    // review before going live) — but this whole flow's entire point is
+    // an instantly-usable event: a real invitation is about to go out
+    // (see the trial send below) with real Accept/Decline buttons, and
+    // respond_via_whatsapp() rejects any reply against a non-published
+    // event ("rsvp is not open for this event"). Left as 'draft', the
+    // trial invite still sends (sendInvitationWhatsApp doesn't check
+    // status) but tapping Accept/Decline silently fails server-side —
+    // exactly the bug this fixes, not a hypothetical.
+    await setEventStatus(supabase, organizationId, eventId, 'published');
   } catch {
     return { error: 'unknown' };
   }

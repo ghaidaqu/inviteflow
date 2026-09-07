@@ -12,8 +12,8 @@
       "startLink": "Try free"
     },
     "hero": {
-      "headlineLine1": "Every invitation,",
-      "headlineLine2": "an open door",
+      "headlineLine1": "Every invitation",
+      "headlineLine2": "opens a door",
       "subtitle": "The same welcome you know, just reaching your guests faster and more precisely.",
       "primaryCta": "Try free",
       "eyebrow": "Digital invitations, Gulf hospitality style"
@@ -198,7 +198,8 @@
       "organizationLogoLabel": "Company logo",
       "map": {
         "mapLabel": "Location picker map",
-        "hint": "Fully optional — the location name you typed above is already enough. Click the map or drag the pin only if you want an exact map link for your guests."
+        "hint": "Fully optional — the location name you typed above is already enough. Click the map or drag the pin only if you want an exact map link for your guests.",
+        "clearPin": "Remove pin"
       },
       "upload": {
         "choose": "Choose image or video",
@@ -329,6 +330,29 @@
         "cancel": "Cancel"
       }
     },
+    "checkout": {
+      "title": "Pay to publish",
+      "guestCountLabel": "Current guest count",
+      "totalLabel": "Total",
+      "currency": "SAR",
+      "payButton": "Pay now",
+      "processing": "Redirecting...",
+      "backLink": "Back to event",
+      "aboveSelfServe": "Your guest count is above our ready-made packages — contact us for a custom plan.",
+      "errors": {
+        "checkoutFailed": "Couldn't start checkout, please try again."
+      },
+      "success": {
+        "paidTitle": "Payment successful 🎉",
+        "paidDescription": "Your event is published now — you can start sending invitations.",
+        "pendingTitle": "Confirming payment...",
+        "pendingDescription": "We got your payment request and are confirming it now. Refresh in a moment.",
+        "failedTitle": "Payment didn't go through",
+        "failedDescription": "Nothing was charged. You can try again.",
+        "retryButton": "Try again",
+        "backButton": "Back to event"
+      }
+    },
     "errors": {
       "invalidInput": "Please check the information you entered.",
       "unauthorized": "You must be logged in to do this.",
@@ -337,7 +361,7 @@
       "unknown": "Something went wrong, please try again."
     },
     "validation": {
-      "nameTooShort": "Event name must be at least 2 characters.",
+      "nameTooShort": "Please enter an event name.",
       "nameTooLong": "Event name is too long.",
       "typeRequired": "Please select an event type.",
       "urlInvalid": "Please enter a valid URL.",
