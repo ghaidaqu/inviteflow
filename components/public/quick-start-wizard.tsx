@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { PhoneInput } from '@/components/ui/phone-input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Field, FieldLabel, FieldDescription, FieldGroup } from '@/components/ui/field';
+import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -21,7 +21,7 @@ import { CoverImageUpload } from '@/components/dashboard/cover-image-upload';
 import { CoverImagePicker, type CoverPickerMode } from '@/components/public/cover-image-picker';
 import { LocationMapPicker } from '@/components/dashboard/location-map-picker';
 import { InlineQuestionsBuilder } from '@/components/dashboard/inline-questions-builder';
-import { eventTypes, eventLocales, eventVisibilities } from '@/lib/validations/events';
+import { eventTypes, eventLocales } from '@/lib/validations/events';
 import type { QuestionInput } from '@/lib/validations/questions';
 import { createEventFromQuickStartAction } from '@/lib/actions/quick-start';
 import { ArrowLeftIcon, ArrowRightIcon, Loader2Icon } from 'lucide-react';
@@ -441,44 +441,14 @@ export function QuickStartWizard({
                 />
               </Field>
 
-              {/* Digital Invitation guests never open this event's public
-                  page at all — they respond from inside WhatsApp (buttons
-                  or their own per-guest link), so whether that page is
-                  reachable is moot for this track and just one more
-                  setting to explain for nothing. Link Invitation is the
-                  opposite: the public page IS the whole product, so this
-                  stays visible (and defaults to 'public' — see
-                  defaultValues above) only there. */}
-              {track === 'rsvp' && (
-                <Field>
-                  <FieldLabel htmlFor="qs-visibility">{tForm('visibilityLabel')}</FieldLabel>
-                  <FieldDescription>{tForm('visibilityHint')}</FieldDescription>
-                  <Controller
-                    control={control}
-                    name="visibility"
-                    render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger id="qs-visibility" className="w-full">
-                          <SelectValue>
-                            {(value: string | null) =>
-                              tForm(value === 'public' ? 'visibilityPublic' : 'visibilityPrivate')
-                            }
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {eventVisibilities.map((visibility) => (
-                            <SelectItem key={visibility} value={visibility}>
-                              {tForm(
-                                visibility === 'public' ? 'visibilityPublic' : 'visibilityPrivate',
-                              )}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                </Field>
-              )}
+              {/* No visibility control anywhere in this wizard, for either
+                  track — Digital Invitation guests never open the public
+                  page at all (WhatsApp buttons or their own per-guest
+                  link instead), and Link Invitation's public page IS the
+                  whole product, so 'private' is never a real choice
+                  there either. Just silently set correctly per track in
+                  defaultValues above (public for Link, private for
+                  Digital Invitation) — nothing to expose or explain. */}
             </div>
           </FieldGroup>
         )}
