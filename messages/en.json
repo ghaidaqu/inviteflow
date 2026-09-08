@@ -13,21 +13,21 @@
       "startLink": "Try free"
     },
     "hero": {
+      "eyebrow": "Digital invitations, Gulf hospitality style",
       "headlineLine1": "Every invitation",
       "headlineLine2": "opens a door",
-      "subtitle": "The same welcome you know, just reaching your guests faster and more precisely.",
-      "primaryCta": "Try free",
-      "eyebrow": "Digital invitations, Gulf hospitality style"
+      "subtitle": "Upload your invitation design; Mahalli delivers it and collects the replies.",
+      "primaryCta": "Start your invitation"
     },
     "trustStrip": {
-      "item1Title": "An invitation that looks like you",
-      "item1Label": "A design worthy of the occasion",
-      "item2Title": "Ready in minutes",
-      "item2Label": "No designer, no waiting",
+      "item1Title": "Your own design",
+      "item1Label": "Upload an image or video — it arrives exactly as you made it",
+      "item2Title": "On WhatsApp",
+      "item2Label": "Your guest opens it with no app and no account",
       "item3Title": "Know who is coming",
-      "item3Label": "Replies reach you as they happen",
-      "item4Title": "Effortless for your guests",
-      "item4Label": "Opens in WhatsApp, one tap to reply"
+      "item3Label": "Replies reach you as they come",
+      "item4Title": "An orderly door",
+      "item4Label": "A QR pass per guest, scanned on arrival"
     },
     "journeys": {
       "invitation": {
@@ -56,65 +56,66 @@
     "tracks": {
       "invitation": {
         "title": "Digital Invitation",
-        "description": "Every guest gets their own invite",
-        "feature1": "Addressed to each guest",
-        "feature2": "RSVP confirmation",
-        "feature3": "Entry QR code"
+        "description": "One invitation per guest, by name",
+        "feature1": "You send it",
+        "feature2": "One-tap reply",
+        "feature3": "Entry QR"
       },
       "rsvp": {
         "title": "Link Invitation",
-        "description": "One link reaches everyone",
-        "feature1": "One link for the event",
-        "feature2": "They answer your questions",
-        "feature3": "You know who's coming"
+        "description": "One link for everyone",
+        "feature1": "Post it in group chats",
+        "feature2": "They register themselves",
+        "feature3": "Plus your questions"
       },
       "ctaCaption": "Try your invitation now, free",
-      "ctaStart": "Start now"
+      "ctaStart": "Start"
     },
     "closing": {
-      "headlineLine1": "From invitation to attendance,",
-      "headlineLine2": "everything's simpler",
-      "subtitle": "Send it, track it, and get ready for your guests."
+      "headlineLine1": "From the invitation to the door,",
+      "headlineLine2": "everything accounted for",
+      "subtitle": "Send, follow along, and welcome your guests.",
+      "cta": "Start your invitation"
     },
     "ways": {
-      "eyebrow": "Invitation options",
+      "eyebrow": "Choose your way",
       "title": "A digital invitation, or a link invitation"
     },
     "preview": {
-      "eyebrow": "What it looks like",
-      "title": "This is what reaches your guest — no app, no sign-up.",
+      "eyebrow": "What your guest sees",
+      "title": "Your invitation as you designed it, with a reply button and an entry pass.",
       "messageBody": "You are invited to the wedding of Sara & Ahmed",
       "messageDate": "Thursday 15 October · 8:00 PM",
       "messagePlace": "Al Masa Hall, Riyadh",
       "replyYes": "Attending",
-      "replyNo": "Sorry, can't",
-      "messageCaption": "It arrives on WhatsApp, and one tap replies — your count updates the same second.",
+      "replyNo": "Sorry, cannot",
+      "messageCaption": "The invitation you uploaded arrives like this, and one tap replies.",
       "passBrand": "Mahalli",
       "passTitle": "Entry pass",
       "passCaption": "Please show this code at the door",
-      "passFigCaption": "Once they accept, an entry pass follows — scanned at the door."
+      "passFigCaption": "Whoever accepts gets a pass, scanned at the door."
     },
     "how": {
-      "eyebrow": "How it works",
-      "step1Title": "Pick the invitation type",
-      "step1Body": "A personal invitation per guest, or one link you share with everyone.",
-      "step2Title": "Add the details and share",
-      "step2Body": "Name, time, place, an image if you like — then send on WhatsApp or copy the link.",
-      "step3Title": "Watch the replies",
-      "step3Body": "See who's coming and who declined as it happens, with an entry QR for the door."
+      "eyebrow": "Three steps",
+      "step1Title": "Upload your invitation",
+      "step1Body": "An image or video of your own design, with the date and place.",
+      "step2Title": "Send it",
+      "step2Body": "To each guest by name on WhatsApp, or as one link you post.",
+      "step3Title": "Follow along",
+      "step3Body": "Who accepted, who declined, and who actually arrived."
     },
     "faq": {
       "eyebrow": "Common questions",
-      "q1Question": "Does my guest need an app or an account?",
-      "q1Answer": "No. The invitation reaches them on WhatsApp and one tap replies, or they open the link and enter their name — no account either way.",
-      "q2Question": "How long does it take to set one up?",
-      "q2Answer": "Minutes. Pick the type, fill in the details, share it. You can send one to yourself first from the top of this page.",
-      "q3Question": "What's the difference between the two types?",
-      "q3Answer": "Digital: each guest gets their own invitation, addressed to them, sent by you. Link: one link you post, and whoever opens it registers themselves — better for large groups.",
+      "q1Question": "Do you design the invitation for me?",
+      "q1Answer": "No — the design is yours. Upload it as an image or video, and Mahalli delivers it, collects the replies, and runs the door.",
+      "q2Question": "Does my guest need an app or an account?",
+      "q2Answer": "No. It opens in WhatsApp and one tap replies, or they open the link and enter their name.",
+      "q3Question": "What is the difference between the two?",
+      "q3Answer": "Digital: one invitation per guest, by name, sent by you. Link: one link you post, and whoever opens it registers themselves.",
       "q4Question": "How do I check guests in at the door?",
-      "q4Answer": "Every guest who accepts gets a pass with a QR code. From the event page you copy the scanner link and send it to whoever is on the door — they open it on their phone, no login, and scan.",
-      "q5Question": "What happens to my guests' data?",
-      "q5Answer": "It stays yours and is never shared with anyone. You can request deletion at any time — details in the privacy policy."
+      "q4Answer": "Everyone who accepts gets a QR pass. Copy the scanner link from the event page and send it to whoever works the door — they scan on their phone, no login.",
+      "q5Question": "What happens to my guests data?",
+      "q5Answer": "It stays yours and is never shared. You can request deletion at any time."
     }
   },
   "Common": {
@@ -814,8 +815,9 @@
       "rateLimited": "Too many attempts in a short time — please try again shortly.",
       "unknown": "Something unexpected went wrong. Please try again."
     },
-    "heroTitle": "Try it on yourself, right now",
-    "heroSubtitle": "Your name and number, and a real invitation reaches you on WhatsApp in seconds. No sign-up."
+    "heroTitle": "Send one to yourself",
+    "heroSubtitle": "Your name and number, and an invitation reaches you on WhatsApp right now. No sign-up.",
+    "bandEyebrow": "Try it"
   },
   "Institutional": {
     "nav": "Institutions",

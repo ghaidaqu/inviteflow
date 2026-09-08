@@ -21,7 +21,7 @@ export async function Faq() {
       <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
         <h2 className="text-primary text-lg font-bold sm:text-xl">{t('eyebrow')}</h2>
 
-        <div className="mt-8 flex flex-col">
+        <div className="mt-6 flex flex-col">
           {QUESTIONS.map((q, index) => (
             <details
               key={q}

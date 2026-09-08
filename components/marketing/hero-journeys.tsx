@@ -19,7 +19,7 @@ export async function HeroJourneys() {
   // cream headline legible over the doorway detail without flattening the
   // photo into a plain color block.
   return (
-    <section className="relative flex min-h-[68vh] items-center justify-center overflow-hidden">
+    <section className="relative flex min-h-[56vh] items-center justify-center overflow-hidden">
       <Image
         src={heroDoorway}
         alt=""
@@ -33,7 +33,7 @@ export async function HeroJourneys() {
         aria-hidden
         className="from-foreground/95 via-foreground/70 to-foreground/45 absolute inset-0 bg-gradient-to-t"
       />
-      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 text-center sm:px-6">
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-5 px-4 text-center sm:px-6">
         <span className="text-primary-foreground/90 flex items-center gap-2 text-sm font-semibold">
           <span className="bg-primary-foreground/60 h-px w-6" />
           {t('eyebrow')}
@@ -57,6 +57,7 @@ export async function HeroJourneys() {
         <Button
           size="lg"
           variant="secondary"
+          className="mt-1 px-10"
           nativeButton={false}
           render={<Link href="#options" />}
         >

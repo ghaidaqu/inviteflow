@@ -17,8 +17,9 @@ export async function TryBand() {
     <section className="bg-primary/5 border-border/60 border-y py-14 sm:py-20">
       <div className="mx-auto grid w-full max-w-4xl items-center gap-8 px-4 sm:px-6 md:grid-cols-2 md:gap-12">
         <div>
-          <h2 className="font-display text-2xl text-balance sm:text-3xl">{t('heroTitle')}</h2>
-          <p className="text-muted-foreground mt-3 text-base leading-relaxed">
+          <h2 className="text-primary text-lg font-bold sm:text-xl">{t('bandEyebrow')}</h2>
+          <p className="font-display mt-2 text-xl text-balance sm:text-2xl">{t('heroTitle')}</p>
+          <p className="text-muted-foreground mt-2 text-base leading-relaxed">
             {t('heroSubtitle')}
           </p>
         </div>

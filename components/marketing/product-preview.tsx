@@ -26,9 +26,9 @@ export async function ProductPreview() {
     <section className="bg-muted/30 border-border/60 border-b py-14 sm:py-20">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
         <h2 className="text-primary text-lg font-bold sm:text-xl">{t('eyebrow')}</h2>
-        <p className="font-display mt-2 max-w-xl text-2xl text-balance sm:text-3xl">{t('title')}</p>
+        <p className="font-display mt-2 max-w-xl text-xl text-balance sm:text-2xl">{t('title')}</p>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 sm:gap-8">
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 sm:gap-8">
           {/* 1 — the WhatsApp message, as the guest sees it */}
           <figure className="flex flex-col gap-3">
             <div className="bg-card rounded-2xl border p-4 shadow-sm">

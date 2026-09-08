@@ -19,7 +19,7 @@ export async function HowItWorks() {
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
         <h2 className="text-primary text-lg font-bold sm:text-xl">{t('eyebrow')}</h2>
 
-        <ol className="mt-8 grid gap-8 sm:grid-cols-3 sm:gap-6">
+        <ol className="mt-6 grid gap-8 sm:grid-cols-3 sm:gap-6">
           {STEPS.map((step, index) => (
             <li key={step} className="flex flex-col gap-2">
               <span className="text-primary/40 font-display text-3xl tabular-nums">

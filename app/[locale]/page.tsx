@@ -29,20 +29,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             The original headline ("ترسلها بضغطة...") didn't disappear —
             it moved to ClosingStatement, a quiet reprise right before
             pricing instead of the opening statement. */}
-        {/* Choosing a track is the whole point of the page, so it sits
-            immediately under the hero rather than behind three sections of
-            scrolling. Everything after it is for the visitor who wants
-            more before deciding: why (strip) → what it looks like
-            (preview) → send yourself one (try) → how → objections. */}
+        {/* Choosing a track is the point of the page, so it sits directly
+            under the hero, with "send yourself one" immediately after it —
+            anyone who scrolled past the hero without acting meets the
+            offer again at the moment they're weighing the two options.
+            The rest is for whoever still wants more: why → what it looks
+            like → how → objections. */}
         <HeroJourneys />
         <TrackOptions locale={locale} />
+        <TryBand />
         <TrustStrip />
         <ProductPreview />
-        <TryBand />
         <HowItWorks />
         <Faq />
-        <ClosingStatement />
         <PricingSection />
+        <ClosingStatement />
       </main>
       <SiteFooter />
     </>

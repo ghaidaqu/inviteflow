@@ -35,12 +35,12 @@ export async function TrackOptions({ locale }: { locale: string }) {
   // rows. Both rows share the same primary color (not split rust-vs-teal
   // per track) — one consistent accent across the page.
   return (
-    <section id="options" className="scroll-mt-20 pt-12 pb-14 sm:pt-16 sm:pb-20">
+    <section id="options" className="scroll-mt-20 py-14 sm:py-20">
       <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
         {/* Was an eyebrow + a title restating "دعوة رقمية، أو دعوة
             برابط" — redundant once the two rows right below already say
             exactly that, so this is just the one heading now. */}
-        <h2 className="text-primary mb-10 text-lg font-bold sm:text-xl">{tw('eyebrow')}</h2>
+        <h2 className="text-primary mb-6 text-lg font-bold sm:text-xl">{tw('eyebrow')}</h2>
 
         <div className="flex flex-col">
           {JOURNEY_KEYS.map((key, index) => {
