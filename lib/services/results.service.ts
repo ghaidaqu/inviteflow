@@ -1,5 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase';
+import { sendResultsBroadcastEmail } from '@/lib/email/notify';
+import { sendResultsBroadcastWhatsApp } from '@/lib/whatsapp/notify';
 
 type Client = SupabaseClient<Database>;
 
@@ -120,4 +122,47 @@ export async function getResultsSummary(
     totalResponses: responses.length,
     questions: questionTallies,
   };
+}
+
+export type BroadcastEventResultsResult = { sentCount: number; totalGuests: number };
+
+/**
+ * The actual "email/WhatsApp every guest the results" work, shared
+ * between an organizer's manual broadcastResultsAction (dashboard button)
+ * and the deadline-triggered automatic one (see app/api/cron/
+ * broadcast-results/route.ts) — same guest loop either way, just a
+ * different trigger and a different caller-supplied locale (a manual
+ * click uses the organizer's own current locale; the cron job has no
+ * request to read one from, so it always uses the event's own
+ * primary_locale instead).
+ */
+export async function broadcastEventResults(
+  supabase: Client,
+  event: { id: string; name: string; slug: string },
+  locale: 'ar' | 'en',
+): Promise<BroadcastEventResultsResult> {
+  const { data: guests, error: guestsError } = await supabase
+    .from('guests')
+    .select('name, email, phone')
+    .eq('event_id', event.id)
+    .is('deleted_at', null);
+  if (guestsError) throw guestsError;
+
+  if (guests.length === 0) return { sentCount: 0, totalGuests: 0 };
+
+  const summary = await getResultsSummary(supabase, event.id);
+
+  let sentCount = 0;
+  for (const guest of guests) {
+    let sent = false;
+    if (guest.email) {
+      sent = (await sendResultsBroadcastEmail(event.name, guest.email, summary, locale)) || sent;
+    }
+    if (guest.phone) {
+      sent = (await sendResultsBroadcastWhatsApp(event.slug, guest.phone, summary, locale)) || sent;
+    }
+    if (sent) sentCount += 1;
+  }
+
+  return { sentCount, totalGuests: guests.length };
 }
