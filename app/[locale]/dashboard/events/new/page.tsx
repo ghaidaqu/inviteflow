@@ -22,49 +22,42 @@ export default async function NewEventChooserPage({
       <h1 className="text-2xl font-bold tracking-tight">{t('title')}</h1>
       <p className="text-muted-foreground mt-1 mb-8">{t('subtitle')}</p>
 
-      {/* Digital Invitation and Link Invitation stacked together in one
-          column — the two everyday tracks, ordered by how often they're
-          picked. Institutional stands apart in its own column: a
-          genuinely different use case (an org, not an individual host),
-          not a third option of the same kind as the first two. */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="flex flex-col gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl font-bold">{t('invitation.title')}</CardTitle>
-              <CardDescription>{t('invitation.description')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                className="w-full"
-                nativeButton={false}
-                render={<Link href="/dashboard/events/new/invitation" />}
-              >
-                {t('startButton')}
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl font-bold">{t('rsvp.title')}</CardTitle>
-              <CardDescription>{t('rsvp.description')}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                className="w-full"
-                nativeButton={false}
-                render={<Link href="/dashboard/events/new/rsvp" />}
-              >
-                {t('startButton')}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('invitation.title')}</CardTitle>
+            <CardDescription>{t('invitation.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              className="w-full"
+              nativeButton={false}
+              render={<Link href="/dashboard/events/new/invitation" />}
+            >
+              {t('startButton')}
+            </Button>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl font-bold">{t('institutional.title')}</CardTitle>
+            <CardTitle>{t('rsvp.title')}</CardTitle>
+            <CardDescription>{t('rsvp.description')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              className="w-full"
+              nativeButton={false}
+              render={<Link href="/dashboard/events/new/rsvp" />}
+            >
+              {t('startButton')}
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('institutional.title')}</CardTitle>
             <CardDescription>{t('institutional.description')}</CardDescription>
           </CardHeader>
           <CardContent>
