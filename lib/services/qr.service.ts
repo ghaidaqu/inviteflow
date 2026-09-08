@@ -1,7 +1,7 @@
 import 'server-only';
 import path from 'node:path';
 import QRCode from 'qrcode';
-import sharp from 'sharp';
+import sharp, { type OverlayOptions } from 'sharp';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 /**
@@ -107,21 +107,141 @@ async function uploadPng(objectPath: string, buffer: Buffer): Promise<string | n
   return publicUrl;
 }
 
+type CardFooter =
+  // The entry pass's real footer: who this covers and how many, on the
+  // right, domain reminder on the left, divided by a vertical rule.
+  | { kind: 'party'; partySize: number }
+  // The generic share card has no specific guest to name — just the
+  // domain, centered, no divider.
+  | { kind: 'domain-only' };
+
 /**
- * The branded "entry pass" a guest gets on WhatsApp after RSVPing
- * attending — a plain frame around the raw QR (logo, title, instruction,
- * party size) instead of an unrecognizable bare QR image with no context.
- * Design approved directly by the user (a hand-drawn reference mockup):
- * vertical, minimal, no photos or guest/event names on the card itself —
- * that identifying context stays in the WhatsApp caption text instead
- * (see sendGuestQrWhatsApp), the image itself is deliberately generic so
- * it reads the same for every guest at every event.
+ * Shared frame every branded QR card in the app renders through — same
+ * card, logo, shadow and QR placement either way (approved design, see
+ * the memory note on the brand mark), just different heading copy and
+ * footer content depending on what the QR actually does once scanned.
+ * generateAndUploadEntryCard (a specific guest's door pass) and
+ * generateAndUploadShareCard (the event's own public link, for anyone)
+ * both compose through this instead of duplicating the whole layout.
+ */
+async function renderQrCard({
+  content,
+  title,
+  caption,
+  footer,
+}: {
+  content: string;
+  title: string;
+  caption: string;
+  footer: CardFooter;
+}): Promise<Buffer> {
+  // Black modules, not the ink brown — every card here is a real
+  // functional QR meant to be scanned (a door pass, or an invitation
+  // link), so maximum contrast for a reliable scan comes ahead of
+  // matching the brand color exactly. The light modules are transparent
+  // so the card's own cream shows through instead of a mismatched white
+  // square behind the code.
+  const qrBuffer = await QRCode.toBuffer(content, {
+    margin: 1,
+    width: 680,
+    color: { dark: '#000000', light: '#00000000' },
+  });
+
+  const domainText = 'mhalli.co';
+  const footerTexts =
+    footer.kind === 'party'
+      ? await Promise.all([
+          renderText('ضيف', { width: 120, height: 40, color: COLOR_INK }),
+          renderText('Guest', { width: 120, height: 30, color: COLOR_MUTED }),
+          renderText(String(Math.max(1, footer.partySize)), {
+            width: 90,
+            height: 80,
+            color: COLOR_INK,
+          }),
+          renderText(domainText, { width: 240, height: 40, color: COLOR_MUTED }),
+        ])
+      : null;
+
+  const [wordmark, titleText, captionText, domainCentered] = await Promise.all([
+    renderText('مهلّي', { width: 170, height: 64, color: COLOR_INK }),
+    renderText(title, { width: 940, height: 100, color: COLOR_INK }),
+    renderText(caption, { width: 940, height: 60, color: COLOR_MUTED }),
+    footer.kind === 'domain-only'
+      ? renderText(domainText, { width: 400, height: 40, color: COLOR_MUTED })
+      : null,
+  ]);
+
+  const DIAMOND_SIZE = 48;
+  const LOGO_GAP = 14;
+  const logoGroupWidth = DIAMOND_SIZE + LOGO_GAP + wordmark.width;
+  const diamondX = Math.round(CENTER_X - logoGroupWidth / 2);
+  const diamondY = 121;
+  const wordmarkX = diamondX + DIAMOND_SIZE + LOGO_GAP;
+  const wordmarkY = Math.round(diamondY + (DIAMOND_SIZE - wordmark.height) / 2);
+
+  const titleX = Math.round(CENTER_X - titleText.width / 2);
+  const captionX = Math.round(CENTER_X - captionText.width / 2);
+
+  const composites: OverlayOptions[] = [
+    { input: wordmark.buffer, left: wordmarkX, top: wordmarkY },
+    { input: titleText.buffer, left: titleX, top: 250 },
+    { input: qrBuffer, left: Math.round(CENTER_X - 340), top: 420 },
+    { input: captionText.buffer, left: captionX, top: 1140 },
+  ];
+
+  let footerDividerSvg = '';
+  if (footerTexts) {
+    const [guestAr, guestEn, count, domain] = footerTexts;
+    const domainX = CONTENT_X1 - domain.width;
+    const footerDividerX = CONTENT_X0 + Math.max(guestAr.width, guestEn.width) + 24;
+    const countX = footerDividerX + 24;
+    footerDividerSvg = `<rect x="${footerDividerX}" y="1298" width="2" height="74" fill="${COLOR_BORDER}" />`;
+    composites.push(
+      { input: guestAr.buffer, left: CONTENT_X0, top: 1300 },
+      { input: guestEn.buffer, left: CONTENT_X0, top: 1348 },
+      { input: count.buffer, left: countX, top: 1300 },
+      { input: domain.buffer, left: domainX, top: 1330 },
+    );
+  } else if (domainCentered) {
+    const domainX = Math.round(CENTER_X - domainCentered.width / 2);
+    composites.push({ input: domainCentered.buffer, left: domainX, top: 1315 });
+  }
+
+  const frameSvg = Buffer.from(`
+    <svg width="${OUTER_WIDTH}" height="${OUTER_HEIGHT}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="${COLOR_INK}" flood-opacity="0.16" />
+        </filter>
+      </defs>
+      <rect x="${CARD_X}" y="${CARD_Y}" width="${CARD_WIDTH}" height="${CARD_HEIGHT}" rx="48" fill="${COLOR_CARD}" filter="url(#shadow)" />
+      <g transform="translate(${diamondX}, ${diamondY}) scale(2.4)">
+        <path d="M10 1.5 L18.5 10 L10 18.5 L1.5 10 Z" fill="${COLOR_PRIMARY}" />
+        <circle cx="10" cy="10" r="2.75" fill="${COLOR_SECONDARY}" />
+      </g>
+      <rect x="${CONTENT_X0}" y="1250" width="${CONTENT_X1 - CONTENT_X0}" height="2" fill="${COLOR_BORDER}" />
+      ${footerDividerSvg}
+    </svg>
+  `);
+
+  return sharp(frameSvg).composite(composites).png().toBuffer();
+}
+
+/**
+ * The branded "entry pass" a guest gets after RSVPing attending on an
+ * event with entry QR enabled — a plain frame around the raw QR (logo,
+ * title, instruction, party size) instead of an unrecognizable bare QR
+ * image with no context. Design approved directly by the user (a
+ * hand-drawn reference mockup): vertical, minimal, no photos or
+ * guest/event names on the card itself — that identifying context stays
+ * in the WhatsApp caption text instead (see sendGuestQrWhatsApp), the
+ * image itself is deliberately generic so it reads the same for every
+ * guest at every event.
  *
- * `content` is the same guest RSVP link already used elsewhere (see
- * generateAndUploadQr callers) — scanning it is a real, working thing to
- * do with no separate check-in infrastructure. `partySize` is the guest
- * plus their confirmed companions, shown in the footer as "how many this
- * pass covers", not a queue number.
+ * `content` is the guest's own RSVP edit link — scanning it is a real,
+ * working thing to do (see check-in.service.ts), not a dead end.
+ * `partySize` is the guest plus their confirmed companions, shown in the
+ * footer as "how many this pass covers", not a queue number.
  */
 export async function generateAndUploadEntryCard(
   key: string,
@@ -129,75 +249,60 @@ export async function generateAndUploadEntryCard(
   partySize: number,
 ): Promise<string | null> {
   try {
-    // Black modules, not the ink brown — this is a real functional pass
-    // scanned at a venue door, so maximum contrast for a reliable scan in
-    // bad lighting comes ahead of matching the brand color exactly. The
-    // light modules are transparent so the card's own cream shows through
-    // instead of a mismatched white square behind the code.
-    const qrBuffer = await QRCode.toBuffer(content, {
-      margin: 1,
-      width: 680,
-      color: { dark: '#000000', light: '#00000000' },
+    const composite = await renderQrCard({
+      content,
+      title: 'بطاقة دخول',
+      caption: 'يرجى إبراز الرمز للدخول',
+      footer: { kind: 'party', partySize },
     });
-
-    const [wordmark, title, caption, guestAr, guestEn, count, domain] = await Promise.all([
-      renderText('مهلّي', { width: 170, height: 64, color: COLOR_INK }),
-      renderText('بطاقة دخول', { width: 940, height: 100, color: COLOR_INK }),
-      renderText('يرجى إبراز الرمز للدخول', { width: 940, height: 60, color: COLOR_MUTED }),
-      renderText('ضيف', { width: 120, height: 40, color: COLOR_INK }),
-      renderText('Guest', { width: 120, height: 30, color: COLOR_MUTED }),
-      renderText(String(Math.max(1, partySize)), { width: 90, height: 80, color: COLOR_INK }),
-      renderText('mhalli.co', { width: 240, height: 40, color: COLOR_MUTED }),
-    ]);
-
-    const DIAMOND_SIZE = 48;
-    const LOGO_GAP = 14;
-    const logoGroupWidth = DIAMOND_SIZE + LOGO_GAP + wordmark.width;
-    const diamondX = Math.round(CENTER_X - logoGroupWidth / 2);
-    const diamondY = 121;
-    const wordmarkX = diamondX + DIAMOND_SIZE + LOGO_GAP;
-    const wordmarkY = Math.round(diamondY + (DIAMOND_SIZE - wordmark.height) / 2);
-
-    const titleX = Math.round(CENTER_X - title.width / 2);
-    const captionX = Math.round(CENTER_X - caption.width / 2);
-    const domainX = CONTENT_X1 - domain.width;
-    const footerDividerX = CONTENT_X0 + Math.max(guestAr.width, guestEn.width) + 24;
-    const countX = footerDividerX + 24;
-
-    const frameSvg = Buffer.from(`
-      <svg width="${OUTER_WIDTH}" height="${OUTER_HEIGHT}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-            <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="${COLOR_INK}" flood-opacity="0.16" />
-          </filter>
-        </defs>
-        <rect x="${CARD_X}" y="${CARD_Y}" width="${CARD_WIDTH}" height="${CARD_HEIGHT}" rx="48" fill="${COLOR_CARD}" filter="url(#shadow)" />
-        <g transform="translate(${diamondX}, ${diamondY}) scale(2.4)">
-          <path d="M10 1.5 L18.5 10 L10 18.5 L1.5 10 Z" fill="${COLOR_PRIMARY}" />
-          <circle cx="10" cy="10" r="2.75" fill="${COLOR_SECONDARY}" />
-        </g>
-        <rect x="${CONTENT_X0}" y="1250" width="${CONTENT_X1 - CONTENT_X0}" height="2" fill="${COLOR_BORDER}" />
-        <rect x="${footerDividerX}" y="1298" width="2" height="74" fill="${COLOR_BORDER}" />
-      </svg>
-    `);
-
-    const composite = await sharp(frameSvg)
-      .composite([
-        { input: wordmark.buffer, left: wordmarkX, top: wordmarkY },
-        { input: title.buffer, left: titleX, top: 250 },
-        { input: qrBuffer, left: Math.round(CENTER_X - 340), top: 420 },
-        { input: caption.buffer, left: captionX, top: 1140 },
-        { input: guestAr.buffer, left: CONTENT_X0, top: 1300 },
-        { input: guestEn.buffer, left: CONTENT_X0, top: 1348 },
-        { input: count.buffer, left: countX, top: 1300 },
-        { input: domain.buffer, left: domainX, top: 1330 },
-      ])
-      .png()
-      .toBuffer();
-
     return await uploadPng(`qr/${key}-card.png`, composite);
   } catch (error) {
     console.error('[qr] entry card generate/upload failed', error);
+    return null;
+  }
+}
+
+/**
+ * The same branded card, for the event's own public link rather than one
+ * guest's personal pass — shown on the public invitation page for anyone
+ * to scan and open the invitation (a poster, a printed card at a venue
+ * entrance, sharing it hands-free). No guest/party footer since it isn't
+ * tied to one person; just the domain, centered.
+ *
+ * Cached by `key` (the event id — stable for its lifetime, and so is
+ * `content`, the event's own public link) rather than regenerated on
+ * every call: unlike the per-guest entry card (called once, right after
+ * that guest's own RSVP), this one's caller is the public invitation
+ * page itself — a page real guests load repeatedly — and re-running
+ * several Pango text renders plus a sharp composite on every single page
+ * view would be a real, needless cost on a hot path.
+ */
+export async function generateAndUploadShareCard(
+  key: string,
+  content: string,
+): Promise<string | null> {
+  const objectPath = `${key}-share.png`;
+  try {
+    const admin = createAdminClient();
+    const { data: existing } = await admin.storage
+      .from('event-covers')
+      .list('qr', { search: objectPath });
+    if (existing?.some((file) => file.name === objectPath)) {
+      const {
+        data: { publicUrl },
+      } = admin.storage.from('event-covers').getPublicUrl(`qr/${objectPath}`);
+      return publicUrl;
+    }
+
+    const composite = await renderQrCard({
+      content,
+      title: 'امسح لفتح الدعوة',
+      caption: 'وجّه كاميرا جوالك نحو الرمز',
+      footer: { kind: 'domain-only' },
+    });
+    return await uploadPng(`qr/${objectPath}`, composite);
+  } catch (error) {
+    console.error('[qr] share card generate/upload failed', error);
     return null;
   }
 }

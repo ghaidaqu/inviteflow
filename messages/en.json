@@ -407,7 +407,8 @@
     "copyFailed": "Couldn't copy automatically, copy the link manually:",
     "shareMessage": "Invitation: {name}",
     "rsvpButton": "Respond to invitation",
-    "organizedBy": "By {name}"
+    "organizedBy": "By {name}",
+    "shareQrAlt": "Invitation share QR code"
   },
   "Rsvp": {
     "pageSubtitle": "Please fill out the form to confirm your attendance.",
@@ -466,6 +467,8 @@
     "allowNotAttendingHint": "If off, a guest can only accept — there is no decline option.",
     "requirePhoneLabel": "Phone number required",
     "requirePhoneHint": "When on, a guest can't submit their response without a phone number.",
+    "autoBroadcastResultsLabel": "Auto-send results when the deadline passes",
+    "autoBroadcastResultsHint": "Needs an RSVP deadline set. Once it passes, everyone who left a phone or email gets a summary of who's attending — no need to send it yourself.",
     "collectCompanionsLabel": "Collect companion names",
     "collectCompanionsHint": "Turn on if guests can bring additional people.",
     "maxCompanionsLabel": "Maximum companions",
@@ -481,6 +484,22 @@
       "unknown": "Something went wrong, please try again."
     },
     "allowResponseLabel": "Allow guests to accept or decline"
+  },
+  "CheckIn": {
+    "pageTitle": "QR Check-in",
+    "pageSubtitle": "Point the camera at a guest's entry pass to check them in.",
+    "instructions": "Ready — point the camera at the code.",
+    "cameraError": "Couldn't open the camera. Check that the browser has permission to use it.",
+    "checkedIn": "Checked in {name} ({count, plural, one {# guest} other {# guests}}).",
+    "alreadyCheckedIn": "{name} is already checked in.",
+    "scanNext": "Scan another code",
+    "errors": {
+      "unauthorized": "You need to be signed in to do this.",
+      "unknown": "Something went wrong, please try again.",
+      "invalidCode": "That's not a valid entry code.",
+      "notFound": "This code doesn't belong to this event.",
+      "notAttending": "This guest doesn't have an entry pass (their response isn't a confirmed attendance)."
+    }
   },
   "Questions": {
     "title": "Custom Questions",

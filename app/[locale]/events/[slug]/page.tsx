@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
 import { cookies } from 'next/headers';
-import QRCode from 'qrcode';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { getPublicEventBySlug } from '@/lib/services/events.service';
+import { generateAndUploadShareCard } from '@/lib/services/qr.service';
 import { EventPasswordGate } from '@/components/public/event-password-gate';
 import { InviteActions } from '@/components/public/invite-actions';
 import { EventHero } from '@/components/public/event-hero/event-hero';
@@ -60,7 +60,9 @@ export default async function PublicEventPage({
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
   const publicLink = `${appUrl}/${event.primary_locale}/events/${event.slug}`;
-  const qrDataUrl = event.is_qr_enabled ? await QRCode.toDataURL(publicLink, { margin: 1 }) : null;
+  const qrCardUrl = event.is_qr_enabled
+    ? await generateAndUploadShareCard(`event-${event.id}`, publicLink)
+    : null;
 
   return (
     <>
@@ -131,10 +133,14 @@ export default async function PublicEventPage({
             />
           </div>
 
-          {qrDataUrl && (
-            <div className="bg-card mt-6 flex flex-col items-center gap-2 rounded-2xl border p-5 shadow-sm">
+          {qrCardUrl && (
+            <div className="mt-6 flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={qrDataUrl} alt={event.name} width={160} height={160} />
+              <img
+                src={qrCardUrl}
+                alt={t('shareQrAlt')}
+                className="w-full max-w-56 rounded-2xl shadow-sm"
+              />
             </div>
           )}
 
