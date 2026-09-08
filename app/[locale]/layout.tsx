@@ -18,10 +18,38 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Metadata' });
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 
+  // WhatsApp is where this product actually spreads — organizers paste the
+  // link into family group chats — and a link with no Open Graph tags
+  // renders there as a bare blue URL. These are what turn that into a card
+  // with the name, the line, and the doorway image.
   return {
+    metadataBase: new URL(appUrl),
     title: t('title'),
     description: t('description'),
+    openGraph: {
+      type: 'website',
+      siteName: t('siteName'),
+      title: t('title'),
+      description: t('description'),
+      url: `${appUrl}/${locale}`,
+      locale: locale === 'ar' ? 'ar_SA' : 'en_US',
+      images: [
+        {
+          url: '/images/marketing/hero-doorway.jpg',
+          width: 1200,
+          height: 630,
+          alt: t('title'),
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('title'),
+      description: t('description'),
+      images: ['/images/marketing/hero-doorway.jpg'],
+    },
   };
 }
 

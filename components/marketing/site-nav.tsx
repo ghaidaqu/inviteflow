@@ -34,7 +34,10 @@ export function SiteNav() {
             href="/institutional"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground border-border/60 hover:border-foreground/30 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors"
+            // Hidden on phones: five items in a 375px bar pushed "تسجيل
+            // الدخول" onto two lines. This is the one that can go — it's a
+            // secondary destination, and it's still in the footer.
+            className="text-muted-foreground hover:text-foreground border-border/60 hover:border-foreground/30 hidden items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors sm:inline-flex"
           >
             {tInstitutional('nav')}
             <ArrowUpRightIcon className="size-3.5" />

@@ -1,7 +1,8 @@
 {
   "Metadata": {
     "title": "Mahalli — Elegant Digital Invitations",
-    "description": "Elegant digital invitations with instant WhatsApp RSVP confirmation — for occasions that deserve the details done right."
+    "description": "Elegant digital invitations with instant WhatsApp RSVP confirmation — for occasions that deserve the details done right.",
+    "siteName": "Mahalli"
   },
   "Brand": {
     "name": "Mahalli"
@@ -19,14 +20,14 @@
       "eyebrow": "Digital invitations, Gulf hospitality style"
     },
     "trustStrip": {
-      "item1Title": "Direct WhatsApp",
-      "item1Label": "Guests never open a separate link",
+      "item1Title": "Arrives on WhatsApp",
+      "item1Label": "Not email, not an app — straight to WhatsApp",
       "item2Title": "Ready in minutes",
-      "item2Label": "Design and share, no hassle",
-      "item3Title": "No sign-up for guests",
-      "item3Label": "One tap to respond, right in WhatsApp",
-      "item4Title": "Row-level security",
-      "item4Label": "Your data is protected in the database"
+      "item2Label": "Design it and share it, no hassle",
+      "item3Title": "Guests never sign up",
+      "item3Label": "One tap to reply, and that is it",
+      "item4Title": "Your guests' numbers stay private",
+      "item4Label": "Never shared with anyone, and deletable anytime"
     },
     "journeys": {
       "invitation": {
@@ -78,6 +79,42 @@
     "ways": {
       "eyebrow": "Invitation options",
       "title": "A digital invitation, or a link invitation"
+    },
+    "preview": {
+      "eyebrow": "What it looks like",
+      "title": "This is what reaches your guest — no app, no sign-up.",
+      "messageBody": "You are invited to the wedding of Sara & Ahmed",
+      "messageDate": "Thursday 15 October · 8:00 PM",
+      "messagePlace": "Al Masa Hall, Riyadh",
+      "replyYes": "Attending",
+      "replyNo": "Sorry, can't",
+      "messageCaption": "It arrives on WhatsApp, and one tap replies — your count updates the same second.",
+      "passBrand": "Mahalli",
+      "passTitle": "Entry pass",
+      "passCaption": "Please show this code at the door",
+      "passFigCaption": "Once they accept, an entry pass follows — scanned at the door."
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "step1Title": "Pick the invitation type",
+      "step1Body": "A personal invitation per guest, or one link you share with everyone.",
+      "step2Title": "Add the details and share",
+      "step2Body": "Name, time, place, an image if you like — then send on WhatsApp or copy the link.",
+      "step3Title": "Watch the replies",
+      "step3Body": "See who's coming and who declined as it happens, with an entry QR for the door."
+    },
+    "faq": {
+      "eyebrow": "Common questions",
+      "q1Question": "Does my guest need an app or an account?",
+      "q1Answer": "No. The invitation reaches them on WhatsApp and one tap replies, or they open the link and enter their name — no account either way.",
+      "q2Question": "How long does it take to set one up?",
+      "q2Answer": "Minutes. Pick the type, fill in the details, share it. You can send one to yourself first from the top of this page.",
+      "q3Question": "What's the difference between the two types?",
+      "q3Answer": "Digital: each guest gets their own invitation, addressed to them, sent by you. Link: one link you post, and whoever opens it registers themselves — better for large groups.",
+      "q4Question": "How do I check guests in at the door?",
+      "q4Answer": "Every guest who accepts gets a pass with a QR code. From the event page you copy the scanner link and send it to whoever is on the door — they open it on their phone, no login, and scan.",
+      "q5Question": "What happens to my guests' data?",
+      "q5Answer": "It stays yours and is never shared with anyone. You can request deletion at any time — details in the privacy policy."
     }
   },
   "Common": {
@@ -773,7 +810,9 @@
       "phoneInvalid": "Please enter a valid international phone number (e.g. +966501234567).",
       "rateLimited": "Too many attempts in a short time — please try again shortly.",
       "unknown": "Something unexpected went wrong. Please try again."
-    }
+    },
+    "heroTitle": "Try it on yourself, right now",
+    "heroSubtitle": "Your name and number, and a real invitation reaches you on WhatsApp in seconds. No sign-up."
   },
   "Institutional": {
     "nav": "Institutions",
