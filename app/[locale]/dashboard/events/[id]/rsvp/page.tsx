@@ -8,10 +8,16 @@ import { BroadcastResultsButton } from '@/components/dashboard/broadcast-results
 import { BulkMessageDialog } from '@/components/dashboard/bulk-message-dialog';
 import { Link } from '@/i18n/navigation';
 
-// RSVP settings for an existing event: custom questions plus broadcasting
-// results/messages to guests. Used by both creation tracks (Digital
-// Invitation and Link Invitation) — the questions/RSVP mechanics are the
-// same regardless of which one the event started as.
+// Broadcasting results and messages to guests, plus — for a Link-track
+// event only — its custom questions.
+//
+// Questions belong to the Link track alone: that track's whole point is a
+// registration form the organizer shapes ("how many of you", "which
+// night", "any dietary needs"). A Digital Invitation is a personal
+// invitation to one named guest with an accept/decline, and putting a
+// questionnaire behind it was offering a feature that doesn't fit what
+// that track is. Existing answers on any older event are untouched — this
+// only stops new questions being authored where they don't belong.
 export default async function EventRsvpSettingsPage({
   params,
 }: {
@@ -20,6 +26,7 @@ export default async function EventRsvpSettingsPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('Questions');
+  const tDetail = await getTranslations('Events.detail');
 
   const supabase = await createClient();
   const {
@@ -31,7 +38,8 @@ export default async function EventRsvpSettingsPage({
   const event = organizationId ? await getEvent(supabase, organizationId, id) : null;
   if (!event) notFound();
 
-  const questions = await listQuestions(supabase, id);
+  const isLinkTrack = event.track === 'rsvp';
+  const questions = isLinkTrack ? await listQuestions(supabase, id) : [];
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
@@ -43,15 +51,19 @@ export default async function EventRsvpSettingsPage({
       </Link>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="mb-1 text-2xl font-bold tracking-tight">{t('title')}</h1>
-          <p className="text-muted-foreground">{t('rsvpPageSubtitle')}</p>
+          <h1 className="mb-1 text-2xl font-bold tracking-tight">
+            {isLinkTrack ? t('title') : tDetail('messagesButton')}
+          </h1>
+          <p className="text-muted-foreground">
+            {isLinkTrack ? t('rsvpPageSubtitle') : t('messagesPageSubtitle')}
+          </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <BulkMessageDialog eventId={id} />
           <BroadcastResultsButton eventId={id} />
         </div>
       </div>
-      <QuestionsEditor eventId={id} initialQuestions={questions} />
+      {isLinkTrack && <QuestionsEditor eventId={id} initialQuestions={questions} />}
     </main>
   );
 }

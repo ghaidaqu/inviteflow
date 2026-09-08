@@ -91,3 +91,26 @@ export async function cancelEventReminder(supabase: Client, reminderId: string):
 
   if (error) throw error;
 }
+
+/**
+ * Puts a canceled reminder back on the schedule — cancelling was a
+ * one-way door before, so changing your mind meant the reminder was gone
+ * for good.
+ *
+ * Only while its moment is still ahead: a reminder whose time has already
+ * passed can't be "re-scheduled" into the past, and the send job
+ * (app/api/cron/reminders) would either skip it or fire it late. Both the
+ * status and the time are checked in the statement itself, so a stale
+ * page that still shows the button can't resurrect one either — 'sent'
+ * stays 'sent'.
+ */
+export async function restoreEventReminder(supabase: Client, reminderId: string): Promise<void> {
+  const { error } = await supabase
+    .from('event_reminders')
+    .update({ status: 'scheduled' })
+    .eq('id', reminderId)
+    .eq('status', 'canceled')
+    .gt('scheduled_at', new Date().toISOString());
+
+  if (error) throw error;
+}

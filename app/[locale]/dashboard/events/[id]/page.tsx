@@ -71,6 +71,7 @@ export default async function EventDetailPage({
         <EventDetailActions
           eventId={event.id}
           status={event.status}
+          isPaid={event.is_paid}
           isQrEnabled={event.is_qr_enabled}
         />
       </div>
@@ -99,10 +100,13 @@ export default async function EventDetailPage({
                 isLinkTrack ? t('detail.responseSettingsButton') : t('detail.invitationButton')
               }
             />
+            {/* Custom questions are a Link-track feature (see that page's
+                own comment), so on a Digital Invitation this card leads to
+                the same page minus the questions — and says so. */}
             <ToolCard
               href={`/dashboard/events/${event.id}/rsvp`}
               icon={CheckCircle2Icon}
-              label={t('detail.rsvpSettingsButton')}
+              label={isLinkTrack ? t('detail.rsvpSettingsButton') : t('detail.messagesButton')}
             />
           </>
         )}

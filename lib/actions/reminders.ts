@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
-import { cancelEventReminder } from '@/lib/services/reminders.service';
+import { cancelEventReminder, restoreEventReminder } from '@/lib/services/reminders.service';
 
 export async function cancelReminderAction(eventId: string, reminderId: string): Promise<void> {
   const supabase = await createClient();
@@ -23,6 +23,30 @@ export async function cancelReminderAction(eventId: string, reminderId: string):
   if (!event) return;
 
   await cancelEventReminder(supabase, reminderId);
+
+  const locale = await getLocale();
+  revalidatePath(`/${locale}/dashboard/events/${eventId}`);
+}
+
+/**
+ * The counterpart to cancelReminderAction — same ownership check, and the
+ * "still in the future" rule lives in restoreEventReminder itself rather
+ * than here, so it holds however this is called.
+ */
+export async function restoreReminderAction(eventId: string, reminderId: string): Promise<void> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const organizationId = await getCurrentOrganizationId(supabase, user.id);
+  if (!organizationId) return;
+
+  const event = await getEvent(supabase, organizationId, eventId);
+  if (!event) return;
+
+  await restoreEventReminder(supabase, reminderId);
 
   const locale = await getLocale();
   revalidatePath(`/${locale}/dashboard/events/${eventId}`);

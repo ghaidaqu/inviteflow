@@ -371,10 +371,12 @@
           "sent": "أُرسل",
           "canceled": "مُلغى"
         },
-        "cancel": "إلغاء"
+        "cancel": "إلغاء",
+        "restore": "تفعيل"
       },
       "responseSettingsButton": "إعدادات الرد",
-      "responsesButton": "الردود"
+      "responsesButton": "الردود",
+      "messagesButton": "الرسائل والنتائج"
     },
     "checkout": {
       "title": "الدفع لنشر المناسبة",
@@ -605,7 +607,8 @@
         "rateLimited": "وصلت للحد الأقصى من الإرسال الجماعي هذه الساعة — حاول لاحقًا.",
         "unknown": "حدث خطأ ما، يرجى المحاولة مرة أخرى."
       }
-    }
+    },
+    "messagesPageSubtitle": "أرسل رسالة لضيوفك، أو ابعث لهم نتيجة الحضور."
   },
   "Guests": {
     "title": "الضيوف",

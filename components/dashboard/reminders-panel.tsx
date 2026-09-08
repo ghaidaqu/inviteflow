@@ -4,7 +4,7 @@ import { useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { cancelReminderAction } from '@/lib/actions/reminders';
+import { cancelReminderAction, restoreReminderAction } from '@/lib/actions/reminders';
 import type { ReminderRow } from '@/lib/services/reminders.service';
 import { BellIcon, BellOffIcon } from 'lucide-react';
 
@@ -59,6 +59,21 @@ export function RemindersPanel({
                   aria-label={t('cancel')}
                 >
                   <BellOffIcon className="size-3.5" /> {t('cancel')}
+                </Button>
+              )}
+              {/* Cancelling used to be final. It can be undone right up
+                  until the reminder's own moment — after that there's
+                  nothing left to reschedule, so the button goes away
+                  rather than failing on click. */}
+              {reminder.status === 'canceled' && new Date(reminder.scheduled_at) > new Date() && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={isPending}
+                  onClick={() => startTransition(() => restoreReminderAction(eventId, reminder.id))}
+                  aria-label={t('restore')}
+                >
+                  <BellIcon className="size-3.5" /> {t('restore')}
                 </Button>
               )}
             </div>

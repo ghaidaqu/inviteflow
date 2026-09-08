@@ -371,10 +371,12 @@
           "sent": "Sent",
           "canceled": "Canceled"
         },
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "restore": "Re-enable"
       },
       "responseSettingsButton": "Response settings",
-      "responsesButton": "Responses"
+      "responsesButton": "Responses",
+      "messagesButton": "Messages & results"
     },
     "checkout": {
       "title": "Pay to publish",
@@ -605,7 +607,8 @@
         "rateLimited": "You’ve hit the bulk-send limit for this hour — try again later.",
         "unknown": "Something went wrong, please try again."
       }
-    }
+    },
+    "messagesPageSubtitle": "Send your guests a message, or share the attendance results."
   },
   "Guests": {
     "title": "Guests",
