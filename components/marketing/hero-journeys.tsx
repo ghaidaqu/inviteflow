@@ -120,10 +120,12 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                     <Icon className="size-5" />
                   </span>
                   <span className="flex flex-col gap-1">
-                    <span className="font-display text-foreground text-2xl sm:text-3xl">
+                    <span className="text-sm font-semibold tracking-wide sm:text-base">
                       {tt(`${key}.title`)}
                     </span>
-                    <span className="text-base sm:text-lg">{tt(`${key}.description`)}</span>
+                    <span className="font-display text-foreground text-lg sm:text-xl">
+                      {tt(`${key}.description`)}
+                    </span>
                     <span className="text-muted-foreground text-sm">
                       {tt(`${key}.feature1`)} · {tt(`${key}.feature2`)} · {tt(`${key}.feature3`)}
                     </span>
