@@ -35,7 +35,7 @@ export async function TrackOptions({ locale }: { locale: string }) {
   // rows. Both rows share the same primary color (not split rust-vs-teal
   // per track) — one consistent accent across the page.
   return (
-    <section className="pt-8 pb-14 sm:pt-10 sm:pb-20">
+    <section id="options" className="scroll-mt-20 pt-12 pb-14 sm:pt-16 sm:pb-20">
       <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
         {/* Was an eyebrow + a title restating "دعوة رقمية، أو دعوة
             برابط" — redundant once the two rows right below already say

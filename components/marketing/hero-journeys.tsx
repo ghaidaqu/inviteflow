@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { TryDemoForm } from '@/components/public/try-demo-form';
+import { Link } from '@/i18n/navigation';
+import { Button } from '@/components/ui/button';
 import heroDoorway from '@/public/images/marketing/hero-doorway.jpg';
 
 export async function HeroJourneys() {
   const t = await getTranslations('HomePage.hero');
-  const tTry = await getTranslations('TryDemo');
 
   // Full-bleed photo hero — an entrance, not a person, so the image reads
   // as "welcome" for every guest and organizer regardless of who they
@@ -50,17 +50,18 @@ export async function HeroJourneys() {
           {t('headlineLine1')} {t('headlineLine2')}
         </h1>
         <p className="text-primary-foreground/85 max-w-xl text-lg text-balance">{t('subtitle')}</p>
-        {/* The strongest thing this product can say to a stranger is
-            "you'll have one on WhatsApp in a few seconds" — and it was
-            sitting a click away behind a button, on /try. Putting the
-            real two-field form here says it and proves it in the same
-            breath, and fills what was otherwise a tall stretch of dead
-            scrim under the headline. */}
-        <div className="bg-card/95 w-full max-w-md rounded-2xl p-5 text-start shadow-2xl backdrop-blur-sm sm:p-6">
-          <p className="font-display text-lg">{tTry('heroTitle')}</p>
-          <p className="text-muted-foreground mt-1 mb-4 text-sm">{tTry('heroSubtitle')}</p>
-          <TryDemoForm />
-        </div>
+        {/* A form card here covered the photograph and made the opening
+            feel busy — the try-it hook earns its own calm section further
+            down (TryBand) instead, and the hero goes back to doing the
+            one thing it does well. */}
+        <Button
+          size="lg"
+          variant="secondary"
+          nativeButton={false}
+          render={<Link href="#options" />}
+        >
+          {t('primaryCta')}
+        </Button>
       </div>
     </section>
   );
