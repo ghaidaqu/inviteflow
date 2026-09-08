@@ -1,11 +1,20 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
-import { checkInGuestByToken } from '@/lib/services/check-in.service';
+import { checkInGuestByToken, getEventByCheckInToken } from '@/lib/services/check-in.service';
+import { checkRateLimit } from '@/lib/utils/rate-limit';
 
 export type CheckInActionState = {
-  error?: 'unauthorized' | 'unknown' | 'invalidCode' | 'notFound' | 'notAttending';
+  error?:
+    | 'unauthorized'
+    | 'unknown'
+    | 'invalidCode'
+    | 'notFound'
+    | 'notAttending'
+    | 'linkExpired'
+    | 'rateLimited';
   alreadyCheckedIn?: boolean;
   guestName?: string;
   partySize?: number;
@@ -51,6 +60,54 @@ export async function checkInGuestAction(
 
   try {
     const result = await checkInGuestByToken(supabase, eventId, token);
+    if (!result.ok) {
+      return { error: result.reason === 'not_found' ? 'notFound' : 'notAttending' };
+    }
+    return {
+      alreadyCheckedIn: result.alreadyCheckedIn,
+      guestName: result.guestName,
+      partySize: result.partySize,
+      checkedInAt: result.alreadyCheckedIn ? result.checkedInAt : undefined,
+    };
+  } catch {
+    return { error: 'unknown' };
+  }
+}
+
+/**
+ * The same scan, but for the door-staff link — someone the organizer
+ * handed a URL to, with no account here at all (see
+ * getEventByCheckInToken). The secret in the URL is the only credential,
+ * so this runs on the admin client after resolving it, and never accepts
+ * an event id from the caller: the token alone decides which event is
+ * being worked, so holding one link can't be turned into checking guests
+ * in at a different event.
+ *
+ * Rate-limited per link because, unlike the dashboard scanner, this
+ * endpoint is reachable by anyone who has the URL — a leaked link
+ * shouldn't also be a way to probe guest tokens at speed.
+ */
+export async function publicCheckInAction(
+  checkInToken: string,
+  scannedText: string,
+): Promise<CheckInActionState> {
+  const event = await getEventByCheckInToken(checkInToken);
+  if (!event) return { error: 'linkExpired' };
+
+  const token = extractToken(scannedText);
+  if (!token) return { error: 'invalidCode' };
+
+  try {
+    const admin = createAdminClient();
+    const allowed = await checkRateLimit(admin, {
+      action: 'public-check-in',
+      scope: checkInToken,
+      maxHits: 120,
+      windowSeconds: 60,
+    });
+    if (!allowed) return { error: 'rateLimited' };
+
+    const result = await checkInGuestByToken(admin, event.id, token);
     if (!result.ok) {
       return { error: result.reason === 'not_found' ? 'notFound' : 'notAttending' };
     }

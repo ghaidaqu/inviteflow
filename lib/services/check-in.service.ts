@@ -1,7 +1,34 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { createAdminClient } from '@/lib/supabase/admin';
 import type { Database } from '@/types/supabase';
 
 type Client = SupabaseClient<Database>;
+
+/**
+ * Resolves the per-event door-staff secret (events.check_in_token, see
+ * 20260908000004) to the event it opens. Uses the service role because
+ * the caller is by definition unauthenticated — the whole point of the
+ * shared link is that whoever works the door has no account here.
+ *
+ * The token is the only credential, so it's checked exactly and nothing
+ * about the event is returned unless it matches: no listing, no guessing
+ * by id, and a regenerated token silently invalidates the old link.
+ * Returns null for an unknown token, a deleted event, or one that isn't
+ * published (a draft has no real guests to admit yet).
+ */
+export async function getEventByCheckInToken(
+  token: string,
+): Promise<{ id: string; name: string } | null> {
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from('events')
+    .select('id, name, status')
+    .eq('check_in_token', token)
+    .is('deleted_at', null)
+    .maybeSingle();
+  if (!data || data.status !== 'published') return null;
+  return { id: data.id, name: data.name };
+}
 
 export type CheckInResult =
   | {

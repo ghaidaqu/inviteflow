@@ -26,7 +26,17 @@ type ScanResult = CheckInActionState & { at: number };
  * avoids a rapid double-scan of the same code before the guest moves
  * their card away.
  */
-export function GuestCheckInScanner({ eventId }: { eventId: string }) {
+export function GuestCheckInScanner({
+  eventId,
+  scan,
+}: {
+  eventId: string;
+  /** How a decoded code gets checked in. Defaults to the organizer's own
+   *  (authenticated) action; the public door-staff page passes one bound
+   *  to its link token instead, so the same camera loop serves both
+   *  without either knowing about the other's auth model. */
+  scan?: (scannedText: string) => Promise<CheckInActionState>;
+}) {
   const t = useTranslations('CheckIn');
   const locale = useLocale();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -47,7 +57,8 @@ export function GuestCheckInScanner({ eventId }: { eventId: string }) {
     (text: string) => {
       isPendingRef.current = true;
       setIsPending(true);
-      checkInGuestAction(eventId, text)
+      const run = scan ? scan(text) : checkInGuestAction(eventId, text);
+      run
         .then((res) => {
           setResult({ ...res, at: Date.now() });
           // Door staff aren't necessarily looking at the screen the
@@ -61,7 +72,7 @@ export function GuestCheckInScanner({ eventId }: { eventId: string }) {
           setIsPending(false);
         });
     },
-    [eventId],
+    [eventId, scan],
   );
 
   // Scanning itself never pauses (see tick's isRepeat guard instead), so

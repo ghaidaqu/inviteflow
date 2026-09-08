@@ -495,8 +495,12 @@
       "unknown": "Something went wrong, please try again.",
       "invalidCode": "That's not a valid entry code.",
       "notFound": "This code doesn't belong to this event.",
-      "notAttending": "This guest doesn't have an entry pass (their response isn't a confirmed attendance)."
-    }
+      "notAttending": "This guest doesn't have an entry pass (their response isn't a confirmed attendance).",
+      "linkExpired": "This link is no longer valid. Ask the organizer for a new one.",
+      "rateLimited": "Too many scans in a short time — wait a moment."
+    },
+    "staffLinkLabel": "Door-staff scanner link",
+    "staffLinkHint": "Share it with whoever's on the door — it opens the scanner with no login. Don't post it publicly."
   },
   "Questions": {
     "title": "Custom Questions",

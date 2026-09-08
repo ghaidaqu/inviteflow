@@ -128,6 +128,10 @@ export interface Database {
           // and app/api/cron/broadcast-results/route.ts) — null means "not
           // sent yet", the only signal that route needs to pick it up.
           results_broadcast_at: string | null;
+          /** Per-event secret behind the door-staff scanner link (see
+           *  20260908000004). Not the event id on purpose: that one is in
+           *  every dashboard URL, and this grants marking guests arrived. */
+          check_in_token: string;
           created_at: string;
           updated_at: string;
           deleted_at: string | null;
@@ -157,6 +161,7 @@ export interface Database {
           organization_name?: string | null;
           organization_logo_url?: string | null;
           results_broadcast_at?: string | null;
+          check_in_token?: string;
           created_at?: string;
           updated_at?: string;
           deleted_at?: string | null;
