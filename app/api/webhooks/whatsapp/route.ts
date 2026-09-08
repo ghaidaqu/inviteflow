@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider } from '@/lib/whatsapp';
 import { notifyOrganizerNewRsvp } from '@/lib/email/notify';
 import { sendGuestQrWhatsApp } from '@/lib/whatsapp/notify';
+import { generateAndUploadEntryCard } from '@/lib/services/qr.service';
 import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
 
 /**
@@ -243,15 +244,10 @@ export async function POST(request: NextRequest) {
         // (updateRsvpAction only re-sends the QR on a genuine new
         // attending transition, not on every edit) — a pre-existing
         // limitation, not something this change introduces.
-        await sendGuestQrWhatsApp(
-          event.name,
-          guestId,
-          result.guest_name,
-          1,
-          message.from,
-          editUrl,
-          locale,
-        );
+        const qrUrl = await generateAndUploadEntryCard(`guest-${guestId}`, editUrl, 1);
+        if (qrUrl) {
+          await sendGuestQrWhatsApp(event.name, qrUrl, result.guest_name, message.from, locale);
+        }
       }
     }
   }

@@ -67,6 +67,7 @@ export function RsvpForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [secureToken, setSecureToken] = useState<string | null>(null);
   const [submittedStatus, setSubmittedStatus] = useState<FormValues['status']>('');
+  const [qrCardUrl, setQrCardUrl] = useState<string | null>(null);
 
   const { register, handleSubmit, control } = useForm<FormValues>({
     defaultValues: {
@@ -125,6 +126,7 @@ export function RsvpForm({
       } else if (result.secureToken) {
         setSubmittedStatus(values.status);
         setSecureToken(result.secureToken);
+        setQrCardUrl(result.qrCardUrl ?? null);
       }
     });
   }
@@ -144,6 +146,19 @@ export function RsvpForm({
           </div>
           <p className="text-lg font-bold">{t('thankYouTitle')}</p>
           <p className="text-muted-foreground">{t('thankYouDescription')}</p>
+
+          {qrCardUrl && (
+            <div className="flex w-full flex-col items-center gap-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={qrCardUrl}
+                alt={t('qrCardAlt')}
+                className="w-full max-w-56 rounded-2xl border shadow-sm"
+              />
+              <p className="text-muted-foreground text-sm">{t('qrCardCaption')}</p>
+            </div>
+          )}
+
           <Link
             href={`/rsvp/${secureToken}`}
             className="text-primary text-sm font-medium underline-offset-4 hover:underline"

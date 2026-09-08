@@ -1,7 +1,6 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider, isWhatsAppConfigured } from './index';
-import { generateAndUploadEntryCard } from '@/lib/services/qr.service';
 import type { ResultsSummary } from '@/lib/services/results.service';
 
 type Locale = 'ar' | 'en';
@@ -170,20 +169,23 @@ export async function sendInvitationWhatsApp(
  * design), not a bare QR — the guest/event identity that used to be
  * missing from a plain QR image lives in this caption text instead, so
  * the card itself can stay the same generic pass for every guest.
- * Best-effort: a failed QR send never fails the RSVP itself.
+ *
+ * Takes the already-generated card URL rather than generating its own —
+ * callers that also need to show the same card inline on the confirmation
+ * page (see submitRsvpAction, needed for a Link-track guest whose phone
+ * has never messaged the business before: outside WhatsApp's 24-hour
+ * session window a free-form send like this one gets silently rejected,
+ * so the on-page copy can't depend on this ever arriving) generate it
+ * once via generateAndUploadEntryCard and pass the result to both places.
+ * Best-effort: a failed WhatsApp send never fails the RSVP itself.
  */
 export async function sendGuestQrWhatsApp(
   eventName: string,
-  guestId: string,
+  qrUrl: string,
   guestName: string,
-  partySize: number,
   phone: string,
-  editUrl: string,
   locale: Locale,
 ): Promise<void> {
-  const qrUrl = await generateAndUploadEntryCard(`guest-${guestId}`, editUrl, partySize);
-  if (!qrUrl) return;
-
   const caption =
     locale === 'ar'
       ? `رمز دخولك لـ "${eventName}" يا ${guestName} — أظهره عند الوصول.`

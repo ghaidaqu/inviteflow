@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { BrandMark } from '@/components/brand-mark';
+import { Button } from '@/components/ui/button';
 import { ArrowUpRightIcon } from 'lucide-react';
 
 export function SiteNav() {
@@ -45,6 +46,9 @@ export function SiteNav() {
           >
             {t('loginLink')}
           </Link>
+          <Button size="sm" nativeButton={false} render={<Link href="/try" />}>
+            {t('startLink')}
+          </Button>
           <LanguageSwitcher />
         </div>
       </nav>

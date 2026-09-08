@@ -83,7 +83,9 @@
   "Common": {
     "languageSwitcher": "اللغة",
     "loading": "جارٍ التحميل...",
-    "backToHome": "الرئيسية"
+    "backToHome": "الرئيسية",
+    "guestFooterTitle": "عجبتك؟ سوّ دعوتك الخاصة",
+    "guestFooterCta": "ابدأ مع مهلّي"
   },
   "PhoneInput": {
     "countryLabel": "رمز الدولة",
@@ -428,6 +430,8 @@
     "updateSaved": "تم حفظ التعديلات بنجاح.",
     "thankYouTitle": "شكرًا لك!",
     "thankYouDescription": "تم استلام ردك بنجاح. احتفظ بالرابط التالي لتعديل ردك لاحقًا إذا احتجت.",
+    "qrCardAlt": "رمز الدخول",
+    "qrCardCaption": "احفظ لقطة من هذا الرمز وأبرزه عند الوصول.",
     "editLinkLabel": "رابط تعديل الرد",
     "whatsappShareButton": "شارك ردك عبر واتساب",
     "whatsappShareMessage": "أكّدت ردي على دعوة \"{eventName}\": {status}",
@@ -444,6 +448,8 @@
       "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
       "answerRequired": "يرجى الإجابة على جميع الأسئلة المطلوبة.",
       "phoneRequired": "رقم الجوال إلزامي لهذه المناسبة.",
+      "phoneInvalid": "رقم الجوال غير صحيح، تأكد منه وحاول مرة أخرى.",
+      "phoneDuplicate": "هذا الرقم مسجّل رده على هذه المناسبة من قبل.",
       "consentRequired": "يجب الموافقة على سياسة الخصوصية للمتابعة.",
       "notConfigured": "لم يتم ربط المشروع بقاعدة بيانات Supabase بعد.",
       "submitFailed": "تعذّر إرسال الرد، حاول مرة أخرى.",

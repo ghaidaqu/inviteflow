@@ -83,7 +83,9 @@
   "Common": {
     "languageSwitcher": "Language",
     "loading": "Loading...",
-    "backToHome": "Home"
+    "backToHome": "Home",
+    "guestFooterTitle": "Like it? Make your own invitation",
+    "guestFooterCta": "Start with مهلّي"
   },
   "PhoneInput": {
     "countryLabel": "Country code",
@@ -428,6 +430,8 @@
     "updateSaved": "Your response has been updated.",
     "thankYouTitle": "Thank you!",
     "thankYouDescription": "Your response was received. Keep the link below to edit your response later if needed.",
+    "qrCardAlt": "Entry QR code",
+    "qrCardCaption": "Save a copy of this and show it when you arrive.",
     "editLinkLabel": "Edit response link",
     "whatsappShareButton": "Share your response on WhatsApp",
     "whatsappShareMessage": "I just responded to \"{eventName}\": {status}",
@@ -444,6 +448,8 @@
       "invalidInput": "Please check the information you entered.",
       "answerRequired": "Please answer all required questions.",
       "phoneRequired": "A phone number is required for this event.",
+      "phoneInvalid": "That phone number doesn't look right — check it and try again.",
+      "phoneDuplicate": "This phone number has already responded to this event.",
       "consentRequired": "You must agree to the privacy policy to continue.",
       "notConfigured": "This project isn't connected to a Supabase database yet.",
       "submitFailed": "Couldn't submit your response, please try again.",

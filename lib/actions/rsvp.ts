@@ -10,8 +10,10 @@ import {
   updateRsvpByToken,
   insertFirstResponseByToken,
 } from '@/lib/services/rsvp.service';
+import { generateAndUploadEntryCard } from '@/lib/services/qr.service';
 import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
+import { normalizePhone } from '@/lib/utils/phone';
 import { notifyOrganizerNewRsvp, sendGuestRsvpConfirmation } from '@/lib/email/notify';
 import { sendGuestRsvpConfirmationWhatsApp, sendGuestQrWhatsApp } from '@/lib/whatsapp/notify';
 import type { Json } from '@/types/supabase';
@@ -46,6 +48,13 @@ export type RsvpActionState = {
   error?: string;
   secureToken?: string;
   success?: boolean;
+  // Set whenever the event has entry QR enabled and this response is
+  // 'attending' — shown inline on the thank-you screen regardless of
+  // whether the guest gave a phone/email at all, since a WhatsApp send to
+  // a Link-track guest's own number has no active 24-hour session window
+  // to ride on (see sendGuestQrWhatsApp's doc comment) and silently never
+  // arrives. This is the reliable copy of the same card.
+  qrCardUrl?: string;
 };
 
 // `null` (the field wasn't included in the form at all) means "don't touch
@@ -97,6 +106,19 @@ export async function submitRsvpAction(
     return { error: 'invalidInput' };
   }
 
+  // Canonical E.164 from here on, not whatever shape the guest typed —
+  // storing raw input would let the exact-string duplicate check below be
+  // defeated by typing the same real number in a different format, on top
+  // of accepting outright garbage as a "phone number" with a silent send
+  // failure downstream. Skipped entirely when no phone was given at all;
+  // that's still a valid submission unless the organizer requires one.
+  let phone: string | undefined;
+  if (parsed.data.phone) {
+    const phoneResult = normalizePhone(parsed.data.phone);
+    if (!phoneResult.ok) return { error: 'phoneInvalid' };
+    phone = phoneResult.e164;
+  }
+
   const supabase = await createClient();
 
   const allowed = await checkRateLimit(supabase, {
@@ -111,7 +133,7 @@ export async function submitRsvpAction(
     const result = await submitRsvp(supabase, {
       eventSlug,
       guestName: parsed.data.guestName,
-      phone: parsed.data.phone ?? null,
+      phone: phone ?? null,
       email: parsed.data.email ?? null,
       status: parsed.data.status,
       companionsCount: parsed.data.companionsNames.length,
@@ -129,37 +151,43 @@ export async function submitRsvpAction(
     // promise before it finishes.
     await notifyOrganizerNewRsvp(eventSlug, parsed.data.guestName, parsed.data.status);
     const locale = (await getLocale()) as 'ar' | 'en';
-    if (parsed.data.email || parsed.data.phone) {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
-      const editUrl = `${appUrl}/${locale}/rsvp/${result.secure_token}`;
-      if (parsed.data.email) {
-        await sendGuestRsvpConfirmation(eventSlug, parsed.data.email, editUrl, locale);
-      }
-      if (parsed.data.phone) {
-        await sendGuestRsvpConfirmationWhatsApp(
-          eventSlug,
-          parsed.data.phone,
-          parsed.data.status,
-          editUrl,
-          locale,
-        );
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+    const editUrl = `${appUrl}/${locale}/rsvp/${result.secure_token}`;
 
-        // A brand-new submission has no "previous status" to compare
-        // against — any first-time 'attending' is a genuine acceptance.
-        if (parsed.data.status === 'attending') {
-          const eligibility = await getQrEligibility(result.event_id);
-          if (eligibility?.isQrEnabled) {
-            await sendGuestQrWhatsApp(
-              eligibility.eventName,
-              result.guest_id,
-              parsed.data.guestName,
-              1 + parsed.data.companionsNames.length,
-              parsed.data.phone,
-              editUrl,
-              locale,
-            );
-          }
-        }
+    // Generated once regardless of whether a phone/email was given at all
+    // — the card's content is the guest's own edit link, which exists
+    // either way — so it can both ride along on a best-effort WhatsApp
+    // send below AND be returned for the thank-you screen to render
+    // directly, the one path guaranteed to actually reach the guest.
+    let qrCardUrl: string | undefined;
+    let eventName: string | undefined;
+    if (parsed.data.status === 'attending') {
+      const eligibility = await getQrEligibility(result.event_id);
+      if (eligibility?.isQrEnabled) {
+        eventName = eligibility.eventName;
+        const url = await generateAndUploadEntryCard(
+          `guest-${result.guest_id}`,
+          editUrl,
+          1 + parsed.data.companionsNames.length,
+        );
+        if (url) qrCardUrl = url;
+      }
+    }
+
+    if (parsed.data.email) {
+      await sendGuestRsvpConfirmation(eventSlug, parsed.data.email, editUrl, locale);
+    }
+    if (phone) {
+      await sendGuestRsvpConfirmationWhatsApp(
+        eventSlug,
+        phone,
+        parsed.data.status,
+        editUrl,
+        locale,
+      );
+
+      if (qrCardUrl && eventName) {
+        await sendGuestQrWhatsApp(eventName, qrCardUrl, parsed.data.guestName, phone, locale);
       }
     }
 
@@ -170,8 +198,14 @@ export async function submitRsvpAction(
       await promoteNextWaitlistedGuest(supabase, result.event_id, eventSlug, locale);
     }
 
-    return { success: true, secureToken: result.secure_token };
-  } catch {
+    return { success: true, secureToken: result.secure_token, qrCardUrl };
+  } catch (error) {
+    // See the migration's comment on submit_rsvp — 'unique_violation'
+    // (23505) is raised only for the duplicate-phone case, distinct from
+    // every other rejection in that function (which stay a generic
+    // 'submitFailed' — a guest can't do anything about a closed deadline
+    // by retrying, but "you already responded" is worth saying plainly).
+    if ((error as { code?: string }).code === '23505') return { error: 'phoneDuplicate' };
     return { error: 'submitFailed' };
   }
 }
@@ -259,15 +293,20 @@ export async function updateRsvpAction(
             const locale = (await getLocale()) as 'ar' | 'en';
             const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
             const editUrl = `${appUrl}/${locale}/rsvp/${token}`;
-            await sendGuestQrWhatsApp(
-              eligibility.eventName,
-              guest.id,
-              guest.name ?? '',
-              1 + parsed.data.companionsNames.length,
-              guest.phone,
+            const qrUrl = await generateAndUploadEntryCard(
+              `guest-${guest.id}`,
               editUrl,
-              locale,
+              1 + parsed.data.companionsNames.length,
             );
+            if (qrUrl) {
+              await sendGuestQrWhatsApp(
+                eligibility.eventName,
+                qrUrl,
+                guest.name ?? '',
+                guest.phone,
+                locale,
+              );
+            }
           }
         }
       } catch {

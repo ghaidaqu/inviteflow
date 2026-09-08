@@ -8,6 +8,8 @@ import { getPublicEventBySlug } from '@/lib/services/events.service';
 import { EventPasswordGate } from '@/components/public/event-password-gate';
 import { InviteActions } from '@/components/public/invite-actions';
 import { EventHero } from '@/components/public/event-hero/event-hero';
+import { GuestFooter } from '@/components/public/guest-footer';
+import { SiteNav } from '@/components/marketing/site-nav';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { CalendarIcon, MapPinIcon, ClockIcon } from 'lucide-react';
@@ -44,7 +46,12 @@ export default async function PublicEventPage({
     const cookieStore = await cookies();
     const unlocked = cookieStore.get(`event_unlock_${event.id}`)?.value === '1';
     if (!unlocked) {
-      return <EventPasswordGate slug={slug} />;
+      return (
+        <>
+          <SiteNav />
+          <EventPasswordGate slug={slug} />
+        </>
+      );
     }
   }
 
@@ -56,79 +63,85 @@ export default async function PublicEventPage({
   const qrDataUrl = event.is_qr_enabled ? await QRCode.toDataURL(publicLink, { margin: 1 }) : null;
 
   return (
-    <main className="flex-1">
-      <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-2xl px-4 py-10 duration-700 sm:px-6">
-        <EventHero
-          event={event}
-          template={design.template}
-          typeLabel={tTypes(event.type)}
-          organizedByLabel={
-            event.organization_name ? t('organizedBy', { name: event.organization_name }) : null
-          }
-        />
+    <>
+      <SiteNav />
+      <main className="flex-1">
+        <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto w-full max-w-2xl px-4 py-10 duration-700 sm:px-6">
+          <EventHero
+            event={event}
+            template={design.template}
+            typeLabel={tTypes(event.type)}
+            organizedByLabel={
+              event.organization_name ? t('organizedBy', { name: event.organization_name }) : null
+            }
+          />
 
-        <dl className="mt-6 grid gap-3 sm:grid-cols-2">
-          {event.event_date && (
-            <DetailCard
-              icon={<CalendarIcon className="size-5" />}
-              label={t('dateLabel')}
-              value={new Date(event.event_date).toLocaleString(locale)}
-            />
-          )}
-          {event.location_text && (
-            <DetailCard
-              icon={<MapPinIcon className="size-5" />}
-              label={t('locationLabel')}
-              value={event.location_text}
-            />
-          )}
-          {event.rsvp_deadline && (
-            <DetailCard
-              icon={<ClockIcon className="size-5" />}
-              label={t('rsvpDeadlineLabel')}
-              value={new Date(event.rsvp_deadline).toLocaleString(locale)}
-            />
-          )}
-        </dl>
+          <dl className="mt-6 grid gap-3 sm:grid-cols-2">
+            {event.event_date && (
+              <DetailCard
+                icon={<CalendarIcon className="size-5" />}
+                label={t('dateLabel')}
+                value={new Date(event.event_date).toLocaleString(locale)}
+              />
+            )}
+            {event.location_text && (
+              <DetailCard
+                icon={<MapPinIcon className="size-5" />}
+                label={t('locationLabel')}
+                value={event.location_text}
+              />
+            )}
+            {event.rsvp_deadline && (
+              <DetailCard
+                icon={<ClockIcon className="size-5" />}
+                label={t('rsvpDeadlineLabel')}
+                value={new Date(event.rsvp_deadline).toLocaleString(locale)}
+              />
+            )}
+          </dl>
 
-        <div className="mt-6 flex flex-wrap gap-2">
-          {/* Neither is_rsvp_enabled alone nor the two allow_* flags alone
+          <div className="mt-6 flex flex-wrap gap-2">
+            {/* Neither is_rsvp_enabled alone nor the two allow_* flags alone
               are enough — an event created before this distinction existed
               (or edited to turn both response options off) can have
               is_rsvp_enabled=true with nothing a guest could actually
               submit. Both conditions together are what "there's a real
               response to give" means. */}
-          {event.is_rsvp_enabled && (settings.allow_attending || settings.allow_not_attending) && (
-            <Button
-              size="lg"
-              className="shadow-primary/20 w-full shadow-lg transition-transform hover:-translate-y-0.5 sm:w-fit"
-              nativeButton={false}
-              render={<Link href={`/events/${event.slug}/rsvp`} />}
-            >
-              {t('rsvpButton')}
-            </Button>
-          )}
-        </div>
-
-        <div className="mt-6">
-          <InviteActions
-            eventName={event.name}
-            description={event.description}
-            locationText={event.location_text}
-            locationMapUrl={event.location_map_url}
-            eventDate={event.event_date}
-            publicLink={publicLink}
-          />
-        </div>
-
-        {qrDataUrl && (
-          <div className="bg-card mt-6 flex flex-col items-center gap-2 rounded-2xl border p-5 shadow-sm">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={qrDataUrl} alt={event.name} width={160} height={160} />
+            {event.is_rsvp_enabled &&
+              (settings.allow_attending || settings.allow_not_attending) && (
+                <Button
+                  size="lg"
+                  className="shadow-primary/20 w-full shadow-lg transition-transform hover:-translate-y-0.5 sm:w-fit"
+                  nativeButton={false}
+                  render={<Link href={`/events/${event.slug}/rsvp`} />}
+                >
+                  {t('rsvpButton')}
+                </Button>
+              )}
           </div>
-        )}
-      </div>
-    </main>
+
+          <div className="mt-6">
+            <InviteActions
+              eventName={event.name}
+              description={event.description}
+              locationText={event.location_text}
+              locationMapUrl={event.location_map_url}
+              eventDate={event.event_date}
+              publicLink={publicLink}
+            />
+          </div>
+
+          {qrDataUrl && (
+            <div className="bg-card mt-6 flex flex-col items-center gap-2 rounded-2xl border p-5 shadow-sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={qrDataUrl} alt={event.name} width={160} height={160} />
+            </div>
+          )}
+
+          <GuestFooter />
+        </div>
+      </main>
+    </>
   );
 }
 
