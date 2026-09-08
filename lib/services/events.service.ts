@@ -107,6 +107,7 @@ export async function createEvent(
       slug,
       name: input.name,
       type: input.type,
+      track: input.track ?? null,
       description: input.description ?? null,
       event_date: input.eventDate ?? null,
       rsvp_deadline: input.rsvpDeadline ?? null,
@@ -226,6 +227,7 @@ export async function updateEventSettings(
       collect_message: input.collectMessage,
       allow_guest_edit: input.allowGuestEdit,
       require_phone: input.requirePhone,
+      auto_broadcast_results: input.autoBroadcastResults,
     })
     .eq('event_id', eventId)
     .select('*')

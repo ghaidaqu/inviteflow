@@ -14,6 +14,7 @@ export const eventSettingsFormSchema = z.object({
   collectMessage: z.boolean(),
   allowGuestEdit: z.boolean(),
   requirePhone: z.boolean(),
+  autoBroadcastResults: z.boolean(),
 });
 
 export type EventSettingsFormInput = z.input<typeof eventSettingsFormSchema>;

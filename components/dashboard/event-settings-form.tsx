@@ -52,6 +52,7 @@ export function EventSettingsForm({
       collectMessage: settings.collect_message,
       allowGuestEdit: settings.allow_guest_edit,
       requirePhone: settings.require_phone,
+      autoBroadcastResults: settings.auto_broadcast_results,
     },
   });
 
@@ -68,6 +69,7 @@ export function EventSettingsForm({
     formData.set('collectMessage', String(values.collectMessage));
     formData.set('allowGuestEdit', String(values.allowGuestEdit));
     formData.set('requirePhone', String(values.requirePhone));
+    formData.set('autoBroadcastResults', String(values.autoBroadcastResults));
 
     startTransition(async () => {
       const result = await updateEventSettingsAction(eventId, {}, formData);
@@ -196,6 +198,24 @@ export function EventSettingsForm({
             name="allowGuestEdit"
             render={({ field }) => (
               <Switch id="allowGuestEdit" checked={field.value} onCheckedChange={field.onChange} />
+            )}
+          />
+        </Field>
+
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="autoBroadcastResults" className="flex-1 font-normal">
+            {t('autoBroadcastResultsLabel')}
+            <FieldDescription>{t('autoBroadcastResultsHint')}</FieldDescription>
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="autoBroadcastResults"
+            render={({ field }) => (
+              <Switch
+                id="autoBroadcastResults"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
             )}
           />
         </Field>

@@ -144,6 +144,13 @@ export function EventForm({
     formData.set('organizationName', values.organizationName ?? '');
     formData.set('organizationLogoUrl', values.organizationLogoUrl ?? '');
 
+    // Only on creation — an event's track never changes after the fact
+    // (see eventFormSchema's own comment on this field), and editing
+    // never has a `track` prop to send in the first place.
+    if (!event && track) {
+      formData.set('track', track);
+    }
+
     if (track === 'rsvp' && !event) {
       // Drop fully-blank draft rows (an empty "add question" click the
       // organizer never filled in) rather than sending them to the server

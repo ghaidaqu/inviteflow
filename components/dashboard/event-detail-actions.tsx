@@ -14,11 +14,20 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { setEventStatusAction, deleteEventAction } from '@/lib/actions/events';
+import { Link } from '@/i18n/navigation';
 import type { Database } from '@/types/supabase';
 
 type EventStatus = Database['public']['Tables']['events']['Row']['status'];
 
-export function EventDetailActions({ eventId, status }: { eventId: string; status: EventStatus }) {
+export function EventDetailActions({
+  eventId,
+  status,
+  isQrEnabled,
+}: {
+  eventId: string;
+  status: EventStatus;
+  isQrEnabled: boolean;
+}) {
   const t = useTranslations('Events.detail');
   const [isPending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -44,6 +53,16 @@ export function EventDetailActions({ eventId, status }: { eventId: string; statu
       )}
       {status === 'published' && (
         <>
+          {isQrEnabled && (
+            <Button
+              size="sm"
+              variant="outline"
+              nativeButton={false}
+              render={<Link href={`/dashboard/events/${eventId}/check-in`} />}
+            >
+              {t('checkInButton')}
+            </Button>
+          )}
           <Button
             size="sm"
             variant="outline"

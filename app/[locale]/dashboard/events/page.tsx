@@ -50,6 +50,10 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
               </div>
               <p className="text-muted-foreground text-sm">
                 {t(`types.${event.type}`)}
+                {/* null for any event created before this was tracked at
+                    all (see the migration comment) — nothing guessed at,
+                    just omitted rather than shown wrong. */}
+                {event.track && <> · {t(`newChooser.${event.track}.title`)}</>}
                 {event.event_date && (
                   <> · {new Date(event.event_date).toLocaleDateString(locale)}</>
                 )}

@@ -99,6 +99,10 @@ export interface Database {
           slug: string;
           name: string;
           type: EventType;
+          // Which creation track this event started as — null for any
+          // event created before this column existed (see the migration
+          // comment); never guessed at retroactively.
+          track: 'invitation' | 'rsvp' | 'institutional' | null;
           description: string | null;
           event_date: string | null;
           rsvp_deadline: string | null;
@@ -119,6 +123,11 @@ export interface Database {
            *  migration comment); used for on-page branding only. */
           organization_name: string | null;
           organization_logo_url: string | null;
+          // Set once the deadline-triggered results broadcast has actually
+          // gone out for this event (see event_settings.auto_broadcast_results
+          // and app/api/cron/broadcast-results/route.ts) — null means "not
+          // sent yet", the only signal that route needs to pick it up.
+          results_broadcast_at: string | null;
           created_at: string;
           updated_at: string;
           deleted_at: string | null;
@@ -130,6 +139,7 @@ export interface Database {
           slug: string;
           name: string;
           type: EventType;
+          track?: 'invitation' | 'rsvp' | 'institutional' | null;
           description?: string | null;
           event_date?: string | null;
           rsvp_deadline?: string | null;
@@ -146,6 +156,7 @@ export interface Database {
           event_end_date?: string | null;
           organization_name?: string | null;
           organization_logo_url?: string | null;
+          results_broadcast_at?: string | null;
           created_at?: string;
           updated_at?: string;
           deleted_at?: string | null;
@@ -165,6 +176,7 @@ export interface Database {
           collect_message: boolean;
           allow_guest_edit: boolean;
           require_phone: boolean;
+          auto_broadcast_results: boolean;
           updated_at: string;
         };
         Insert: {
@@ -178,6 +190,7 @@ export interface Database {
           collect_message?: boolean;
           allow_guest_edit?: boolean;
           require_phone?: boolean;
+          auto_broadcast_results?: boolean;
           updated_at?: string;
         };
         Update: Partial<Database['public']['Tables']['event_settings']['Insert']>;
@@ -277,6 +290,10 @@ export interface Database {
           companions_count: number;
           companions_names: Json;
           message: string | null;
+          // Set once a door check-in scan actually uses this guest's entry
+          // pass — null means never scanned. See
+          // 20260908000003_guest_check_in.sql.
+          checked_in_at: string | null;
           responded_at: string;
           updated_at: string;
         };
@@ -288,6 +305,7 @@ export interface Database {
           companions_count?: number;
           companions_names?: Json;
           message?: string | null;
+          checked_in_at?: string | null;
           responded_at?: string;
           updated_at?: string;
         };

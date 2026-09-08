@@ -13,6 +13,7 @@ export const eventTypes = [
 
 export const eventVisibilities = ['public', 'private'] as const;
 export const eventLocales = ['ar', 'en'] as const;
+export const eventTracks = ['invitation', 'rsvp', 'institutional'] as const;
 
 const optionalUrl = z
   .union([z.url({ error: 'urlInvalid' }), z.literal('')])
@@ -49,6 +50,12 @@ export const eventFormSchema = z.object({
   isPasswordProtected: z.boolean(),
   password: optionalText,
   eventEndDate: optionalDateTime,
+  // Set once, at creation only — see EventForm's `track` prop, which is
+  // only ever passed when creating (never editing, since an event's
+  // track can't change after the fact). Left undefined when editing an
+  // event created before this existed, which keeps that event's track
+  // honestly "unknown" rather than guessed at.
+  track: z.enum(eventTracks).optional(),
   // Institutional track only — see EventForm's `track` prop. Left
   // undefined/blank for the other two tracks.
   organizationName: optionalText,

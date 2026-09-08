@@ -129,6 +129,7 @@ export async function createEventFromQuickStartAction(
     const event = await createEvent(supabase, organizationId, user.id, {
       name: draft.name,
       type: eventType as (typeof eventTypes)[number],
+      track: draft.track,
       description: draft.description || undefined,
       eventDate: toIsoOrUndefined(draft.eventDate),
       rsvpDeadline: toIsoOrUndefined(draft.rsvpDeadline),
@@ -184,6 +185,7 @@ export async function createEventFromQuickStartAction(
           collectMessage: settings.collect_message,
           allowGuestEdit: settings.allow_guest_edit,
           requirePhone: settings.require_phone,
+          autoBroadcastResults: settings.auto_broadcast_results,
         });
       }
     } catch {

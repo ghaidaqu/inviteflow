@@ -491,7 +491,8 @@
     "instructions": "Ready — point the camera at the code.",
     "cameraError": "Couldn't open the camera. Check that the browser has permission to use it.",
     "checkedIn": "Checked in {name} ({count, plural, one {# guest} other {# guests}}).",
-    "alreadyCheckedIn": "{name} is already checked in.",
+    "alreadyCheckedIn": "{name} is already checked in — at {time}.",
+    "scanning": "Checking...",
     "scanNext": "Scan another code",
     "errors": {
       "unauthorized": "You need to be signed in to do this.",

@@ -491,7 +491,8 @@
     "instructions": "جاهز — وجّه الكاميرا للرمز.",
     "cameraError": "ما قدرنا نفتح الكاميرا. تأكد من إعطاء المتصفح إذن الوصول إليها.",
     "checkedIn": "تم تسجيل حضور {name} ({count, plural, one {# شخص} other {# أشخاص}}).",
-    "alreadyCheckedIn": "{name} مسجّل حضوره من قبل.",
+    "alreadyCheckedIn": "{name} مسجّل حضوره من قبل — الساعة {time}.",
+    "scanning": "جارٍ التحقق...",
     "scanNext": "مسح رمز آخر",
     "errors": {
       "unauthorized": "يجب تسجيل الدخول للقيام بهذا.",

@@ -67,7 +67,11 @@ export default async function EventDetailPage({
       </div>
 
       <div className="mt-6">
-        <EventDetailActions eventId={event.id} status={event.status} />
+        <EventDetailActions
+          eventId={event.id}
+          status={event.status}
+          isQrEnabled={event.is_qr_enabled}
+        />
       </div>
 
       {/* Ticketing was removed from the product entirely — this only ever

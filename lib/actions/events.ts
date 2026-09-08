@@ -44,6 +44,10 @@ function readFormInput(formData: FormData) {
     isPasswordProtected: formData.get('isPasswordProtected') === 'true',
     password: formData.get('password'),
     eventEndDate: formData.get('eventEndDate'),
+    // Only ever set on creation (see EventForm) — `|| undefined` turns
+    // both "field never set" (null) and "" into the same "unknown" the
+    // optional() schema below expects; edits never touch this at all.
+    track: formData.get('track') || undefined,
     organizationName: formData.get('organizationName'),
     organizationLogoUrl: formData.get('organizationLogoUrl'),
   };
@@ -212,6 +216,7 @@ export async function updateEventSettingsAction(
     collectMessage: formData.get('collectMessage') === 'true',
     allowGuestEdit: formData.get('allowGuestEdit') === 'true',
     requirePhone: formData.get('requirePhone') === 'true',
+    autoBroadcastResults: formData.get('autoBroadcastResults') === 'true',
   });
   if (!parsed.success) return { error: 'invalidInput' };
 
