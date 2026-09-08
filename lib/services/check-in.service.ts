@@ -5,6 +5,15 @@ import type { Database } from '@/types/supabase';
 type Client = SupabaseClient<Database>;
 
 /**
+ * How long after an event a door-staff link keeps working. The door
+ * doesn't close the second the event's listed end time passes — people
+ * arrive late, and an organizer who set only a start time still needs the
+ * scanner working all evening — so the link outlives the event by a day
+ * and then stops on its own.
+ */
+const STAFF_LINK_GRACE_MS = 24 * 60 * 60 * 1000;
+
+/**
  * Resolves the per-event door-staff secret (events.check_in_token, see
  * 20260908000004) to the event it opens. Uses the service role because
  * the caller is by definition unauthenticated — the whole point of the
@@ -13,8 +22,14 @@ type Client = SupabaseClient<Database>;
  * The token is the only credential, so it's checked exactly and nothing
  * about the event is returned unless it matches: no listing, no guessing
  * by id, and a regenerated token silently invalidates the old link.
- * Returns null for an unknown token, a deleted event, or one that isn't
- * published (a draft has no real guests to admit yet).
+ *
+ * Returns null for an unknown token, a deleted event, one that isn't
+ * published, or one whose night is over. That last check is the point:
+ * these links get forwarded around WhatsApp and would otherwise keep
+ * working forever, long after anyone should still be admitting guests —
+ * so it expires itself rather than relying on the organizer remembering
+ * to revoke it. An event with no date at all has nothing to expire
+ * against and stays valid until revoked by hand.
  */
 export async function getEventByCheckInToken(
   token: string,
@@ -22,11 +37,15 @@ export async function getEventByCheckInToken(
   const admin = createAdminClient();
   const { data } = await admin
     .from('events')
-    .select('id, name, status')
+    .select('id, name, status, event_date, event_end_date')
     .eq('check_in_token', token)
     .is('deleted_at', null)
     .maybeSingle();
   if (!data || data.status !== 'published') return null;
+
+  const endsAt = data.event_end_date ?? data.event_date;
+  if (endsAt && Date.now() > new Date(endsAt).getTime() + STAFF_LINK_GRACE_MS) return null;
+
   return { id: data.id, name: data.name };
 }
 

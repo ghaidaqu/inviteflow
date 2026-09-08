@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { GuestCheckInScanner } from '@/components/dashboard/guest-check-in-scanner';
-import { CopyLinkButton } from '@/components/dashboard/copy-link-button';
+import { StaffLinkPanel } from '@/components/dashboard/staff-link-panel';
 import { Link } from '@/i18n/navigation';
 
 // The door-scanning tool for an event with entry QR enabled — an
@@ -32,7 +32,8 @@ export default async function EventCheckInPage({
   if (!event) notFound();
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
-  const staffLink = `${appUrl}/${locale}/check-in/${event.check_in_token}`;
+  const staffLinkBase = `${appUrl}/${locale}/check-in/`;
+  const staffLink = `${staffLinkBase}${event.check_in_token}`;
 
   return (
     <main className="mx-auto w-full max-w-md px-4 py-8 sm:px-6">
@@ -53,16 +54,7 @@ export default async function EventCheckInPage({
           app/[locale]/check-in/[token]). It's a real credential: anyone
           holding it can mark guests arrived, so it's shown here only, not
           alongside the ordinary public invitation link. */}
-      <div className="bg-card mt-6 rounded-xl border p-4">
-        <p className="text-sm font-medium">{t('staffLinkLabel')}</p>
-        <p className="text-muted-foreground mt-1 text-sm">{t('staffLinkHint')}</p>
-        <p className="text-muted-foreground mt-3 text-xs break-all" dir="ltr">
-          {staffLink}
-        </p>
-        <div className="mt-2">
-          <CopyLinkButton link={staffLink} />
-        </div>
-      </div>
+      <StaffLinkPanel eventId={id} initialLink={staffLink} linkBase={staffLinkBase} />
     </main>
   );
 }

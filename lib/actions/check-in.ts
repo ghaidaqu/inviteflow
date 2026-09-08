@@ -1,5 +1,8 @@
 'use server';
 
+import { randomUUID } from 'node:crypto';
+import { revalidatePath } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
@@ -72,6 +75,40 @@ export async function checkInGuestAction(
   } catch {
     return { error: 'unknown' };
   }
+}
+
+/**
+ * Issues a fresh door-staff secret for one event, which is also how the
+ * old link gets revoked — there's only ever one valid token per event, so
+ * replacing it silently kills every copy of the previous URL sitting in
+ * someone's WhatsApp. For the ordinary "the event is over" case nobody
+ * needs to press this at all (see STAFF_LINK_GRACE_MS); it's for the
+ * cases that can't wait, like different door staff between two events.
+ */
+export async function regenerateCheckInTokenAction(
+  eventId: string,
+): Promise<{ error?: 'unauthorized' | 'unknown'; token?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: 'unauthorized' };
+
+  const organizationId = await getCurrentOrganizationId(supabase, user.id);
+  if (!organizationId) return { error: 'unknown' };
+
+  const token = randomUUID();
+  const { error } = await supabase
+    .from('events')
+    .update({ check_in_token: token })
+    .eq('id', eventId)
+    // Belt and braces alongside RLS: an id from another organization
+    // matches no row here rather than quietly rotating someone else's.
+    .eq('organization_id', organizationId);
+  if (error) return { error: 'unknown' };
+
+  revalidatePath(`/${await getLocale()}/dashboard/events/${eventId}/check-in`);
+  return { token };
 }
 
 /**

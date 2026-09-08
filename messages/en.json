@@ -500,7 +500,10 @@
       "rateLimited": "Too many scans in a short time — wait a moment."
     },
     "staffLinkLabel": "Door-staff scanner link",
-    "staffLinkHint": "Share it with whoever's on the door — it opens the scanner with no login. Don't post it publicly."
+    "staffLinkHint": "Share it with whoever's on the door — it opens the scanner with no login. It expires a day after the event. Don't post it publicly.",
+    "regenerate": "New link",
+    "regenerating": "Generating...",
+    "regenerated": "A new link was created. The old one no longer works — send the new one to your door staff."
   },
   "Questions": {
     "title": "Custom Questions",
