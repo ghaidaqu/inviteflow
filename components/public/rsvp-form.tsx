@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { PhoneInput } from '@/components/ui/phone-input';
 import { Textarea } from '@/components/ui/textarea';
 import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RsvpStatusPicker } from '@/components/public/rsvp-status-picker';
 import {
@@ -36,6 +37,7 @@ type FormValues = {
   companionsNames: { name: string }[];
   message: string;
   answers: Record<string, string | string[] | boolean>;
+  consent: boolean;
 };
 
 // One page, one submission — name, phone/email, response, companions, the
@@ -75,6 +77,7 @@ export function RsvpForm({
       companionsNames: [],
       message: '',
       answers: {},
+      consent: false,
     },
   });
 
@@ -84,6 +87,10 @@ export function RsvpForm({
     setServerError(null);
     if (!values.status || !values.guestName) {
       setServerError('invalidInput');
+      return;
+    }
+    if (!values.consent) {
+      setServerError('consentRequired');
       return;
     }
     if (settings.require_phone && !values.phone.trim()) {
@@ -259,6 +266,31 @@ export function RsvpForm({
             ))}
           </div>
         )}
+
+        <Field data-invalid={serverError === 'consentRequired'}>
+          <label className="flex cursor-pointer items-start gap-2.5 text-sm">
+            <Controller
+              control={control}
+              name="consent"
+              render={({ field }) => (
+                <Checkbox
+                  className="mt-0.5"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
+            />
+            <span className="text-muted-foreground">
+              {t.rich('consentLabel', {
+                privacyLink: (chunks) => (
+                  <Link href="/privacy" target="_blank" className="text-primary underline">
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </span>
+          </label>
+        </Field>
 
         <Button type="submit" disabled={isPending} className="w-full">
           {isPending ? t('submitting') : t('submit')}

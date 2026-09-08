@@ -439,10 +439,12 @@
     "questionsFollowUpButton": "الإجابة على الأسئلة",
     "rsvpQuestionsPageSubtitle": "أسئلة من المنظّم — منفصلة تمامًا عن ردك على الدعوة.",
     "noQuestions": "لا توجد أسئلة لهذه المناسبة بعد.",
+    "consentLabel": "أوافق على معالجة بياناتي وفق <privacyLink>سياسة الخصوصية</privacyLink>",
     "errors": {
       "invalidInput": "يرجى التحقق من البيانات المُدخلة.",
       "answerRequired": "يرجى الإجابة على جميع الأسئلة المطلوبة.",
       "phoneRequired": "رقم الجوال إلزامي لهذه المناسبة.",
+      "consentRequired": "يجب الموافقة على سياسة الخصوصية للمتابعة.",
       "notConfigured": "لم يتم ربط المشروع بقاعدة بيانات Supabase بعد.",
       "submitFailed": "تعذّر إرسال الرد، حاول مرة أخرى.",
       "rateLimited": "محاولات كثيرة خلال وقت قصير، يرجى المحاولة بعد دقيقة."

@@ -439,10 +439,12 @@
     "questionsFollowUpButton": "Answer the questions",
     "rsvpQuestionsPageSubtitle": "Questions from the organizer — completely separate from your invitation response.",
     "noQuestions": "No questions for this event yet.",
+    "consentLabel": "I agree to my data being processed per the <privacyLink>privacy policy</privacyLink>",
     "errors": {
       "invalidInput": "Please check the information you entered.",
       "answerRequired": "Please answer all required questions.",
       "phoneRequired": "A phone number is required for this event.",
+      "consentRequired": "You must agree to the privacy policy to continue.",
       "notConfigured": "This project isn't connected to a Supabase database yet.",
       "submitFailed": "Couldn't submit your response, please try again.",
       "rateLimited": "Too many attempts in a short time — please try again in a minute."
