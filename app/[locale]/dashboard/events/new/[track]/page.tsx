@@ -1,41 +1,26 @@
-import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { EventForm } from '@/components/dashboard/event-form';
-import { createEventAction } from '@/lib/actions/events';
-import { Link } from '@/i18n/navigation';
+import { redirect } from 'next/navigation';
 
-const TRACKS = ['invitation', 'rsvp', 'institutional'] as const;
-type Track = (typeof TRACKS)[number];
+const TRACKS = ['invitation', 'rsvp'] as const;
 
-function isTrack(value: string): value is Track {
-  return (TRACKS as readonly string[]).includes(value);
-}
-
-export default async function NewEventPage({
+/**
+ * Kept only as a redirect. This route used to render the dashboard's own
+ * bare EventForm, which was a second, worse way to create the same thing:
+ * it had no "try it before you commit" step and — because createEvent
+ * defaults to 'draft' — left the organizer with an event whose
+ * invitations sent but whose Accept/Decline replies were rejected
+ * server-side, and whose public link 404'd until they noticed the publish
+ * button. The wizard at /start/[track] publishes on creation and offers
+ * the trial send, so it's the only creation path now.
+ *
+ * An unknown track lands on the chooser rather than a 404 — arriving here
+ * by a stale link should put you somewhere useful.
+ */
+export default async function LegacyNewEventPage({
   params,
 }: {
   params: Promise<{ locale: string; track: string }>;
 }) {
   const { locale, track } = await params;
-  setRequestLocale(locale);
-  if (!isTrack(track)) notFound();
-
-  const t = await getTranslations('Events.newChooser');
-  const tNav = await getTranslations('Dashboard.nav');
-
-  return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
-      {/* Matches the breadcrumb-back on the event subpages. Abandoning a
-          half-filled create form previously meant using the browser's back
-          button — the page offered no way out of its own. */}
-      <Link
-        href="/dashboard/events"
-        className="text-muted-foreground hover:text-primary text-sm hover:underline"
-      >
-        {tNav('events')}
-      </Link>
-      <h1 className="mt-2 mb-6 text-2xl font-bold tracking-tight">{t(`${track}.title`)}</h1>
-      <EventForm action={createEventAction} track={track} />
-    </main>
-  );
+  const isKnown = (TRACKS as readonly string[]).includes(track);
+  redirect(isKnown ? `/${locale}/start/${track}` : `/${locale}/dashboard/events/new`);
 }
