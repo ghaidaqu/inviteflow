@@ -71,7 +71,6 @@ export default async function EventDetailPage({
         <EventDetailActions
           eventId={event.id}
           status={event.status}
-          isPaid={event.is_paid}
           isQrEnabled={event.is_qr_enabled}
         />
       </div>
