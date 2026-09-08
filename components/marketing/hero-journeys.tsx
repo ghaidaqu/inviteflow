@@ -120,7 +120,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
                     <Icon className="size-5" />
                   </span>
                   <span className="flex flex-col gap-1">
-                    <span className="text-sm font-semibold tracking-wide sm:text-base">
+                    <span className="text-xs font-semibold tracking-wide">
                       {tt(`${key}.title`)}
                     </span>
                     <span className="font-display text-foreground text-lg sm:text-xl">
