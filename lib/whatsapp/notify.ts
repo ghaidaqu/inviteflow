@@ -185,11 +185,17 @@ export async function sendGuestQrWhatsApp(
   guestName: string,
   phone: string,
   locale: Locale,
+  /** The guest's own link, appended to the caption so it's tappable right
+   *  in the chat. A WhatsApp image can't itself be a hyperlink — only
+   *  text is auto-linked — so tapping the card image alone goes nowhere;
+   *  this is the tappable route to the same place the QR encodes. */
+  link?: string,
 ): Promise<void> {
-  const caption =
+  const base =
     locale === 'ar'
       ? `رمز دخولك لـ "${eventName}" يا ${guestName} — أظهره عند الوصول.`
       : `Your entry QR for "${eventName}", ${guestName} — show it when you arrive.`;
+  const caption = link ? `${base}\n${link}` : base;
 
   try {
     await whatsAppProvider.send({ to: phone, text: caption, imageUrl: qrUrl });

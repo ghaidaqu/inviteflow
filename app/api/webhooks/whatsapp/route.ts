@@ -246,7 +246,14 @@ export async function POST(request: NextRequest) {
         // limitation, not something this change introduces.
         const qrUrl = await generateAndUploadEntryCard(`guest-${guestId}`, editUrl, 1);
         if (qrUrl) {
-          await sendGuestQrWhatsApp(event.name, qrUrl, result.guest_name, message.from, locale);
+          await sendGuestQrWhatsApp(
+            event.name,
+            qrUrl,
+            result.guest_name,
+            message.from,
+            locale,
+            editUrl,
+          );
         }
       }
     }

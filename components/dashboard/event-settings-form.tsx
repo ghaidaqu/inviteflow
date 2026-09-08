@@ -45,8 +45,12 @@ export function EventSettingsForm({
   >({
     resolver: zodResolver(eventSettingsFormSchema),
     defaultValues: {
-      allowAttending: settings.allow_attending,
-      allowNotAttending: settings.allow_not_attending,
+      // One switch drives both columns now — "can guests respond at all",
+      // rather than accept and decline as two separate decisions nobody
+      // was actually making separately. An existing event with only one
+      // of them on reads as "on" here, and saving writes both.
+      allowAttending: settings.allow_attending || settings.allow_not_attending,
+      allowNotAttending: settings.allow_attending || settings.allow_not_attending,
       collectCompanions: settings.collect_companions,
       maxCompanions: settings.max_companions,
       collectMessage: settings.collect_message,
@@ -63,7 +67,8 @@ export function EventSettingsForm({
     setSaved(false);
     const formData = new FormData();
     formData.set('allowAttending', String(values.allowAttending));
-    formData.set('allowNotAttending', String(values.allowNotAttending));
+    // Same value, deliberately — see the defaultValues comment above.
+    formData.set('allowNotAttending', String(values.allowAttending));
     formData.set('collectCompanions', String(values.collectCompanions));
     formData.set('maxCompanions', String(values.maxCompanions));
     formData.set('collectMessage', String(values.collectMessage));
@@ -94,7 +99,7 @@ export function EventSettingsForm({
       <FieldGroup>
         <Field orientation="horizontal">
           <FieldLabel htmlFor="allowAttending" className="flex-1 font-normal">
-            {t('allowAttendingLabel')}
+            {t('allowResponseLabel')}
             {isPublished && <FieldDescription>{t('lockedAfterPublishHint')}</FieldDescription>}
           </FieldLabel>
           <Controller
@@ -112,28 +117,8 @@ export function EventSettingsForm({
         </Field>
 
         <Field orientation="horizontal">
-          <FieldLabel htmlFor="allowNotAttending" className="flex-1 font-normal">
-            {t('allowNotAttendingLabel')}
-            <FieldDescription>{t('allowNotAttendingHint')}</FieldDescription>
-          </FieldLabel>
-          <Controller
-            control={control}
-            name="allowNotAttending"
-            render={({ field }) => (
-              <Switch
-                id="allowNotAttending"
-                checked={field.value}
-                onCheckedChange={field.onChange}
-                disabled={isPublished}
-              />
-            )}
-          />
-        </Field>
-
-        <Field orientation="horizontal">
           <FieldLabel htmlFor="requirePhone" className="flex-1 font-normal">
             {t('requirePhoneLabel')}
-            <FieldDescription>{t('requirePhoneHint')}</FieldDescription>
           </FieldLabel>
           <Controller
             control={control}
@@ -147,7 +132,6 @@ export function EventSettingsForm({
         <Field orientation="horizontal">
           <FieldLabel htmlFor="collectCompanions" className="flex-1 font-normal">
             {t('collectCompanionsLabel')}
-            <FieldDescription>{t('collectCompanionsHint')}</FieldDescription>
           </FieldLabel>
           <Controller
             control={control}
@@ -191,7 +175,6 @@ export function EventSettingsForm({
         <Field orientation="horizontal">
           <FieldLabel htmlFor="allowGuestEdit" className="flex-1 font-normal">
             {t('allowGuestEditLabel')}
-            <FieldDescription>{t('allowGuestEditHint')}</FieldDescription>
           </FieldLabel>
           <Controller
             control={control}

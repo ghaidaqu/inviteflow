@@ -36,7 +36,12 @@ export default async function EventGuestsPage({
         {event.name}
       </Link>
       <h1 className="mt-2 mb-6 text-2xl font-bold tracking-tight">{t('title')}</h1>
-      <GuestsTable eventId={id} eventName={event.name} guests={guests} />
+      <GuestsTable
+        eventId={id}
+        eventName={event.name}
+        guests={guests}
+        isLinkTrack={event.track === 'rsvp'}
+      />
     </main>
   );
 }

@@ -39,6 +39,7 @@ export default async function EventDetailPage({
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
   const publicLink = `${appUrl}/${event.primary_locale}/events/${event.slug}`;
   const reminders = await listEventReminders(supabase, id);
+  const isLinkTrack = event.track === 'rsvp';
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
@@ -79,17 +80,24 @@ export default async function EventDetailPage({
           rendering because a handful of events created before that removal
           may have is_rsvp_enabled: false on record. */}
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {/* A Link-track event has no guest list the organizer builds and
+            nothing we send on their behalf — everyone arrives through the
+            one public link and registers themselves — so this reads as
+            "الردود", not "الضيوف", and the settings behind it aren't a
+            "digital invitation" either. */}
         <ToolCard
           href={`/dashboard/events/${event.id}/guests`}
           icon={UsersIcon}
-          label={t('detail.guestsButton')}
+          label={isLinkTrack ? t('detail.responsesButton') : t('detail.guestsButton')}
         />
         {event.is_rsvp_enabled && (
           <>
             <ToolCard
               href={`/dashboard/events/${event.id}/invitation`}
               icon={MailIcon}
-              label={t('detail.invitationButton')}
+              label={
+                isLinkTrack ? t('detail.responseSettingsButton') : t('detail.invitationButton')
+              }
             />
             <ToolCard
               href={`/dashboard/events/${event.id}/rsvp`}

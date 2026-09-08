@@ -4,11 +4,10 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { BrandMark } from '@/components/brand-mark';
-import { Button } from '@/components/ui/button';
+import { SiteNavActions } from '@/components/marketing/site-nav-actions';
 import { ArrowUpRightIcon } from 'lucide-react';
 
 export function SiteNav() {
-  const t = useTranslations('HomePage.nav');
   const tInstitutional = useTranslations('Institutional');
   const tBrand = useTranslations('Brand');
 
@@ -40,15 +39,7 @@ export function SiteNav() {
             {tInstitutional('nav')}
             <ArrowUpRightIcon className="size-3.5" />
           </Link>
-          <Link
-            href="/login"
-            className="text-muted-foreground hover:text-foreground text-sm font-medium"
-          >
-            {t('loginLink')}
-          </Link>
-          <Button size="sm" nativeButton={false} render={<Link href="/try" />}>
-            {t('startLink')}
-          </Button>
+          <SiteNavActions />
           <LanguageSwitcher />
         </div>
       </nav>

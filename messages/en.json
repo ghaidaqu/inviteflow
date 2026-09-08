@@ -335,7 +335,9 @@
           "canceled": "Canceled"
         },
         "cancel": "Cancel"
-      }
+      },
+      "responseSettingsButton": "Response settings",
+      "responsesButton": "Responses"
     },
     "checkout": {
       "title": "Pay to publish",
@@ -460,21 +462,15 @@
   },
   "EventSettings": {
     "invitationPageTitle": "Digital Invitation",
-    "invitationPageSubtitle": "A simple personal invitation — you're hosting, and you decide whether you want a headcount of who's coming, or just to share the details without waiting on a response. This is a separate track from RSVP questions.",
-    "allowAttendingLabel": "Allow accepting the invitation",
-    "lockedAfterPublishHint": "This can't change after the event is published and invitations are sent.",
-    "allowNotAttendingLabel": "Allow declining the invitation",
-    "allowNotAttendingHint": "If off, a guest can only accept — there is no decline option.",
+    "invitationPageSubtitle": "A personal invitation per guest, separate from RSVP questions.",
+    "lockedAfterPublishHint": "Can't be changed after publishing.",
     "requirePhoneLabel": "Phone number required",
-    "requirePhoneHint": "When on, a guest can't submit their response without a phone number.",
     "autoBroadcastResultsLabel": "Auto-send results when the deadline passes",
-    "autoBroadcastResultsHint": "Needs an RSVP deadline set. Once it passes, everyone who left a phone or email gets a summary of who's attending — no need to send it yourself.",
-    "collectCompanionsLabel": "Collect companion names",
-    "collectCompanionsHint": "Turn on if guests can bring additional people.",
+    "autoBroadcastResultsHint": "Needs an RSVP deadline set.",
+    "collectCompanionsLabel": "Allow companions",
     "maxCompanionsLabel": "Maximum companions",
     "collectMessageLabel": "Allow a message to the organizer",
-    "allowGuestEditLabel": "Allow guests to edit their response later",
-    "allowGuestEditHint": "If off, a response is final and guests can't change it.",
+    "allowGuestEditLabel": "Let guests edit their response",
     "saving": "Saving...",
     "saveButton": "Save settings",
     "saved": "Settings saved successfully.",
@@ -483,7 +479,7 @@
       "unauthorized": "You must be logged in to do this.",
       "unknown": "Something went wrong, please try again."
     },
-    "allowResponseLabel": "Allow guests to accept or decline"
+    "allowResponseLabel": "Allow accept or decline"
   },
   "CheckIn": {
     "pageTitle": "QR Check-in",

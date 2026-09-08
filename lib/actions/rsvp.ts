@@ -187,7 +187,14 @@ export async function submitRsvpAction(
       );
 
       if (qrCardUrl && eventName) {
-        await sendGuestQrWhatsApp(eventName, qrCardUrl, parsed.data.guestName, phone, locale);
+        await sendGuestQrWhatsApp(
+          eventName,
+          qrCardUrl,
+          parsed.data.guestName,
+          phone,
+          locale,
+          editUrl,
+        );
       }
     }
 
@@ -305,6 +312,7 @@ export async function updateRsvpAction(
                 guest.name ?? '',
                 guest.phone,
                 locale,
+                editUrl,
               );
             }
           }

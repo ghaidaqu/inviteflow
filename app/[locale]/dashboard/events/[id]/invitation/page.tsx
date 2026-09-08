@@ -22,6 +22,7 @@ export default async function EventInvitationSettingsPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('EventSettings');
+  const tDetail = await getTranslations('Events.detail');
 
   const supabase = await createClient();
   const {
@@ -44,8 +45,12 @@ export default async function EventInvitationSettingsPage({
       >
         {event.name}
       </Link>
-      <h1 className="mt-2 mb-1 text-2xl font-bold tracking-tight">{t('invitationPageTitle')}</h1>
-      <p className="text-muted-foreground mb-6">{t('invitationPageSubtitle')}</p>
+      {/* Same settings either way — they govern what the RSVP form asks
+          for — but calling them "الدعوة الرقمية" on a Link-track event is
+          just wrong: that event has no digital invitation. */}
+      <h1 className="mt-2 mb-6 text-2xl font-bold tracking-tight">
+        {event.track === 'rsvp' ? tDetail('responseSettingsButton') : t('invitationPageTitle')}
+      </h1>
 
       <div className="bg-card rounded-xl border p-5">
         <EventSettingsForm

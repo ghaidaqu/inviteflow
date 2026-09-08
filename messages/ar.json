@@ -335,7 +335,9 @@
           "canceled": "مُلغى"
         },
         "cancel": "إلغاء"
-      }
+      },
+      "responseSettingsButton": "إعدادات الرد",
+      "responsesButton": "الردود"
     },
     "checkout": {
       "title": "الدفع لنشر المناسبة",
@@ -460,21 +462,15 @@
   },
   "EventSettings": {
     "invitationPageTitle": "الدعوة الرقمية",
-    "invitationPageSubtitle": "دعوة شخصية مباشرة، منفصلة تمامًا عن أسئلة RSVP: إما لمعرفة عدد الحضور، أو لإيصال التفاصيل دون انتظار رد.",
-    "allowAttendingLabel": "السماح بالموافقة على الحضور",
-    "lockedAfterPublishHint": "لا يمكن تغيير هذا بعد نشر المناسبة وإرسال الدعوات.",
-    "allowNotAttendingLabel": "السماح بالاعتذار عن الحضور",
-    "allowNotAttendingHint": "عند التعطيل، يقتصر رد الضيف على الموافقة فقط، دون خيار الاعتذار.",
+    "invitationPageSubtitle": "دعوة شخصية لكل ضيف، منفصلة عن أسئلة RSVP.",
+    "lockedAfterPublishHint": "لا يمكن تغييره بعد النشر.",
     "requirePhoneLabel": "رقم الجوال إلزامي",
-    "requirePhoneHint": "عند التفعيل، ما يقدر الضيف يرسل ردّه بدون رقم جوال.",
-    "autoBroadcastResultsLabel": "أرسل النتيجة تلقائيًا عند انتهاء الموعد",
-    "autoBroadcastResultsHint": "يحتاج تحديد موعد نهائي للرد. عند وصوله، يوصل كل من سجّل رقم جواله أو بريده تلخيص للحضور والغياب — بدون ما تضطر ترسله بنفسك.",
-    "collectCompanionsLabel": "جمع أسماء المرافقين",
-    "collectCompanionsHint": "فعّل هذا الخيار إذا كانت الدعوة تسمح للضيف باصطحاب مرافقين.",
+    "autoBroadcastResultsLabel": "إرسال النتيجة تلقائيًا عند انتهاء الموعد",
+    "autoBroadcastResultsHint": "يحتاج موعدًا نهائيًا للرد.",
+    "collectCompanionsLabel": "السماح بالمرافقين",
     "maxCompanionsLabel": "الحد الأقصى للمرافقين",
     "collectMessageLabel": "السماح برسالة للمنظّم",
-    "allowGuestEditLabel": "السماح للضيف بتعديل رده لاحقًا",
-    "allowGuestEditHint": "عند التعطيل، يكون رد الضيف نهائيًا ولا يمكن تعديله لاحقًا.",
+    "allowGuestEditLabel": "السماح للضيف بتعديل رده",
     "saving": "جارٍ الحفظ...",
     "saveButton": "حفظ الإعدادات",
     "saved": "تم حفظ الإعدادات بنجاح.",
@@ -483,7 +479,7 @@
       "unauthorized": "يجب تسجيل الدخول للقيام بهذا.",
       "unknown": "حدث خطأ ما، يرجى المحاولة مرة أخرى."
     },
-    "allowResponseLabel": "السماح بالموافقة أو الاعتذار عن الحضور"
+    "allowResponseLabel": "السماح بالموافقة أو الاعتذار"
   },
   "CheckIn": {
     "pageTitle": "تسجيل الحضور بالباركود",

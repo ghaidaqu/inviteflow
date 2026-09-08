@@ -66,10 +66,17 @@ export function GuestsTable({
   eventId,
   eventName,
   guests,
+  isLinkTrack,
 }: {
   eventId: string;
   eventName: string;
   guests: GuestWithResponse[];
+  /** Link-track events have no guest list to build and nothing to send:
+   *  the organizer shares one public link themselves and everyone who
+   *  opens it registers their own name and phone. Adding a guest by hand
+   *  or sending them a WhatsApp invitation from us both belong to the
+   *  Digital Invitation track only — this list is purely "who responded". */
+  isLinkTrack?: boolean;
 }) {
   const t = useTranslations('Guests');
   const tErrors = useTranslations('Guests.errors');
@@ -223,10 +230,12 @@ export function GuestsTable({
             ))}
           </SelectContent>
         </Select>
-        <AddGuestsDialog
-          eventId={eventId}
-          existingPhones={guests.map((g) => g.phone ?? '').filter(Boolean)}
-        />
+        {!isLinkTrack && (
+          <AddGuestsDialog
+            eventId={eventId}
+            existingPhones={guests.map((g) => g.phone ?? '').filter(Boolean)}
+          />
+        )}
         <Button variant="outline" onClick={handleExportCsv}>
           <DownloadIcon /> {t('exportCsv')}
         </Button>
@@ -290,7 +299,7 @@ export function GuestsTable({
                     </td>
                     <td className="p-3">
                       <div className="flex items-center justify-end gap-1">
-                        {guest.phone && (
+                        {guest.phone && !isLinkTrack && (
                           <Button
                             variant="ghost"
                             size="icon-sm"

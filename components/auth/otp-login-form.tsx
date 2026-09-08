@@ -103,103 +103,116 @@ export function OtpLoginForm({ method, next }: { method: Method; next?: string }
 
   const identifier = method === 'phone' ? phone : email;
 
-  return (
-    <FieldGroup>
-      {serverError && (
-        <Alert variant="destructive">
-          <AlertDescription>{tErrors(serverError)}</AlertDescription>
-        </Alert>
-      )}
+  // A real <form> (not just buttons) so Enter submits from any field — the
+  // step decides which handler runs, since both steps live in this one
+  // form. Without this, Enter did nothing at all and the only way through
+  // was clicking the button.
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (isPending) return;
+    if (step === 'request') requestCode();
+    else verifyCode();
+  }
 
-      {step === 'request' ? (
-        <>
-          {method === 'phone' ? (
+  return (
+    <form onSubmit={handleSubmit}>
+      <FieldGroup>
+        {serverError && (
+          <Alert variant="destructive">
+            <AlertDescription>{tErrors(serverError)}</AlertDescription>
+          </Alert>
+        )}
+
+        {step === 'request' ? (
+          <>
+            {method === 'phone' ? (
+              <Field data-invalid={!!fieldError}>
+                <FieldLabel htmlFor="otp-phone">{t('phoneLabel')}</FieldLabel>
+                <PhoneInput
+                  id="otp-phone"
+                  aria-invalid={!!fieldError}
+                  value={phone}
+                  onChange={setPhone}
+                />
+                <FieldDescription>
+                  {fieldError ? tValidation(fieldError) : t('phoneHint')}
+                </FieldDescription>
+              </Field>
+            ) : (
+              <Field data-invalid={!!fieldError}>
+                <FieldLabel htmlFor="otp-email">{t('emailLabel')}</FieldLabel>
+                <Input
+                  id="otp-email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {fieldError && <FieldDescription>{tValidation(fieldError)}</FieldDescription>}
+              </Field>
+            )}
+
+            <Button type="submit" disabled={isPending} className="w-full">
+              {isPending
+                ? t('sending')
+                : method === 'phone'
+                  ? t('sendPhoneCode')
+                  : t('sendEmailCode')}
+            </Button>
+          </>
+        ) : (
+          <>
+            <p className="text-muted-foreground text-sm">
+              {method === 'phone'
+                ? t('codeSentToPhone', { phone: identifier })
+                : t('codeSentToEmail', { email: identifier })}
+            </p>
+
             <Field data-invalid={!!fieldError}>
-              <FieldLabel htmlFor="otp-phone">{t('phoneLabel')}</FieldLabel>
-              <PhoneInput
-                id="otp-phone"
-                aria-invalid={!!fieldError}
-                value={phone}
-                onChange={setPhone}
-              />
-              <FieldDescription>
-                {fieldError ? tValidation(fieldError) : t('phoneHint')}
-              </FieldDescription>
-            </Field>
-          ) : (
-            <Field data-invalid={!!fieldError}>
-              <FieldLabel htmlFor="otp-email">{t('emailLabel')}</FieldLabel>
+              <FieldLabel htmlFor="otp-code">{t('codeLabel')}</FieldLabel>
               <Input
-                id="otp-email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="otp-code"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                dir="ltr"
+                className="text-center text-lg tracking-[0.5em]"
+                value={code}
+                onChange={(e) => setCode(normalizeDigits(e.target.value).replace(/\D/g, ''))}
               />
               {fieldError && <FieldDescription>{tValidation(fieldError)}</FieldDescription>}
             </Field>
-          )}
 
-          <Button type="button" disabled={isPending} className="w-full" onClick={requestCode}>
-            {isPending
-              ? t('sending')
-              : method === 'phone'
-                ? t('sendPhoneCode')
-                : t('sendEmailCode')}
-          </Button>
-        </>
-      ) : (
-        <>
-          <p className="text-muted-foreground text-sm">
-            {method === 'phone'
-              ? t('codeSentToPhone', { phone: identifier })
-              : t('codeSentToEmail', { email: identifier })}
-          </p>
+            <Button type="submit" disabled={isPending} className="w-full">
+              {isPending ? t('verifying') : t('verify')}
+            </Button>
 
-          <Field data-invalid={!!fieldError}>
-            <FieldLabel htmlFor="otp-code">{t('codeLabel')}</FieldLabel>
-            <Input
-              id="otp-code"
-              type="text"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={6}
-              dir="ltr"
-              className="text-center text-lg tracking-[0.5em]"
-              value={code}
-              onChange={(e) => setCode(normalizeDigits(e.target.value).replace(/\D/g, ''))}
-            />
-            {fieldError && <FieldDescription>{tValidation(fieldError)}</FieldDescription>}
-          </Field>
-
-          <Button type="button" disabled={isPending} className="w-full" onClick={verifyCode}>
-            {isPending ? t('verifying') : t('verify')}
-          </Button>
-
-          <div className="flex items-center justify-between text-sm">
-            <button
-              type="button"
-              className="text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
-              onClick={() => {
-                setStep('request');
-                setCode('');
-                setFieldError(null);
-                setServerError(null);
-              }}
-            >
-              {method === 'phone' ? t('changeNumber') : t('changeEmail')}
-            </button>
-            <button
-              type="button"
-              disabled={isPending}
-              className="text-primary font-medium underline-offset-4 hover:underline disabled:opacity-50"
-              onClick={requestCode}
-            >
-              {t('resendCode')}
-            </button>
-          </div>
-        </>
-      )}
-    </FieldGroup>
+            <div className="flex items-center justify-between text-sm">
+              <button
+                type="button"
+                className="text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
+                onClick={() => {
+                  setStep('request');
+                  setCode('');
+                  setFieldError(null);
+                  setServerError(null);
+                }}
+              >
+                {method === 'phone' ? t('changeNumber') : t('changeEmail')}
+              </button>
+              <button
+                type="button"
+                disabled={isPending}
+                className="text-primary font-medium underline-offset-4 hover:underline disabled:opacity-50"
+                onClick={requestCode}
+              >
+                {t('resendCode')}
+              </button>
+            </div>
+          </>
+        )}
+      </FieldGroup>
+    </form>
   );
 }
