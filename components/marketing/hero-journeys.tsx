@@ -103,7 +103,7 @@ export async function HeroJourneys({ locale }: { locale: string }) {
           {/* Was an eyebrow + a title restating "دعوة رقمية، أو دعوة
               برابط" — redundant once the two rows right below already say
               exactly that, so this is just the one heading now. */}
-          <h2 className="text-primary mb-10 text-sm font-semibold">{tw('eyebrow')}</h2>
+          <h2 className="text-primary mb-10 text-lg font-bold sm:text-xl">{tw('eyebrow')}</h2>
 
           <div className="flex flex-col">
             {JOURNEY_KEYS.map((key, index) => {
