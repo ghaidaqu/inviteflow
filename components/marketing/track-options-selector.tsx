@@ -55,14 +55,14 @@ export function TrackOptionsSelector({
               <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-current/10 ring-1 ring-current/20">
                 <Icon className="size-5" />
               </span>
-              <span className="flex flex-col gap-1">
-                <span className="bg-primary/10 w-fit rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide">
+              <span className="grid min-w-0 grid-rows-[1.75rem_2.5rem_3.5rem] content-center gap-1">
+                <span className="bg-primary/10 flex h-7 w-fit items-center rounded-full px-2.5 text-xs font-semibold tracking-wide">
                   {option.badge}
                 </span>
-                <span className="font-display text-foreground text-lg sm:text-xl">
+                <span className="font-display text-foreground flex items-center text-lg leading-tight sm:text-xl">
                   {option.description}
                 </span>
-                <span className="text-muted-foreground text-sm leading-relaxed">
+                <span className="text-muted-foreground flex items-start text-sm leading-relaxed">
                   {option.features.join(' · ')}
                 </span>
               </span>

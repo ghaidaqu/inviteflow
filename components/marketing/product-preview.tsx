@@ -2,10 +2,13 @@ import { getTranslations } from 'next-intl/server';
 import { BrandMark } from '@/components/brand-mark';
 import {
   BatteryFullIcon,
+  CameraIcon,
   CheckIcon,
   ChevronLeftIcon,
   MapPinIcon,
+  MicIcon,
   PhoneIcon,
+  PlusIcon,
   SignalIcon,
   VideoIcon,
   WifiIcon,
@@ -72,7 +75,6 @@ export async function ProductPreview() {
           </ol>
 
           <figure className="relative mx-auto aspect-[9/19.5] w-full max-w-[20rem] rounded-[3.4rem] border-[8px] border-[#171717] bg-[#171717] p-[5px] shadow-2xl ring-1 ring-black/20">
-            <span className="absolute top-[9px] left-1/2 z-20 h-6 w-[5.6rem] -translate-x-1/2 rounded-full bg-black" />
             <span className="absolute top-24 -right-[11px] h-20 w-[3px] rounded-r bg-[#303030]" />
             <span className="absolute top-28 -left-[11px] h-12 w-[3px] rounded-l bg-[#303030]" />
             <span className="absolute top-44 -left-[11px] h-16 w-[3px] rounded-l bg-[#303030]" />
@@ -95,14 +97,13 @@ export async function ProductPreview() {
                 </span>
                 <span className="min-w-0 flex-1 text-left">
                   <strong className="block truncate text-[13px] leading-4">{t('chatName')}</strong>
-                  <small className="block text-[9px] text-[#667781]">{t('chatStatus')}</small>
                 </span>
                 <VideoIcon className="size-4 text-[#007aff]" />
                 <PhoneIcon className="size-4 text-[#007aff]" />
               </div>
-              <div className="whatsapp-wallpaper absolute inset-x-0 top-[6.25rem] bottom-0" />
+              <div className="whatsapp-wallpaper absolute inset-x-0 top-[6.25rem] bottom-12" />
 
-              <div className="journey-screen journey-invite absolute inset-x-0 top-[6.25rem] bottom-0 flex flex-col justify-center px-3 py-4">
+              <div className="journey-screen journey-invite absolute inset-x-0 top-[6.25rem] bottom-12 flex flex-col justify-center px-3 py-3">
                 <div
                   className="w-[92%] self-end overflow-hidden rounded-xl rounded-tr-sm bg-white shadow-sm"
                   dir="rtl"
@@ -138,7 +139,7 @@ export async function ProductPreview() {
                 </div>
               </div>
 
-              <div className="journey-screen journey-confirm absolute inset-x-0 top-[6.25rem] bottom-0 flex flex-col justify-center px-3 py-4">
+              <div className="journey-screen journey-confirm absolute inset-x-0 top-[6.25rem] bottom-12 flex flex-col justify-center px-3 py-3">
                 <div
                   className="w-[88%] self-end rounded-xl rounded-tr-sm bg-white p-3 shadow-sm"
                   dir="rtl"
@@ -160,7 +161,7 @@ export async function ProductPreview() {
                 </div>
               </div>
 
-              <div className="journey-screen journey-pass absolute inset-x-0 top-[6.25rem] bottom-0 flex flex-col justify-center px-3 py-4">
+              <div className="journey-screen journey-pass absolute inset-x-0 top-[6.25rem] bottom-12 flex flex-col justify-center px-3 py-3">
                 <div
                   className="w-[88%] self-end overflow-hidden rounded-xl rounded-tr-sm bg-white shadow-sm"
                   dir="rtl"
@@ -185,6 +186,19 @@ export async function ProductPreview() {
                     12:34 AM
                   </p>
                 </div>
+              </div>
+
+              <div
+                className="absolute inset-x-0 bottom-0 z-10 flex h-12 items-center gap-2 bg-[#f7f8fa] px-2"
+                dir="ltr"
+              >
+                <PlusIcon className="size-5 shrink-0 text-[#007aff]" />
+                <span className="flex h-8 min-w-0 flex-1 items-center justify-end rounded-full bg-white px-2 ring-1 ring-[#d9dde1]">
+                  <CameraIcon className="size-4 text-[#667781]" />
+                </span>
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#00a884] text-white">
+                  <MicIcon className="size-4" />
+                </span>
               </div>
             </div>
             <figcaption className="sr-only">
