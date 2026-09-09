@@ -10,12 +10,17 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { MailIcon } from 'lucide-react';
 
 /**
- * Never cached. Both because a guest's page must reflect the event and
- * their own response as they stand right now, and because without this a
- * request for a slug/token that does not exist was answered from a
- * prerendered shell with HTTP 200 — a soft 404, which search engines
- * index as a real page. `notFound()` was being called correctly; the
- * status was set before it ran.
+ * Never cached: a guest's page must reflect the event and their own
+ * response as they stand right now.
+ *
+ * Known, unfixed: a missing slug/token renders the correct not-found page
+ * but answers HTTP 200 rather than 404 — a soft 404. notFound() is called
+ * correctly; the status is committed before it runs. Neither
+ * force-dynamic nor a root app/not-found.tsx fixed it, and the root
+ * boundary actively made things worse (it renders its own <html> inside
+ * this segment's layout, producing a blank page), so it was reverted.
+ * Cosmetic for guests, who see the right page; it costs SEO only, and
+ * these are private guest links that should not be indexed anyway.
  */
 export const dynamic = 'force-dynamic';
 
