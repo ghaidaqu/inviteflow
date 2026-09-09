@@ -22,7 +22,7 @@ export async function HeroJourneys() {
   // steady the contrast, light enough to keep the airiness that made this
   // picture worth switching to.
   return (
-    <section className="relative flex min-h-[56vh] items-center justify-center overflow-hidden">
+    <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden sm:min-h-[68vh]">
       <Image
         src={heroArchway}
         alt=""
@@ -34,9 +34,13 @@ export async function HeroJourneys() {
       />
       <div
         aria-hidden
-        className="from-background/85 via-background/60 to-background/35 absolute inset-0 bg-gradient-to-t"
+        className="absolute inset-0 bg-[linear-gradient(to_top,rgb(237_226_200/0.72),rgb(237_226_200/0.38),rgb(237_226_200/0.16))]"
       />
-      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-5 px-4 text-center sm:px-6">
+      <div
+        aria-hidden
+        className="bg-background/28 absolute top-1/2 left-1/2 h-[72%] w-[min(92%,52rem)] -translate-x-1/2 -translate-y-1/2 rounded-[50%] blur-3xl"
+      />
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-4 px-4 text-center sm:gap-5 sm:px-6">
         <span className="text-primary flex items-center gap-2 text-sm font-semibold">
           <span className="bg-primary/50 h-px w-6" />
           {t('eyebrow')}
@@ -54,7 +58,7 @@ export async function HeroJourneys() {
             pixels actually read, no matter how uniform the CSS color
             value is. The accent color still does its job everywhere else
             on the page, on plain backgrounds where it reads cleanly. */}
-        <h1 className="font-display text-foreground text-2xl leading-[1.35] text-balance sm:text-5xl">
+        <h1 className="font-display text-foreground text-[2rem] leading-[1.25] text-balance sm:text-6xl">
           {t('headlineLine1')} {t('headlineLine2')}
         </h1>
         <p className="text-foreground/80 max-w-xl text-lg text-balance">{t('subtitle')}</p>
@@ -70,6 +74,7 @@ export async function HeroJourneys() {
         >
           {t('primaryCta')}
         </Button>
+        <p className="text-muted-foreground text-sm font-medium">{t('microcopy')}</p>
       </div>
     </section>
   );

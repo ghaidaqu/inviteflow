@@ -17,7 +17,8 @@
       "headlineLine1": "Every invitation",
       "headlineLine2": "opens a door",
       "subtitle": "Send your invitation to your guests on WhatsApp, and know who is coming before the day.",
-      "primaryCta": "Start your invitation"
+      "primaryCta": "Create your invitation",
+      "microcopy": "Ready in minutes · no app needed for guests"
     },
     "trustStrip": {
       "item1Title": "No hassle",
@@ -56,6 +57,7 @@
     "tracks": {
       "invitation": {
         "title": "Digital Invitation",
+        "badge": "Individual send",
         "description": "One invitation per guest, by name",
         "feature1": "You send it",
         "feature2": "One-tap reply",
@@ -63,6 +65,7 @@
       },
       "rsvp": {
         "title": "Link Invitation",
+        "badge": "Group link",
         "description": "One link for everyone",
         "feature1": "Post it in group chats",
         "feature2": "They register themselves",
@@ -77,7 +80,7 @@
       "cta": "Start your invitation"
     },
     "ways": {
-      "eyebrow": "Invitation options"
+      "eyebrow": "Choose how to invite"
     },
     "preview": {
       "eyebrow": "What your guest receives",

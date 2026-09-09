@@ -62,8 +62,7 @@
      doesn't cover, never as a visible second typeface. */
   --font-sans: var(--font-amiri), ui-sans-serif, system-ui, sans-serif;
   /* مهلّي identity: warm sand/parchment, terracotta primary, a muted teal
-     secondary (the "link" track's own color, doubling as the reserved
-     interactive accent — no separate neon accent color), deep coffee-brown
+     secondary reserved for selection and focus states, deep coffee-brown
      ink. Replaces the earlier olive/sky/cyan studio palette wholesale
      (colors only — radius stays, it's a shared app-wide constant, not part
      of either brand identity). One theme, applied everywhere (dashboard
@@ -74,6 +73,9 @@
   --card-foreground: #382616;
   --popover: #f6efdc;
   --popover-foreground: #382616;
+  /* These two brand colors are sampled directly from the approved logo.
+     Keep them exact wherever the mark, selected states, invitations, or
+     entry passes appear so the product always reads as one identity. */
   --primary: #96471f;
   --primary-foreground: #f6efdc;
   --secondary: #3d6576;
