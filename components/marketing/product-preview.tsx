@@ -31,12 +31,6 @@ export async function ProductPreview() {
 
         <GuestJourneyScene
           copy={{
-            step1Title: t('animationStep1Title'),
-            step1Body: t('messageCaption'),
-            step2Title: t('animationStep2Title'),
-            step2Body: t('animationStep2Body'),
-            step3Title: t('animationStep3Title'),
-            step3Body: t('passFigCaption'),
             chatName: t('chatName'),
             invitationText: t('chatInvitationText'),
             accept: t('replyYes'),
