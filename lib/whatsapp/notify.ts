@@ -1,6 +1,7 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider, isWhatsAppConfigured } from './index';
+import type { WhatsAppTemplate } from './provider';
 import { recordWhatsAppSend } from '@/lib/services/whatsapp-delivery.service';
 import type { ResultsSummary } from '@/lib/services/results.service';
 
@@ -18,6 +19,36 @@ async function getEventName(eventSlug: string): Promise<string | null> {
   const admin = createAdminClient();
   const { data } = await admin.from('events').select('name').eq('slug', eventSlug).single();
   return data?.name ?? null;
+}
+
+/**
+ * Builds a template descriptor, or undefined when that template isn't
+ * configured.
+ *
+ * Every business-initiated message here goes out long after the guest last
+ * touched us — a reminder the night before, a thank-you the day after,
+ * results once the deadline passes — so all of them are outside Meta's
+ * 24-hour window and all of them are rejected as free text (131047). The
+ * invitation was only the first one we noticed.
+ *
+ * Names are per-message-type env vars so a template can be renamed or
+ * re-approved without a deploy, and an unset one degrades to free-form,
+ * which still works for a guest who replied in the last day.
+ */
+function templateFor(
+  envVar: string,
+  locale: Locale,
+  bodyParams: string[],
+  extra?: { headerImageUrl?: string },
+): WhatsAppTemplate | undefined {
+  const name = process.env[envVar];
+  if (!name) return undefined;
+  return {
+    name,
+    language: process.env[`${envVar}_LANG`] ?? locale,
+    bodyParams,
+    headerImageUrl: extra?.headerImageUrl,
+  };
 }
 
 export async function sendGuestRsvpConfirmationWhatsApp(
@@ -261,8 +292,12 @@ export async function sendGuestQrWhatsApp(
       : `Your entry QR for "${eventName}", ${guestName} — show it when you arrive.`;
   const caption = link ? `${base}\n${link}` : base;
 
+  const template = templateFor('WHATSAPP_ENTRY_PASS_TEMPLATE', locale, [eventName, link ?? ''], {
+    headerImageUrl: qrUrl,
+  });
+
   try {
-    await whatsAppProvider.send({ to: phone, text: caption, imageUrl: qrUrl });
+    await whatsAppProvider.send({ to: phone, text: caption, imageUrl: qrUrl, template });
   } catch (error) {
     console.error('[whatsapp] QR send failed', error);
   }
@@ -305,8 +340,13 @@ export async function sendResultsBroadcastWhatsApp(
       ? `نتيجة الردود على "${eventName}":\n\n${summaryText(locale, summary)}`
       : `Results for "${eventName}":\n\n${summaryText(locale, summary)}`;
 
+  const template = templateFor('WHATSAPP_RESULTS_TEMPLATE', locale, [
+    eventName,
+    summaryText(locale, summary),
+  ]);
+
   try {
-    await whatsAppProvider.send({ to: phone, text });
+    await whatsAppProvider.send({ to: phone, text, template });
     return true;
   } catch (error) {
     console.error('[whatsapp] results broadcast failed', error);

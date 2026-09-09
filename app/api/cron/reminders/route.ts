@@ -122,7 +122,29 @@ export async function GET(request: NextRequest) {
 
     for (const phone of phones) {
       try {
-        await whatsAppProvider.send({ to: phone, text });
+        // Reminders and thank-yous land days after the guest last
+        // touched us, so they are always outside Meta's 24-hour window
+        // and always need a template. Free-form here failed with 131047
+        // for every guest — silently, because the cron never ran either.
+        const templateEnv =
+          reminder.kind === 'day_before'
+            ? process.env.WHATSAPP_REMINDER_TEMPLATE
+            : process.env.WHATSAPP_THANKS_TEMPLATE;
+        const template = templateEnv
+          ? {
+              name: templateEnv,
+              language: locale,
+              bodyParams:
+                reminder.kind === 'day_before'
+                  ? [
+                      event.name,
+                      formatDateTime(event.event_date, locale),
+                      event.location_text ?? '—',
+                    ]
+                  : [event.name],
+            }
+          : undefined;
+        await whatsAppProvider.send({ to: phone, text, template });
         sent += 1;
       } catch (error) {
         console.error('[cron/reminders] send failed', error);
