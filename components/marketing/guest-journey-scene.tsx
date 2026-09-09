@@ -28,7 +28,8 @@ type Copy = {
   accept: string;
   decline: string;
   location: string;
-  confirmedTitle: string;
+  confirmationReply: string;
+  confirmationReceipt: string;
   passTitle: string;
   passCaption: string;
 };
@@ -123,13 +124,11 @@ export function GuestJourneyScene({ copy }: { copy: Copy }) {
           dir="rtl"
         >
           <div className="mr-auto max-w-[72%] rounded-[5px] rounded-tr-none bg-[#d9fdd3] px-[7%] py-[5%] text-right shadow-sm">
-            <p className="text-[6px] font-semibold sm:text-[8px]">{copy.accept}</p>
+            <p className="text-[6px] font-semibold sm:text-[8px]">{copy.confirmationReply}</p>
             <p className="mt-[3%] text-left text-[3px] text-[#667781] sm:text-[4px]">١٢:٢٥ ✓✓</p>
           </div>
           <div className="ml-auto max-w-[88%] rounded-[5px] rounded-tl-none bg-white px-[7%] py-[6%] text-right shadow-sm">
-            <p className="text-[5px] leading-relaxed sm:text-[7px]">
-              {copy.confirmedTitle}: {copy.accept}. شكرًا لك!
-            </p>
+            <p className="text-[5px] leading-relaxed sm:text-[7px]">{copy.confirmationReceipt}</p>
             <p className="mt-[3%] text-left text-[3px] text-[#667781] sm:text-[4px]">١٢:٢٥</p>
           </div>
         </div>

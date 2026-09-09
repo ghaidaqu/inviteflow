@@ -42,7 +42,8 @@ export async function ProductPreview() {
             accept: t('replyYes'),
             decline: t('replyNo'),
             location: t('replyLocation'),
-            confirmedTitle: t('animationConfirmedTitle'),
+            confirmationReply: t('confirmationReply'),
+            confirmationReceipt: t('confirmationReceipt'),
             passTitle: t('passTitle'),
             passCaption: t('passCaption'),
           }}
