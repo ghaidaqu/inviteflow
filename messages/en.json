@@ -252,14 +252,14 @@
         }
       },
       "coverTemplates": {
-        "uploadTab": "Upload your design",
-        "galleryTab": "Choose one of ours",
-        "galleryHint": "A ready-made wedding design — edit the text and colors exactly how you want.",
+        "uploadTab": "Upload your invitation",
+        "galleryTab": "Ready-made",
+        "galleryHint": "A formal invitation, ready to use — edit its text and colors.",
         "templates": {
           "square": "Square invitation",
           "rectangle": "Rectangle invitation"
         },
-        "backToGallery": "Back to designs",
+        "backToGallery": "Back",
         "dragHint": "Drag any line in the preview to move it.",
         "resetPositions": "Reset positions",
         "applyButton": "Download invitation",

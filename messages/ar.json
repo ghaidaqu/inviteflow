@@ -252,15 +252,15 @@
         }
       },
       "coverTemplates": {
-        "uploadTab": "ارفع تصميمك",
-        "galleryTab": "اختر من تصاميمنا",
-        "galleryHint": "تصميم زواج جاهز، عدّل النص والألوان بالضبط زي ما تبي.",
+        "uploadTab": "ارفع دعوتك",
+        "galleryTab": "دعوة جاهزة",
+        "galleryHint": "دعوة رسمية جاهزة، تعدّل نصوصها وألوانها.",
         "templates": {
           "square": "دعوة مربعة",
           "rectangle": "دعوة مستطيلة"
         },
-        "backToGallery": "رجوع للتصاميم",
-        "dragHint": "اسحب أي سطر بالمعاينة لتغيير مكانه.",
+        "backToGallery": "رجوع",
+        "dragHint": "اسحب أي سطر في المعاينة لتغيير موضعه.",
         "resetPositions": "استعادة المواضع",
         "applyButton": "تحميل الدعوة",
         "exporting": "جارٍ التحميل...",
