@@ -68,7 +68,6 @@
         "feature2": "They register themselves",
         "feature3": "Plus your questions"
       },
-      "ctaCaption": "Try your invitation now, free",
       "ctaStart": "Start"
     },
     "closing": {
@@ -78,15 +77,14 @@
       "cta": "Start your invitation"
     },
     "ways": {
-      "eyebrow": "Choose your way",
-      "title": "A digital invitation, or a link invitation"
+      "eyebrow": "Choose your way"
     },
     "preview": {
       "eyebrow": "What your guest sees",
       "title": "Your invitation as you designed it, with a reply button and an entry pass.",
       "messageBody": "You are invited to the wedding of Sara & Ahmed",
       "messageDate": "Thursday 15 October · 8:00 PM",
-      "messagePlace": "Al Masa Hall, Riyadh",
+      "messagePlace": "Al Afrah Hall, Riyadh",
       "replyYes": "Attending",
       "replyNo": "Sorry, cannot",
       "messageCaption": "The invitation you uploaded arrives like this, and one tap replies.",
@@ -176,8 +174,6 @@
       "unknown": "Something went wrong, please try again."
     },
     "validation": {
-      "fullNameTooShort": "Name must be at least 2 characters.",
-      "fullNameTooLong": "Name is too long.",
       "emailInvalid": "Please enter a valid email address.",
       "phoneInvalid": "Please enter a valid phone number in international format (e.g. +966501234567).",
       "otpInvalid": "The code must be 6 digits."
@@ -196,11 +192,9 @@
       "attending": "Attending",
       "notAttending": "Not attending",
       "noResponse": "No response",
-      "totalRevenue": "Revenue (mock)",
       "checkedIn": "Checked in",
       "rsvpBreakdown": "RSVP breakdown",
       "latestResponses": "Latest responses",
-      "latestCheckIns": "Latest check-ins",
       "noData": "No data yet.",
       "status": {
         "attending": "Attending",
@@ -270,10 +264,8 @@
         "applyButton": "Download invitation",
         "exporting": "Downloading...",
         "exportFailed": "Couldn't create the invitation, please try again.",
-        "colorLabel": "Colors",
         "backgroundColorLabel": "Background color",
         "fontColorLabel": "Font color",
-        "customColor": "Custom color",
         "palettes": {
           "mahalli": "Mahalli brown",
           "burgundy": "Burgundy",
@@ -298,11 +290,7 @@
       "localeAr": "Arabic",
       "localeEn": "English",
       "visibilityLabel": "Visibility",
-      "visibilityHint": "\"Private\" blocks the page entirely, even for your own guests.",
-      "visibilityPublic": "Public",
-      "visibilityPrivate": "Private",
       "isQrEnabledLabel": "Entry QR code",
-      "isQrEnabledHint": "Adds a QR code to the public invitation page — it opens the invitation link itself, and can be printed or scanned at the door.",
       "isPasswordProtectedLabel": "Password-protect this page",
       "passwordLabel": "Password",
       "passwordKeepPlaceholder": "Leave empty to keep the current password",
@@ -502,7 +490,6 @@
   },
   "EventSettings": {
     "invitationPageTitle": "Digital Invitation",
-    "invitationPageSubtitle": "A personal invitation per guest, separate from RSVP questions.",
     "lockedAfterPublishHint": "Can't be changed after publishing.",
     "requirePhoneLabel": "Phone number required",
     "autoBroadcastResultsLabel": "Auto-send results when the deadline passes",
@@ -550,7 +537,6 @@
     "rsvpPageSubtitle": "Add your own questions for guests to answer when they respond — works on both the Digital Invitation and the Link Invitation.",
     "questionNumber": "Question {number}",
     "questionTextArLabel": "Question text",
-    "questionTextEnLabel": "Question text (English)",
     "typeLabel": "Answer type",
     "types": {
       "short_text": "Text or number",
@@ -563,7 +549,6 @@
     "isRequiredLabel": "Required question",
     "optionsLabel": "Options",
     "optionTextArPlaceholder": "Option text",
-    "optionTextEnPlaceholder": "Option text (English)",
     "addOption": "Add option",
     "addQuestion": "Add question",
     "save": "Save questions",
@@ -650,7 +635,6 @@
       "nameLabel": "Name",
       "namePlaceholder": "e.g. Khaled Mohammed",
       "phoneLabel": "Phone number",
-      "addRow": "Add another guest",
       "pasteList": "Paste a list",
       "pasteListPlaceholder": "One guest per line, e.g.:\nSultan Mohammed 0501234567\nNora Ahmad, 0559876543\nAbdullah\t+966551112233",
       "pasteListHint": "Copy from Excel, Notes, or anywhere — any separator between name and number. Arabic-Indic digits are read automatically.",

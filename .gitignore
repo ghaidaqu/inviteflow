@@ -45,3 +45,6 @@ next-env.d.ts
 
 # husky generated helper scripts (not meant to be committed)
 .husky/_
+
+# local agent worktrees
+.claude/worktrees
