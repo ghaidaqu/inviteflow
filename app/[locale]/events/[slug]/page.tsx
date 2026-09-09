@@ -14,6 +14,16 @@ import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { CalendarIcon, MapPinIcon, ClockIcon } from 'lucide-react';
 
+/**
+ * Never cached. Both because a guest's page must reflect the event and
+ * their own response as they stand right now, and because without this a
+ * request for a slug/token that does not exist was answered from a
+ * prerendered shell with HTTP 200 — a soft 404, which search engines
+ * index as a real page. `notFound()` was being called correctly; the
+ * status was set before it ran.
+ */
+export const dynamic = 'force-dynamic';
+
 export default async function PublicEventPage({
   params,
 }: {
