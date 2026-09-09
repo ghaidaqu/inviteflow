@@ -22,7 +22,10 @@ export async function HowItWorks() {
         <ol className="mt-6 grid gap-8 sm:grid-cols-3 sm:gap-6">
           {STEPS.map((step, index) => (
             <li key={step} className="flex flex-col gap-2">
-              <span className="text-primary/40 font-display text-3xl tabular-nums">
+              {/* Was text-primary/40, which measured 1.78:1 against the page —
+                  under the 3:1 floor for large text. These are ordinals a
+                  reader actually uses to follow the sequence, not texture. */}
+              <span className="text-primary/70 font-display text-2xl tabular-nums">
                 {String(index + 1).padStart(2, '0')}
               </span>
               <p className="font-display text-lg">{t(`${step}Title`)}</p>

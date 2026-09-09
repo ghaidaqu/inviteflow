@@ -31,7 +31,7 @@ export async function HeroJourneys() {
       />
       <div
         aria-hidden
-        className="from-foreground/95 via-foreground/70 to-foreground/45 absolute inset-0 bg-gradient-to-t"
+        className="from-foreground/95 via-foreground/80 to-foreground/60 absolute inset-0 bg-gradient-to-t"
       />
       <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col items-center gap-4 px-4 text-center sm:px-6">
         <span className="text-primary-foreground/85 flex items-center gap-2 text-xs font-semibold tracking-wide">

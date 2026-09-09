@@ -31,7 +31,7 @@ export async function Faq() {
                 {t(`${q}Question`)}
                 <ChevronDownIcon className="text-muted-foreground size-4 shrink-0 transition-transform group-open:rotate-180" />
               </summary>
-              <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
+              <p className="text-muted-foreground mt-3 max-w-[65ch] text-sm leading-relaxed">
                 {t(`${q}Answer`)}
               </p>
             </details>
