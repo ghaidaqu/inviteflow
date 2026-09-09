@@ -261,6 +261,27 @@ html[dir='rtl'] {
 .journey-screen {
   will-change: opacity, transform;
 }
+
+/* The phone photo is laid out at its own 1448x1086 pixels so everything
+   composited onto it — above all the projective transform that maps a
+   390x844 screen onto the tilted screen in the photo — can be written in
+   the photo's coordinates once and stay correct at every viewport. The
+   scale is measured in JS because CSS can't divide one length by another
+   to produce the unitless number scale() needs. The offsets reproduce the
+   old `object-position: 52%` crop: centred vertically, slightly right of
+   centre horizontally so the screen stays in frame on a narrow phone. */
+.phone-frame {
+  --stage-scale: 1;
+}
+.phone-stage {
+  position: absolute;
+  top: calc((100% - 1086px * var(--stage-scale)) * 0.5);
+  left: calc((100% - 1448px * var(--stage-scale)) * 0.52);
+  width: 1448px;
+  height: 1086px;
+  transform: scale(var(--stage-scale));
+  transform-origin: top left;
+}
 .whatsapp-wallpaper {
   background-color: #efeae2;
   background-image:

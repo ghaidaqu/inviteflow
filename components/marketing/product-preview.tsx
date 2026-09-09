@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { GuestJourneyScene } from '@/components/marketing/guest-journey-scene';
 
 /**
@@ -20,6 +20,7 @@ import { GuestJourneyScene } from '@/components/marketing/guest-journey-scene';
  */
 export async function ProductPreview() {
   const t = await getTranslations('HomePage.preview');
+  const locale = await getLocale();
 
   return (
     <section className="section-y bg-muted/30 border-border/60 border-b">
@@ -30,6 +31,7 @@ export async function ProductPreview() {
         </h2>
 
         <GuestJourneyScene
+          locale={locale}
           copy={{
             chatName: t('chatName'),
             invitationText: t('chatInvitationText'),
