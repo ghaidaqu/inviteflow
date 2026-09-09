@@ -214,7 +214,7 @@ const WeddingTemplate = forwardRef<HTMLDivElement, WeddingTemplateProps>(functio
             style={{
               position: 'absolute',
               inset: '310px 92px 210px',
-              background: `color-mix(in srgb, ${data.backgroundColor} 91%, transparent)`,
+              background: `color-mix(in srgb, ${data.backgroundColor} 82%, transparent)`,
               borderRadius: 42,
               border: `3px solid ${data.accentColor}`,
               boxShadow: '0 28px 80px rgba(38, 25, 20, .18)',
