@@ -7,6 +7,7 @@ import { CoverTemplateEditor } from '@/components/public/cover-template-editor';
 import {
   SquareWeddingTemplate,
   RectangleWeddingTemplate,
+  ArchwayWeddingTemplate,
   defaultWeddingCardData,
   WEDDING_TEMPLATE_DIMENSIONS,
   type WeddingTemplateId,
@@ -18,6 +19,7 @@ export type CoverPickerMode = 'upload' | 'gallery' | { editing: WeddingTemplateI
 const GALLERY_ITEMS: Array<{ id: WeddingTemplateId; Component: typeof SquareWeddingTemplate }> = [
   { id: 'square', Component: SquareWeddingTemplate },
   { id: 'rectangle', Component: RectangleWeddingTemplate },
+  { id: 'archway', Component: ArchwayWeddingTemplate },
 ];
 
 // Thumbnail width in px — مربع (1:1) and مستطيل (2:3) each keep their own

@@ -62,7 +62,7 @@ export type WeddingCardData = {
 // for this feature don't actually vary by aspect ratio for that reason
 // either; the shape names are just a clearer, more useful way to offer
 // two options than a gendered label.
-export const WEDDING_TEMPLATE_IDS = ['square', 'rectangle'] as const;
+export const WEDDING_TEMPLATE_IDS = ['square', 'rectangle', 'archway'] as const;
 export type WeddingTemplateId = (typeof WEDDING_TEMPLATE_IDS)[number];
 
 export const WEDDING_TEMPLATE_DIMENSIONS: Record<
@@ -71,6 +71,7 @@ export const WEDDING_TEMPLATE_DIMENSIONS: Record<
 > = {
   square: { width: 1080, height: 1080 },
   rectangle: { width: 1080, height: 1620 },
+  archway: { width: 1080, height: 1620 },
 };
 
 // Curated background/accent/text triples for the color picker. `mahalli`
@@ -142,7 +143,10 @@ type WeddingTemplateProps = {
 };
 
 /**
- * One shared layout for both shapes (a plain right-angle double-line
+ * One shared formal layout for the square and rectangle (a restrained
+ * double-line frame), plus an archway edition that uses Mahalli's hero
+ * photograph behind a translucent invitation panel. All three keep the
+ * same content model, editing controls, and brand signature.
  * frame in the card's accent color, the دعاء opener in Aref Ruqaa, then
  * the full formal-invitation body below it). Only the two templates'
  * pixel dimensions differ; every size below is a fraction of the card's
@@ -155,6 +159,7 @@ const WeddingTemplate = forwardRef<HTMLDivElement, WeddingTemplateProps>(functio
 ) {
   const { width, height } = WEDDING_TEMPLATE_DIMENSIONS[templateId];
   const isSquare = templateId === 'square';
+  const isArchway = templateId === 'archway';
   const offsets = data.offsets;
 
   function block(id: WeddingCardBlockId, children: React.ReactNode, basePosition?: CSSProperties) {
@@ -183,21 +188,70 @@ const WeddingTemplate = forwardRef<HTMLDivElement, WeddingTemplateProps>(functio
         fontFamily: 'var(--font-amiri), serif',
         position: 'relative',
         direction: 'rtl',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ position: 'absolute', inset: 52, border: `6px solid ${data.accentColor}` }} />
-      <div style={{ position: 'absolute', inset: 70, border: `2px solid ${data.accentColor}` }} />
+      {isArchway ? (
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: "url('/images/marketing/hero-archway.jpg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(180deg, rgba(246,239,220,.30) 0%, rgba(246,239,220,.72) 42%, rgba(246,239,220,.96) 100%)',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: '310px 92px 210px',
+              background: `color-mix(in srgb, ${data.backgroundColor} 91%, transparent)`,
+              borderRadius: 42,
+              border: `3px solid ${data.accentColor}`,
+              boxShadow: '0 28px 80px rgba(38, 25, 20, .18)',
+            }}
+          />
+        </>
+      ) : (
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              inset: isSquare ? 46 : 58,
+              border: `5px solid ${data.accentColor}`,
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: isSquare ? 62 : 76,
+              border: `1.5px solid ${data.accentColor}`,
+            }}
+          />
+          <CornerOrnaments color={data.accentColor} inset={isSquare ? 62 : 76} />
+        </>
+      )}
 
       <div
         style={{
           position: 'absolute',
-          top: 90,
-          bottom: isSquare ? 150 : 170,
-          insetInline: 110,
+          top: isArchway ? 355 : isSquare ? 88 : 205,
+          bottom: isArchway ? 320 : isSquare ? 155 : 270,
+          insetInline: isArchway ? 145 : isSquare ? 112 : 132,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-evenly',
+          justifyContent: 'center',
+          gap: isSquare ? 22 : isArchway ? 37 : 42,
           textAlign: 'center',
         }}
       >
@@ -206,7 +260,7 @@ const WeddingTemplate = forwardRef<HTMLDivElement, WeddingTemplateProps>(functio
           <p
             className={arefRuqaa.className}
             style={{
-              fontSize: isSquare ? 40 : 44,
+              fontSize: isSquare ? 47 : 52,
               color: data.accentColor,
               margin: 0,
               lineHeight: 1.4,
@@ -218,30 +272,45 @@ const WeddingTemplate = forwardRef<HTMLDivElement, WeddingTemplateProps>(functio
 
         {block(
           'hostBlock',
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
-            <BodyLine color={data.accentColor}>يتشرفُ</BodyLine>
-            <NamesRow left={data.hostName2} right={data.hostName1} color={data.accentColor} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: '100%' }}>
+            <BodyLine color={data.accentColor} size={isSquare ? 35 : 38}>
+              يتشرفُ
+            </BodyLine>
+            <NamesRow
+              left={data.hostName2}
+              right={data.hostName1}
+              color={data.accentColor}
+              size={isSquare ? 43 : 48}
+            />
           </div>,
         )}
 
         {block(
           'invitationLine',
-          <BodyLine color={data.accentColor}>{data.invitationLine}</BodyLine>,
+          <BodyLine color={data.accentColor} size={isSquare ? 35 : 38}>
+            {data.invitationLine}
+          </BodyLine>,
         )}
 
         {block(
           'coupleBlock',
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, width: '100%' }}>
-            <LabelsRow color={data.accentColor} />
+            <LabelsRow color={data.accentColor} size={isSquare ? 31 : 34} />
             <NamesRow
               left={data.brideFatherName}
               right={data.groomFullName}
               color={data.accentColor}
+              size={isSquare ? 48 : 56}
             />
           </div>,
         )}
 
-        {block('subtitle', <BodyLine color={data.accentColor}>{data.subtitle}</BodyLine>)}
+        {block(
+          'subtitle',
+          <BodyLine color={data.accentColor} size={isSquare ? 31 : 35}>
+            {data.subtitle}
+          </BodyLine>,
+        )}
 
         <DiamondDivider color={data.accentColor} />
 
@@ -249,22 +318,46 @@ const WeddingTemplate = forwardRef<HTMLDivElement, WeddingTemplateProps>(functio
           'facts',
           <div
             style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
               alignItems: 'baseline',
-              gap: '6px 32px',
+              gap: '8px 28px',
+              width: '100%',
             }}
           >
-            <CardFact label="التاريخ" value={data.dateText} color={data.accentColor} />
-            <CardFact label="الموقع" value={data.locationText} color={data.accentColor} />
-            <CardFact label="الوقت" value={data.timeText} color={data.accentColor} />
+            <CardFact
+              label="التاريخ"
+              value={data.dateText}
+              color={data.accentColor}
+              size={isSquare ? 29 : 33}
+            />
+            <CardFact
+              label="الوقت"
+              value={data.timeText}
+              color={data.accentColor}
+              size={isSquare ? 29 : 33}
+            />
+            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' }}>
+              <CardFact
+                label="الموقع"
+                value={data.locationText}
+                color={data.accentColor}
+                size={isSquare ? 29 : 33}
+              />
+            </div>
           </div>,
         )}
 
         {block(
           'closing',
-          <p style={{ fontSize: 32, fontWeight: 700, margin: 0, color: data.accentColor }}>
+          <p
+            style={{
+              fontSize: isSquare ? 34 : 38,
+              fontWeight: 700,
+              margin: 0,
+              color: data.accentColor,
+            }}
+          >
             {data.closingLine}
           </p>,
         )}
@@ -276,7 +369,7 @@ const WeddingTemplate = forwardRef<HTMLDivElement, WeddingTemplateProps>(functio
           top of that line instead of above it. */}
       {block('credit', <CardCredit accentColor={data.accentColor} />, {
         position: 'absolute',
-        bottom: 110,
+        bottom: isArchway ? 235 : isSquare ? 96 : 135,
         insetInline: 0,
         display: 'flex',
         justifyContent: 'center',
@@ -299,10 +392,18 @@ export const RectangleWeddingTemplate = forwardRef<
   return <WeddingTemplate ref={ref} {...props} templateId="rectangle" />;
 });
 
+export const ArchwayWeddingTemplate = forwardRef<
+  HTMLDivElement,
+  Omit<WeddingTemplateProps, 'templateId'>
+>(function ArchwayWeddingTemplate(props, ref) {
+  return <WeddingTemplate ref={ref} {...props} templateId="archway" />;
+});
+
 export const WEDDING_TEMPLATE_COMPONENTS: Record<WeddingTemplateId, typeof SquareWeddingTemplate> =
   {
     square: SquareWeddingTemplate,
     rectangle: RectangleWeddingTemplate,
+    archway: ArchwayWeddingTemplate,
   };
 
 /**
@@ -402,15 +503,33 @@ function DraggableBlock({
 // real formal invitation's actual type scale: the دعاء is the one
 // stand-out line (its own font, bigger), everything under it reads at
 // one consistent size rather than a ladder of hero/sub-hero blocks.
-function BodyLine({ children, color }: { children: string; color: string }) {
-  return <p style={{ fontSize: 32, margin: 0, lineHeight: 1.5, color }}>{children}</p>;
+function BodyLine({
+  children,
+  color,
+  size = 32,
+}: {
+  children: string;
+  color: string;
+  size?: number;
+}) {
+  return <p style={{ fontSize: size, margin: 0, lineHeight: 1.55, color }}>{children}</p>;
 }
 
 // A right/left name pair sharing a name row (e.g. "يتشرف [x] و [y]" or
 // "الابن [x] وكريمة [y]") — a 3-column grid so a matching LabelsRow above
 // it lines up over the correct name even when the two names are very
 // different lengths, instead of each row centering itself independently.
-function NamesRow({ left, right, color }: { left: string; right: string; color: string }) {
+function NamesRow({
+  left,
+  right,
+  color,
+  size = 32,
+}: {
+  left: string;
+  right: string;
+  color: string;
+  size?: number;
+}) {
   return (
     <div
       style={{
@@ -421,9 +540,9 @@ function NamesRow({ left, right, color }: { left: string; right: string; color: 
         width: '100%',
       }}
     >
-      <span style={{ fontSize: 32, fontWeight: 700, color, textAlign: 'end' }}>{right}</span>
-      <span style={{ fontSize: 32, color }}>و</span>
-      <span style={{ fontSize: 32, fontWeight: 700, color, textAlign: 'start' }}>{left}</span>
+      <span style={{ fontSize: size, fontWeight: 700, color, textAlign: 'end' }}>{right}</span>
+      <span style={{ fontSize: size - 3, color }}>و</span>
+      <span style={{ fontSize: size, fontWeight: 700, color, textAlign: 'start' }}>{left}</span>
     </div>
   );
 }
@@ -431,7 +550,7 @@ function NamesRow({ left, right, color }: { left: string; right: string; color: 
 // "الابن" / "كريمة" — fixed relationship labels (not organizer-edited;
 // only the names below them are), sharing the same 3-column grid as the
 // NamesRow beneath so each label sits directly above its name.
-function LabelsRow({ color }: { color: string }) {
+function LabelsRow({ color, size = 32 }: { color: string; size?: number }) {
   return (
     <div
       style={{
@@ -442,9 +561,9 @@ function LabelsRow({ color }: { color: string }) {
         width: '100%',
       }}
     >
-      <span style={{ fontSize: 32, color, textAlign: 'end' }}>الابن</span>
+      <span style={{ fontSize: size, color, textAlign: 'end' }}>الابن</span>
       <span />
-      <span style={{ fontSize: 32, color, textAlign: 'start' }}>كريمة</span>
+      <span style={{ fontSize: size, color, textAlign: 'start' }}>كريمة</span>
     </div>
   );
 }
@@ -455,11 +574,21 @@ function LabelsRow({ color }: { color: string }) {
 // quiet plain text, so that's the convention this follows too. Same
 // flat 32px as every other line — only the accent color on the label
 // marks it as a label, not a bigger/smaller size.
-function CardFact({ label, value, color }: { label: string; value: string; color: string }) {
+function CardFact({
+  label,
+  value,
+  color,
+  size = 32,
+}: {
+  label: string;
+  value: string;
+  color: string;
+  size?: number;
+}) {
   return (
     <div style={{ display: 'flex', alignItems: 'baseline', gap: 5 }}>
-      <span style={{ fontSize: 32, color, fontWeight: 700 }}>{label}</span>
-      <span style={{ fontSize: 32, color }}>{value}</span>
+      <span style={{ fontSize: size, color, fontWeight: 700 }}>{label}</span>
+      <span style={{ fontSize: size, color }}>{value}</span>
     </div>
   );
 }
@@ -470,23 +599,23 @@ function CardFact({ label, value, color }: { label: string; value: string; color
 // content. Its actual placement (near the bottom, clear of the text
 // block above it) is set by the DraggableBlock wrapper's basePosition
 // in WeddingTemplate, not here — this is just the row's own content.
-function CardCredit({ accentColor }: { accentColor: string }) {
+function CardCredit({ accentColor: _accentColor }: { accentColor: string }) {
   const t = useTranslations('Brand');
   return (
     <div
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 10,
-        opacity: 0.7,
+        gap: 12,
+        opacity: 0.88,
       }}
     >
-      <BrandMark style={{ width: 30, height: 30 }} />
+      <BrandMark style={{ width: 42, height: 42 }} />
       <span
         style={{
-          fontSize: 32,
+          fontSize: 40,
           fontWeight: 700,
-          color: accentColor,
+          color: '#96471f',
           fontFamily: 'var(--font-amiri), serif',
         }}
       >
@@ -515,5 +644,33 @@ function DiamondDivider({ color }: { color: string }) {
       />
       <span style={{ width: 56, height: 1, background: color, opacity: 0.6 }} />
     </div>
+  );
+}
+
+function CornerOrnaments({ color, inset }: { color: string; inset: number }) {
+  const corners: CSSProperties[] = [
+    { top: inset - 10, right: inset - 10 },
+    { top: inset - 10, left: inset - 10, transform: 'rotate(90deg)' },
+    { bottom: inset - 10, left: inset - 10, transform: 'rotate(180deg)' },
+    { bottom: inset - 10, right: inset - 10, transform: 'rotate(270deg)' },
+  ];
+  return (
+    <>
+      {corners.map((position, index) => (
+        <span
+          key={index}
+          aria-hidden
+          style={{
+            position: 'absolute',
+            width: 58,
+            height: 58,
+            borderTop: `7px double ${color}`,
+            borderRight: `7px double ${color}`,
+            borderTopRightRadius: 18,
+            ...position,
+          }}
+        />
+      ))}
+    </>
   );
 }

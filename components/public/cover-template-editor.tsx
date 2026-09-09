@@ -100,10 +100,27 @@ export function CoverTemplateEditor({
       });
 
       try {
+        await document.fonts.ready;
+        const backgroundUrls = [...node.querySelectorAll<HTMLElement>('*')]
+          .map((el) => getComputedStyle(el).backgroundImage.match(/url\(["']?(.*?)["']?\)/)?.[1])
+          .filter((url): url is string => Boolean(url));
+        await Promise.all(
+          backgroundUrls.map(
+            (url) =>
+              new Promise<void>((resolve) => {
+                const image = new Image();
+                image.onload = image.onerror = () => resolve();
+                image.src = url;
+                if (image.complete) resolve();
+              }),
+          ),
+        );
         const dataUrl = await toPng(node, {
           width: cardWidth,
           height: cardHeight,
-          pixelRatio: 2,
+          // The card is already 1080px wide. A 1:1 export stays crisp on
+          // WhatsApp and keeps the photographic template under 5MB.
+          pixelRatio: 1,
           cacheBust: true,
         });
         const blob = await (await fetch(dataUrl)).blob();

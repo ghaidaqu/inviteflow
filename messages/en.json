@@ -266,7 +266,8 @@
         "galleryHint": "A formal invitation, ready to use — edit its text and colors.",
         "templates": {
           "square": "Square invitation",
-          "rectangle": "Rectangle invitation"
+          "rectangle": "Rectangle invitation",
+          "archway": "Mahalli Archway"
         },
         "backToGallery": "Back",
         "dragHint": "Drag any line in the preview to move it.",
