@@ -9,6 +9,34 @@ export type WhatsAppButton = {
   title: string;
 };
 
+/**
+ * A pre-approved message template, the ONLY thing Meta lets you send to
+ * someone who hasn't messaged your business number in the last 24 hours.
+ *
+ * Free-form sends to anyone outside that window are rejected with error
+ * 131047 "Re-engagement message" — which is exactly what production was
+ * doing: the owner's own number received invitations (their window was
+ * open) and every real guest's send failed. An invitation is by
+ * definition the first message to someone, so it has to be a template.
+ */
+export type WhatsAppTemplate = {
+  /** Template name exactly as approved in Meta Business Manager. */
+  name: string;
+  /** BCP-47 code of the approved template, e.g. "ar". */
+  language: string;
+  /** Values for {{1}}, {{2}}, … in the template body, in order. */
+  bodyParams: string[];
+  /**
+   * Payloads for the template's quick-reply buttons, in the order they
+   * were defined. These come back in the webhook as
+   * `messages[].button.payload`, so they carry the same
+   * `rsvp_accept:<guestId>` strings the interactive buttons use.
+   */
+  buttonPayloads?: string[];
+  /** Public HTTPS image for a template whose header is of type IMAGE. */
+  headerImageUrl?: string;
+};
+
 export type WhatsAppMessage = {
   /** E.164 phone number, e.g. "9665XXXXXXXX" (no leading +). */
   to: string;
@@ -37,6 +65,12 @@ export type WhatsAppMessage = {
    * shape this maps to — use `imageUrl` for that instead).
    */
   headerImageUrl?: string;
+  /**
+   * Sends an approved template instead of a free-form message. Takes
+   * precedence over `text` / `buttons` / `imageUrl` — see
+   * WhatsAppTemplate for why the invitation path needs it.
+   */
+  template?: WhatsAppTemplate;
 };
 
 export type WhatsAppSendResult = {

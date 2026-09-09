@@ -76,6 +76,7 @@ type WhatsAppWebhookBody = {
       value?: {
         messages?: {
           from?: string;
+          button?: { payload?: string; text?: string };
           interactive?: {
             type?: string;
             button_reply?: { id?: string; title?: string };
@@ -146,8 +147,17 @@ export async function POST(request: NextRequest) {
   );
 
   for (const message of messages) {
-    const buttonId = message.interactive?.button_reply?.id;
-    if (!message.interactive || message.interactive.type !== 'button_reply' || !buttonId) continue;
+    // Two shapes, same meaning. A free-form interactive message returns
+    // `interactive.button_reply.id`; a TEMPLATE's quick-reply button
+    // returns `button.payload`. Invitations are sent as templates now
+    // (they are always outside the 24-hour window — see notify.ts), so
+    // without the second shape every guest's Accept/Decline tap would be
+    // silently ignored.
+    const buttonId =
+      message.interactive?.type === 'button_reply'
+        ? message.interactive.button_reply?.id
+        : message.button?.payload;
+    if (!buttonId) continue;
 
     const [action, guestId] = buttonId.split(':');
 

@@ -3,7 +3,10 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { listGuestsWithResponses } from '@/lib/services/guests.service';
-import { getInvitationDeliveriesByGuest } from '@/lib/services/whatsapp-delivery.service';
+import {
+  getInvitationDeliveriesByGuest,
+  deliveryFailureReason,
+} from '@/lib/services/whatsapp-delivery.service';
 import { GuestsTable } from '@/components/dashboard/guests-table';
 import { Link } from '@/i18n/navigation';
 
@@ -36,7 +39,11 @@ export default async function EventGuestsPage({
   const deliveries = Object.fromEntries(
     [...deliveryRows].map(([guestId, row]) => [
       guestId,
-      { status: row.status, errorDetail: row.error_detail },
+      {
+        status: row.status,
+        errorDetail: row.error_detail,
+        reason: row.status === 'failed' ? deliveryFailureReason(row.error_code) : null,
+      },
     ]),
   );
 

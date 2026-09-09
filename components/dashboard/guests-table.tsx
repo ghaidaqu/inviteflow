@@ -66,6 +66,8 @@ const emptyRow: GuestRowDraft = {
 export type GuestDelivery = {
   status: 'accepted' | 'sent' | 'delivered' | 'read' | 'failed';
   errorDetail: string | null;
+  /** Why it failed, in terms the organizer can act on. Null unless failed. */
+  reason?: string | null;
 };
 
 export function GuestsTable({
@@ -295,7 +297,9 @@ export function GuestsTable({
                           }`}
                           title={delivery.errorDetail ?? undefined}
                         >
-                          {t(`delivery.${delivery.status}`)}
+                          {delivery.status === 'failed' && delivery.reason
+                            ? t(`delivery.reason.${delivery.reason}`)
+                            : t(`delivery.${delivery.status}`)}
                         </div>
                       )}
                     </td>

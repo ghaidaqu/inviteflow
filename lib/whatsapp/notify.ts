@@ -150,8 +150,35 @@ export async function sendInvitationWhatsApp(
       ? `مرحبًا ${guestName}! أنت مدعو لـ "${event.name}". رد على الدعوة مباشرة من هنا 👇`
       : `Hi ${guestName}! You're invited to "${event.name}". Respond right here 👇`;
 
+  // An invitation is by definition the first message we send someone, so
+  // it is always outside Meta's 24-hour customer-service window and a
+  // free-form send is rejected with 131047 "Re-engagement message". That
+  // is precisely what production was doing: the owner's own number
+  // received invitations because their window was open, and every real
+  // guest silently failed. Only an approved template gets through.
+  //
+  // Falls back to free-form when no template is configured, which is
+  // still correct for a guest who has messaged us recently and keeps
+  // local development working with no Meta setup at all.
+  const templateName = process.env.WHATSAPP_INVITE_TEMPLATE;
+  const template = templateName
+    ? {
+        name: templateName,
+        language: process.env.WHATSAPP_INVITE_TEMPLATE_LANG ?? locale,
+        bodyParams: [guestName, event.name],
+        buttonPayloads: buttons.map((b) => b.id),
+        headerImageUrl,
+      }
+    : undefined;
+
   try {
-    const result = await whatsAppProvider.send({ to: phone, text, buttons, headerImageUrl });
+    const result = await whatsAppProvider.send({
+      to: phone,
+      text,
+      buttons,
+      headerImageUrl,
+      template,
+    });
     // Written down so a delivery-status webhook can be paired back to this
     // guest later — Meta's callback carries only its own message id. A
     // send that Meta accepts can still fail afterwards (wrong number, not

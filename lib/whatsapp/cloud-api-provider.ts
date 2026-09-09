@@ -30,39 +30,81 @@ export function createWhatsAppCloudApiProvider(
       buttons,
       imageUrl,
       headerImageUrl,
+      template,
     }: WhatsAppMessage): Promise<WhatsAppSendResult> {
-      const body = imageUrl
-        ? {
-            messaging_product: 'whatsapp',
-            to: normalizeNumber(to),
-            type: 'image',
-            image: { link: imageUrl, caption: text },
-          }
-        : buttons && buttons.length > 0
+      // A template is the only shape Meta accepts outside the 24-hour
+      // customer-service window, so it wins over every free-form option.
+      const templateBody = template && {
+        messaging_product: 'whatsapp',
+        to: normalizeNumber(to),
+        type: 'template',
+        template: {
+          name: template.name,
+          language: { code: template.language },
+          components: [
+            ...(template.headerImageUrl
+              ? [
+                  {
+                    type: 'header',
+                    parameters: [{ type: 'image', image: { link: template.headerImageUrl } }],
+                  },
+                ]
+              : []),
+            ...(template.bodyParams.length
+              ? [
+                  {
+                    type: 'body',
+                    parameters: template.bodyParams.map((t: string) => ({ type: 'text', text: t })),
+                  },
+                ]
+              : []),
+            // One component per quick-reply button, indexed in the order
+            // they were defined on the approved template. The payload is
+            // what comes back in the webhook when the guest taps.
+            ...(template.buttonPayloads ?? []).map((payload: string, index: number) => ({
+              type: 'button',
+              sub_type: 'quick_reply',
+              index: String(index),
+              parameters: [{ type: 'payload', payload }],
+            })),
+          ],
+        },
+      };
+
+      const body = templateBody
+        ? templateBody
+        : imageUrl
           ? {
               messaging_product: 'whatsapp',
               to: normalizeNumber(to),
-              type: 'interactive',
-              interactive: {
-                type: 'button',
-                ...(headerImageUrl
-                  ? { header: { type: 'image', image: { link: headerImageUrl } } }
-                  : {}),
-                body: { text },
-                action: {
-                  buttons: buttons.slice(0, 3).map((b) => ({
-                    type: 'reply',
-                    reply: { id: b.id, title: b.title },
-                  })),
-                },
-              },
+              type: 'image',
+              image: { link: imageUrl, caption: text },
             }
-          : {
-              messaging_product: 'whatsapp',
-              to: normalizeNumber(to),
-              type: 'text',
-              text: { body: text },
-            };
+          : buttons && buttons.length > 0
+            ? {
+                messaging_product: 'whatsapp',
+                to: normalizeNumber(to),
+                type: 'interactive',
+                interactive: {
+                  type: 'button',
+                  ...(headerImageUrl
+                    ? { header: { type: 'image', image: { link: headerImageUrl } } }
+                    : {}),
+                  body: { text },
+                  action: {
+                    buttons: buttons.slice(0, 3).map((b) => ({
+                      type: 'reply',
+                      reply: { id: b.id, title: b.title },
+                    })),
+                  },
+                },
+              }
+            : {
+                messaging_product: 'whatsapp',
+                to: normalizeNumber(to),
+                type: 'text',
+                text: { body: text },
+              };
 
       const res = await fetch(
         `https://graph.facebook.com/${GRAPH_API_VERSION}/${phoneNumberId}/messages`,

@@ -713,7 +713,13 @@
       "sent": "Sent",
       "delivered": "Delivered",
       "read": "Read",
-      "failed": "Not delivered — check the number"
+      "failed": "Not delivered — check the number",
+      "reason": {
+        "needsTemplate": "Not delivered — needs an approved WhatsApp template",
+        "notOnWhatsApp": "Not delivered — that number is not on WhatsApp",
+        "blockedBySpamPolicy": "Not delivered — WhatsApp blocked it",
+        "unknown": "Not delivered — check the number"
+      }
     }
   },
   "Notifications": {

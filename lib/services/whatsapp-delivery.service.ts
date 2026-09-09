@@ -129,6 +129,27 @@ export async function getInvitationDeliveriesByGuest(
  * wrong number is fixable, but only while there is still time before the
  * event, so it has to be visible without going looking for it.
  */
+/**
+ * Meta's error codes that mean "this will never be delivered as sent",
+ * mapped to something an organizer can act on. 131047 is the one that
+ * matters most: a free-form message outside the 24-hour window. It is not
+ * a wrong number — it is a missing approved template.
+ */
+export function deliveryFailureReason(errorCode: number | null): string {
+  switch (errorCode) {
+    case 131047:
+      return 'needsTemplate';
+    case 131026:
+    case 131052:
+      return 'notOnWhatsApp';
+    case 131048:
+    case 131049:
+      return 'blockedBySpamPolicy';
+    default:
+      return 'unknown';
+  }
+}
+
 export async function countFailedInvitations(supabase: Client, eventId: string): Promise<number> {
   const { count, error } = await supabase
     .from('whatsapp_deliveries')
