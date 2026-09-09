@@ -15,21 +15,6 @@ import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { CalendarIcon, MapPinIcon, ClockIcon } from 'lucide-react';
 
-/**
- * Never cached: a guest's page must reflect the event and their own
- * response as they stand right now.
- *
- * Known, unfixed: a missing slug/token renders the correct not-found page
- * but answers HTTP 200 rather than 404 — a soft 404. notFound() is called
- * correctly; the status is committed before it runs. Neither
- * force-dynamic nor a root app/not-found.tsx fixed it, and the root
- * boundary actively made things worse (it renders its own <html> inside
- * this segment's layout, producing a blank page), so it was reverted.
- * Cosmetic for guests, who see the right page; it costs SEO only, and
- * these are private guest links that should not be indexed anyway.
- */
-export const dynamic = 'force-dynamic';
-
 export default async function PublicEventPage({
   params,
 }: {
