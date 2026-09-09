@@ -25,7 +25,7 @@ export async function HowItWorks() {
               {/* Was text-primary/40, which measured 1.78:1 against the page —
                   under the 3:1 floor for large text. These are ordinals a
                   reader actually uses to follow the sequence, not texture. */}
-              <span className="text-primary/70 font-display text-2xl tabular-nums">
+              <span className="text-primary/80 font-display text-2xl tabular-nums">
                 {String(index + 1).padStart(2, '0')}
               </span>
               <p className="font-display text-lg">{t(`${step}Title`)}</p>

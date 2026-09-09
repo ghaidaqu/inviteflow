@@ -14,40 +14,6 @@ import localFont from 'next/font/local';
  * cairo-arabic and Latin text falls through to cairo-latin automatically.
  */
 
-export const cairoArabic = localFont({
-  src: './../public/fonts/cairo-arabic.woff2',
-  variable: '--font-cairo-arabic',
-  weight: '200 1000',
-  display: 'swap',
-  // The Arabic subset has no Latin glyphs to compare against, so Next's
-  // synthetic Arial metric-matching would be measuring the wrong script.
-  // No `fallback` either: Next splices those families in immediately after
-  // this one, which would land them *before* cairoLatin in --font-sans and
-  // send Latin glyphs to a system font instead of Cairo.
-  adjustFontFallback: false,
-});
-
-export const cairoLatin = localFont({
-  src: './../public/fonts/cairo-latin.woff2',
-  variable: '--font-cairo-latin',
-  weight: '200 1000',
-  display: 'swap',
-});
-
-export const geistSans = localFont({
-  src: './../public/fonts/geist-latin.woff2',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-  display: 'swap',
-});
-
-export const geistMono = localFont({
-  src: './../public/fonts/geist-mono-latin.woff2',
-  variable: '--font-geist-mono',
-  weight: '100 900',
-  display: 'swap',
-});
-
 // Display serif for marketing headlines only (hero, section titles, the
 // wordmark) — a classic Arabic book-typesetting face, not a UI font.
 // Dashboard/forms/tables keep Cairo for dense-text legibility; this is
@@ -61,13 +27,7 @@ export const amiri = localFont({
   display: 'swap',
 });
 
-export const fontVariables = [
-  cairoArabic.variable,
-  cairoLatin.variable,
-  geistSans.variable,
-  geistMono.variable,
-  amiri.variable,
-].join(' ');
+export const fontVariables = [amiri.variable].join(' ');
 
 // Decorative calligraphic face used for exactly one line — the "بسم الله"
 // opener on the wedding-invitation cover templates — never the "one font"
