@@ -85,7 +85,7 @@ export async function sendTryDemoInvitationAction(
   // who asks, with no login at all — scoped by phone so the same number
   // can't be demo-invited over and over, on top of the IP scoping
   // checkRateLimit already does.
-  const withinLimit = await checkRateLimit(admin, {
+  const withinLimit = await checkRateLimit({
     action: 'try-demo',
     scope: phone.e164,
     maxHits: 3,

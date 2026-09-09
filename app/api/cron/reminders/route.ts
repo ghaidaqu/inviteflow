@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'node:crypto';
 import { NextResponse, type NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider, isWhatsAppConfigured } from '@/lib/whatsapp';
@@ -29,10 +30,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'not_configured' }, { status: 500 });
   }
 
-  const authHeader = request.headers.get('authorization');
-  const provided =
-    authHeader?.replace(/^Bearer\s+/i, '') ?? request.nextUrl.searchParams.get('secret');
-  if (provided !== secret) {
+  // Header only, compared in constant time — matching broadcast-results,
+  // which already did this. Accepting ?secret= put CRON_SECRET into access
+  // logs, proxy logs and any Referer, and `!==` on a secret leaks its
+  // prefix through timing.
+  const provided = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? '';
+  const a = Buffer.from(provided);
+  const b = Buffer.from(secret);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
@@ -62,15 +67,34 @@ export async function GET(request: NextRequest) {
   let failed = 0;
 
   for (const reminder of due) {
+    // Claim the row before doing any work. The status flip used to happen
+    // only after the whole per-guest loop, so two overlapping runs both saw
+    // the same rows and every guest got the reminder twice — and a run that
+    // died mid-loop left the row 'scheduled', so the next run re-sent to
+    // everyone including those already reached. The conditional update is
+    // atomic: whoever flips it first is the only one that proceeds.
+    const { data: claimed } = await admin
+      .from('event_reminders')
+      .update({ status: 'sending' })
+      .eq('id', reminder.id)
+      .eq('status', 'scheduled')
+      .select('id')
+      .maybeSingle();
+    if (!claimed) continue;
+
     const { data: event } = await admin
       .from('events')
       .select('name, slug, event_date, location_text, primary_locale, status')
       .eq('id', reminder.event_id)
+      .is('deleted_at', null)
       .single();
 
-    // The event may have been unpublished/deleted since the reminder was
+    // The event may have been unpublished or deleted since the reminder was
     // scheduled — mark it sent (i.e. done, nothing more to do) rather than
-    // leaving it to retry forever.
+    // leaving it to retry forever. softDeleteEvent leaves status as
+    // 'published' and never cancels the event's reminders, so without the
+    // deleted_at filter above a cancelled event still WhatsApped every
+    // attending guest "your event is tomorrow".
     if (!event || event.status !== 'published') {
       await admin
         .from('event_reminders')

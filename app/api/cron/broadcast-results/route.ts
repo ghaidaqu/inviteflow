@@ -52,18 +52,31 @@ export async function POST(req: NextRequest) {
   const results: { eventId: string; sentCount: number; totalGuests: number }[] = [];
 
   for (const event of events) {
+    // Stamp BEFORE sending, conditional on it still being null. The stamp
+    // used to happen after the whole guest loop, so two concurrent runs
+    // both saw null and both broadcast to the full list. This claims the
+    // event atomically: whoever sets the timestamp first is the only one
+    // that sends. The cost of the ordering is that a mid-broadcast crash
+    // leaves the event stamped and some guests unmessaged — the right way
+    // round, since the alternative is messaging everyone twice.
+    const { data: claimed } = await admin
+      .from('events')
+      .update({ results_broadcast_at: new Date().toISOString() })
+      .eq('id', event.id)
+      .is('results_broadcast_at', null)
+      .select('id')
+      .maybeSingle();
+    if (!claimed) continue;
+
     try {
       const locale = event.primary_locale === 'en' ? 'en' : 'ar';
       const { sentCount, totalGuests } = await broadcastEventResults(admin, event, locale);
-      await admin
-        .from('events')
-        .update({ results_broadcast_at: new Date().toISOString() })
-        .eq('id', event.id);
       results.push({ eventId: event.id, sentCount, totalGuests });
     } catch (broadcastError) {
       // One event's failure (a malformed question, a send error) shouldn't
-      // block the rest — results_broadcast_at stays null for this one, so
-      // the next run retries it.
+      // block the rest. Note the event stays stamped, so the next run will
+      // not retry it — deliberate: a retry would re-message everyone the
+      // failed run already reached.
       console.error('[cron broadcast-results] event failed', event.id, broadcastError);
     }
   }

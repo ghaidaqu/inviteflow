@@ -51,7 +51,7 @@ export async function uploadCoverImageAction(
   } = await supabase.auth.getUser();
 
   const rateLimitScope = user ? user.id : `anon:${await getClientIp()}`;
-  const allowed = await checkRateLimit(supabase, {
+  const allowed = await checkRateLimit({
     action: 'cover-upload',
     scope: rateLimitScope,
     maxHits: user ? 20 : 5,

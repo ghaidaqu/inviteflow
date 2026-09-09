@@ -136,7 +136,7 @@ export async function publicCheckInAction(
 
   try {
     const admin = createAdminClient();
-    const allowed = await checkRateLimit(admin, {
+    const allowed = await checkRateLimit({
       action: 'public-check-in',
       scope: checkInToken,
       maxHits: 120,

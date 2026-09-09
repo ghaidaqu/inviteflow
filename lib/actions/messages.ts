@@ -48,7 +48,7 @@ export async function sendBulkMessageAction(
 
   // A handful of legitimate resends per hour (a typo fix, a follow-up) is
   // normal; this only guards against a runaway loop or abuse, not real use.
-  const allowed = await checkRateLimit(supabase, {
+  const allowed = await checkRateLimit({
     action: 'bulk-message',
     scope: eventId,
     maxHits: 5,

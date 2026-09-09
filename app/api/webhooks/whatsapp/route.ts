@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
       // repeat button tap (Meta can resend delivery, or a guest can tap
       // the same button twice).
       if (status === 'not_attending' && result.previous_status !== 'not_attending') {
-        await promoteNextWaitlistedGuest(admin, result.event_id, event.slug, locale);
+        await promoteNextWaitlistedGuest(result.event_id, event.slug, locale);
       }
 
       if (

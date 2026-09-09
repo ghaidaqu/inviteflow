@@ -121,7 +121,7 @@ export async function submitRsvpAction(
 
   const supabase = await createClient();
 
-  const allowed = await checkRateLimit(supabase, {
+  const allowed = await checkRateLimit({
     action: 'rsvp',
     scope: eventSlug,
     maxHits: 5,
@@ -202,7 +202,7 @@ export async function submitRsvpAction(
     // any first-time 'not_attending' is a genuine decline, so promote
     // straight away (see promoteNextWaitlistedGuest's doc comment).
     if (parsed.data.status === 'not_attending') {
-      await promoteNextWaitlistedGuest(supabase, result.event_id, eventSlug, locale);
+      await promoteNextWaitlistedGuest(result.event_id, eventSlug, locale);
     }
 
     return { success: true, secureToken: result.secure_token, qrCardUrl };
@@ -237,7 +237,7 @@ export async function updateRsvpAction(
 
   const supabase = await createClient();
 
-  const allowed = await checkRateLimit(supabase, {
+  const allowed = await checkRateLimit({
     action: 'rsvp-edit',
     scope: token,
     maxHits: 10,
@@ -280,7 +280,7 @@ export async function updateRsvpAction(
     // shouldn't burn through the waitlist on every resubmission.
     if (parsed.data.status === 'not_attending' && result?.previous_status !== 'not_attending') {
       const locale = (await getLocale()) as 'ar' | 'en';
-      await promoteNextWaitlistedGuest(supabase, result.event_id, result.event_slug, locale);
+      await promoteNextWaitlistedGuest(result.event_id, result.event_slug, locale);
     }
 
     // Same "genuine new transition" guard for the QR send — a guest

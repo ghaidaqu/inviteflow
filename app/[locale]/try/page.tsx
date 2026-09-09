@@ -10,6 +10,16 @@ import { SendIcon } from 'lucide-react';
  * invitation on WhatsApp right now, no account needed, so someone can
  * feel what a guest feels before deciding anything.
  */
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'TryDemo' });
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+  return {
+    title: t('title'),
+    alternates: { canonical: `${appUrl}/${locale}/try` },
+  };
+}
+
 export default async function TryPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);

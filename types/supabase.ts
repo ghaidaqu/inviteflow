@@ -231,7 +231,7 @@ export interface Database {
           event_id: string;
           kind: 'day_before' | 'day_after';
           scheduled_at: string;
-          status: 'scheduled' | 'sent' | 'canceled';
+          status: 'scheduled' | 'sending' | 'sent' | 'canceled';
           sent_at: string | null;
           created_at: string;
           updated_at: string;
@@ -241,7 +241,7 @@ export interface Database {
           event_id: string;
           kind: 'day_before' | 'day_after';
           scheduled_at: string;
-          status?: 'scheduled' | 'sent' | 'canceled';
+          status?: 'scheduled' | 'sending' | 'sent' | 'canceled';
           sent_at?: string | null;
           created_at?: string;
           updated_at?: string;

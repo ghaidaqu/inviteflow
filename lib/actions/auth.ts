@@ -94,7 +94,7 @@ export async function requestPhoneOtpAction(
 
   const supabase = await createClient();
 
-  const allowed = await checkRateLimit(supabase, {
+  const allowed = await checkRateLimit({
     action: 'phone-otp-request',
     scope: parsed.data.phone,
     maxHits: 3,
@@ -136,6 +136,16 @@ export async function verifyPhoneOtpAction(
   });
   if (!parsed.success) return { error: 'invalidInput' };
 
+  // The request side was limited but the verify side was not, leaving a
+  // 6-digit code open to brute force at whatever rate the network allows.
+  const allowed = await checkRateLimit({
+    action: 'verify-otp',
+    scope: parsed.data.phone,
+    maxHits: 8,
+    windowSeconds: 60 * 15,
+  });
+  if (!allowed) return { error: 'rateLimited' };
+
   const locale = await getLocale();
   const supabase = await createClient();
 
@@ -174,7 +184,7 @@ export async function requestEmailOtpAction(
 
   const supabase = await createClient();
 
-  const allowed = await checkRateLimit(supabase, {
+  const allowed = await checkRateLimit({
     action: 'email-otp-request',
     scope: parsed.data.email,
     maxHits: 3,
@@ -212,6 +222,14 @@ export async function verifyEmailOtpAction(
     token: formData.get('token'),
   });
   if (!parsed.success) return { error: 'invalidInput' };
+
+  const allowed = await checkRateLimit({
+    action: 'verify-otp',
+    scope: parsed.data.email,
+    maxHits: 8,
+    windowSeconds: 60 * 15,
+  });
+  if (!allowed) return { error: 'rateLimited' };
 
   const locale = await getLocale();
   const supabase = await createClient();

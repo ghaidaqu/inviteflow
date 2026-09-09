@@ -26,8 +26,16 @@ export async function generateMetadata({
   // with the name, the line, and the doorway image.
   return {
     metadataBase: new URL(appUrl),
-    title: t('title'),
+    // A template, so a page that sets its own title gets "Page · مهلّي"
+    // and only the homepage uses the brand line on its own. Every route
+    // used to inherit this title verbatim, so /privacy, /terms and /try
+    // all reported themselves as the homepage to search and to WhatsApp.
+    title: { default: t('title'), template: `%s · ${t('siteName')}` },
     description: t('description'),
+    alternates: {
+      canonical: `${appUrl}/${locale}`,
+      languages: { ar: `${appUrl}/ar`, en: `${appUrl}/en`, 'x-default': appUrl },
+    },
     openGraph: {
       type: 'website',
       siteName: t('siteName'),
@@ -37,7 +45,7 @@ export async function generateMetadata({
       locale: locale === 'ar' ? 'ar_SA' : 'en_US',
       images: [
         {
-          url: '/images/marketing/hero-doorway.jpg',
+          url: '/images/marketing/og-card.jpg',
           width: 1200,
           height: 630,
           alt: t('title'),
@@ -48,7 +56,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: t('title'),
       description: t('description'),
-      images: ['/images/marketing/hero-doorway.jpg'],
+      images: ['/images/marketing/og-card.jpg'],
     },
   };
 }

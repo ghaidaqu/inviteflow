@@ -355,7 +355,8 @@
         "status": {
           "scheduled": "Scheduled",
           "sent": "Sent",
-          "canceled": "Canceled"
+          "canceled": "Canceled",
+          "sending": "Sending"
         },
         "cancel": "Cancel",
         "restore": "Re-enable"
@@ -739,7 +740,7 @@
       "section5Heading": "5. Changes and suspension",
       "section5Body": "We may update these terms or the platform's features as we continue building it, and we'll aim to notify you of any material change. Any account used in violation of these terms may be suspended.",
       "section6Heading": "6. Contact",
-      "section6Body": "For any question about these terms, reach us at support@mahalli.app."
+      "section6Body": "For any question about these terms, reach us at support@mhalli.co."
     },
     "privacy": {
       "title": "Privacy Policy",
@@ -757,7 +758,7 @@
       "section6Heading": "6. Where your data is stored and cross-border transfer",
       "section6Body": "Our database servers and the providers we rely on (site hosting, WhatsApp, email) are located outside Saudi Arabia. This means your data is processed and stored on foreign servers, under contractual safeguards with those providers that preserve the same level of protection.",
       "section7Heading": "7. Your rights under Saudi Arabia's Personal Data Protection Law",
-      "section7Body": "You have the right to access your data, correct it, request its deletion, withdraw your consent, or request a copy of it. Any guest can edit or delete their response via their own private link at any time before the deadline. To exercise any of these rights, or to request full deletion of your data from any event, reach us at support@mahalli.app and we'll respond within a reasonable time. You also have the right to file a complaint with the Saudi Data & AI Authority (SDAIA) if you're not satisfied with how we handled your request."
+      "section7Body": "You have the right to access your data, correct it, request its deletion, withdraw your consent, or request a copy of it. Any guest can edit or delete their response via their own private link at any time before the deadline. To exercise any of these rights, or to request full deletion of your data from any event, reach us at support@mhalli.co and we'll respond within a reasonable time. You also have the right to file a complaint with the Saudi Data & AI Authority (SDAIA) if you're not satisfied with how we handled your request."
     }
   },
   "QuickStart": {

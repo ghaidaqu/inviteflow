@@ -1,7 +1,6 @@
 import 'server-only';
 import { headers } from 'next/headers';
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@/types/supabase';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 /**
  * Best-effort client IP for rate-limiting purposes only — never use this for
@@ -33,10 +32,21 @@ type RateLimitOptions = {
  * check itself errors, so a rate-limiter outage never blocks legitimate
  * traffic.
  */
-export async function checkRateLimit(
-  supabase: SupabaseClient<Database>,
-  { action, scope, maxHits, windowSeconds }: RateLimitOptions,
-): Promise<boolean> {
+export async function checkRateLimit({
+  action,
+  scope,
+  maxHits,
+  windowSeconds,
+}: RateLimitOptions): Promise<boolean> {
+  // Deliberately the admin client, not whichever client the caller happens
+  // to hold. Callers on public paths pass the anon client, and that forced
+  // check_rate_limit to stay executable by `anon` — which meant anyone
+  // could call it straight from the browser with someone else's key and
+  // burn their allowance before they ever arrived. Running it as the
+  // service role lets the grant be revoked (see
+  // 20260909000002_revoke_server_only_functions.sql) while every existing
+  // caller keeps working unchanged.
+  const supabase = createAdminClient();
   const ip = await getClientIp();
   const key = scope ? `${action}:${scope}:${ip}` : `${action}:${ip}`;
 

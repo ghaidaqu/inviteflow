@@ -24,6 +24,16 @@ const FEATURE_ICONS = [PaletteIcon, UsersIcon, BarChart3Icon, HeadsetIcon];
  * minimal header (wordmark + "أعمال" badge + a way back to the main
  * site) and footer instead.
  */
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Institutional' });
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+  return {
+    title: t('title'),
+    alternates: { canonical: `${appUrl}/${locale}/institutional` },
+  };
+}
+
 export default async function InstitutionalPage({
   params,
 }: {

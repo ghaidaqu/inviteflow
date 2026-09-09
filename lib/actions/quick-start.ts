@@ -215,7 +215,7 @@ export async function createEventFromQuickStartAction(
   // registers their own name and phone.
   const guestPhone = draft.track === 'invitation' ? canonicalPhone(draft.guestPhone) : null;
   if (sendTrial && draft.track === 'invitation' && draft.guestName.trim() && guestPhone) {
-    const trialAllowed = await checkRateLimit(supabase, {
+    const trialAllowed = await checkRateLimit({
       action: 'quick-start-trial-send',
       scope: user.id,
       maxHits: 3,

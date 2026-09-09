@@ -10,6 +10,8 @@ import { BellIcon, BellOffIcon } from 'lucide-react';
 
 const STATUS_VARIANT = {
   scheduled: 'secondary',
+  // A reminder the cron has claimed and is working through right now.
+  sending: 'secondary',
   sent: 'default',
   canceled: 'outline',
 } as const;
