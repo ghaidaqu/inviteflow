@@ -37,7 +37,7 @@ export async function HeroJourneys() {
         className="from-background/85 via-background/60 to-background/35 absolute inset-0 bg-gradient-to-t"
       />
       <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-5 px-4 text-center sm:px-6">
-        <span className="text-primary-foreground/90 flex items-center gap-2 text-sm font-semibold">
+        <span className="text-primary flex items-center gap-2 text-sm font-semibold">
           <span className="bg-primary/50 h-px w-6" />
           {t('eyebrow')}
           <span className="bg-primary/50 h-px w-6" />
