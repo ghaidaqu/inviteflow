@@ -60,7 +60,6 @@ export async function submitInstitutionalLeadAction(
   });
   if (!parsed.success) return { error: 'invalidInput' };
 
-  const supabase = await createClient();
   const allowed = await checkRateLimit({
     action: 'institutional-lead',
     scope: parsed.data.email,
