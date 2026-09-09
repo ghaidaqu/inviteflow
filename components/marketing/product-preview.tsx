@@ -23,7 +23,7 @@ export async function ProductPreview() {
   const t = await getTranslations('HomePage.preview');
 
   return (
-    <section className="bg-muted/30 border-border/60 border-b py-14 sm:py-20">
+    <section className="section-y bg-muted/30 border-border/60 border-b">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
         <h2 className="text-primary text-lg font-bold sm:text-xl">{t('eyebrow')}</h2>
         <p className="font-display mt-2 max-w-xl text-xl text-balance sm:text-2xl">{t('title')}</p>

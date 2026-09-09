@@ -17,7 +17,7 @@ export async function Faq() {
   const t = await getTranslations('HomePage.faq');
 
   return (
-    <section className="py-14 sm:py-20">
+    <section className="section-y">
       <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
         <h2 className="text-primary text-lg font-bold sm:text-xl">{t('eyebrow')}</h2>
 

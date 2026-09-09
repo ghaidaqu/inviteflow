@@ -22,8 +22,8 @@ export async function TrustStrip() {
   const t = await getTranslations('HomePage.trustStrip');
 
   return (
-    <section className="border-border/60 border-b">
-      <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-x-6 gap-y-7 px-4 py-8 sm:px-6 lg:grid-cols-4">
+    <section className="section-y border-border/60 border-b">
+      <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-x-6 gap-y-7 px-4 sm:px-6 lg:grid-cols-4">
         {ITEMS.map(({ key, icon: Icon }) => (
           <div key={key} className="flex items-start gap-3">
             <Icon className="text-primary mt-0.5 size-5 shrink-0" />

@@ -14,7 +14,7 @@ export async function TryBand() {
   const t = await getTranslations('TryDemo');
 
   return (
-    <section className="bg-primary/5 border-border/60 border-y py-14 sm:py-20">
+    <section className="section-y bg-primary/5 border-border/60 border-y">
       <div className="mx-auto grid w-full max-w-4xl items-center gap-8 px-4 sm:px-6 md:grid-cols-2 md:gap-12">
         <div>
           <h2 className="text-primary text-lg font-bold sm:text-xl">{t('bandEyebrow')}</h2>

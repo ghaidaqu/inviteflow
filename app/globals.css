@@ -251,3 +251,31 @@ html[dir='rtl'] {
 .font-display {
   font-weight: 700;
 }
+
+/* One vertical rhythm for the marketing page.
+ *
+ * Every section used to set its own `py-14 sm:py-20`, which meant the
+ * seam between any two of them was both paddings stacked — 160px on
+ * desktop — while the three sections that padded an inner div instead
+ * left seams of 80px, and the hero left none. Same page, four different
+ * gaps: that inconsistency, not the raw size, is what read as unbalanced.
+ *
+ * Now every section uses this one value, so every seam is exactly twice
+ * it and the rhythm is even by construction. Sections with their own
+ * background use it as internal breathing room instead; a color change
+ * already does the work of separating, so it needs no extra allowance.
+ *
+ * The hero is deliberately exempt — it is a full-bleed photograph, and
+ * the edge of the image is its own boundary. */
+.section-y {
+  padding-block: var(--section-space);
+}
+
+:root {
+  --section-space: 2.5rem;
+}
+@media (min-width: 640px) {
+  :root {
+    --section-space: 3rem;
+  }
+}

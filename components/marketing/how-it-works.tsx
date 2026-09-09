@@ -15,7 +15,7 @@ export async function HowItWorks() {
   const t = await getTranslations('HomePage.how');
 
   return (
-    <section className="border-border/60 border-b py-14 sm:py-20">
+    <section className="section-y border-border/60 border-b">
       <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
         <h2 className="text-primary text-lg font-bold sm:text-xl">{t('eyebrow')}</h2>
 
