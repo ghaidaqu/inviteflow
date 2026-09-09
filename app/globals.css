@@ -261,6 +261,17 @@ html[dir='rtl'] {
 .journey-screen {
   will-change: opacity, transform;
 }
+.whatsapp-wallpaper {
+  background-color: #efeae2;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(134, 150, 139, 0.13) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 68%, rgba(134, 150, 139, 0.1) 0 1.5px, transparent 2.5px),
+    linear-gradient(45deg, transparent 47%, rgba(134, 150, 139, 0.055) 48% 52%, transparent 53%);
+  background-size:
+    34px 34px,
+    46px 46px,
+    28px 28px;
+}
 .journey-invite {
   animation: journey-invite 9s var(--ease-in-out) infinite;
 }

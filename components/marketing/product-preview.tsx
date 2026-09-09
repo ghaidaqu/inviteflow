@@ -1,6 +1,16 @@
 import { getTranslations } from 'next-intl/server';
 import { BrandMark } from '@/components/brand-mark';
-import { CheckIcon, XIcon, CalendarIcon, MapPinIcon } from 'lucide-react';
+import {
+  BatteryFullIcon,
+  CheckIcon,
+  ChevronLeftIcon,
+  MapPinIcon,
+  PhoneIcon,
+  SignalIcon,
+  VideoIcon,
+  WifiIcon,
+  XIcon,
+} from 'lucide-react';
 
 /**
  * What the guest actually receives — the single biggest thing the
@@ -61,69 +71,120 @@ export async function ProductPreview() {
             </li>
           </ol>
 
-          <figure className="border-foreground/15 bg-foreground relative mx-auto aspect-[9/16] w-full max-w-[22rem] overflow-hidden rounded-[2.75rem] border-[7px] p-3 shadow-2xl">
-            <div className="bg-card relative h-full overflow-hidden rounded-[2.1rem]">
-              <div className="border-border/70 flex h-14 items-center justify-between border-b px-5">
-                <span className="text-muted-foreground text-xs">9:41</span>
-                <span className="font-display flex items-center gap-1.5 text-sm">
-                  <BrandMark className="size-4" />
-                  {t('passBrand')}
+          <figure className="relative mx-auto aspect-[9/19.5] w-full max-w-[20rem] rounded-[3.4rem] border-[8px] border-[#171717] bg-[#171717] p-[5px] shadow-2xl ring-1 ring-black/20">
+            <span className="absolute top-[9px] left-1/2 z-20 h-6 w-[5.6rem] -translate-x-1/2 rounded-full bg-black" />
+            <span className="absolute top-24 -right-[11px] h-20 w-[3px] rounded-r bg-[#303030]" />
+            <span className="absolute top-28 -left-[11px] h-12 w-[3px] rounded-l bg-[#303030]" />
+            <span className="absolute top-44 -left-[11px] h-16 w-[3px] rounded-l bg-[#303030]" />
+            <div className="relative h-full overflow-hidden rounded-[2.75rem] bg-[#efeae2] text-[#111b21]">
+              <div
+                className="flex h-11 items-center justify-between bg-[#f7f8fa] px-5 pt-1 text-[10px] font-semibold"
+                dir="ltr"
+              >
+                <span>9:41</span>
+                <span className="flex items-center gap-1.5">
+                  <SignalIcon className="size-3" />
+                  <WifiIcon className="size-3" />
+                  <BatteryFullIcon className="h-3 w-4" />
                 </span>
               </div>
-
-              <div className="journey-screen journey-invite absolute inset-x-0 top-14 bottom-0 flex flex-col justify-center p-4">
-                <div className="bg-background rounded-2xl border p-4 shadow-sm">
-                  <p className="text-sm leading-relaxed">{t('messageBody')}</p>
-                  <dl className="text-muted-foreground mt-3 flex flex-col gap-1.5 text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <CalendarIcon className="size-3.5 shrink-0" />
-                      <dd>{t('messageDate')}</dd>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <MapPinIcon className="size-3.5 shrink-0" />
-                      <dd>{t('messagePlace')}</dd>
-                    </div>
-                  </dl>
-                </div>
-                <div className="mt-3 grid grid-cols-3 gap-1.5">
-                  <span className="border-border text-primary flex items-center justify-center gap-1 rounded-lg border py-2 text-xs font-medium">
-                    <CheckIcon className="size-3.5" />
-                    {t('replyYes')}
-                  </span>
-                  <span className="border-border text-muted-foreground flex items-center justify-center gap-1 rounded-lg border py-2 text-xs font-medium">
-                    <XIcon className="size-3.5" />
-                    {t('replyNo')}
-                  </span>
-                  <span className="border-border text-secondary flex items-center justify-center gap-1 rounded-lg border py-2 text-xs font-medium">
-                    <MapPinIcon className="size-3.5" />
-                    {t('replyLocation')}
-                  </span>
-                </div>
-              </div>
-
-              <div className="journey-screen journey-confirm absolute inset-x-0 top-14 bottom-0 flex flex-col items-center justify-center px-6 text-center">
-                <span className="bg-secondary/12 text-secondary ring-secondary/25 flex size-16 items-center justify-center rounded-full ring-1">
-                  <CheckIcon className="size-8" />
+              <div className="flex h-14 items-center gap-2 bg-[#f7f8fa] px-3 shadow-sm" dir="ltr">
+                <ChevronLeftIcon className="size-5 text-[#007aff]" />
+                <span className="flex size-9 items-center justify-center rounded-full bg-[#f6efdc]">
+                  <BrandMark className="size-5" />
                 </span>
-                <p className="font-display mt-5 text-2xl">{t('animationConfirmedTitle')}</p>
-                <p className="text-muted-foreground mt-2 text-sm">{t('animationConfirmedBody')}</p>
+                <span className="min-w-0 flex-1 text-left">
+                  <strong className="block truncate text-[13px] leading-4">{t('chatName')}</strong>
+                  <small className="block text-[9px] text-[#667781]">{t('chatStatus')}</small>
+                </span>
+                <VideoIcon className="size-4 text-[#007aff]" />
+                <PhoneIcon className="size-4 text-[#007aff]" />
               </div>
+              <div className="whatsapp-wallpaper absolute inset-x-0 top-[6.25rem] bottom-0" />
 
-              <div className="journey-screen journey-pass absolute inset-x-0 top-14 bottom-0 flex flex-col items-center justify-center px-6 text-center">
-                <BrandMark className="size-7" />
-                <p className="font-display mt-3 text-2xl">{t('passTitle')}</p>
+              <div className="journey-screen journey-invite absolute inset-x-0 top-[6.25rem] bottom-0 flex flex-col justify-center px-3 py-4">
                 <div
-                  aria-hidden
-                  className="border-foreground/15 mt-5 grid size-36 grid-cols-6 gap-0.5 rounded-lg border bg-white p-2"
+                  className="w-[92%] self-end overflow-hidden rounded-xl rounded-tr-sm bg-white shadow-sm"
+                  dir="rtl"
                 >
-                  {QR_PATTERN.map((filled, i) => (
-                    <span
-                      key={i}
-                      className={filled ? 'bg-foreground rounded-[1px]' : 'bg-transparent'}
-                    />
-                  ))}
+                  <div className="m-1.5 flex aspect-square flex-col items-center justify-center rounded-lg border border-[#d8c9ad] bg-[#f6efdc] px-4 text-center">
+                    <BrandMark className="size-6" />
+                    <p className="font-display mt-3 text-lg text-[#382616]">{t('messageBody')}</p>
+                    <span className="mt-3 h-px w-16 bg-[#96471f]/40" />
+                    <p className="mt-3 text-[10px] leading-5 text-[#67564c]">{t('messageDate')}</p>
+                    <p className="text-[10px] leading-5 text-[#67564c]">{t('messagePlace')}</p>
+                  </div>
+                  <div className="px-3 pt-1 pb-2">
+                    <p className="text-[11px] leading-[1.65]">{t('chatInvitationText')}</p>
+                    <p className="text-left text-[8px] text-[#667781]" dir="ltr">
+                      12:33 AM
+                    </p>
+                  </div>
+                  <div className="border-t border-[#e4e7e9]">
+                    {[
+                      [t('replyYes'), <CheckIcon key="yes" className="size-3.5" />],
+                      [t('replyNo'), <XIcon key="no" className="size-3.5" />],
+                      [t('replyLocation'), <MapPinIcon key="map" className="size-3.5" />],
+                    ].map(([label, icon]) => (
+                      <div
+                        key={String(label)}
+                        className="flex h-9 items-center justify-center gap-1.5 border-b border-[#e4e7e9] text-[11px] font-semibold text-[#00a884] last:border-0"
+                      >
+                        {icon}
+                        {label}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-muted-foreground mt-4 text-xs">{t('passCaption')}</p>
+              </div>
+
+              <div className="journey-screen journey-confirm absolute inset-x-0 top-[6.25rem] bottom-0 flex flex-col justify-center px-3 py-4">
+                <div
+                  className="w-[88%] self-end rounded-xl rounded-tr-sm bg-white p-3 shadow-sm"
+                  dir="rtl"
+                >
+                  <div className="flex items-start gap-2">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#d9fdd3] text-[#008069]">
+                      <CheckIcon className="size-4" />
+                    </span>
+                    <div>
+                      <p className="text-[12px] font-bold">{t('animationConfirmedTitle')}</p>
+                      <p className="mt-1 text-[10px] leading-5 text-[#667781]">
+                        {t('animationConfirmedBody')}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="mt-1 text-left text-[8px] text-[#667781]" dir="ltr">
+                    12:34 AM
+                  </p>
+                </div>
+              </div>
+
+              <div className="journey-screen journey-pass absolute inset-x-0 top-[6.25rem] bottom-0 flex flex-col justify-center px-3 py-4">
+                <div
+                  className="w-[88%] self-end overflow-hidden rounded-xl rounded-tr-sm bg-white shadow-sm"
+                  dir="rtl"
+                >
+                  <div className="m-1.5 flex flex-col items-center rounded-lg bg-[#fffdf7] px-4 py-5 text-center ring-1 ring-[#dfd2ba]">
+                    <BrandMark className="size-6" />
+                    <p className="font-display mt-2 text-lg text-[#382616]">{t('passTitle')}</p>
+                    <div
+                      aria-hidden
+                      className="mt-3 grid size-28 grid-cols-6 gap-0.5 rounded-md border border-black/15 bg-white p-2"
+                    >
+                      {QR_PATTERN.map((filled, i) => (
+                        <span
+                          key={i}
+                          className={filled ? 'rounded-[1px] bg-[#111]' : 'bg-transparent'}
+                        />
+                      ))}
+                    </div>
+                    <p className="mt-3 text-[10px] text-[#667781]">{t('passCaption')}</p>
+                  </div>
+                  <p className="px-3 pb-2 text-left text-[8px] text-[#667781]" dir="ltr">
+                    12:34 AM
+                  </p>
+                </div>
               </div>
             </div>
             <figcaption className="sr-only">
