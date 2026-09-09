@@ -33,23 +33,31 @@ export async function HeroJourneys() {
         aria-hidden
         className="from-foreground/95 via-foreground/70 to-foreground/45 absolute inset-0 bg-gradient-to-t"
       />
-      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-5 px-4 text-center sm:px-6">
-        <span className="text-primary-foreground/90 flex items-center gap-2 text-sm font-semibold">
+      <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col items-center gap-4 px-4 text-center sm:px-6">
+        <span className="text-primary-foreground/85 flex items-center gap-2 text-xs font-semibold tracking-wide">
           <span className="bg-primary-foreground/60 h-px w-6" />
           {t('eyebrow')}
           <span className="bg-primary-foreground/60 h-px w-6" />
         </span>
-        {/* One solid color for the whole headline, not a two-tone accent
+        {/* Sized against the section headings below (20px), not against
+            the width of the screen: at text-6xl the headline was 60px in a
+            435px-tall hero — three times any other heading on the page,
+            and enough type to bury the photograph it sits on. At 36px it
+            leads the page without shouting, and the doorway shows through.
+
+            One solid color for the whole headline, not a two-tone accent
             split — a photo backdrop is the wrong place to run an accent
             color against, since whatever's directly behind each letter
             (dark wood, warm stone, deep shadow) shifts how identical rust
             pixels actually read, no matter how uniform the CSS color
             value is. The accent color still does its job everywhere else
             on the page, on plain backgrounds where it reads cleanly. */}
-        <h1 className="font-display text-primary-foreground text-4xl leading-[1.3] text-balance drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] sm:text-6xl">
+        <h1 className="font-display text-primary-foreground text-3xl leading-[1.35] text-balance drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] sm:text-4xl">
           {t('headlineLine1')} {t('headlineLine2')}
         </h1>
-        <p className="text-primary-foreground/85 max-w-xl text-lg text-balance">{t('subtitle')}</p>
+        <p className="text-primary-foreground/85 max-w-md text-base text-balance">
+          {t('subtitle')}
+        </p>
         {/* A form card here covered the photograph and made the opening
             feel busy — the try-it hook earns its own calm section further
             down (TryBand) instead, and the hero goes back to doing the

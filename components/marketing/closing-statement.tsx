@@ -18,7 +18,7 @@ export async function ClosingStatement() {
   return (
     <section className="section-y bg-muted/40 border-y">
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-3 px-4 text-center sm:px-6">
-        <h2 className="font-display text-2xl leading-[1.35] text-balance sm:text-3xl">
+        <h2 className="font-display text-xl leading-[1.35] text-balance sm:text-2xl">
           {t('headlineLine1')} <span className="text-primary">{t('headlineLine2')}</span>
         </h2>
         <p className="text-muted-foreground text-lg text-balance">{t('subtitle')}</p>

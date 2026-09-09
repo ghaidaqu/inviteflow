@@ -14,7 +14,7 @@ export async function PricingSection() {
   return (
     <section id="pricing" className="section-y bg-foreground text-background scroll-mt-20">
       <div className="mx-auto w-full max-w-6xl px-4 text-center sm:px-6">
-        <h2 className="font-display text-2xl sm:text-3xl">{t('title')}</h2>
+        <h2 className="font-display text-xl sm:text-2xl">{t('title')}</h2>
         <p className="mt-3 text-base opacity-70">{t('subtitle')}</p>
       </div>
     </section>
