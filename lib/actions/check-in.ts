@@ -1,6 +1,7 @@
 'use server';
 
 import { randomUUID } from 'node:crypto';
+import { reportActionError } from '@/lib/utils/report-error';
 import { revalidatePath } from 'next/cache';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
@@ -72,7 +73,8 @@ export async function checkInGuestAction(
       partySize: result.partySize,
       checkedInAt: result.alreadyCheckedIn ? result.checkedInAt : undefined,
     };
-  } catch {
+  } catch (error) {
+    reportActionError('check-in', error);
     return { error: 'unknown' };
   }
 }
@@ -154,7 +156,8 @@ export async function publicCheckInAction(
       partySize: result.partySize,
       checkedInAt: result.alreadyCheckedIn ? result.checkedInAt : undefined,
     };
-  } catch {
+  } catch (error) {
+    reportActionError('check-in', error);
     return { error: 'unknown' };
   }
 }

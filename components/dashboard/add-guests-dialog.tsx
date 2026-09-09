@@ -83,6 +83,10 @@ export function AddGuestsDialog({
   const [contactsSupported, setContactsSupported] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [addedCount, setAddedCount] = useState<number | null>(null);
+  // Who did NOT get added — an unusable phone number, or a failed insert.
+  // A partial import used to report a single count and leave the organizer
+  // no way to tell who was missing.
+  const [rejectedNames, setRejectedNames] = useState<string[]>([]);
   const [isSaving, startSaving] = useTransition();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -212,6 +216,7 @@ export function AddGuestsDialog({
 
     startSaving(async () => {
       const result: AddGuestsActionState = await addGuestsAction(eventId, {}, formData);
+      setRejectedNames(result.rejectedNames ?? []);
       if (result.error) setError(result.error);
       else {
         setAddedCount(result.addedCount ?? 0);
@@ -250,6 +255,13 @@ export function AddGuestsDialog({
         {addedCount !== null && (
           <Alert>
             <AlertDescription>{t('success', { count: addedCount })}</AlertDescription>
+          </Alert>
+        )}
+        {rejectedNames.length > 0 && (
+          <Alert variant="destructive">
+            <AlertDescription>
+              {t('rejected', { count: rejectedNames.length, names: rejectedNames.join('، ') })}
+            </AlertDescription>
           </Alert>
         )}
 

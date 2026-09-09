@@ -1,6 +1,7 @@
 'use server';
 
 import { getLocale } from 'next-intl/server';
+import { reportActionError } from '@/lib/utils/report-error';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
@@ -51,7 +52,8 @@ export async function broadcastResultsAction(
       .eq('id', eventId)
       .eq('organization_id', organizationId);
     return result;
-  } catch {
+  } catch (error) {
+    reportActionError('results', error);
     return { error: 'unknown' };
   }
 }

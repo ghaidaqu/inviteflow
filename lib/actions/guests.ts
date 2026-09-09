@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { reportActionError } from '@/lib/utils/report-error';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { deleteGuest, createGuestManually, updateGuest } from '@/lib/services/guests.service';
@@ -25,6 +26,10 @@ export async function deleteGuestAction(eventId: string, guestId: string) {
 export type AddGuestsActionState = {
   error?: string;
   addedCount?: number;
+  /** Names whose row could not be added — an unusable phone number, or an
+   *  insert that failed. Reported alongside addedCount so a partial import
+   *  tells the organizer exactly who is missing. */
+  rejectedNames?: string[];
 };
 
 type GuestRow = { name: string; phone: string; expectedCompanions?: number };
@@ -37,13 +42,20 @@ function readBoolean(value: FormDataEntryValue | null): boolean {
 }
 
 // Stored in E.164 so the same person can't be re-added under a different
-// spelling and so WhatsApp gets a number it accepts. An unparseable value is
-// kept as typed rather than dropped — the organizer can still see and fix it.
+// spelling and so WhatsApp gets a number it accepts.
+//
+// An unparseable value used to be kept as typed. That looked forgiving and
+// wasn't: the number is one WhatsApp will reject, so the invitation was
+// guaranteed to fail silently, and storing it in a non-canonical form also
+// slipped past the duplicate guard — production ended up with six
+// duplicate (event, phone) pairs and three numbers that were not E.164.
+// Now it returns null and the caller reports which rows were rejected, so
+// the organizer can correct them while it still matters.
 function canonicalPhone(raw: string | null | undefined): string | null {
   const trimmed = String(raw ?? '').trim();
   if (!trimmed) return null;
   const result = normalizePhone(trimmed);
-  return result.ok ? result.e164 : normalizeDigits(trimmed);
+  return result.ok ? result.e164 : null;
 }
 
 // The organizer's own estimate of party size. Clamped rather than rejected:
@@ -84,14 +96,26 @@ export async function addGuestsAction(
   // table's edit dialog.
   const isWaitlisted = readBoolean(formData.get('isWaitlisted'));
 
-  const guestsToAdd = rows
+  const mapped = rows
     .map((r) => ({
       name: (r.name ?? '').trim(),
+      rawPhone: String(r.phone ?? '').trim(),
       phone: canonicalPhone(r.phone),
       expectedCompanions: parseCompanions(r.expectedCompanions),
     }))
     .filter((g) => g.name.length > 0);
-  if (guestsToAdd.length === 0) return { error: 'invalidInput' };
+
+  // A row whose number can't be normalized is set aside rather than
+  // silently stored in a shape that will never deliver. The rest of the
+  // batch still goes in — one mistyped number in a 300-line paste should
+  // not cost the organizer the other 299.
+  const rejected = mapped.filter((g) => g.rawPhone && !g.phone).map((g) => g.name);
+  const guestsToAdd = mapped.filter((g) => !g.rawPhone || g.phone);
+  if (guestsToAdd.length === 0) {
+    return rejected.length
+      ? { error: 'phoneInvalid', rejectedNames: rejected }
+      : { error: 'invalidInput' };
+  }
 
   const supabase = await createClient();
   const {
@@ -105,8 +129,13 @@ export async function addGuestsAction(
   const event = await getEvent(supabase, organizationId, eventId);
   if (!event) return { error: 'unknown' };
 
-  try {
-    for (const guest of guestsToAdd) {
+  // Inserted one at a time so a single bad row can't lose the batch, but
+  // the count is tracked: a failure partway used to return a bare
+  // 'unknown' with no way for the organizer to tell who actually landed.
+  let addedCount = 0;
+  const failed: string[] = [];
+  for (const guest of guestsToAdd) {
+    try {
       await createGuestManually(supabase, eventId, {
         name: guest.name,
         phone: guest.phone,
@@ -114,14 +143,17 @@ export async function addGuestsAction(
         expectedCompanions: guest.expectedCompanions,
         isWaitlisted,
       });
+      addedCount += 1;
+    } catch (error) {
+      console.error('[guests] add failed', { name: guest.name, error });
+      failed.push(guest.name);
     }
-  } catch {
-    return { error: 'unknown' };
   }
 
   const locale = await getLocale();
   revalidatePath(`/${locale}/dashboard/events/${eventId}/guests`);
-  return { addedCount: guestsToAdd.length };
+  if (addedCount === 0) return { error: 'unknown', rejectedNames: [...rejected, ...failed] };
+  return { addedCount, rejectedNames: [...rejected, ...failed] };
 }
 
 export type UpdateGuestActionState = {
@@ -152,7 +184,8 @@ export async function updateGuestAction(
       expectedCompanions: parseCompanions(formData.get('expectedCompanions')),
       isWaitlisted: readBoolean(formData.get('isWaitlisted')),
     });
-  } catch {
+  } catch (error) {
+    reportActionError('guests', error);
     return { error: 'unknown' };
   }
 

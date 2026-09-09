@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { reportActionError } from '@/lib/utils/report-error';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { questionsFormSchema } from '@/lib/validations/questions';
@@ -46,7 +47,8 @@ export async function saveQuestionsAction(
 
   try {
     await replaceQuestions(supabase, eventId, parsed.data.questions);
-  } catch {
+  } catch (error) {
+    reportActionError('questions', error);
     return { error: 'unknown' };
   }
 

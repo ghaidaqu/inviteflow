@@ -29,7 +29,9 @@ export async function TrustStrip() {
             <Icon className="text-primary mt-0.5 size-5 shrink-0" />
             <div>
               <p className="text-sm font-semibold">{t(`${key}Title`)}</p>
-              <p className="text-muted-foreground mt-0.5 text-sm">{t(`${key}Label`)}</p>
+              <p className="text-muted-foreground mt-0.5 text-sm leading-relaxed">
+                {t(`${key}Label`)}
+              </p>
             </div>
           </div>
         ))}

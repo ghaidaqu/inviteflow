@@ -1,6 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { reportActionError } from '@/lib/utils/report-error';
 import { revalidatePath } from 'next/cache';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
@@ -113,7 +114,8 @@ export async function createEventAction(
   try {
     const event = await createEvent(supabase, organizationId, user.id, parsed.data);
     eventId = event.id;
-  } catch {
+  } catch (error) {
+    reportActionError('events', error);
     return { error: 'unknown' };
   }
 
@@ -168,7 +170,8 @@ export async function updateEventAction(
   const locale = await getLocale();
   try {
     await updateEvent(supabase, organizationId, eventId, eventInput);
-  } catch {
+  } catch (error) {
+    reportActionError('events', error);
     return { error: 'unknown' };
   }
 
@@ -254,7 +257,8 @@ export async function updateEventSettingsAction(
 
   try {
     await updateEventSettings(supabase, eventId, settingsInput);
-  } catch {
+  } catch (error) {
+    reportActionError('events', error);
     return { error: 'unknown' };
   }
 
@@ -290,7 +294,8 @@ export async function updateEventDesignAction(
 
   try {
     await updateEventDesign(supabase, eventId, template);
-  } catch {
+  } catch (error) {
+    reportActionError('events', error);
     return { error: 'unknown' };
   }
 

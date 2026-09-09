@@ -61,7 +61,7 @@ export async function TrackOptions({ locale }: { locale: string }) {
                   <span className="font-display text-foreground text-lg sm:text-xl">
                     {tt(`${key}.description`)}
                   </span>
-                  <span className="text-muted-foreground text-sm">
+                  <span className="text-muted-foreground text-sm leading-relaxed">
                     {tt(`${key}.feature1`)} · {tt(`${key}.feature2`)} · {tt(`${key}.feature3`)}
                   </span>
                 </span>

@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { LanguageSwitcher } from '@/components/language-switcher';
 import { BrandMark } from '@/components/brand-mark';
 import { SiteNavActions } from '@/components/marketing/site-nav-actions';
 import { ArrowUpRightIcon } from 'lucide-react';
@@ -37,13 +36,12 @@ export function SiteNav() {
             // Hidden on phones: five items in a 375px bar pushed "تسجيل
             // الدخول" onto two lines. This is the one that can go — it's a
             // secondary destination, and it's still in the footer.
-            className="text-muted-foreground hover:text-foreground border-border/60 hover:border-foreground/30 hidden items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors sm:inline-flex"
+            className="text-muted-foreground hover:text-foreground border-border/60 hover:border-foreground/30 hidden items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition-colors sm:inline-flex"
           >
             {tInstitutional('nav')}
             <ArrowUpRightIcon className="size-3.5" />
           </Link>
           <SiteNavActions />
-          <LanguageSwitcher />
         </div>
       </nav>
     </header>

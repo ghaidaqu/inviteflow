@@ -138,7 +138,7 @@
   },
   "Auth": {
     "register": {
-      "title": "Log in",
+      "title": "Create an account",
       "subtitle": "Sign in with your phone or email to start creating your digital invitations."
     },
     "login": {
@@ -264,7 +264,7 @@
         "resetPositions": "Reset positions",
         "applyButton": "Download invitation",
         "exporting": "Downloading...",
-        "exportFailed": "Couldn't create the invitation, please try again.",
+        "exportFailed": "Couldn't prepare the invitation, please try again.",
         "backgroundColorLabel": "Background color",
         "fontColorLabel": "Font color",
         "palettes": {
@@ -668,7 +668,8 @@
         "missingPhone": "No number",
         "duplicateInList": "Duplicate in list",
         "alreadyAdded": "Already added"
-      }
+      },
+      "rejected": "{count} could not be added because of an unusable phone number: {names}. Fix the numbers and add them again."
     },
     "editGuest": {
       "trigger": "Edit guest",

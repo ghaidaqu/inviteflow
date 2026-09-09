@@ -6,6 +6,15 @@ import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { emailProvider } from '@/lib/email';
 import { z } from 'zod';
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 const institutionalLeadSchema = z.object({
   name: z.string().trim().min(1).max(150),
   organization: z.string().trim().min(1).max(150),
@@ -69,8 +78,11 @@ export async function submitInstitutionalLeadAction(
     ['نوع الفعالية', parsed.data.message ?? '—'],
   ]
     .map(
+      // Escaped: every value here is typed by whoever filled in the public
+      // form, and it was being interpolated straight into HTML we then
+      // email ourselves.
       ([label, value]) =>
-        `<tr><td style="padding:4px 12px 4px 0;color:#5b5548">${label}</td><td>${value}</td></tr>`,
+        `<tr><td style="padding:4px 12px 4px 0;color:#5b5548">${label}</td><td>${escapeHtml(String(value))}</td></tr>`,
     )
     .join('');
 

@@ -15,10 +15,16 @@ export async function getCurrentOrganizationId(
   supabase: Client,
   userId: string,
 ): Promise<string | null> {
+  // Ordered, so a user who belongs to more than one organization always
+  // lands in the same one. Without it Postgres returned whichever row came
+  // first, and since every dashboard page derives its whole scope from
+  // this, their other organization's events simply vanished — differently
+  // on different requests.
   const { data, error } = await supabase
     .from('organization_members')
     .select('organization_id')
     .eq('user_id', userId)
+    .order('created_at', { ascending: true })
     .limit(1)
     .maybeSingle();
 
@@ -54,11 +60,18 @@ export async function listEvents(supabase: Client, organizationId: string): Prom
   return data;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function getEvent(
   supabase: Client,
   organizationId: string,
   eventId: string,
 ): Promise<EventRow | null> {
+  // `/dashboard/events/xyz` used to reach Postgres, which raised 22P02
+  // "invalid input syntax for type uuid" — an uncaught throw that rendered
+  // the 500 error page. A malformed id is simply not found.
+  if (!UUID_RE.test(eventId)) return null;
+
   const { data, error } = await supabase
     .from('events')
     .select('*')
