@@ -1,4 +1,10 @@
+'use client';
+
 import { BrandMark } from '@/components/brand-mark';
+import {
+  SquareWeddingTemplate,
+  defaultWeddingCardData,
+} from '@/components/public/wedding-invitation-templates';
 import Image from 'next/image';
 import {
   CameraIcon,
@@ -18,19 +24,17 @@ type Copy = {
   step3Title: string;
   step3Body: string;
   chatName: string;
-  invitationDate: string;
-  invitationPlace: string;
   invitationText: string;
   accept: string;
   decline: string;
   location: string;
   confirmedTitle: string;
-  confirmedBody: string;
   passTitle: string;
   passCaption: string;
 };
 
 export function GuestJourneyScene({ copy }: { copy: Copy }) {
+  const invitation = defaultWeddingCardData('square');
   const steps = [
     [copy.step1Title, copy.step1Body],
     [copy.step2Title, copy.step2Body],
@@ -70,9 +74,12 @@ export function GuestJourneyScene({ copy }: { copy: Copy }) {
       {/* The photographed iPhone is the frame. Only this clipped layer is
           animated, aligned over its blank screen so the hand, reflections,
           bezel and camera stay photographic and convincing. */}
-      <div className="absolute top-[28.5%] left-[20%] z-10 h-[40.5%] w-[34%] rotate-[-8deg] skew-y-[-1deg] overflow-hidden rounded-[13%] bg-[#efeae2] text-[#111b21] sm:left-[36.4%] sm:w-[15.3%]">
+      <div
+        className="absolute top-[30.2%] left-[30%] z-10 h-[39.2%] w-[24.5%] overflow-hidden bg-[#efeae2] text-[#111b21] sm:left-[35%] sm:w-[18%]"
+        style={{ clipPath: 'polygon(0 5%, 72% 0, 100% 88%, 32% 100%)' }}
+      >
         <div
-          className="absolute inset-x-0 top-[10%] flex h-[13%] items-center gap-[3%] border-b border-black/10 bg-[#f7f8fa] px-[5%]"
+          className="absolute inset-x-0 top-0 flex h-[15%] items-center gap-[3%] border-b border-black/10 bg-[#f7f8fa] px-[5%]"
           dir="ltr"
         >
           <span className="text-[#007aff]">‹</span>
@@ -85,33 +92,14 @@ export function GuestJourneyScene({ copy }: { copy: Copy }) {
           <VideoIcon className="h-[25%] w-auto text-[#007aff]" />
           <PhoneIcon className="h-[25%] w-auto text-[#007aff]" />
         </div>
-        <div className="whatsapp-wallpaper absolute inset-x-0 top-[23%] bottom-[8%]" />
+        <div className="whatsapp-wallpaper absolute inset-x-0 top-[15%] bottom-[9%]" />
 
-        <div className="journey-screen journey-invite absolute inset-x-[5%] top-[25%] bottom-[10%] flex items-center">
+        <div className="journey-screen journey-invite absolute inset-x-[5%] top-[17%] bottom-[11%] flex items-center">
           <div className="w-full overflow-hidden rounded-[5px] bg-white shadow-sm" dir="rtl">
-            <div className="relative m-[2px] flex aspect-square flex-col items-center justify-center border-2 border-[#96471f] bg-[#f6efdc] px-[7%] text-center text-[#96471f]">
-              <span className="absolute inset-[4%] border border-[#96471f]/70" />
-              <p className="font-display relative text-[4px] leading-tight sm:text-[5px]">
-                بارك الله لهما وبارك عليهما وجمع بينهما في خير
-              </p>
-              <p className="relative mt-[4%] text-[3px] sm:text-[4px]">
-                يتشرف عبدالله محمد وخالد سالم
-              </p>
-              <p className="relative mt-[2%] text-[3px] sm:text-[4px]">بدعوتكم لحضور حفل زواج</p>
-              <p className="font-display relative mt-[3%] text-[5px] sm:text-[7px]">
-                محمد عبدالله ◆ خالد سالم
-              </p>
-              <span className="relative my-[4%] h-px w-[35%] bg-[#96471f]/50" />
-              <p className="relative text-[3px] leading-relaxed sm:text-[4px]">
-                {copy.invitationDate}
-              </p>
-              <p className="relative text-[3px] leading-relaxed sm:text-[4px]">
-                {copy.invitationPlace}
-              </p>
-              <span className="relative mt-[4%] flex items-center gap-0.5">
-                <BrandMark className="size-[5px] sm:size-[7px]" />
-                <b className="font-display text-[4px] sm:text-[5px]">مهلّي</b>
-              </span>
+            <div className="relative aspect-square w-full overflow-hidden bg-[#f6efdc]">
+              <div className="absolute top-0 left-0 origin-top-left scale-[0.078] sm:scale-[0.12]">
+                <SquareWeddingTemplate data={invitation} />
+              </div>
             </div>
             <p className="px-[5%] py-[3%] text-[4px] leading-relaxed sm:text-[5px]">
               {copy.invitationText}
@@ -130,17 +118,23 @@ export function GuestJourneyScene({ copy }: { copy: Copy }) {
           </div>
         </div>
 
-        <div className="journey-screen journey-confirm absolute inset-x-[7%] top-[25%] bottom-[10%] flex items-center">
-          <div className="w-full rounded-[5px] bg-white p-[8%] text-center shadow-sm" dir="rtl">
-            <span className="mx-auto flex aspect-square w-[22%] items-center justify-center rounded-full bg-[#d9fdd3] text-[#008069]">
-              <CheckIcon className="h-[48%] w-[48%]" />
-            </span>
-            <p className="font-display mt-[7%] text-[7px] sm:text-[9px]">{copy.confirmedTitle}</p>
-            <p className="mt-[3%] text-[4px] text-[#667781] sm:text-[5px]">{copy.confirmedBody}</p>
+        <div
+          className="journey-screen journey-confirm absolute inset-x-[7%] top-[20%] bottom-[11%] flex flex-col justify-center gap-[5%]"
+          dir="rtl"
+        >
+          <div className="mr-auto max-w-[72%] rounded-[5px] rounded-tr-none bg-[#d9fdd3] px-[7%] py-[5%] text-right shadow-sm">
+            <p className="text-[6px] font-semibold sm:text-[8px]">{copy.accept}</p>
+            <p className="mt-[3%] text-left text-[3px] text-[#667781] sm:text-[4px]">١٢:٢٥ ✓✓</p>
+          </div>
+          <div className="ml-auto max-w-[88%] rounded-[5px] rounded-tl-none bg-white px-[7%] py-[6%] text-right shadow-sm">
+            <p className="text-[5px] leading-relaxed sm:text-[7px]">
+              {copy.confirmedTitle}: {copy.accept}. شكرًا لك!
+            </p>
+            <p className="mt-[3%] text-left text-[3px] text-[#667781] sm:text-[4px]">١٢:٢٥</p>
           </div>
         </div>
 
-        <div className="journey-screen journey-pass absolute inset-x-[7%] top-[25%] bottom-[10%] flex items-center">
+        <div className="journey-screen journey-pass absolute inset-x-[7%] top-[17%] bottom-[11%] flex items-center">
           <div
             className="w-full overflow-hidden rounded-[5px] bg-white p-[2px] text-center shadow-sm"
             dir="rtl"
@@ -156,7 +150,7 @@ export function GuestJourneyScene({ copy }: { copy: Copy }) {
         </div>
 
         <div
-          className="absolute inset-x-0 bottom-0 flex h-[8%] items-center gap-[3%] bg-[#f7f8fa] px-[4%]"
+          className="absolute inset-x-0 bottom-0 flex h-[9%] items-center gap-[3%] bg-[#f7f8fa] px-[4%]"
           dir="ltr"
         >
           <span className="flex-1 rounded-full bg-white text-right text-[4px] text-[#aeb5ba] ring-1 ring-[#d9dde1]">
