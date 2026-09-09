@@ -1,6 +1,7 @@
 'use server';
 
 import { isSupabaseConfigured } from '@/lib/supabase/env';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { emailProvider } from '@/lib/email';
 import { z } from 'zod';
@@ -37,12 +38,16 @@ export type InstitutionalLeadState = {
 };
 
 /**
- * The institutional page has no real product behind it yet (see
- * app/[locale]/institutional/page.tsx — it's a "coming soon" page), so
- * there's no events/organizations row this lead attaches to. Just emails
- * the interest straight to whoever's building this, no new table needed —
- * this is a handful of leads while the feature doesn't exist yet, not
- * data the product needs to query or report on later.
+ * The institutional page has no product behind it yet (see
+ * app/[locale]/institutional/page.tsx — a "coming soon" page), so there is
+ * no events/organizations row a lead attaches to.
+ *
+ * It used to only send an email, on the argument that a table was overkill
+ * for a handful of leads. That was wrong for a reason unrelated to volume:
+ * RESEND_API_KEY isn't set in production, so emailProvider is the console
+ * provider, and every enquiry went to a log line and was lost while the
+ * visitor was told we'd be in touch. The row is written first and the
+ * email is best-effort on top of it.
  */
 export async function submitInstitutionalLeadAction(
   _prevState: InstitutionalLeadState,
@@ -84,12 +89,33 @@ export async function submitInstitutionalLeadAction(
     )
     .join('');
 
+  // Stored BEFORE the email, and independently of it: a promise to follow
+  // up has to survive a missing mail provider.
+  const admin = createAdminClient();
+  const { data: lead, error: insertError } = await admin
+    .from('institutional_leads')
+    .insert({
+      name: parsed.data.name,
+      organization: parsed.data.organization,
+      email: parsed.data.email,
+      phone: parsed.data.phone ?? null,
+      message: parsed.data.message ?? null,
+    })
+    .select('id')
+    .single();
+
+  if (insertError) {
+    console.error('[institutional-lead] could not record lead', insertError);
+    return { error: 'unknown' };
+  }
+
   try {
     await emailProvider.send({
       to: notifyTo,
       subject: `اهتمام مؤسسي جديد — ${parsed.data.organization}`,
       html: `<table style="font-family:sans-serif;font-size:14px">${rows}</table>`,
     });
+    await admin.from('institutional_leads').update({ notified: true }).eq('id', lead.id);
   } catch (error) {
     console.error('[institutional-lead] notification email failed', error);
     // Best-effort — the organizer's interest was still recorded server-side

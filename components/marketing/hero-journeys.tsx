@@ -39,12 +39,10 @@ export async function HeroJourneys() {
           {t('eyebrow')}
           <span className="bg-primary-foreground/60 h-px w-6" />
         </span>
-        {/* Deliberately large — 60px against 24px section headings. I had
-            reduced it to 36px on the argument that the ratio was shouting;
-            the owner looked at both and kept this one. It is their call:
-            the hero is a statement, not a heading in a document outline.
-            The scrim below stays strengthened regardless, because that was
-            a contrast fix, not a size preference.
+        {/* Size has been tuned by eye on a real phone, not derived from a
+            ratio: 24px on mobile, 48px from sm up. It went 60 → 36 → 60 →
+            this, and the deciding view was the phone, where the headline
+            has the least room and the photograph the most to lose.
 
             One solid color for the whole headline, not a two-tone accent
             split — a photo backdrop is the wrong place to run an accent
@@ -53,7 +51,7 @@ export async function HeroJourneys() {
             pixels actually read, no matter how uniform the CSS color
             value is. The accent color still does its job everywhere else
             on the page, on plain backgrounds where it reads cleanly. */}
-        <h1 className="font-display text-primary-foreground text-4xl leading-[1.3] text-balance drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] sm:text-6xl">
+        <h1 className="font-display text-primary-foreground text-2xl leading-[1.35] text-balance drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] sm:text-5xl">
           {t('headlineLine1')} {t('headlineLine2')}
         </h1>
         <p className="text-primary-foreground/85 max-w-xl text-lg text-balance">{t('subtitle')}</p>

@@ -280,6 +280,31 @@ export interface Database {
         Update: Partial<Database['public']['Tables']['whatsapp_deliveries']['Insert']>;
         Relationships: [];
       };
+      institutional_leads: {
+        Row: {
+          id: string;
+          name: string;
+          organization: string;
+          email: string;
+          phone: string | null;
+          message: string | null;
+          /** Whether the notification email actually went out. */
+          notified: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          organization: string;
+          email: string;
+          phone?: string | null;
+          message?: string | null;
+          notified?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['institutional_leads']['Insert']>;
+        Relationships: [];
+      };
       guests: {
         Row: {
           id: string;
