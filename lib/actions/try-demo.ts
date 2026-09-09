@@ -28,16 +28,34 @@ export type TryDemoState = { error?: string; token?: string };
 
 const DEMO_ORG_SLUG = 'mahalli-demo';
 const DEMO_EVENT_SLUG = 'trial-demo';
+const DEMO_LOCATION_TEXT = 'قاعة الأفراح الكبرى، الرياض';
+const DEMO_LOCATION_MAP_URL =
+  'https://www.google.com/maps/search/?api=1&query=%D9%82%D8%A7%D8%B9%D8%A9+%D8%A7%D9%84%D8%A3%D9%81%D8%B1%D8%A7%D8%AD+%D8%A7%D9%84%D9%83%D8%A8%D8%B1%D9%89+%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6';
 
-async function getOrCreateDemoEvent(
+export async function getOrCreateDemoEvent(
   admin: ReturnType<typeof createAdminClient>,
 ): Promise<{ id: string; slug: string }> {
   const { data: existing } = await admin
     .from('events')
-    .select('id, slug')
+    .select('id, slug, location_map_url')
     .eq('slug', DEMO_EVENT_SLUG)
     .maybeSingle();
-  if (existing) return existing;
+  if (existing) {
+    // The first production demo event was created with venue text only.
+    // Repair that long-lived row on the next trial send so its approved
+    // WhatsApp template receives the third "Location" button payload too.
+    if (!existing.location_map_url) {
+      const { error } = await admin
+        .from('events')
+        .update({
+          location_text: DEMO_LOCATION_TEXT,
+          location_map_url: DEMO_LOCATION_MAP_URL,
+        })
+        .eq('id', existing.id);
+      if (error) throw error;
+    }
+    return { id: existing.id, slug: existing.slug };
+  }
 
   const { data: org } = await admin
     .from('organizations')
@@ -55,7 +73,8 @@ async function getOrCreateDemoEvent(
       name: 'زفاف سارة وأحمد',
       type: 'wedding',
       description: 'يسعدنا دعوتكم لحضور حفل زفافنا. — هذي دعوة تجريبية توضح لك شكل التجربة.',
-      location_text: 'قاعة الأفراح الكبرى، الرياض',
+      location_text: DEMO_LOCATION_TEXT,
+      location_map_url: DEMO_LOCATION_MAP_URL,
       primary_locale: 'ar',
       visibility: 'public',
       is_rsvp_enabled: true,

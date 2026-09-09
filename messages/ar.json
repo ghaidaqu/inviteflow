@@ -95,7 +95,13 @@
       "passTitle": "بطاقة دخول",
       "passCaption": "يرجى إبراز الرمز للدخول",
       "passFigCaption": "ومن يوافق، تصله بطاقة يُقرأ رمزها عند الباب.",
-      "replyLocation": "الموقع"
+      "replyLocation": "الموقع",
+      "animationStep1Title": "تصل الدعوة",
+      "animationStep2Title": "يردّ الضيف",
+      "animationStep2Body": "يؤكد أو يعتذر أو يفتح الموقع من نفس الرسالة.",
+      "animationStep3Title": "تصله بطاقة الدخول",
+      "animationConfirmedTitle": "تم تأكيد حضورك",
+      "animationConfirmedBody": "جهّزنا بطاقة دخولك للمناسبة."
     },
     "how": {
       "eyebrow": "ثلاث خطوات",

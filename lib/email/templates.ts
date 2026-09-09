@@ -2,6 +2,25 @@ import type { ResultsSummary } from '@/lib/services/results.service';
 
 type Locale = 'ar' | 'en';
 
+const COLORS = {
+  canvas: '#f6efdc',
+  card: '#fffdf7',
+  ink: '#261914',
+  primary: '#96471f',
+  secondary: '#3d6576',
+  muted: '#74655d',
+  border: '#dfd2ba',
+};
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
 function summaryHtml(locale: Locale, summary: ResultsSummary): string {
   const rsvpLines =
     locale === 'ar'
@@ -11,9 +30,13 @@ function summaryHtml(locale: Locale, summary: ResultsSummary): string {
   const questionsHtml = summary.questions
     .filter((q) => q.tally)
     .map((q) => {
-      const text = locale === 'ar' ? q.questionTextAr : (q.questionTextEn ?? q.questionTextAr);
+      const text = escapeHtml(
+        locale === 'ar' ? q.questionTextAr : (q.questionTextEn ?? q.questionTextAr),
+      );
       const options = q
-        .tally!.map((t) => `<li>${locale === 'ar' ? t.labelAr : t.labelEn}: ${t.count}</li>`)
+        .tally!.map(
+          (t) => `<li>${escapeHtml(locale === 'ar' ? t.labelAr : t.labelEn)}: ${t.count}</li>`,
+        )
         .join('');
       return `<p><strong>${text}</strong></p><ul>${options}</ul>`;
     })
@@ -31,13 +54,32 @@ function wrap(locale: Locale, bodyHtml: string): string {
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
   return `<!doctype html>
 <html lang="${locale}" dir="${dir}">
-  <body style="font-family: system-ui, sans-serif; background: #f8f8f8; padding: 24px;">
-    <div style="max-width: 480px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 24px; border: 1px solid #eee;">
-      <div style="font-weight: 700; font-size: 18px; margin-bottom: 16px;">مهلّي</div>
-      ${bodyHtml}
-    </div>
+  <body style="margin:0;background:${COLORS.canvas};color:${COLORS.ink};font-family:Tahoma,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${COLORS.canvas};padding:32px 12px;">
+      <tr><td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:${COLORS.card};border:1px solid ${COLORS.border};border-radius:24px;overflow:hidden;box-shadow:0 14px 40px rgba(38,25,20,.08);">
+          <tr><td style="height:6px;background:${COLORS.primary};font-size:0;line-height:0;">&nbsp;</td></tr>
+          <tr><td style="padding:30px 32px 12px;text-align:center;">
+            <div style="display:inline-block;width:24px;height:24px;background:${COLORS.primary};transform:rotate(45deg);border-radius:2px;vertical-align:middle;"><span style="display:block;width:8px;height:8px;margin:8px;background:${COLORS.secondary};border-radius:50%;"></span></div>
+            <div style="margin-top:14px;color:${COLORS.primary};font-family:Georgia,Tahoma,serif;font-size:25px;font-weight:700;">مهلّي</div>
+            <div style="margin-top:5px;color:${COLORS.muted};font-size:12px;letter-spacing:.08em;">${locale === 'ar' ? 'دعوتك تبدأ من هنا' : 'Your invitation starts here'}</div>
+          </td></tr>
+          <tr><td style="padding:14px 32px 32px;font-size:15px;line-height:1.9;">${bodyHtml}</td></tr>
+          <tr><td style="border-top:1px solid ${COLORS.border};padding:18px 32px;text-align:center;color:${COLORS.muted};font-size:11px;">mhalli.co</td></tr>
+        </table>
+      </td></tr>
+    </table>
   </body>
 </html>`;
+}
+
+function statusCard(label: string): string {
+  return `<div style="margin:20px 0;padding:15px 18px;border:1px solid ${COLORS.border};border-inline-start:4px solid ${COLORS.secondary};border-radius:12px;background:#faf6ea;font-size:17px;font-weight:700;">${label}</div>`;
+}
+
+function actionButton(locale: Locale, href: string): string {
+  const label = locale === 'ar' ? 'تعديل الرد' : 'Edit response';
+  return `<p style="margin:24px 0 8px;"><a href="${escapeHtml(href)}" style="display:inline-block;background:${COLORS.secondary};color:#fff;text-decoration:none;border-radius:999px;padding:11px 24px;font-weight:700;">${label}</a></p>`;
 }
 
 export function organizerNewRsvpEmail(
@@ -45,15 +87,17 @@ export function organizerNewRsvpEmail(
   params: { eventName: string; guestName: string; status: 'attending' | 'not_attending' },
 ) {
   const statusLabel = RSVP_STATUS_LABEL[locale][params.status];
+  const eventName = escapeHtml(params.eventName);
+  const guestName = escapeHtml(params.guestName);
   if (locale === 'ar') {
     return {
       subject: `رد جديد على مناسبة "${params.eventName}"`,
       html: wrap(
         locale,
         `
-        <p>وصلك رد جديد على مناسبة <strong>${params.eventName}</strong>:</p>
-        <p><strong>${params.guestName}</strong> — ${statusLabel}</p>
-        <p style="color: #666; font-size: 13px;">افتح لوحة التحكم لمراجعة كل الردود.</p>
+        <p style="margin-top:0;">وصلك رد جديد على مناسبة <strong>${eventName}</strong>.</p>
+        ${statusCard(`${guestName} — ${statusLabel}`)}
+        <p style="color:${COLORS.muted};font-size:13px;">افتح لوحة التحكم لمراجعة كل الردود.</p>
       `,
       ),
     };
@@ -63,9 +107,9 @@ export function organizerNewRsvpEmail(
     html: wrap(
       locale,
       `
-      <p>You have a new RSVP for <strong>${params.eventName}</strong>:</p>
-      <p><strong>${params.guestName}</strong> — ${statusLabel}</p>
-      <p style="color: #666; font-size: 13px;">Open your dashboard to review all responses.</p>
+      <p style="margin-top:0;">You have a new RSVP for <strong>${eventName}</strong>.</p>
+      ${statusCard(`${guestName} — ${statusLabel}`)}
+      <p style="color:${COLORS.muted};font-size:13px;">Open your dashboard to review all responses.</p>
     `,
     ),
   };
@@ -75,15 +119,16 @@ export function guestRsvpConfirmationEmail(
   locale: Locale,
   params: { eventName: string; editUrl: string },
 ) {
+  const eventName = escapeHtml(params.eventName);
   if (locale === 'ar') {
     return {
       subject: `تم استلام ردك — ${params.eventName}`,
       html: wrap(
         locale,
         `
-        <p>شكرًا لك، تم استلام ردك على دعوة <strong>${params.eventName}</strong> بنجاح.</p>
+        <p style="margin-top:0;">شكرًا لك، تم استلام ردك على دعوة <strong>${eventName}</strong> بنجاح.</p>
         <p>احتفظ بهذا الرابط لتعديل ردك لاحقًا إذا احتجت:</p>
-        <p><a href="${params.editUrl}">${params.editUrl}</a></p>
+        ${actionButton(locale, params.editUrl)}
       `,
       ),
     };
@@ -93,9 +138,9 @@ export function guestRsvpConfirmationEmail(
     html: wrap(
       locale,
       `
-      <p>Thanks — your response to <strong>${params.eventName}</strong> was received.</p>
+      <p style="margin-top:0;">Thanks — your response to <strong>${eventName}</strong> was received.</p>
       <p>Keep this link if you need to edit your response later:</p>
-      <p><a href="${params.editUrl}">${params.editUrl}</a></p>
+      ${actionButton(locale, params.editUrl)}
     `,
     ),
   };
@@ -106,6 +151,7 @@ export function resultsBroadcastEmail(
   params: { eventName: string; summary: ResultsSummary },
 ) {
   const body = summaryHtml(locale, params.summary);
+  const eventName = escapeHtml(params.eventName);
 
   if (locale === 'ar') {
     return {
@@ -113,7 +159,7 @@ export function resultsBroadcastEmail(
       html: wrap(
         locale,
         `
-        <p>هذي نتيجة الردود على <strong>${params.eventName}</strong>:</p>
+        <p style="margin-top:0;">هذه نتيجة الردود على <strong>${eventName}</strong>:</p>
         ${body}
       `,
       ),
@@ -124,7 +170,7 @@ export function resultsBroadcastEmail(
     html: wrap(
       locale,
       `
-      <p>Here are the results for <strong>${params.eventName}</strong>:</p>
+      <p style="margin-top:0;">Here are the results for <strong>${eventName}</strong>:</p>
       ${body}
     `,
     ),

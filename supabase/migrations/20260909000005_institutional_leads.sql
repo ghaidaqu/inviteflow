@@ -25,7 +25,11 @@ create index institutional_leads_created_idx on public.institutional_leads (crea
 
 alter table public.institutional_leads enable row level security;
 
--- No policy at all: nobody reads this through the API. The form writes it
--- with the service role, and it is read from the Supabase dashboard. RLS
--- with zero policies denies everything, which is exactly right for a table
--- holding names, emails and phone numbers of prospective customers.
+-- The form writes with the service role, which bypasses RLS, and staff read
+-- from the Supabase dashboard. Keep the client denial explicit so migrations,
+-- audits, and future maintainers can verify the intended security boundary.
+create policy "institutional_leads_no_client_access"
+  on public.institutional_leads for all
+  to anon, authenticated
+  using (false)
+  with check (false);

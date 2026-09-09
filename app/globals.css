@@ -213,6 +213,77 @@ html[dir='rtl'] {
   }
 }
 
+/* A lightweight product walkthrough in the marketing phone preview. It
+   replaces a large GIF with real, sharp text and brand tokens while telling
+   the same three-beat story: invitation, reply, entry pass. */
+@keyframes journey-invite {
+  0%,
+  29% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  34%,
+  100% {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+}
+@keyframes journey-confirm {
+  0%,
+  29%,
+  62%,
+  100% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  35%,
+  56% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes journey-pass {
+  0%,
+  57% {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  64%,
+  94% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+.journey-screen {
+  will-change: opacity, transform;
+}
+.journey-invite {
+  animation: journey-invite 9s var(--ease-in-out) infinite;
+}
+.journey-confirm {
+  animation: journey-confirm 9s var(--ease-in-out) infinite;
+}
+.journey-pass {
+  animation: journey-pass 9s var(--ease-in-out) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-screen {
+    animation: none;
+  }
+  .journey-invite {
+    opacity: 1;
+    transform: none;
+  }
+  .journey-confirm,
+  .journey-pass {
+    display: none;
+  }
+}
+
 /* Every card in the new identity carries a soft resting shadow — without
    it, a light card (bg-card, only a few % lighter than the page cream)
    has zero visible edge and reads as missing entirely, not just quiet.

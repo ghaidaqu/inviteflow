@@ -95,7 +95,13 @@
       "passTitle": "Entry pass",
       "passCaption": "Please show this code at the door",
       "passFigCaption": "Whoever accepts receives a pass, scanned at the door.",
-      "replyLocation": "Location"
+      "replyLocation": "Location",
+      "animationStep1Title": "The invitation arrives",
+      "animationStep2Title": "The guest replies",
+      "animationStep2Body": "Accept, decline, or open the location from the same message.",
+      "animationStep3Title": "Their entry pass arrives",
+      "animationConfirmedTitle": "Attendance confirmed",
+      "animationConfirmedBody": "Your entry pass is ready for the event."
     },
     "how": {
       "eyebrow": "Three steps",
