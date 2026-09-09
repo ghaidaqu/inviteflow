@@ -9,6 +9,19 @@ import { PublicFormShell } from '@/components/public/public-form-shell';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { MailIcon } from 'lucide-react';
 
+/**
+ * A missing token/slug renders the correct not-found page but answers
+ * HTTP 200 rather than 404 — a soft 404, still unfixed.
+ *
+ * notFound() is called correctly and the page a guest sees is right
+ * (verified in a browser). The status is committed before notFound()
+ * runs. Already ruled out: `export const dynamic = 'force-dynamic'` on
+ * this route, and a root app/not-found.tsx — that one renders its own
+ * <html> inside this segment's layout, so don't.
+ *
+ * The cost is SEO only, on links that are private and should not be
+ * indexed. Worth another look, but not by repeating either of those.
+ */
 export default async function RsvpEditPage({
   params,
 }: {
