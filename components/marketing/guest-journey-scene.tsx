@@ -48,7 +48,7 @@ export function GuestJourneyScene({ copy }: { copy: Copy }) {
   ];
 
   return (
-    <figure className="relative mt-8 aspect-[3/4] overflow-hidden rounded-[2rem] border border-black/10 bg-[url('/images/marketing/iphone-guest-journey.png')] bg-[length:auto_100%] bg-[position:52%_center] bg-no-repeat shadow-xl sm:aspect-[4/3] sm:bg-cover sm:bg-center">
+    <figure className="relative mt-8 aspect-[3/4] overflow-hidden rounded-[2rem] border border-black/10 bg-[url('/images/marketing/iphone-guest-journey.png')] bg-cover bg-[position:52%_center] bg-no-repeat shadow-xl sm:aspect-[4/3] sm:bg-center">
       <div className="absolute inset-0 bg-gradient-to-r from-[#f6efdc]/15 via-transparent to-black/5" />
 
       <ol className="absolute inset-x-3 bottom-3 z-20 grid gap-1.5 rounded-2xl bg-[#f6efdc]/90 p-3 shadow-lg backdrop-blur-sm sm:inset-x-auto sm:top-[11%] sm:bottom-auto sm:left-[3.5%] sm:w-[29%] sm:grid-cols-1 sm:gap-4 sm:p-5">
@@ -74,10 +74,30 @@ export function GuestJourneyScene({ copy }: { copy: Copy }) {
 
       {/* The photographed iPhone is the frame. Only this clipped layer is
           animated, aligned over its blank screen so the hand, reflections,
-          bezel and camera stay photographic and convincing. */}
+          bezel and camera stay photographic and convincing.
+
+          These numbers come from the photo itself, not a guess: scanned
+          the actual pixels of iphone-guest-journey.png for the screen's
+          white-to-bezel boundary and took the four axis-extreme points of
+          that rounded rect — (499,342) (660,293) (777,691) (611,757) in
+          the original 1448×1086 image. Those four points are exactly the
+          corners a straight-edged clip-path polygon needs for a rotated
+          rounded rectangle: the chords between them stay inside the true
+          curve everywhere except at the corners themselves, so it can
+          never bleed onto the bezel.
+
+          top/height are the same fraction at both breakpoints because
+          neither background-size crops the image vertically (mobile's
+          `cover` scales to match height exactly, same as sm's `cover` on
+          a container whose aspect ratio already equals the photo's).
+          left/width differ because mobile's `cover` DOES crop
+          horizontally (bg-position 52% decides which slice survives),
+          so the box has to be re-expressed in the cropped, not the full,
+          coordinate space — verified against the same pixels before this
+          was written, not assumed. */}
       <div
-        className="absolute top-[30.2%] left-[30%] z-10 h-[39.2%] w-[24.5%] overflow-hidden bg-[#efeae2] text-[#111b21] sm:left-[35%] sm:w-[18%]"
-        style={{ clipPath: 'polygon(0 5%, 72% 0, 100% 88%, 32% 100%)' }}
+        className="absolute top-[27%] left-[20.8%] z-10 h-[42.7%] w-[34.1%] overflow-hidden bg-[#efeae2] text-[#111b21] sm:left-[34.5%] sm:w-[19.2%]"
+        style={{ clipPath: 'polygon(0 10.6%, 57.9% 0, 100% 85.8%, 40.3% 100%)' }}
       >
         <div
           className="absolute inset-x-0 top-0 flex h-[15%] items-center gap-[3%] border-b border-black/10 bg-[#f7f8fa] px-[5%]"
