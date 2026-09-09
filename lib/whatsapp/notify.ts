@@ -161,24 +161,45 @@ export async function sendInvitationWhatsApp(
   // still correct for a guest who has messaged us recently and keeps
   // local development working with no Meta setup at all.
   const templateName = process.env.WHATSAPP_INVITE_TEMPLATE;
+
+  // A template's buttons are FIXED at approval time — Accept, Decline,
+  // Location, always in that order — so payloads must be indexed by the
+  // template's own positions, not by our conditionally-built `buttons`
+  // array. Mapping `buttons` straight across was a real bug: an event with
+  // Decline turned off would have sent the location payload at index 1,
+  // so tapping "اعتذار" would have replied with the map.
+  const templatePayloads = [
+    `rsvp_accept:${guestId}`,
+    `rsvp_decline:${guestId}`,
+    `rsvp_location:${guestId}`,
+  ];
+
   const template = templateName
     ? {
         name: templateName,
         language: process.env.WHATSAPP_INVITE_TEMPLATE_LANG ?? locale,
         bodyParams: [guestName, event.name],
-        buttonPayloads: buttons.map((b) => b.id),
+        buttonPayloads: templatePayloads,
         headerImageUrl,
       }
     : undefined;
 
+  // Template first, free-form as a fallback. If the template is rejected
+  // for any reason — not approved yet, renamed, a language we have no
+  // variant for — a guest whose 24-hour window happens to be open should
+  // still get their invitation rather than nothing at all.
+  async function sendInvite() {
+    if (!template) return whatsAppProvider.send({ to: phone, text, buttons, headerImageUrl });
+    try {
+      return await whatsAppProvider.send({ to: phone, text, buttons, headerImageUrl, template });
+    } catch (templateError) {
+      console.error('[whatsapp] template send rejected, falling back to free-form', templateError);
+      return whatsAppProvider.send({ to: phone, text, buttons, headerImageUrl });
+    }
+  }
+
   try {
-    const result = await whatsAppProvider.send({
-      to: phone,
-      text,
-      buttons,
-      headerImageUrl,
-      template,
-    });
+    const result = await sendInvite();
     // Written down so a delivery-status webhook can be paired back to this
     // guest later — Meta's callback carries only its own message id. A
     // send that Meta accepts can still fail afterwards (wrong number, not

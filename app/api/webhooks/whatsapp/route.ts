@@ -101,6 +101,24 @@ type WhatsAppWebhookBody = {
   }[];
 };
 
+/**
+ * The event's own language, for replying to a guest who tapped something
+ * the organizer disabled. Falls back to Arabic, which is the default for
+ * this product.
+ */
+async function guestLocale(
+  admin: ReturnType<typeof createAdminClient>,
+  guestId: string,
+): Promise<'ar' | 'en'> {
+  const { data } = await admin
+    .from('guests')
+    .select('events(primary_locale)')
+    .eq('id', guestId)
+    .maybeSingle();
+  const locale = (data as { events?: { primary_locale?: string } } | null)?.events?.primary_locale;
+  return locale === 'en' ? 'en' : 'ar';
+}
+
 export async function POST(request: NextRequest) {
   const appSecret = process.env.WHATSAPP_APP_SECRET;
   if (!appSecret) {
@@ -200,6 +218,23 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('[whatsapp webhook] respond_via_whatsapp failed', error);
+      // A template's buttons are fixed at approval time, so every
+      // invitation shows Accept / Decline / Location even when the
+      // organizer turned one of them off — respond_via_whatsapp then
+      // refuses it (check_violation). Saying so is much better than the
+      // guest tapping and hearing nothing back forever.
+      if ((error as { code?: string }).code === '23514' || error.message?.includes('not allowed')) {
+        const locale = await guestLocale(admin, guestId);
+        await whatsAppProvider
+          .send({
+            to: message.from ?? '',
+            text:
+              locale === 'ar'
+                ? 'عذرًا، هذا الخيار غير متاح لهذه الدعوة. تواصل مع صاحب المناسبة.'
+                : 'Sorry, that option is not available for this invitation. Please contact the host.',
+          })
+          .catch(() => {});
+      }
       continue;
     }
 
