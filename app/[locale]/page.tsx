@@ -30,16 +30,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             it moved to ClosingStatement, a quiet reprise right before
             pricing instead of the opening statement. */}
         {/* Choosing a track is the point of the page, so it sits directly
-            under the hero, with "send yourself one" immediately after it —
-            anyone who scrolled past the hero without acting meets the
-            offer again at the moment they're weighing the two options.
-            The rest is for whoever still wants more: why → what it looks
-            like → how → objections. */}
+            under the hero — and what the guest actually receives comes
+            immediately after it, because "which of these two do I need?"
+            is answered far better by showing the thing than by describing
+            it. "Send yourself one" follows: by then a visitor has seen
+            the message, so the offer is to feel it rather than imagine
+            it. The rest is for whoever still wants more. */}
         <HeroJourneys />
         <TrackOptions locale={locale} />
+        <ProductPreview />
         <TryBand />
         <TrustStrip />
-        <ProductPreview />
         <HowItWorks />
         <Faq />
         <PricingSection />

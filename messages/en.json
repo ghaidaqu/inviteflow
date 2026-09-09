@@ -13,21 +13,21 @@
       "startLink": "Try free"
     },
     "hero": {
-      "eyebrow": "Digital invitations, Gulf hospitality style",
+      "eyebrow": "Your invitation arrives, their replies reach you",
       "headlineLine1": "Every invitation",
       "headlineLine2": "opens a door",
-      "subtitle": "Upload your invitation design; Mahalli delivers it and collects the replies.",
+      "subtitle": "Send your invitation to your guests on WhatsApp, and know who is coming before the day.",
       "primaryCta": "Start your invitation"
     },
     "trustStrip": {
-      "item1Title": "Your own design",
-      "item1Label": "Upload an image or video — it arrives exactly as you made it",
-      "item2Title": "On WhatsApp",
-      "item2Label": "Your guest opens it with no app and no account",
+      "item1Title": "No hassle",
+      "item1Label": "One invitation, delivered to everyone",
+      "item2Title": "No app",
+      "item2Label": "Opens straight in WhatsApp, no account",
       "item3Title": "Know who is coming",
-      "item3Label": "Replies reach you as they come",
+      "item3Label": "Replies reach you as they arrive",
       "item4Title": "An orderly door",
-      "item4Label": "A QR pass per guest, scanned on arrival"
+      "item4Label": "An entry pass per guest, scanned on arrival"
     },
     "journeys": {
       "invitation": {
@@ -59,7 +59,7 @@
         "description": "One invitation per guest, by name",
         "feature1": "You send it",
         "feature2": "One-tap reply",
-        "feature3": "Entry QR"
+        "feature3": "Entry pass"
       },
       "rsvp": {
         "title": "Link Invitation",
@@ -73,48 +73,48 @@
     "closing": {
       "headlineLine1": "From the invitation to the door,",
       "headlineLine2": "everything accounted for",
-      "subtitle": "Send, follow along, and welcome your guests.",
+      "subtitle": "Send your invitation, follow the replies, and welcome your guests.",
       "cta": "Start your invitation"
     },
     "ways": {
-      "eyebrow": "Choose your way"
+      "eyebrow": "Invitation options"
     },
     "preview": {
-      "eyebrow": "What your guest sees",
-      "title": "Your invitation as you designed it, with a reply button and an entry pass.",
+      "eyebrow": "What your guest receives",
+      "title": "Your invitation as it is, with a reply button and an entry pass.",
       "messageBody": "You are invited to the wedding of Sara & Ahmed",
       "messageDate": "Thursday 15 October · 8:00 PM",
       "messagePlace": "Al Afrah Hall, Riyadh",
       "replyYes": "Attending",
       "replyNo": "Sorry, cannot",
-      "messageCaption": "The invitation you uploaded arrives like this, and one tap replies.",
+      "messageCaption": "The invitation arrives on WhatsApp, and the guest replies with one tap.",
       "passBrand": "Mahalli",
       "passTitle": "Entry pass",
       "passCaption": "Please show this code at the door",
-      "passFigCaption": "Whoever accepts gets a pass, scanned at the door.",
+      "passFigCaption": "Whoever accepts receives a pass, scanned at the door.",
       "replyLocation": "Location"
     },
     "how": {
       "eyebrow": "Three steps",
-      "step1Title": "Upload your invitation",
-      "step1Body": "An image or video of your own design, with the date and place.",
+      "step1Title": "Add your invitation",
+      "step1Body": "Your invitation, with the date and the place.",
       "step2Title": "Send it",
       "step2Body": "To each guest by name on WhatsApp, or as one link you post.",
       "step3Title": "Follow along",
-      "step3Body": "Who accepted, who declined, and who actually arrived."
+      "step3Body": "Who accepted, who declined, and who arrived."
     },
     "faq": {
       "eyebrow": "Common questions",
-      "q1Question": "Do you design the invitation for me?",
-      "q1Answer": "No — the design is yours. Upload it as an image or video, and Mahalli delivers it, collects the replies, and runs the door.",
+      "q1Question": "What do I need to start?",
+      "q1Answer": "Your invitation, the date and place, and your guest names. Nothing else.",
       "q2Question": "Does my guest need an app or an account?",
-      "q2Answer": "No. It opens in WhatsApp and one tap replies, or they open the link and enter their name.",
-      "q3Question": "What is the difference between the two?",
+      "q2Answer": "No. The invitation arrives on WhatsApp and they reply with one tap, or they open the link and enter their name.",
+      "q3Question": "What is the difference between the two options?",
       "q3Answer": "Digital: one invitation per guest, by name, sent by you. Link: one link you post, and whoever opens it registers themselves.",
-      "q4Question": "How do I check guests in at the door?",
-      "q4Answer": "Everyone who accepts gets a QR pass. Copy the scanner link from the event page and send it to whoever works the door — they scan on their phone, no login.",
-      "q5Question": "What happens to my guests data?",
-      "q5Answer": "It stays yours and is never shared. You can request deletion at any time."
+      "q4Question": "How do I manage entry at the door?",
+      "q4Answer": "Everyone who accepts receives a pass with a code. Copy the scanner link from the event page and send it to your door staff — they scan from their own phone, with no login.",
+      "q5Question": "What happens to my guests’ data?",
+      "q5Answer": "It stays yours, and is never shared. You can ask for it to be deleted at any time."
     }
   },
   "Common": {
@@ -314,20 +314,16 @@
       "viewButton": "View"
     },
     "newChooser": {
-      "title": "Create new",
-      "subtitle": "Choose the right track — each one is completely separate from the others.",
+      "title": "New event",
+      "subtitle": "Choose how you want to invite.",
       "startButton": "Start",
       "invitation": {
         "title": "Digital invitation",
-        "description": "A simple personal invitation to an occasion (wedding, graduation...) — optional accept/decline, no extra questions."
+        "description": "One invitation per guest by name on WhatsApp, answered with one tap."
       },
       "rsvp": {
-        "title": "Link Invitation",
-        "description": "A direct registration link — name, phone, headcount, and your own questions. Ideal when you need accurate numbers fast, without an invitation design."
-      },
-      "institutional": {
-        "title": "Institutional invitation",
-        "description": "For a company or organization: your name and logo appear on the invitation, with your own custom design if you have one."
+        "title": "Link invitation",
+        "description": "One link you post; whoever opens it enters their name and headcount."
       }
     },
     "detail": {
@@ -788,8 +784,8 @@
     }
   },
   "TryDemo": {
-    "title": "Try an Mahalli invitation now",
-    "subtitle": "Enter your name and phone, and a real trial invitation lands on your WhatsApp right away.",
+    "title": "Try a Mahalli invitation",
+    "subtitle": "Enter your name and phone, and a trial invitation reaches your WhatsApp right away.",
     "nameLabel": "Name",
     "phoneLabel": "Phone number",
     "submit": "Send me the invitation",
@@ -801,8 +797,10 @@
       "unknown": "Something unexpected went wrong. Please try again."
     },
     "heroTitle": "Send one to yourself",
-    "heroSubtitle": "Your name and number, and an invitation reaches you on WhatsApp right now. No sign-up.",
-    "bandEyebrow": "Try it"
+    "heroSubtitle": "Enter your name and number, and an invitation reaches you on WhatsApp right away. No sign-up.",
+    "bandEyebrow": "Try it",
+    "sentTitle": "Invitation sent",
+    "sentBody": "Open WhatsApp — it arrived exactly the way your guests receive it."
   },
   "Institutional": {
     "nav": "Institutions",

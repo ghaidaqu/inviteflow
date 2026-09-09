@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/navigation';
+import { CheckIcon } from 'lucide-react';
 import { sendTryDemoInvitationAction, type TryDemoState } from '@/lib/actions/try-demo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,25 +13,30 @@ const initialState: TryDemoState = {};
 
 /**
  * Two fields, no login — the whole point is feeling what a guest feels
- * within seconds. Redirects straight to /rsvp/{token}, the guest's own
- * real status page (same one any real invitation's Accept/Decline links
- * to), rather than a bespoke status page just for this flow.
+ * within seconds.
+ *
+ * On success it stays put and says the invitation is on its way. It used
+ * to redirect to /rsvp/{token}, the guest's own Accept/Decline page, but
+ * that page is what the WhatsApp message itself opens: throwing it up in
+ * the sender's browser answered a question nobody asked and made the
+ * trial feel like a form to fill rather than a message to receive.
  */
 export function TryDemoForm() {
   const t = useTranslations('TryDemo');
   const tErrors = useTranslations('TryDemo.errors');
-  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(sendTryDemoInvitationAction, initialState);
 
-  const [state, formAction, isPending] = useActionState(
-    async (prevState: TryDemoState, formData: FormData) => {
-      const result = await sendTryDemoInvitationAction(prevState, formData);
-      if (result.token) {
-        router.push(`/rsvp/${result.token}`);
-      }
-      return result;
-    },
-    initialState,
-  );
+  if (state.token) {
+    return (
+      <div className="flex flex-col items-center gap-2 py-6 text-center">
+        <span className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-full">
+          <CheckIcon className="size-5" />
+        </span>
+        <p className="font-display text-lg">{t('sentTitle')}</p>
+        <p className="text-muted-foreground text-sm">{t('sentBody')}</p>
+      </div>
+    );
+  }
 
   return (
     <form action={formAction}>
