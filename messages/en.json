@@ -91,7 +91,8 @@
       "passBrand": "Mahalli",
       "passTitle": "Entry pass",
       "passCaption": "Please show this code at the door",
-      "passFigCaption": "Whoever accepts gets a pass, scanned at the door."
+      "passFigCaption": "Whoever accepts gets a pass, scanned at the door.",
+      "replyLocation": "Location"
     },
     "how": {
       "eyebrow": "Three steps",

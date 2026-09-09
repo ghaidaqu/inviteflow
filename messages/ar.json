@@ -91,7 +91,8 @@
       "passBrand": "مهلّي",
       "passTitle": "بطاقة دخول",
       "passCaption": "يرجى إبراز الرمز للدخول",
-      "passFigCaption": "ومن وافق، توصله بطاقة تُمسح عند الباب."
+      "passFigCaption": "ومن وافق، توصله بطاقة تُمسح عند الباب.",
+      "replyLocation": "الموقع"
     },
     "how": {
       "eyebrow": "ثلاث خطوات",

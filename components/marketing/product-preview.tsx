@@ -45,7 +45,11 @@ export async function ProductPreview() {
                   </div>
                 </dl>
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-2">
+              {/* Three buttons, matching what lib/whatsapp/notify.ts really
+                  sends: accept, decline, and — whenever the event has a map
+                  URL — the location. Showing only the first two here made
+                  the preview quietly understate the message. */}
+              <div className="mt-3 grid grid-cols-3 gap-2">
                 <span className="border-border text-primary flex items-center justify-center gap-1.5 rounded-lg border py-2 text-sm font-medium">
                   <CheckIcon className="size-4" />
                   {t('replyYes')}
@@ -53,6 +57,10 @@ export async function ProductPreview() {
                 <span className="border-border text-muted-foreground flex items-center justify-center gap-1.5 rounded-lg border py-2 text-sm font-medium">
                   <XIcon className="size-4" />
                   {t('replyNo')}
+                </span>
+                <span className="border-border text-muted-foreground flex items-center justify-center gap-1.5 rounded-lg border py-2 text-sm font-medium">
+                  <MapPinIcon className="size-4" />
+                  {t('replyLocation')}
                 </span>
               </div>
             </div>
