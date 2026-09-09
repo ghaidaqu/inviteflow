@@ -5,6 +5,7 @@ import { whatsAppProvider } from '@/lib/whatsapp';
 import { notifyOrganizerNewRsvp } from '@/lib/email/notify';
 import { sendGuestQrWhatsApp } from '@/lib/whatsapp/notify';
 import { generateAndUploadEntryCard } from '@/lib/services/qr.service';
+import { applyWhatsAppStatus } from '@/lib/services/whatsapp-delivery.service';
 import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
 
 /**
@@ -18,13 +19,11 @@ import { promoteNextWaitlistedGuest } from '@/lib/services/waitlist.service';
  *    map link) as its own thing, unrelated to the accept/decline flow.
  *
  * 2. Delivery-status callbacks (`value.statuses`) — sent/delivered/read/
- *    failed for messages this number *sent*. Currently just logged in a
- *    structured shape (see the loop below); no table exists yet to
- *    persist these against a specific guest/invitation, since Meta's
- *    payload only carries its own message id, not the request that
- *    produced it — pairing the two would need the send side
- *    (cloud-api-provider.ts) to persist its own message id at send time
- *    first. Wire that up before building anything that reads this data.
+ *    failed for messages this number *sent*. Meta's payload carries only
+ *    its own message id, never the request that produced it, so the send
+ *    side writes that id down as it sends (recordWhatsAppSend); this
+ *    route resolves the status back to a guest through it. That is how an
+ *    organizer learns a number was wrong before the night of the event.
  *
  * Configure in Meta for Developers → your app → WhatsApp → Configuration:
  *   Callback URL: https://<your-domain>/api/webhooks/whatsapp
@@ -94,7 +93,7 @@ type WhatsAppWebhookBody = {
           status?: 'sent' | 'delivered' | 'read' | 'failed';
           recipient_id?: string;
           timestamp?: string;
-          errors?: { code?: number; title?: string }[];
+          errors?: { code?: number; title?: string; message?: string }[];
         }[];
       };
     }[];
@@ -127,17 +126,18 @@ export async function POST(request: NextRequest) {
     (entry.changes ?? []).flatMap((change) => change.value?.statuses ?? []),
   );
   for (const s of statuses) {
-    // Structured on purpose (one object per line) so this is a drop-in
-    // source once a table exists to write these into — no guest/event
-    // link exists here yet since Meta only gives back its own message id,
-    // not whatever request this was in response to; that pairing would
-    // need the send side to persist its own message id at send time.
-    console.log('[whatsapp webhook] status', {
+    // The pairing this used to lack: sendInvitationWhatsApp now writes the
+    // wamid down at send time, so a status carrying nothing but that id
+    // can still be resolved to a guest and an event. Meta's `errors` is an
+    // array; the first entry is the actionable one (131026 "not a WhatsApp
+    // user", 470 "outside the session window", and so on).
+    const failure = s.errors?.[0];
+    if (!s.id) continue;
+    await applyWhatsAppStatus({
       messageId: s.id,
-      status: s.status,
-      to: s.recipient_id,
-      timestamp: s.timestamp,
-      errors: s.errors,
+      status: s.status ?? '',
+      errorCode: failure?.code ?? null,
+      errorDetail: failure?.title ?? failure?.message ?? null,
     });
   }
 

@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { listGuestsWithResponses } from '@/lib/services/guests.service';
+import { getInvitationDeliveriesByGuest } from '@/lib/services/whatsapp-delivery.service';
 import { GuestsTable } from '@/components/dashboard/guests-table';
 import { Link } from '@/i18n/navigation';
 
@@ -27,6 +28,18 @@ export default async function EventGuestsPage({
 
   const guests = await listGuestsWithResponses(supabase, id);
 
+  // Whether each invitation actually reached its guest. Flattened to a
+  // plain object because a Map can't cross the server/client boundary as
+  // a prop, and reduced to the two fields the badge needs rather than
+  // shipping whole rows to the browser.
+  const deliveryRows = await getInvitationDeliveriesByGuest(supabase, id);
+  const deliveries = Object.fromEntries(
+    [...deliveryRows].map(([guestId, row]) => [
+      guestId,
+      { status: row.status, errorDetail: row.error_detail },
+    ]),
+  );
+
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6">
       <Link
@@ -40,6 +53,7 @@ export default async function EventGuestsPage({
         eventId={id}
         eventName={event.name}
         guests={guests}
+        deliveries={deliveries}
         isLinkTrack={event.track === 'rsvp'}
       />
     </main>

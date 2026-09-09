@@ -62,15 +62,25 @@ const emptyRow: GuestRowDraft = {
   isWaitlisted: false,
 };
 
+/** What became of the WhatsApp invitation we sent this guest. */
+export type GuestDelivery = {
+  status: 'accepted' | 'sent' | 'delivered' | 'read' | 'failed';
+  errorDetail: string | null;
+};
+
 export function GuestsTable({
   eventId,
   eventName,
   guests,
+  deliveries,
   isLinkTrack,
 }: {
   eventId: string;
   eventName: string;
   guests: GuestWithResponse[];
+  /** Keyed by guest id; a guest with no entry simply hasn't been sent
+   *  anything we can track yet, and shows no delivery line at all. */
+  deliveries?: Record<string, GuestDelivery>;
   /** Link-track events have no guest list to build and nothing to send:
    *  the organizer shares one public link themselves and everyone who
    *  opens it registers their own name and phone. Adding a guest by hand
@@ -258,6 +268,7 @@ export function GuestsTable({
             <tbody>
               {filtered.map((guest) => {
                 const status = guest.response?.status;
+                const delivery = deliveries?.[guest.id];
                 return (
                   <tr key={guest.id} className="border-t">
                     <td className="p-3">
@@ -271,6 +282,22 @@ export function GuestsTable({
                         {/* Stored as E.164; Saudi numbers read better locally. */}
                         {guest.phone ? formatPhoneForDisplay(guest.phone) : (guest.email ?? '')}
                       </div>
+                      {/* Sits under the number because the number is what
+                          needs fixing when this says the message failed —
+                          the whole point is catching a wrong one while
+                          there's still time to correct and resend. */}
+                      {delivery && (
+                        <div
+                          className={`mt-0.5 text-xs ${
+                            delivery.status === 'failed'
+                              ? 'text-destructive'
+                              : 'text-muted-foreground'
+                          }`}
+                          title={delivery.errorDetail ?? undefined}
+                        >
+                          {t(`delivery.${delivery.status}`)}
+                        </div>
+                      )}
                     </td>
                     <td className="p-3">
                       {status ? (

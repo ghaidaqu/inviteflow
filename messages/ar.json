@@ -362,7 +362,8 @@
       },
       "responseSettingsButton": "إعدادات الرد",
       "responsesButton": "الردود",
-      "messagesButton": "الرسائل والنتائج"
+      "messagesButton": "الرسائل والنتائج",
+      "failedInvitations": "{count} دعوة لم تصل"
     },
     "checkout": {
       "title": "الدفع لنشر المناسبة",
@@ -694,6 +695,13 @@
       "badge": "احتياطي",
       "toggleLabel": "إضافة كقائمة احتياطية",
       "toggleHint": "لن يتم إرسال الدعوة لهم الآن — سيتم إرسالها تلقائيًا فقط عند اعتذار أحد الضيوف الأساسيين."
+    },
+    "delivery": {
+      "accepted": "قيد الإرسال",
+      "sent": "أُرسلت",
+      "delivered": "وصلت",
+      "read": "قُرئت",
+      "failed": "لم تصل — تحقق من الرقم"
     }
   },
   "Notifications": {

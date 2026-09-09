@@ -39,10 +39,24 @@ export type WhatsAppMessage = {
   headerImageUrl?: string;
 };
 
+export type WhatsAppSendResult = {
+  /**
+   * Meta's own message id (a "wamid"). It is the ONLY thing that ties a
+   * later delivery-status webhook back to the message it is about — the
+   * webhook carries no guest, event, or request of ours — so anything
+   * that wants to know whether a message actually arrived has to write
+   * this down at send time. See lib/services/whatsapp-delivery.service.ts.
+   *
+   * Undefined when the transport has no id to give (the console provider
+   * used with no credentials configured), never on a real send.
+   */
+  messageId?: string;
+};
+
 /**
  * Swappable WhatsApp transport — same shape as `EmailProvider`/
  * `PaymentProvider`. Callers never depend on a concrete provider.
  */
 export interface WhatsAppProvider {
-  send(message: WhatsAppMessage): Promise<void>;
+  send(message: WhatsAppMessage): Promise<WhatsAppSendResult>;
 }

@@ -1,6 +1,7 @@
 import 'server-only';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider, isWhatsAppConfigured } from './index';
+import { recordWhatsAppSend } from '@/lib/services/whatsapp-delivery.service';
 import type { ResultsSummary } from '@/lib/services/results.service';
 
 type Locale = 'ar' | 'en';
@@ -73,7 +74,7 @@ export async function sendInvitationWhatsApp(
   const { data: event } = await admin
     .from('events')
     .select(
-      'name, is_rsvp_enabled, cover_image_url, location_map_url, event_settings(allow_attending, allow_not_attending)',
+      'id, name, is_rsvp_enabled, cover_image_url, location_map_url, event_settings(allow_attending, allow_not_attending)',
     )
     .eq('slug', eventSlug)
     .single();
@@ -95,11 +96,15 @@ export async function sendInvitationWhatsApp(
         ? `مرحبًا ${guestName}! أنت مدعو لـ "${event.name}". التفاصيل: ${link}`
         : `Hi ${guestName}! You're invited to "${event.name}". Details: ${link}`;
     try {
-      if (headerImageUrl) {
-        await whatsAppProvider.send({ to: phone, text, imageUrl: headerImageUrl });
-      } else {
-        await whatsAppProvider.send({ to: phone, text });
-      }
+      const result = headerImageUrl
+        ? await whatsAppProvider.send({ to: phone, text, imageUrl: headerImageUrl })
+        : await whatsAppProvider.send({ to: phone, text });
+      await recordWhatsAppSend({
+        messageId: result.messageId,
+        eventId: event.id,
+        guestId,
+        kind: 'invitation',
+      });
       return { ok: true, configured: true };
     } catch (error) {
       console.error('[whatsapp] invitation send failed', error);
@@ -146,7 +151,18 @@ export async function sendInvitationWhatsApp(
       : `Hi ${guestName}! You're invited to "${event.name}". Respond right here 👇`;
 
   try {
-    await whatsAppProvider.send({ to: phone, text, buttons, headerImageUrl });
+    const result = await whatsAppProvider.send({ to: phone, text, buttons, headerImageUrl });
+    // Written down so a delivery-status webhook can be paired back to this
+    // guest later — Meta's callback carries only its own message id. A
+    // send that Meta accepts can still fail afterwards (wrong number, not
+    // a WhatsApp account), and this is the only way the organizer finds
+    // out before the night of the event.
+    await recordWhatsAppSend({
+      messageId: result.messageId,
+      eventId: event.id,
+      guestId,
+      kind: 'invitation',
+    });
     return { ok: true, configured: true };
   } catch (error) {
     console.error('[whatsapp] invitation send failed', error);

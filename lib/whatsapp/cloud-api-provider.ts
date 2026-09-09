@@ -1,4 +1,4 @@
-import type { WhatsAppProvider, WhatsAppMessage } from './provider';
+import type { WhatsAppProvider, WhatsAppMessage, WhatsAppSendResult } from './provider';
 
 const GRAPH_API_VERSION = 'v20.0';
 
@@ -24,7 +24,13 @@ export function createWhatsAppCloudApiProvider(
   phoneNumberId: string,
 ): WhatsAppProvider {
   return {
-    async send({ to, text, buttons, imageUrl, headerImageUrl }: WhatsAppMessage) {
+    async send({
+      to,
+      text,
+      buttons,
+      imageUrl,
+      headerImageUrl,
+    }: WhatsAppMessage): Promise<WhatsAppSendResult> {
       const body = imageUrl
         ? {
             messaging_product: 'whatsapp',
@@ -74,6 +80,14 @@ export function createWhatsAppCloudApiProvider(
         const responseBody = await res.text().catch(() => '');
         throw new Error(`WhatsApp Cloud API send failed (${res.status}): ${responseBody}`);
       }
+
+      // { messages: [{ id: "wamid.HBg..." }] }. Read defensively — a 200
+      // with an unexpected body should still count as a successful send,
+      // it just means we can't track this one's delivery.
+      const payload = (await res.json().catch(() => null)) as {
+        messages?: { id?: string }[];
+      } | null;
+      return { messageId: payload?.messages?.[0]?.id };
     },
   };
 }

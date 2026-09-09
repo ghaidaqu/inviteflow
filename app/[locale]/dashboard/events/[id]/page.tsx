@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { listEventReminders } from '@/lib/services/reminders.service';
+import { countFailedInvitations } from '@/lib/services/whatsapp-delivery.service';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { EventDetailActions } from '@/components/dashboard/event-detail-actions';
@@ -39,6 +40,7 @@ export default async function EventDetailPage({
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
   const publicLink = `${appUrl}/${event.primary_locale}/events/${event.slug}`;
   const reminders = await listEventReminders(supabase, id);
+  const failedInvitations = await countFailedInvitations(supabase, id);
   const isLinkTrack = event.track === 'rsvp';
 
   return (
@@ -85,10 +87,19 @@ export default async function EventDetailPage({
             one public link and registers themselves — so this reads as
             "الردود", not "الضيوف", and the settings behind it aren't a
             "digital invitation" either. */}
+        {/* An undelivered invitation is the one thing here that is
+            actively going wrong and has a deadline on it, so it can't wait
+            to be discovered inside the guest list — it rides the card that
+            leads there. */}
         <ToolCard
           href={`/dashboard/events/${event.id}/guests`}
           icon={UsersIcon}
           label={isLinkTrack ? t('detail.responsesButton') : t('detail.guestsButton')}
+          alert={
+            failedInvitations > 0
+              ? t('detail.failedInvitations', { count: failedInvitations })
+              : undefined
+          }
         />
         {event.is_rsvp_enabled && (
           <>
@@ -160,7 +171,18 @@ export default async function EventDetailPage({
   );
 }
 
-function ToolCard({ href, icon: Icon, label }: { href: string; icon: LucideIcon; label: string }) {
+function ToolCard({
+  href,
+  icon: Icon,
+  label,
+  alert,
+}: {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+  /** Something wrong behind this card that the organizer should act on. */
+  alert?: string;
+}) {
   return (
     <Link
       href={href}
@@ -170,6 +192,7 @@ function ToolCard({ href, icon: Icon, label }: { href: string; icon: LucideIcon;
         <Icon className="size-4.5" />
       </div>
       <span className="text-sm font-medium">{label}</span>
+      {alert && <span className="text-destructive text-xs font-medium">{alert}</span>}
     </Link>
   );
 }

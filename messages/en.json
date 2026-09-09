@@ -362,7 +362,8 @@
       },
       "responseSettingsButton": "Response settings",
       "responsesButton": "Responses",
-      "messagesButton": "Messages & results"
+      "messagesButton": "Messages & results",
+      "failedInvitations": "{count} not delivered"
     },
     "checkout": {
       "title": "Pay to publish",
@@ -694,6 +695,13 @@
       "badge": "Reserve",
       "toggleLabel": "Add as reserve list",
       "toggleHint": "They won't be invited now — an invitation is sent automatically only when a main-list guest declines."
+    },
+    "delivery": {
+      "accepted": "Sending",
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "read": "Read",
+      "failed": "Not delivered — check the number"
     }
   },
   "Notifications": {

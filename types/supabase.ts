@@ -249,6 +249,37 @@ export interface Database {
         Update: Partial<Database['public']['Tables']['event_reminders']['Insert']>;
         Relationships: [];
       };
+      whatsapp_deliveries: {
+        Row: {
+          id: string;
+          // Meta's own message id ("wamid"), the only handle a delivery
+          // webhook gives us to work back from — see the migration.
+          message_id: string;
+          event_id: string;
+          guest_id: string | null;
+          kind: 'invitation' | 'entry_pass' | 'confirmation' | 'reminder' | 'results';
+          // 'accepted' is ours: Meta took the message, nothing back yet.
+          status: 'accepted' | 'sent' | 'delivered' | 'read' | 'failed';
+          error_code: number | null;
+          error_detail: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          message_id: string;
+          event_id: string;
+          guest_id?: string | null;
+          kind: 'invitation' | 'entry_pass' | 'confirmation' | 'reminder' | 'results';
+          status?: 'accepted' | 'sent' | 'delivered' | 'read' | 'failed';
+          error_code?: number | null;
+          error_detail?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['whatsapp_deliveries']['Insert']>;
+        Relationships: [];
+      };
       guests: {
         Row: {
           id: string;
@@ -603,6 +634,14 @@ export interface Database {
       };
       get_ticket_by_qr_token: {
         Args: { p_qr_token: string };
+        Returns: Json;
+      };
+      calculate_event_price: {
+        Args: { p_guest_count: number };
+        Returns: number | null;
+      };
+      get_event_price_estimate: {
+        Args: { p_event_id: string };
         Returns: Json;
       };
       check_rate_limit: {
