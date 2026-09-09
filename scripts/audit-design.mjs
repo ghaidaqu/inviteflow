@@ -206,10 +206,13 @@ for (const url of TARGETS) {
       pass(
         `heading sizes: H1 ${r.scale.H1?.join('/') ?? '—'}px, H2 ${r.scale.H2?.join('/') ?? '—'}px`,
       );
-    if (h1 && h2 && h1 / h2 > 2.2)
-      fail(
-        `H1 is ${(h1 / h2).toFixed(1)}x the largest H2 (${h1}px vs ${h2}px) — over 2.2x reads as shouting`,
-      );
+    // Reported, never failed. Contrast, rhythm, line length and overflow
+    // are objective; how loud the hero should be is the owner's call, and
+    // they have made it. Kept visible so a change gets noticed, not
+    // policed — a check that fails on a deliberate decision trains people
+    // to ignore the whole report.
+    if (h1 && h2)
+      console.log(`  · H1 is ${(h1 / h2).toFixed(1)}x the largest H2 (${h1}px vs ${h2}px)`);
 
     if (r.contrast.length) {
       for (const c of r.contrast)
