@@ -2,26 +2,29 @@ import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import heroDoorway from '@/public/images/marketing/hero-doorway.jpg';
+import heroArchway from '@/public/images/marketing/hero-archway.jpg';
 
 export async function HeroJourneys() {
   const t = await getTranslations('HomePage.hero');
 
-  // Full-bleed photo hero — an entrance, not a person, so the image reads
-  // as "welcome" for every guest and organizer regardless of who they
-  // are, rather than defaulting to one gender's likeness the way most
-  // hospitality stock photography does. A row of successive open doors
-  // receding into warm golden light — a literal match for the "كل
-  // دعوة... باب مفتوح" headline, with no venue signage or branding in
-  // frame (the earlier photo's small hotel plaque was the reason for this
-  // swap). Free-licensed (Unsplash), not a stock image of a specific
-  // business and not a generated one. The dark gradient scrim keeps the
-  // cream headline legible over the doorway detail without flattening the
-  // photo into a plain color block.
+  // Full-bleed photo hero — an open archway onto a lit path, not a person,
+  // so it reads as "welcome" for any guest or organizer rather than
+  // defaulting to one gender's likeness the way most hospitality imagery
+  // does. It is a generated image (the owner made it), which the previous
+  // Unsplash photograph was not — worth stating plainly since the old
+  // comment here claimed the opposite.
+  //
+  // It is also BRIGHT, and that changes the text treatment completely.
+  // Measured against the band where the copy sits (mean rgb 180,149,124):
+  // the old cream type scored 2.44:1 — under the floor for any size — and
+  // dark ink scores 5.15:1. So the type is ink on a light veil now, not
+  // cream on a dark scrim. The veil is deliberately weak: heavy enough to
+  // steady the contrast, light enough to keep the airiness that made this
+  // picture worth switching to.
   return (
     <section className="relative flex min-h-[56vh] items-center justify-center overflow-hidden">
       <Image
-        src={heroDoorway}
+        src={heroArchway}
         alt=""
         fill
         priority
@@ -31,13 +34,13 @@ export async function HeroJourneys() {
       />
       <div
         aria-hidden
-        className="from-foreground/95 via-foreground/80 to-foreground/60 absolute inset-0 bg-gradient-to-t"
+        className="from-background/85 via-background/60 to-background/35 absolute inset-0 bg-gradient-to-t"
       />
       <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-col items-center gap-5 px-4 text-center sm:px-6">
         <span className="text-primary-foreground/90 flex items-center gap-2 text-sm font-semibold">
-          <span className="bg-primary-foreground/60 h-px w-6" />
+          <span className="bg-primary/50 h-px w-6" />
           {t('eyebrow')}
-          <span className="bg-primary-foreground/60 h-px w-6" />
+          <span className="bg-primary/50 h-px w-6" />
         </span>
         {/* Size has been tuned by eye on a real phone, not derived from a
             ratio: 24px on mobile, 48px from sm up. It went 60 → 36 → 60 →
@@ -51,17 +54,16 @@ export async function HeroJourneys() {
             pixels actually read, no matter how uniform the CSS color
             value is. The accent color still does its job everywhere else
             on the page, on plain backgrounds where it reads cleanly. */}
-        <h1 className="font-display text-primary-foreground text-2xl leading-[1.35] text-balance drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] sm:text-5xl">
+        <h1 className="font-display text-foreground text-2xl leading-[1.35] text-balance sm:text-5xl">
           {t('headlineLine1')} {t('headlineLine2')}
         </h1>
-        <p className="text-primary-foreground/85 max-w-xl text-lg text-balance">{t('subtitle')}</p>
+        <p className="text-foreground/80 max-w-xl text-lg text-balance">{t('subtitle')}</p>
         {/* A form card here covered the photograph and made the opening
             feel busy — the try-it hook earns its own calm section further
             down (TryBand) instead, and the hero goes back to doing the
             one thing it does well. */}
         <Button
           size="lg"
-          variant="secondary"
           className="mt-1 px-10"
           nativeButton={false}
           render={<Link href="#options" />}
