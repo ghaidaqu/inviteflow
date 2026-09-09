@@ -43,8 +43,30 @@ export default async function EventRsvpPage({
     notFound();
   }
 
-  const questions = await listQuestions(supabase, event.id);
   const t = await getTranslations('Rsvp');
+
+  // submit_rsvp enforces the deadline server-side, but nothing said so
+  // until the very last step — a guest could fill in their name, phone,
+  // companions, every custom question and the consent box, press send, and
+  // only then be told replies had closed. The edit page
+  // (app/[locale]/rsvp/[token]/page.tsx) already checked this; the form
+  // that people actually arrive at did not.
+  const deadlinePassed =
+    !!event.rsvp_deadline && new Date(event.rsvp_deadline).getTime() < Date.now();
+
+  if (deadlinePassed) {
+    return (
+      <PublicFormShell
+        icon={<MailIcon className="size-6" />}
+        title={event.name}
+        subtitle={t('deadlinePassedTitle')}
+      >
+        <p className="text-muted-foreground text-center">{t('deadlinePassedBody')}</p>
+      </PublicFormShell>
+    );
+  }
+
+  const questions = await listQuestions(supabase, event.id);
 
   return (
     <PublicFormShell

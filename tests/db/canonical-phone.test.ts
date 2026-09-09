@@ -62,7 +62,7 @@ describe('submit_rsvp duplicate guard, across spellings', () => {
       [u[0].id],
     );
     slug = 'phone-guard-event';
-    const { rows: e } = await db.query<{ id: string }>(
+    await db.query<{ id: string }>(
       `insert into public.events (organization_id, created_by, slug, name, type, status, visibility)
        values ($1, $2, $3, 'Phone Guard', 'wedding', 'published', 'public') returning id;`,
       [o[0].id, u[0].id, slug],

@@ -56,7 +56,17 @@ export async function submitRsvp(
   return data[0];
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function getRsvpByToken(supabase: Client, token: string): Promise<RsvpByToken | null> {
+  // get_rsvp_by_token takes a uuid, so a token that isn't one made Postgres
+  // raise 22P02, which this function re-threw — and the page's notFound()
+  // below it was never reached. A guest whose WhatsApp link got truncated
+  // or mistyped saw a crash page with a retry button that could never
+  // work, instead of "this link isn't valid". This is the single most
+  // trafficked guest route, so the malformed case has to be the quiet one.
+  if (!UUID_RE.test(token)) return null;
+
   const { data, error } = await supabase.rpc('get_rsvp_by_token', { p_secure_token: token });
   if (error) throw error;
   if (!data) return null;
@@ -80,6 +90,10 @@ export async function updateRsvpByToken(
     answers: AnswerInput[] | null;
   },
 ) {
+  // Same uuid guard as the read path: an edit submitted against a
+  // malformed token should be "not found", not a raised type error.
+  if (!UUID_RE.test(params.token)) return null;
+
   const { data, error } = await supabase.rpc('update_rsvp_by_token', {
     p_secure_token: params.token,
     p_status: params.status,

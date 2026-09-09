@@ -1,6 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
+import { formatDateTime } from '@/lib/utils/format-date';
 import { useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -45,7 +46,7 @@ export function RemindersPanel({
             <div>
               <div className="font-medium">{t(`kind.${reminder.kind}`)}</div>
               <div className="text-muted-foreground text-xs">
-                {new Date(reminder.scheduled_at).toLocaleString(locale)}
+                {formatDateTime(reminder.scheduled_at, locale)}
               </div>
             </div>
             <div className="flex items-center gap-2">

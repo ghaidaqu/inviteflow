@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { formatDate } from '@/lib/utils/format-date';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, listEvents } from '@/lib/services/events.service';
 import { Button } from '@/components/ui/button';
@@ -54,9 +55,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
                     all (see the migration comment) — nothing guessed at,
                     just omitted rather than shown wrong. */}
                 {event.track && <> · {t(`newChooser.${event.track}.title`)}</>}
-                {event.event_date && (
-                  <> · {new Date(event.event_date).toLocaleDateString(locale)}</>
-                )}
+                {event.event_date && <> · {formatDate(event.event_date, locale)}</>}
               </p>
               <Button
                 variant="outline"

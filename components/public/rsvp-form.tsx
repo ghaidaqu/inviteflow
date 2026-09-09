@@ -69,7 +69,12 @@ export function RsvpForm({
   const [submittedStatus, setSubmittedStatus] = useState<FormValues['status']>('');
   const [qrCardUrl, setQrCardUrl] = useState<string | null>(null);
 
-  const { register, handleSubmit, control } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormValues>({
     defaultValues: {
       guestName: '',
       phone: '',
@@ -185,9 +190,23 @@ export function RsvpForm({
       )}
 
       <FieldGroup>
-        <Field>
+        {/* `required` on its own only stops handleSubmit and moves focus
+            here — silently. A sighted guest saw the button do nothing with
+            no explanation, and a screen reader announced nothing at all.
+            The message has to be rendered and associated with the field. */}
+        <Field data-invalid={!!errors.guestName}>
           <FieldLabel htmlFor="guestName">{t('nameLabel')}</FieldLabel>
-          <Input id="guestName" {...register('guestName', { required: true })} />
+          <Input
+            id="guestName"
+            aria-invalid={!!errors.guestName}
+            aria-describedby={errors.guestName ? 'guestName-error' : undefined}
+            {...register('guestName', { required: true })}
+          />
+          {errors.guestName && (
+            <p id="guestName-error" role="alert" className="text-destructive text-sm">
+              {tErrors('nameRequired')}
+            </p>
+          )}
         </Field>
 
         <div className="grid gap-4 sm:grid-cols-2">

@@ -305,7 +305,13 @@
       },
       "questionsInlineTitle": "Custom questions",
       "questionsInlineHint": "Add the questions you want to send your guests. You can add or edit more later from the settings page.",
-      "questionsInlineEmpty": "No questions yet — click \"Add question\" to start."
+      "questionsInlineEmpty": "No questions yet — click \"Add question\" to start.",
+      "errors": {
+        "datePast": "The event date cannot be in the past.",
+        "deadlineAfterEvent": "The reply deadline cannot be after the event date.",
+        "nameTooLong": "That event name is too long (150 characters max).",
+        "phoneInvalid": "Enter a valid phone number, e.g. 0501234567."
+      }
     },
     "list": {
       "title": "Events",
@@ -483,9 +489,13 @@
       "consentRequired": "You must agree to the privacy policy to continue.",
       "notConfigured": "The service is unavailable right now. Please try again shortly.",
       "submitFailed": "Couldn't submit your response, please try again.",
-      "rateLimited": "Too many attempts in a short time — please try again in a minute."
+      "rateLimited": "Too many attempts in a short time — please try again in a minute.",
+      "notFound": "This link is not valid.",
+      "nameRequired": "Please enter your name."
     },
-    "a11yRemoveCompanion": "Remove this companion"
+    "a11yRemoveCompanion": "Remove this companion",
+    "deadlinePassedTitle": "Replies have closed",
+    "deadlinePassedBody": "The deadline for replying to this invitation has passed. Contact the host if you still need to make a change."
   },
   "EventSettings": {
     "invitationPageTitle": "Digital Invitation",

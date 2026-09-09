@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { formatDateTime } from '@/lib/utils/format-date';
 import { cookies } from 'next/headers';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
@@ -93,7 +94,7 @@ export default async function PublicEventPage({
               <DetailCard
                 icon={<CalendarIcon className="size-5" />}
                 label={t('dateLabel')}
-                value={new Date(event.event_date).toLocaleString(locale)}
+                value={formatDateTime(event.event_date, locale)}
               />
             )}
             {event.location_text && (
@@ -107,7 +108,7 @@ export default async function PublicEventPage({
               <DetailCard
                 icon={<ClockIcon className="size-5" />}
                 label={t('rsvpDeadlineLabel')}
-                value={new Date(event.rsvp_deadline).toLocaleString(locale)}
+                value={formatDateTime(event.rsvp_deadline, locale)}
               />
             )}
           </dl>

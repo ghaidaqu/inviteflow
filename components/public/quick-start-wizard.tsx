@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useTransition } from 'react';
+import { normalizePhone } from '@/lib/utils/phone';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
@@ -99,7 +100,15 @@ export function QuickStartWizard({
   const ArrowIcon = isRtl ? ArrowLeftIcon : ArrowRightIcon;
   const BackArrowIcon = isRtl ? ArrowRightIcon : ArrowLeftIcon;
 
-  const { register, control, handleSubmit, watch, setValue, trigger } = useForm<FormValues>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    trigger,
+    formState: { errors },
+  } = useForm<FormValues>({
     defaultValues: {
       name: '',
       type: 'other',
@@ -132,6 +141,7 @@ export function QuickStartWizard({
   const [guestName, setGuestName] = useState('');
   const [guestPhone, setGuestPhone] = useState('');
   const [guestError, setGuestError] = useState(false);
+  const [guestPhoneError, setGuestPhoneError] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   // Lifted out of CoverImagePicker so this wizard's own Back button can
   // tell "deep in the design gallery/editor" apart from "on the design
@@ -231,6 +241,14 @@ export function QuickStartWizard({
       const valid = await trigger('name');
       if (!valid) return;
     }
+    // The date step used to let anything through: an event in 2020, or a
+    // reply deadline a month AFTER the event it belongs to. Both produce
+    // an invitation that can never work, and the wizard is the last place
+    // an organizer would notice.
+    if (stepId === 'datetime') {
+      const valid = await trigger(['eventDate', 'rsvpDeadline']);
+      if (!valid) return;
+    }
     setStepIndex((i) => Math.min(i + 1, steps.length - 1));
   }
 
@@ -253,6 +271,15 @@ export function QuickStartWizard({
       setGuestError(true);
       return;
     }
+    // A number we can't normalize will never reach WhatsApp. It used to be
+    // dropped silently here and the wizard went straight on to account
+    // creation, so the organizer had no idea the trial they asked for was
+    // never going to arrive. The standalone /try form already said so.
+    if (sendTrial && track === 'invitation' && !normalizePhone(guestPhone).ok) {
+      setGuestPhoneError(true);
+      return;
+    }
+    setGuestPhoneError(false);
     setGuestError(false);
     setSubmitError(null);
 
@@ -322,9 +349,18 @@ export function QuickStartWizard({
               <FieldLabel htmlFor="qs-name">{tForm('nameLabel')}</FieldLabel>
               <Input
                 id="qs-name"
-                {...register('name', { required: true })}
+                {...register('name', {
+                  required: true,
+                  maxLength: { value: 150, message: tForm('errors.nameTooLong') },
+                })}
+                aria-invalid={!!errors.name}
                 placeholder={t('namePlaceholder')}
               />
+              {errors.name?.message && (
+                <p role="alert" className="text-destructive text-sm">
+                  {errors.name.message}
+                </p>
+              )}
             </Field>
 
             <Field>
@@ -363,11 +399,42 @@ export function QuickStartWizard({
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
                 <FieldLabel htmlFor="qs-date">{tForm('eventDateLabel')}</FieldLabel>
-                <Input id="qs-date" type="datetime-local" {...register('eventDate')} />
+                <Input
+                  id="qs-date"
+                  type="datetime-local"
+                  aria-invalid={!!errors.eventDate}
+                  {...register('eventDate', {
+                    validate: (v) =>
+                      !v ||
+                      new Date(v).getTime() > Date.now() ||
+                      (tForm('errors.datePast') as string),
+                  })}
+                />
+                {errors.eventDate && (
+                  <p role="alert" className="text-destructive text-sm">
+                    {errors.eventDate.message}
+                  </p>
+                )}
               </Field>
               <Field>
                 <FieldLabel htmlFor="qs-rsvp-deadline">{tForm('rsvpDeadlineLabel')}</FieldLabel>
-                <Input id="qs-rsvp-deadline" type="datetime-local" {...register('rsvpDeadline')} />
+                <Input
+                  id="qs-rsvp-deadline"
+                  type="datetime-local"
+                  aria-invalid={!!errors.rsvpDeadline}
+                  {...register('rsvpDeadline', {
+                    validate: (v, all) =>
+                      !v ||
+                      !all.eventDate ||
+                      new Date(v).getTime() <= new Date(all.eventDate).getTime() ||
+                      (tForm('errors.deadlineAfterEvent') as string),
+                  })}
+                />
+                {errors.rsvpDeadline && (
+                  <p role="alert" className="text-destructive text-sm">
+                    {errors.rsvpDeadline.message}
+                  </p>
+                )}
               </Field>
             </div>
 
@@ -524,21 +591,29 @@ export function QuickStartWizard({
                       }}
                     />
                   </Field>
-                  <Field data-invalid={guestError}>
+                  <Field data-invalid={guestError || guestPhoneError}>
                     <FieldLabel htmlFor="qs-guest-phone">{t('guestPhoneLabel')}</FieldLabel>
                     <PhoneInput
                       id="qs-guest-phone"
-                      aria-invalid={guestError}
+                      aria-invalid={guestError || guestPhoneError}
                       value={guestPhone}
                       onChange={(phone) => {
                         setGuestPhone(phone);
                         setGuestError(false);
+                        setGuestPhoneError(false);
                       }}
                     />
                   </Field>
                 </div>
                 {guestError && (
-                  <p className="text-destructive text-sm">{t('guestRequiredError')}</p>
+                  <p role="alert" className="text-destructive text-sm">
+                    {t('guestRequiredError')}
+                  </p>
+                )}
+                {guestPhoneError && (
+                  <p role="alert" className="text-destructive text-sm">
+                    {tForm('errors.phoneInvalid')}
+                  </p>
                 )}
               </FieldGroup>
             )}

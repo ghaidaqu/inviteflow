@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PhoneInput } from '@/components/ui/phone-input';
 import { Textarea } from '@/components/ui/textarea';
-import { Field, FieldLabel, FieldGroup } from '@/components/ui/field';
+import { Field, FieldLabel } from '@/components/ui/field';
 import { CheckCircle2Icon } from 'lucide-react';
 
 const initialState: InstitutionalLeadState = {};

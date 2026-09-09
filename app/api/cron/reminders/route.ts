@@ -1,4 +1,5 @@
 import { timingSafeEqual } from 'node:crypto';
+import { formatDateTime } from '@/lib/utils/format-date';
 import { NextResponse, type NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider, isWhatsAppConfigured } from '@/lib/whatsapp';
@@ -143,7 +144,7 @@ function reminderText(
   event: { name: string; event_date: string | null; location_text: string | null },
   locale: 'ar' | 'en',
 ): string {
-  const when = event.event_date ? new Date(event.event_date).toLocaleString(locale) : '';
+  const when = event.event_date ? formatDateTime(event.event_date, locale) : '';
   const where = event.location_text ?? '';
 
   if (kind === 'day_before') {

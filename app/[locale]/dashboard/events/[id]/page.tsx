@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { formatDateTime } from '@/lib/utils/format-date';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
@@ -148,13 +149,13 @@ export default async function EventDetailPage({
           {event.event_date && (
             <div>
               <dt className="text-muted-foreground text-sm">{t('form.eventDateLabel')}</dt>
-              <dd className="mt-1">{new Date(event.event_date).toLocaleString(locale)}</dd>
+              <dd className="mt-1">{formatDateTime(event.event_date, locale)}</dd>
             </div>
           )}
           {event.rsvp_deadline && (
             <div>
               <dt className="text-muted-foreground text-sm">{t('form.rsvpDeadlineLabel')}</dt>
-              <dd className="mt-1">{new Date(event.rsvp_deadline).toLocaleString(locale)}</dd>
+              <dd className="mt-1">{formatDateTime(event.rsvp_deadline, locale)}</dd>
             </div>
           )}
           {event.location_text && (

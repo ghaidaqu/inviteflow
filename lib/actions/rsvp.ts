@@ -278,7 +278,14 @@ export async function updateRsvpAction(
     // Only promote on a genuine new decline — a guest re-submitting an
     // already-'not_attending' response (or flipping back and forth)
     // shouldn't burn through the waitlist on every resubmission.
-    if (parsed.data.status === 'not_attending' && result?.previous_status !== 'not_attending') {
+    // `result` is null when the token wasn't a uuid at all — nothing was
+    // updated, so there is nothing to promote against either.
+    if (!result) return { error: 'notFound' };
+
+    // Only promote on a genuine new decline — a guest re-submitting an
+    // already-'not_attending' response (or flipping back and forth)
+    // shouldn't burn through the waitlist on every resubmission.
+    if (parsed.data.status === 'not_attending' && result.previous_status !== 'not_attending') {
       const locale = (await getLocale()) as 'ar' | 'en';
       await promoteNextWaitlistedGuest(result.event_id, result.event_slug, locale);
     }

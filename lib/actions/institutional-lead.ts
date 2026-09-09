@@ -1,6 +1,5 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 import { emailProvider } from '@/lib/email';
