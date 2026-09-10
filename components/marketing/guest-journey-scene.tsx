@@ -30,19 +30,23 @@ type Copy = {
 };
 
 /** The photograph's own pixel dimensions — every coordinate here is in them. */
-const PHOTO_W = 1448;
-const PHOTO_H = 1086;
+const PHOTO_W = 1312;
+const PHOTO_H = 1199;
+
+/** Where the frame stays centred: the middle of the phone's own screen.
+ *  The composition is a phone in a hand, and it is the phone that has to
+ *  hold its place and its size from 390px up to desktop — centring on the
+ *  photo instead let the crop drift onto the marble and the olive branch
+ *  while the phone shrank between them. */
+const ANCHOR_X = 603;
+const ANCHOR_Y = 567;
 
 /**
  * How much closer the crop sits than "fit the whole photo in the frame".
- * The photograph is a wide scene and the phone is a small part of it; at
- * 1.0 the chat was legible only if you leaned in, and at 1.34 the coffee
- * cup still read as big as the phone. The section is about what arrives
- * on the screen, so the scene is cropped down to the hand holding it —
- * the cup, the marble and the man on the right leave the frame or become
- * a sliver, and that room goes to the conversation.
+ * This photograph is already framed on the phone, so it needs barely any
+ * — just enough to push the coffee cup and the olive branch to the edges.
  */
-const CROP_ZOOM = 1.75;
+const CROP_ZOOM = 1.06;
 
 /**
  * Maps a real 390×844 iPhone screen onto the screen in the photograph.
@@ -57,17 +61,17 @@ const CROP_ZOOM = 1.75;
  * The four corners came from scanning the photo for its white-to-bezel
  * boundary, then fitted to it: the corners were nudged until the quad's
  * overlap with the scanned screen region stopped improving, which lands at
- * (493,329) (680,288) (781,712) (600,764) and 97.7% agreement — the rest is
- * the screen's rounded corners, which `rounded-[54px]` below cuts to match.
- * Reading the corners off by eye left a hairline of bare photo down one
- * side and spilled over the bezel on the other.
+ * (345,193) (711,140) (865,933) (490,1001). What overlap is left out is
+ * this phone's very round corners, which `rounded-[54px]` below cuts to
+ * match. Reading the corners off by eye left a hairline of bare photo down
+ * one side and spilled over the bezel on the other.
  *
  * This matrix maps the screen's own corners onto those points, so the
  * header sits on the top edge and the input bar on the bottom edge, the
  * way they would if the phone were really running the app.
  */
 const SCREEN_TRANSFORM =
-  'matrix3d(0.528459,-0.0843872,0,0.0000720173,0.139201,0.531223,0,0.0000207067,0,0,1,0,493,329,0,1)';
+  'matrix3d(0.968149,-0.130052,0,0.000041754,0.153985,0.92095,0,-0.0000363594,0,0,1,0,345,193,0,1)';
 
 /**
  * Cellular, Wi-Fi and battery, drawn rather than typed. Box-drawing
@@ -138,10 +142,25 @@ export function GuestJourneyScene({ copy, locale }: { copy: Copy; locale: string
       const { width, height } = frame.getBoundingClientRect();
       if (!width || !height) return;
       // `cover`, then closer: fill the frame on both axes, then zoom in
-      // on the phone. Where that lands is set in CSS, which anchors the
-      // stage on the point in the photo the phone sits at.
-      const cover = Math.max(width / PHOTO_W, height / PHOTO_H);
-      frame.style.setProperty('--stage-scale', String(cover * CROP_ZOOM));
+      // on the phone.
+      const scale = Math.max(width / PHOTO_W, height / PHOTO_H) * CROP_ZOOM;
+      const scaledW = PHOTO_W * scale;
+      const scaledH = PHOTO_H * scale;
+      // Centre the anchor, but never past an edge of the photograph —
+      // the frame's aspect ratio changes between phone and desktop, and
+      // at one of them centring on the phone would otherwise pull a strip
+      // of empty page in above the image.
+      const clamp = (want: number, frameSize: number, scaledSize: number) =>
+        Math.min(0, Math.max(frameSize - scaledSize, want));
+      frame.style.setProperty('--stage-scale', String(scale));
+      frame.style.setProperty(
+        '--stage-x',
+        `${clamp(width / 2 - ANCHOR_X * scale, width, scaledW)}px`,
+      );
+      frame.style.setProperty(
+        '--stage-y',
+        `${clamp(height / 2 - ANCHOR_Y * scale, height, scaledH)}px`,
+      );
     };
     apply();
     const observer = new ResizeObserver(apply);
@@ -159,12 +178,12 @@ export function GuestJourneyScene({ copy, locale }: { copy: Copy; locale: string
     >
       <div className="phone-stage">
         <Image
-          src="/images/marketing/iphone-guest-journey.png"
+          src="/images/marketing/iphone-in-hand.webp"
           alt=""
           width={PHOTO_W}
           height={PHOTO_H}
           priority
-          className="block h-[1086px] w-[1448px] max-w-none"
+          className="block h-[1199px] w-[1312px] max-w-none"
         />
 
         <div
@@ -173,6 +192,11 @@ export function GuestJourneyScene({ copy, locale }: { copy: Copy; locale: string
           style={{ transform: SCREEN_TRANSFORM }}
         >
           <header className="absolute inset-x-0 top-0 h-[108px] bg-[#f7f8fa]">
+            {/* The photograph has a Dynamic Island and our header was
+                painting over it, which is the one thing a real iPhone
+                never does. Drawn back on top at the size and place iOS
+                puts it, so the app appears to run around it. */}
+            <span className="absolute top-[11px] left-1/2 h-[37px] w-[126px] -translate-x-1/2 rounded-full bg-black" />
             <div className="flex h-[54px] items-end justify-between px-7 pb-1.5">
               <span className="text-[15px] font-semibold">{clock('12:26')}</span>
               <StatusIndicators />
