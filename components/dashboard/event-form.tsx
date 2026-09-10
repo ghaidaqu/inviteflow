@@ -67,10 +67,15 @@ export function EventForm({
   event,
   action,
   track,
+  hasPassword,
 }: {
   event?: EventRow;
   action: (prevState: EventActionState, formData: FormData) => Promise<EventActionState>;
   track?: Track;
+  /** Whether this event already has a password set. Passed in rather than
+   *  read off the row: the hash lives in event_secrets now, which no
+   *  client may read (see 20260910000002). */
+  hasPassword?: boolean;
 }) {
   const t = useTranslations('Events.form');
   const tTypes = useTranslations('Events.types');
@@ -105,7 +110,7 @@ export function EventForm({
       visibility: event?.visibility ?? 'private',
       isRsvpEnabled: event?.is_rsvp_enabled ?? TRACK_DEFAULTS[track ?? 'invitation'].isRsvpEnabled,
       isQrEnabled: event?.is_qr_enabled ?? false,
-      isPasswordProtected: Boolean(event?.password_hash),
+      isPasswordProtected: Boolean(hasPassword),
       password: '',
       eventEndDate: toDateTimeLocal(event?.event_end_date ?? null),
       guestLimit: event?.guest_limit != null ? String(event.guest_limit) : '',
@@ -398,7 +403,7 @@ export function EventForm({
               id="password"
               type="text"
               autoComplete="off"
-              placeholder={event?.password_hash ? t('passwordKeepPlaceholder') : undefined}
+              placeholder={hasPassword ? t('passwordKeepPlaceholder') : undefined}
               {...register('password')}
             />
             <FieldError>{fieldMessage(errors.password?.message)}</FieldError>

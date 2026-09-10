@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { EventForm } from '@/components/dashboard/event-form';
+import { eventHasPassword } from '@/lib/services/event-secrets.service';
 import { updateEventAction } from '@/lib/actions/events';
 import { Link } from '@/i18n/navigation';
 
@@ -36,7 +37,11 @@ export default async function EditEventPage({
         {event.name}
       </Link>
       <h1 className="mt-2 mb-6 text-2xl font-bold tracking-tight">{t('submitEdit')}</h1>
-      <EventForm event={event} action={updateEventAction.bind(null, event.id)} />
+      <EventForm
+        event={event}
+        hasPassword={await eventHasPassword(event.id)}
+        action={updateEventAction.bind(null, event.id)}
+      />
     </main>
   );
 }

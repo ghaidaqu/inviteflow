@@ -54,9 +54,9 @@ export default async function PublicEventPage({
   const result = await getPublicEventBySlug(supabase, slug);
   if (!result) notFound();
 
-  const { event, settings, design } = result;
+  const { event, settings, design, hasPassword } = result;
 
-  if (event.password_hash) {
+  if (hasPassword) {
     const cookieStore = await cookies();
     const unlocked = cookieStore.get(`event_unlock_${event.id}`)?.value === '1';
     if (!unlocked) {

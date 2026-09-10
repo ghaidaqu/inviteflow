@@ -28,9 +28,9 @@ export default async function EventRsvpPage({
   const result = await getPublicEventBySlug(supabase, slug);
   if (!result) notFound();
 
-  const { event, settings } = result;
+  const { event, settings, hasPassword } = result;
 
-  if (event.password_hash) {
+  if (hasPassword) {
     const cookieStore = await cookies();
     const unlocked = cookieStore.get(`event_unlock_${event.id}`)?.value === '1';
     if (!unlocked) return <EventPasswordGate slug={slug} />;

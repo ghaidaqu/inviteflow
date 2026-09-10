@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { checkInGuestByToken, getEventByCheckInToken } from '@/lib/services/check-in.service';
+import { setCheckInToken } from '@/lib/services/event-secrets.service';
 import { checkRateLimit } from '@/lib/utils/rate-limit';
 
 export type CheckInActionState = {
@@ -99,15 +100,18 @@ export async function regenerateCheckInTokenAction(
   const organizationId = await getCurrentOrganizationId(supabase, user.id);
   if (!organizationId) return { error: 'unknown' };
 
+  // Ownership first, because the write itself runs as the service role:
+  // event_secrets denies every client role, so there is no RLS behind it
+  // to catch an id belonging to another organization.
+  const owned = await getEvent(supabase, organizationId, eventId);
+  if (!owned) return { error: 'unauthorized' };
+
   const token = randomUUID();
-  const { error } = await supabase
-    .from('events')
-    .update({ check_in_token: token })
-    .eq('id', eventId)
-    // Belt and braces alongside RLS: an id from another organization
-    // matches no row here rather than quietly rotating someone else's.
-    .eq('organization_id', organizationId);
-  if (error) return { error: 'unknown' };
+  try {
+    await setCheckInToken(eventId, token);
+  } catch {
+    return { error: 'unknown' };
+  }
 
   revalidatePath(`/${await getLocale()}/dashboard/events/${eventId}/check-in`);
   return { token };

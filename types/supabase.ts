@@ -114,7 +114,6 @@ export interface Database {
           is_rsvp_enabled: boolean;
           is_ticketing_enabled: boolean;
           is_qr_enabled: boolean;
-          password_hash: string | null;
           status: EventStatus;
           /** Opt-in end of a multi-day event; null means single-day/instant. */
           event_end_date: string | null;
@@ -133,10 +132,6 @@ export interface Database {
            *  before the column existed. A guest who declines stops
            *  counting, which is what lets the reserve list refill. */
           guest_limit: number | null;
-          /** Per-event secret behind the door-staff scanner link (see
-           *  20260908000004). Not the event id on purpose: that one is in
-           *  every dashboard URL, and this grants marking guests arrived. */
-          check_in_token: string;
           created_at: string;
           updated_at: string;
           deleted_at: string | null;
@@ -161,18 +156,36 @@ export interface Database {
           is_rsvp_enabled?: boolean;
           is_ticketing_enabled?: boolean;
           is_qr_enabled?: boolean;
-          password_hash?: string | null;
           status?: EventStatus;
           event_end_date?: string | null;
           organization_name?: string | null;
           organization_logo_url?: string | null;
           results_broadcast_at?: string | null;
-          check_in_token?: string;
           created_at?: string;
           updated_at?: string;
           deleted_at?: string | null;
         };
         Update: Partial<Database['public']['Tables']['events']['Insert']>;
+        Relationships: [];
+      };
+      /** Server-only. RLS denies anon and authenticated outright — these
+       *  two values are read and written with the service role, never by
+       *  a client. See 20260910000002 for why they left `events`. */
+      event_secrets: {
+        Row: {
+          event_id: string;
+          password_hash: string | null;
+          /** The door-staff link's only credential. */
+          check_in_token: string;
+          created_at: string;
+        };
+        Insert: {
+          event_id: string;
+          password_hash?: string | null;
+          check_in_token?: string;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['event_secrets']['Insert']>;
         Relationships: [];
       };
       event_settings: {

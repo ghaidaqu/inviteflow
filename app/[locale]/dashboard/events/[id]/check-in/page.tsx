@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
+import { getCheckInToken } from '@/lib/services/event-secrets.service';
 import { GuestCheckInScanner } from '@/components/dashboard/guest-check-in-scanner';
 import { StaffLinkPanel } from '@/components/dashboard/staff-link-panel';
 import { Link } from '@/i18n/navigation';
@@ -33,7 +34,9 @@ export default async function EventCheckInPage({
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
   const staffLinkBase = `${appUrl}/${locale}/check-in/`;
-  const staffLink = `${staffLinkBase}${event.check_in_token}`;
+  // Read with the service role: event_secrets denies every client role.
+  // Ownership was established by getEvent above.
+  const staffLink = `${staffLinkBase}${await getCheckInToken(event.id)}`;
 
   return (
     <main className="mx-auto w-full max-w-md px-4 py-8 sm:px-6">

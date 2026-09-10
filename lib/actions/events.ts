@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { reportActionError } from '@/lib/utils/report-error';
 import { revalidatePath } from 'next/cache';
 import { getLocale } from 'next-intl/server';
+import { eventHasPassword } from '@/lib/services/event-secrets.service';
 import { createClient } from '@/lib/supabase/server';
 import { eventFormSchema } from '@/lib/validations/events';
 import { eventSettingsFormSchema } from '@/lib/validations/event-settings';
@@ -149,7 +150,11 @@ export async function updateEventAction(
   const existing = await getEvent(supabase, organizationId, eventId);
   if (!existing) return { error: 'unknown' };
 
-  if (parsed.data.isPasswordProtected && !parsed.data.password && !existing.password_hash) {
+  if (
+    parsed.data.isPasswordProtected &&
+    !parsed.data.password &&
+    !(await eventHasPassword(eventId))
+  ) {
     return { error: 'passwordRequiredForProtection' };
   }
 

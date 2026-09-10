@@ -5,6 +5,7 @@ import type { EventSettingsFormOutput } from '@/lib/validations/event-settings';
 import { slugify, randomSuffix } from '@/lib/utils/slug';
 import { hashPassword } from '@/lib/utils/password';
 import { upsertEventReminders } from '@/lib/services/reminders.service';
+import { eventHasPassword, setEventPasswordHash } from '@/lib/services/event-secrets.service';
 
 type Client = SupabaseClient<Database>;
 type EventRow = Database['public']['Tables']['events']['Row'];
@@ -132,7 +133,6 @@ export async function createEvent(
       visibility: input.visibility,
       is_rsvp_enabled: input.isRsvpEnabled,
       is_qr_enabled: input.isQrEnabled,
-      password_hash: passwordHash,
       event_end_date: input.eventEndDate ?? null,
       organization_name: input.organizationName ?? null,
       organization_logo_url: input.organizationLogoUrl ?? null,
@@ -141,6 +141,10 @@ export async function createEvent(
     .single();
 
   if (error) throw error;
+  // The secrets row itself is created by a trigger (20260910000002); only
+  // a password actually set here needs writing, and it goes through the
+  // service role because no client role can touch that table.
+  if (passwordHash) await setEventPasswordHash(data.id, passwordHash);
   await upsertEventReminders(supabase, data.id, data.event_date);
   return data;
 }
@@ -151,20 +155,17 @@ export async function updateEvent(
   eventId: string,
   input: EventFormOutput,
 ): Promise<EventRow> {
-  let passwordHash: string | null;
+  // Ownership is established by the update's own organization_id filter
+  // below; this only decides what the hash should become.
+  let passwordHash: string | null = null;
+  let touchPassword = true;
   if (!input.isPasswordProtected) {
     passwordHash = null;
   } else if (input.password) {
     passwordHash = await hashPassword(input.password);
   } else {
-    const { data: existing, error: fetchError } = await supabase
-      .from('events')
-      .select('password_hash')
-      .eq('id', eventId)
-      .eq('organization_id', organizationId)
-      .single();
-    if (fetchError) throw fetchError;
-    passwordHash = existing.password_hash;
+    // Protected, no new password typed: leave whatever is stored alone.
+    touchPassword = false;
   }
 
   const { data, error } = await supabase
@@ -182,7 +183,6 @@ export async function updateEvent(
       visibility: input.visibility,
       is_rsvp_enabled: input.isRsvpEnabled,
       is_qr_enabled: input.isQrEnabled,
-      password_hash: passwordHash,
       event_end_date: input.eventEndDate ?? null,
       // Editable after the fact: an organizer who ends up inviting more
       // people shouldn't have to recreate the event. Lowering it below
@@ -198,6 +198,7 @@ export async function updateEvent(
     .single();
 
   if (error) throw error;
+  if (touchPassword) await setEventPasswordHash(eventId, passwordHash);
   await upsertEventReminders(supabase, data.id, data.event_date);
   return data;
 }
@@ -298,7 +299,14 @@ export async function updateEventDesign(
 export async function getPublicEventBySlug(
   supabase: Client,
   slug: string,
-): Promise<{ event: EventRow; settings: EventSettingsRow; design: EventDesignRow } | null> {
+): Promise<{
+  event: EventRow;
+  settings: EventSettingsRow;
+  design: EventDesignRow;
+  /** Whether the guest has to enter a password first. The hash itself
+   *  lives in event_secrets and is never sent to a client. */
+  hasPassword: boolean;
+} | null> {
   const { data: event, error } = await supabase
     .from('events')
     .select('*')
@@ -320,7 +328,7 @@ export async function getPublicEventBySlug(
   if (settingsError) throw settingsError;
   if (designError) throw designError;
 
-  return { event, settings, design };
+  return { event, settings, design, hasPassword: await eventHasPassword(event.id) };
 }
 
 export async function softDeleteEvent(

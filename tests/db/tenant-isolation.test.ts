@@ -115,22 +115,43 @@ describe('cross-organization isolation', () => {
     expect(rows).toHaveLength(0);
   });
 
-  it('will not leak the door-staff token, which grants marking guests arrived', async () => {
-    const { rows } = await asAttacker(`select check_in_token from public.events where id = $1;`, [
-      victimEvent,
-    ]);
+  it('keeps the door-staff token and password hash off the events row entirely', async () => {
+    // They used to be columns here, and the earlier version of this test
+    // passed only because the event was still private: RLS hid the row, so
+    // nobody asked whether the columns were safe on a *public* event. They
+    // were not. See 20260910000002.
+    const { rows } = await db.query<{ column_name: string }>(
+      `select column_name from information_schema.columns
+        where table_schema = 'public' and table_name = 'events'
+          and column_name in ('check_in_token', 'password_hash');`,
+    );
     expect(rows).toHaveLength(0);
   });
 
-  it('still hides the guest list when the event is public', async () => {
+  it('still hides the guest list, and both secrets, when the event is public', async () => {
     // events_select_public deliberately exposes the event row. It must not
-    // drag the guests along with it.
+    // drag anything else along with it.
     await db.query(`update public.events set visibility = 'public' where id = $1;`, [victimEvent]);
     const ev = await asAttacker(`select id from public.events where id = $1;`, [victimEvent]);
     expect(ev.rows).toHaveLength(1); // the event itself is public, by design
+
     const guests = await asAttacker(`select id from public.guests where event_id = $1;`, [
       victimEvent,
     ]);
     expect(guests.rows).toHaveLength(0); // the people are not
+
+    const secrets = await asAttacker(
+      `select check_in_token from public.event_secrets where event_id = $1;`,
+      [victimEvent],
+    );
+    expect(secrets.rows).toHaveLength(0); // and neither is the door key
+  });
+
+  it('gives every new event a secrets row, so the door link works from the start', async () => {
+    const { rows } = await db.query<{ n: string }>(
+      `select count(*)::text as n from public.event_secrets where event_id = $1;`,
+      [victimEvent],
+    );
+    expect(rows[0].n).toBe('1');
   });
 });

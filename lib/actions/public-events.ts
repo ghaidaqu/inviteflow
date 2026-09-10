@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
+import { getEventPasswordHash } from '@/lib/services/event-secrets.service';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { verifyPassword } from '@/lib/utils/password';
 
@@ -28,7 +29,7 @@ export async function verifyEventPasswordAction(
   const supabase = await createClient();
   const { data: event, error } = await supabase
     .from('events')
-    .select('id, password_hash')
+    .select('id')
     .eq('slug', slug)
     .eq('status', 'published')
     .eq('visibility', 'public')
@@ -39,11 +40,12 @@ export async function verifyEventPasswordAction(
     return { error: 'invalidPassword' };
   }
 
-  if (!event.password_hash) {
+  const passwordHash = await getEventPasswordHash(event.id);
+  if (!passwordHash) {
     return {};
   }
 
-  const isValid = await verifyPassword(password, event.password_hash);
+  const isValid = await verifyPassword(password, passwordHash);
   if (!isValid) {
     return { error: 'invalidPassword' };
   }

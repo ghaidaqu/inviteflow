@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { findEventIdByCheckInToken } from '@/lib/services/event-secrets.service';
 import type { Database } from '@/types/supabase';
 
 type Client = SupabaseClient<Database>;
@@ -14,8 +15,8 @@ type Client = SupabaseClient<Database>;
 const STAFF_LINK_GRACE_MS = 24 * 60 * 60 * 1000;
 
 /**
- * Resolves the per-event door-staff secret (events.check_in_token, see
- * 20260908000004) to the event it opens. Uses the service role because
+ * Resolves the per-event door-staff secret (event_secrets.check_in_token,
+ * see 20260910000002) to the event it opens. Uses the service role because
  * the caller is by definition unauthenticated — the whole point of the
  * shared link is that whoever works the door has no account here.
  *
@@ -34,11 +35,14 @@ const STAFF_LINK_GRACE_MS = 24 * 60 * 60 * 1000;
 export async function getEventByCheckInToken(
   token: string,
 ): Promise<{ id: string; name: string } | null> {
+  const eventId = await findEventIdByCheckInToken(token);
+  if (!eventId) return null;
+
   const admin = createAdminClient();
   const { data } = await admin
     .from('events')
     .select('id, name, status, event_date, event_end_date')
-    .eq('check_in_token', token)
+    .eq('id', eventId)
     .is('deleted_at', null)
     .maybeSingle();
   if (!data || data.status !== 'published') return null;
