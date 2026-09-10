@@ -42,8 +42,20 @@
       }
     },
     "pricing": {
-      "title": "Pricing",
-      "subtitle": "We're finalizing pricing details now."
+      "eyebrow": "Pricing",
+      "title": "You pay for the size of your event",
+      "subtitle": "Set your guest count and we work it out for you.",
+      "guestsLabel": "Guests",
+      "guestsUnit": "guests",
+      "decrease": "Fewer guests",
+      "increase": "More guests",
+      "totalLabel": "Invitations",
+      "totalUnit": "one per guest, in their name",
+      "priceLabel": "Price",
+      "currency": "SAR",
+      "pending": "Pricing is still being set — this figure is a placeholder.",
+      "cta": "Start now",
+      "includes": "Includes WhatsApp delivery, reply tracking and entry passes."
     },
     "footer": {
       "tagline": "An invitation that opens doors.",
@@ -57,9 +69,9 @@
     "tracks": {
       "invitation": {
         "title": "Digital Invitation",
-        "badge": "Individual send",
+        "badge": "We send them",
         "description": "One invitation per guest, by name",
-        "feature1": "You send it",
+        "feature1": "Sent over WhatsApp",
         "feature2": "One-tap reply",
         "feature3": "Entry pass"
       },

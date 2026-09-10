@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon, LinkIcon, MailIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+import { PriceCalculator, type PriceCalculatorCopy } from '@/components/marketing/price-calculator';
 
 type JourneyKey = 'invitation' | 'rsvp';
 
@@ -23,10 +24,12 @@ export function TrackOptionsSelector({
   locale,
   cta,
   options,
+  pricing,
 }: {
   locale: string;
   cta: string;
   options: TrackOption[];
+  pricing: PriceCalculatorCopy;
 }) {
   const [selected, setSelected] = useState<JourneyKey | null>(null);
   const selectedOption = options.find((option) => option.key === selected);
@@ -71,7 +74,17 @@ export function TrackOptionsSelector({
         })}
       </div>
 
-      {selectedOption && (
+      {/* Price depends on how many guests are messaged, so the calculator
+          belongs to the digital-invitation track and only to it — the link
+          track sends nothing per guest. It carries its own call to action,
+          so the plain one below is for the other track. */}
+      {selectedOption?.key === 'invitation' && (
+        <div className="mt-8">
+          <PriceCalculator locale={locale} href={selectedOption.href} copy={pricing} />
+        </div>
+      )}
+
+      {selectedOption && selectedOption.key !== 'invitation' && (
         <div className="mt-5 flex justify-center">
           <Link
             href={selectedOption.href}

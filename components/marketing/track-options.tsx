@@ -25,6 +25,7 @@ const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp'];
 export async function TrackOptions({ locale }: { locale: string }) {
   const tw = await getTranslations('HomePage.ways');
   const tt = await getTranslations('HomePage.tracks');
+  const tp = await getTranslations('HomePage.pricing');
 
   return (
     <section id="options" className="section-y scroll-mt-20">
@@ -39,6 +40,22 @@ export async function TrackOptions({ locale }: { locale: string }) {
         <TrackOptionsSelector
           locale={locale}
           cta={tt('ctaStart')}
+          pricing={{
+            eyebrow: tp('eyebrow'),
+            title: tp('title'),
+            subtitle: tp('subtitle'),
+            guestsLabel: tp('guestsLabel'),
+            guestsUnit: tp('guestsUnit'),
+            decrease: tp('decrease'),
+            increase: tp('increase'),
+            totalLabel: tp('totalLabel'),
+            totalUnit: tp('totalUnit'),
+            priceLabel: tp('priceLabel'),
+            currency: tp('currency'),
+            pending: tp('pending'),
+            cta: tp('cta'),
+            includes: tp('includes'),
+          }}
           options={JOURNEY_KEYS.map((key) => ({
             key,
             href: JOURNEY_STYLE[key].href,

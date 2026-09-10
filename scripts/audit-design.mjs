@@ -125,6 +125,10 @@ const IN_PAGE = () => {
     if (!t || el.children.length) continue;
     const cs = getComputedStyle(el);
     if (cs.visibility === 'hidden' || cs.display === 'none') continue;
+    // A layer faded out mid-animation composites to exactly its own
+    // background, which reads as 1:1 — a tool artefact, not a defect.
+    // There is no text to read at 4% opacity either way.
+    if (effOpacity(el) < 0.05) continue;
     if (hero?.contains(el)) continue;
     const bg = painted(el);
     const c = toRGBA(cs.color);

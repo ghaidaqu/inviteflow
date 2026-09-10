@@ -8,7 +8,6 @@ import { HowItWorks } from '@/components/marketing/how-it-works';
 import { TryBand } from '@/components/marketing/try-band';
 import { Faq } from '@/components/marketing/faq';
 import { ClosingStatement } from '@/components/marketing/closing-statement';
-import { PricingSection } from '@/components/marketing/pricing-section';
 import { SiteFooter } from '@/components/marketing/site-footer';
 
 export const revalidate = 60;
@@ -43,7 +42,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <TrustStrip />
         <HowItWorks />
         <Faq />
-        <PricingSection />
         <ClosingStatement />
       </main>
       <SiteFooter />
