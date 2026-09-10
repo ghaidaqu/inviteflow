@@ -39,6 +39,29 @@ server-only must also be _called_ with the admin client, or revoking it
 breaks the caller — that is why rate limiting and waitlist promotion run
 as the service role.
 
+**RLS is row-level, not column-level.** `events` has a policy letting
+anyone read a published, public event — it has to, or a guest could not
+open their invitation. That made `select=*` with the anon key hand out
+the whole row, including `check_in_token` (the door-staff secret, which
+grants marking guests arrived) and `password_hash`. Both now live in
+`event_secrets`, which denies every client role; reach them through
+`lib/services/event-secrets.service.ts`. **Anything secret must not share
+a table with anything public.** Revoking column privileges is the wrong
+fix — it breaks every `select('*')`, and a missed column becomes
+`undefined` at runtime instead of an error.
+
+Worth re-running after any schema change, with the anon key:
+
+```bash
+curl -s "$SUPABASE_URL/rest/v1/<table>?select=*&limit=1" \
+  -H "apikey: $ANON" -H "Authorization: Bearer $ANON"
+```
+
+Everything with a person in it should come back `[]`. As of 2026-09-10
+only `events`, `event_settings`, `event_designs`, `custom_questions`,
+`custom_question_options` and `ticket_types` are readable, and only for
+the six public, published events.
+
 **The palette is `oklab()` with alpha.** Off-the-shelf contrast checkers
 misread it (they parse the 0.87 lightness as a red channel) and ignore
 what it composites onto. Use `npm run audit:design`, which converts
