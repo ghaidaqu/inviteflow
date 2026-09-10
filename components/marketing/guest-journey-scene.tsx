@@ -34,6 +34,15 @@ const PHOTO_W = 1448;
 const PHOTO_H = 1086;
 
 /**
+ * How much closer the crop sits than "fit the whole photo in the frame".
+ * The photograph is a wide scene and the phone is a small part of it; at
+ * 1.0 the chat was legible only if you leaned in. This trims a slice off
+ * the man on the right and off the marble at the bottom — neither of
+ * which is what the section is about — and gives that room to the screen.
+ */
+const CROP_ZOOM = 1.34;
+
+/**
  * Maps a real 390×844 iPhone screen onto the screen in the photograph.
  *
  * Solved as a projective transform, not a rotation, because the screen in
@@ -126,8 +135,11 @@ export function GuestJourneyScene({ copy, locale }: { copy: Copy; locale: string
     const apply = () => {
       const { width, height } = frame.getBoundingClientRect();
       if (!width || !height) return;
-      // `cover`: fill the frame, letting the longer axis overflow and crop.
-      frame.style.setProperty('--stage-scale', String(Math.max(width / PHOTO_W, height / PHOTO_H)));
+      // `cover`, then closer: fill the frame on both axes, then zoom in
+      // on the phone. Where that lands is set in CSS, which anchors the
+      // stage on the point in the photo the phone sits at.
+      const cover = Math.max(width / PHOTO_W, height / PHOTO_H);
+      frame.style.setProperty('--stage-scale', String(cover * CROP_ZOOM));
     };
     apply();
     const observer = new ResizeObserver(apply);
@@ -160,7 +172,7 @@ export function GuestJourneyScene({ copy, locale }: { copy: Copy; locale: string
         >
           <header className="absolute inset-x-0 top-0 h-[108px] bg-[#f7f8fa]">
             <div className="flex h-[54px] items-end justify-between px-7 pb-1.5">
-              <span className="text-[15px] font-semibold">{clock('9:41')}</span>
+              <span className="text-[15px] font-semibold">{clock('12:26')}</span>
               <StatusIndicators />
             </div>
             <div className="flex h-[54px] items-center gap-2.5 border-b border-black/10 px-3">
@@ -188,7 +200,7 @@ export function GuestJourneyScene({ copy, locale }: { copy: Copy; locale: string
               <p className="px-3 pt-2 pb-1.5 text-[14.5px] leading-[21px]">
                 {copy.invitationText}
                 <span className={`ms-2 ${rtl ? 'float-left' : 'float-right'} ${stamp}`}>
-                  {clock('12:33')}
+                  {clock('12:20')}
                 </span>
               </p>
               <div className="border-t border-[#e9edef]">

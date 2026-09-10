@@ -267,16 +267,20 @@ html[dir='rtl'] {
    390x844 screen onto the tilted screen in the photo — can be written in
    the photo's coordinates once and stay correct at every viewport. The
    scale is measured in JS because CSS can't divide one length by another
-   to produce the unitless number scale() needs. The offsets reproduce the
-   old `object-position: 52%` crop: centred vertically, slightly right of
-   centre horizontally so the screen stays in frame on a narrow phone. */
+   to produce the unitless number scale() needs.
+
+   The frame is anchored on a point in the photo rather than on the
+   photo's own centre: the composition is a phone in a hand, and it is
+   the phone that has to stay put and stay large at every size. Anchoring
+   on the centre instead let the crop drift across the man on the right
+   and the marble at the bottom while the phone shrank between them. */
 .phone-frame {
   --stage-scale: 1;
 }
 .phone-stage {
   position: absolute;
-  top: calc((100% - 1086px * var(--stage-scale)) * 0.5);
-  left: calc((100% - 1448px * var(--stage-scale)) * 0.52);
+  left: calc(50% - 690px * var(--stage-scale));
+  top: calc(50% - 500px * var(--stage-scale));
   width: 1448px;
   height: 1086px;
   transform: scale(var(--stage-scale));
