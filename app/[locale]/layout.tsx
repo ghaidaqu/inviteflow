@@ -45,7 +45,12 @@ export async function generateMetadata({
       locale: locale === 'ar' ? 'ar_SA' : 'en_US',
       images: [
         {
-          url: '/images/marketing/og-card.jpg',
+          // Absolute and https, with the type spelled out: WhatsApp's
+          // crawler is the fussiest of the lot about a preview image, and
+          // some versions look for og:image:secure_url specifically.
+          url: `${appUrl}/images/marketing/og-card.jpg`,
+          secureUrl: `${appUrl}/images/marketing/og-card.jpg`,
+          type: 'image/jpeg',
           width: 1200,
           height: 630,
           alt: t('title'),
@@ -56,7 +61,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: t('title'),
       description: t('description'),
-      images: ['/images/marketing/og-card.jpg'],
+      images: [`${appUrl}/images/marketing/og-card.jpg`],
     },
   };
 }
