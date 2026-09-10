@@ -1,19 +1,20 @@
 import type { CSSProperties } from 'react';
+import Image from 'next/image';
 
-/**
- * The مهلّي mark: a tilted square (diamond) with a center dot — the same
- * small ornament used as a section divider throughout the marketing
- * pages, promoted to a standalone icon here. Two-tone on purpose: the
- * diamond in the primary (rust/terracotta, the "digital invitation"
- * track's color) and the dot in the secondary (teal, the "link
- * invitation" track's color) — so the mark itself quietly carries both
- * halves of the product instead of being an arbitrary shape.
- */
+/** The approved Mhalli symbol. Keeping this as the source asset rather
+ * than redrawing its petals in JSX means every small use stays identical
+ * to the official icon used in WhatsApp, invitations and social cards. */
 export function BrandMark({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 20 20" className={className} style={style} aria-hidden="true">
-      <path d="M10 1.5 L18.5 10 L10 18.5 L1.5 10 Z" fill="var(--primary)" />
-      <circle cx="10" cy="10" r="2.75" fill="var(--secondary)" />
-    </svg>
+    <Image
+      src="/brand/mhalli-official-symbol.svg"
+      width={100}
+      height={100}
+      unoptimized
+      alt=""
+      aria-hidden="true"
+      className={className}
+      style={style}
+    />
   );
 }

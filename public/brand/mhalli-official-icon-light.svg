@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">Mhalli Light App Icon</title>
+  <desc id="desc">Mhalli official four-petal symbol on a warm ivory rounded square.</desc>
+  <rect x="2" y="2" width="116" height="116" rx="24" fill="#F8F3EC"/>
+  <g fill="#6E2A2C" transform="translate(10 10)">
+    <path id="petal" d="M50 50 C36 48 24 36 22 22 C36 24 48 36 50 50 Z"/>
+    <use href="#petal" transform="rotate(90 50 50)"/>
+    <use href="#petal" transform="rotate(180 50 50)"/>
+    <use href="#petal" transform="rotate(270 50 50)"/>
+  </g>
+</svg>

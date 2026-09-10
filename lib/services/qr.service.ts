@@ -27,9 +27,7 @@ export async function generateAndUploadQr(key: string, content: string): Promise
 // CSS cascade). See the memory note on the brand mark for the logo's own
 // two colors; the rest (card/ink/muted/border) are the app's --card,
 // --foreground, --muted-foreground and --border tokens verbatim.
-const COLOR_PRIMARY = '#96471f';
-const COLOR_SECONDARY = '#3d6576';
-const COLOR_CARD = '#f6efdc';
+const COLOR_CARD = '#f8f3ec';
 const COLOR_INK = '#382616';
 const COLOR_MUTED = '#6b5640';
 const COLOR_BORDER = '#c7b285';
@@ -181,8 +179,15 @@ async function renderQrCard({
 
   const titleX = Math.round(CENTER_X - titleText.width / 2);
   const captionX = Math.round(CENTER_X - captionText.width / 2);
+  const officialSymbol = await sharp(
+    path.join(process.cwd(), 'public/brand/mhalli-official-symbol.svg'),
+  )
+    .resize(DIAMOND_SIZE, DIAMOND_SIZE)
+    .png()
+    .toBuffer();
 
   const composites: OverlayOptions[] = [
+    { input: officialSymbol, left: diamondX, top: diamondY },
     { input: wordmark.buffer, left: wordmarkX, top: wordmarkY },
     { input: titleText.buffer, left: titleX, top: 250 },
     { input: qrBuffer, left: Math.round(CENTER_X - 340), top: 420 },
@@ -215,10 +220,6 @@ async function renderQrCard({
         </filter>
       </defs>
       <rect x="${CARD_X}" y="${CARD_Y}" width="${CARD_WIDTH}" height="${CARD_HEIGHT}" rx="48" fill="${COLOR_CARD}" filter="url(#shadow)" />
-      <g transform="translate(${diamondX}, ${diamondY}) scale(2.4)">
-        <path d="M10 1.5 L18.5 10 L10 18.5 L1.5 10 Z" fill="${COLOR_PRIMARY}" />
-        <circle cx="10" cy="10" r="2.75" fill="${COLOR_SECONDARY}" />
-      </g>
       <rect x="${CONTENT_X0}" y="1250" width="${CONTENT_X1 - CONTENT_X0}" height="2" fill="${COLOR_BORDER}" />
       ${footerDividerSvg}
     </svg>

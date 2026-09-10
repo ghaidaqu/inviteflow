@@ -98,7 +98,7 @@ export const WEDDING_PALETTES: Array<{
   accentColor: string;
   textColor: string;
 }> = [
-  { id: 'mahalli', backgroundColor: '#f6efdc', accentColor: '#96471f', textColor: '#382616' },
+  { id: 'mahalli', backgroundColor: '#f8f3ec', accentColor: '#6e2a2c', textColor: '#382616' },
   { id: 'burgundy', backgroundColor: '#f8f0ee', accentColor: '#7a2332', textColor: '#3d1a20' },
   { id: 'emerald', backgroundColor: '#eef2ec', accentColor: '#2f5233', textColor: '#1e2b1f' },
   { id: 'navy', backgroundColor: '#eef1f5', accentColor: '#1f3a5f', textColor: '#17232f' },
@@ -615,7 +615,7 @@ function CardCredit({ accentColor: _accentColor }: { accentColor: string }) {
         style={{
           fontSize: 40,
           fontWeight: 700,
-          color: '#96471f',
+          color: '#6e2a2c',
           fontFamily: 'var(--font-amiri), serif',
         }}
       >
