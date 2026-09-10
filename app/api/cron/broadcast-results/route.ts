@@ -1,5 +1,5 @@
-import { timingSafeEqual } from 'node:crypto';
 import { NextResponse, type NextRequest } from 'next/server';
+import { checkCronAuth } from '@/lib/utils/cron-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { broadcastEventResults } from '@/lib/services/results.service';
 
@@ -17,19 +17,13 @@ import { broadcastEventResults } from '@/lib/services/results.service';
  * request, matching the trust model — the only caller is our own
  * database, not a third party whose payload needs verifying.
  */
-function isAuthorized(req: NextRequest): boolean {
-  const expected = process.env.CRON_SECRET;
-  if (!expected) return false;
-  const provided = req.headers.get('x-cron-secret') ?? '';
-  const expectedBuf = Buffer.from(expected);
-  const providedBuf = Buffer.from(provided);
-  if (expectedBuf.length !== providedBuf.length) return false;
-  return timingSafeEqual(expectedBuf, providedBuf);
-}
-
-export async function POST(req: NextRequest) {
-  if (!isAuthorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+async function run(req: NextRequest) {
+  const auth = checkCronAuth(req, 'broadcast-results');
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.reason },
+      { status: auth.reason === 'not_configured' ? 500 : 401 },
+    );
   }
 
   const admin = createAdminClient();
@@ -83,3 +77,8 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ processed: results.length, results });
 }
+
+// Both verbs, so the documented GET trigger reaches it too — it answered
+// only POST before, and the README only ever documented GET.
+export const GET = run;
+export const POST = run;

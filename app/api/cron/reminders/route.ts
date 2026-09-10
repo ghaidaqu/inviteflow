@@ -1,6 +1,6 @@
-import { timingSafeEqual } from 'node:crypto';
 import { formatDateTime } from '@/lib/utils/format-date';
 import { NextResponse, type NextRequest } from 'next/server';
+import { checkCronAuth } from '@/lib/utils/cron-auth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { whatsAppProvider, isWhatsAppConfigured } from '@/lib/whatsapp';
 
@@ -24,22 +24,13 @@ import { whatsAppProvider, isWhatsAppConfigured } from '@/lib/whatsapp';
  * sent) but worth a manual GET once CRON_SECRET and WhatsApp are both
  * configured, before trusting it unattended.
  */
-export async function GET(request: NextRequest) {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    console.error('[cron/reminders] CRON_SECRET is not set — rejecting');
-    return NextResponse.json({ error: 'not_configured' }, { status: 500 });
-  }
-
-  // Header only, compared in constant time — matching broadcast-results,
-  // which already did this. Accepting ?secret= put CRON_SECRET into access
-  // logs, proxy logs and any Referer, and `!==` on a secret leaks its
-  // prefix through timing.
-  const provided = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? '';
-  const a = Buffer.from(provided);
-  const b = Buffer.from(secret);
-  if (a.length !== b.length || !timingSafeEqual(a, b)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+async function run(request: NextRequest) {
+  const auth = checkCronAuth(request, 'reminders');
+  if (!auth.ok) {
+    return NextResponse.json(
+      { error: auth.reason },
+      { status: auth.reason === 'not_configured' ? 500 : 401 },
+    );
   }
 
   if (!isWhatsAppConfigured()) {
@@ -179,3 +170,8 @@ function reminderText(
     ? `شكرًا لحضوركم "${event.name}"! يسعدنا انضمامكم إلينا.`
     : `Thank you for attending "${event.name}"! It was wonderful having you.`;
 }
+
+// Both verbs, so a scheduler written either way reaches it — see
+// lib/utils/cron-auth.ts for what this cost before.
+export const GET = run;
+export const POST = run;

@@ -224,7 +224,7 @@ tests/                     اختبارات Vitest (قاعدة بيانات + و
 
 **المُشغِّل المستخدم فعليًا:** `pg_cron` + `pg_net` داخل Supabase نفسها، كل 15 دقيقة. لم يُوضع في migration لأنه يتضمّن `CRON_SECRET` بنصّه؛ يُجدوَل مرة واحدة يدويًا من محرّر SQL. بدائل: Railway Cron Job، أو GitHub Actions بجدول `schedule:`، أو [cron-job.org](https://cron-job.org).
 
-في كل الحالات: أرسل `Authorization: Bearer $CRON_SECRET` (أو `?secret=$CRON_SECRET`) إلى `https://<رابط النشر>/api/cron/reminders`. بدون `CRON_SECRET` مضبوطًا في متغيرات البيئة، الرابط يرفض كل الطلبات ولا شيء يُرسل — التذكيرات تبقى "مجدولة" في قاعدة البيانات دون أن تُفعَّل.
+في كل الحالات: أرسل `Authorization: Bearer $CRON_SECRET` — أو `x-cron-secret: $CRON_SECRET`، والمساران يقبلان الاثنين بـ GET أو POST — إلى `https://<رابط النشر>/api/cron/reminders` و`/api/cron/broadcast-results`. **كلا المسارين يحتاج جدولة، لا واحد فقط**: كان `broadcast-results` يقبل POST مع ترويسة مختلفة بينما التوثيق هنا يذكر GET، فأي جدولة اتُّبع فيها هذا السطر كانت ترتد بـ405 صامتة ولا تُبثّ نتيجة أبدًا. بدون `CRON_SECRET` مضبوطًا في متغيرات البيئة، الرابط يرفض كل الطلبات ولا شيء يُرسل — التذكيرات تبقى "مجدولة" في قاعدة البيانات دون أن تُفعَّل.
 
 ## الميزات المؤجلة (المرحلة الثانية)
 
