@@ -68,7 +68,7 @@ export async function HeroJourneys() {
             one thing it does well. */}
         <Button
           size="lg"
-          className="mt-1 px-10"
+          className="text-primary mt-1 border border-white/70 bg-[rgb(248_243_236/0.46)] px-10 shadow-[0_8px_24px_rgb(56_38_22/0.12)] backdrop-blur-md hover:bg-[rgb(248_243_236/0.68)] hover:shadow-[0_12px_28px_rgb(56_38_22/0.18)]"
           nativeButton={false}
           render={<Link href="#options" />}
         >
