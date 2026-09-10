@@ -169,7 +169,11 @@ export function GuestJourneyScene({ copy, locale }: { copy: Copy; locale: string
   }, []);
 
   const bubble = 'rounded-[10px] shadow-[0_1px_0.5px_rgba(11,20,26,0.13)]';
-  const stamp = 'mt-1 text-[11px] leading-none text-[#667781]';
+  // WhatsApp's own timestamp grey is #667781, which measures 3.88:1 on
+  // the chat wallpaper — under AA for 11px text. Two steps darker clears
+  // 4.5:1 on all three grounds it appears over (white bubble, the green
+  // outgoing bubble, the wallpaper) and is indistinguishable at this size.
+  const stamp = 'mt-1 text-[11px] leading-none text-[#5d6b74]';
 
   return (
     <figure
