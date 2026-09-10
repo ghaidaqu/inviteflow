@@ -59,93 +59,105 @@ export function PriceCalculator({
   href: string;
   copy: PriceCalculatorCopy;
 }) {
-  const [guests, setGuests] = useState(200);
+  const [guests, setGuests] = useState(300);
   const ArrowIcon = locale === 'ar' ? ArrowLeftIcon : ArrowRightIcon;
   const price = priceFor(guests);
   const clamp = (value: number) => Math.min(MAX, Math.max(MIN, value));
+  const stepButton =
+    'text-primary bg-primary/8 hover:bg-primary/15 focus-visible:ring-ring flex size-12 shrink-0 items-center justify-center rounded-full text-2xl leading-none transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-30';
 
   return (
-    <section id="pricing" className="scroll-mt-20">
+    <section id="pricing" className="scroll-mt-24">
       <div className="text-center">
-        <BrandMark className="mx-auto size-4" />
-        <p className="text-primary mt-2 text-sm font-semibold">{copy.eyebrow}</p>
-        <h3 className="font-display mt-1 text-xl sm:text-2xl">{copy.title}</h3>
-        <p className="text-muted-foreground mt-2 text-sm">{copy.subtitle}</p>
+        <BrandMark className="mx-auto size-5" />
+        <p className="text-primary mt-3 text-sm font-semibold tracking-wide">{copy.eyebrow}</p>
+        {/* The heading carries this section — it is the question every
+            visitor arrives with. Sized like one, not like a caption. */}
+        <h3 className="font-display mt-2 text-3xl font-bold text-balance sm:text-4xl">
+          {copy.title}
+        </h3>
+        <p className="text-muted-foreground mx-auto mt-3 max-w-md text-base">{copy.subtitle}</p>
       </div>
 
-      <div className="border-border/70 bg-card/70 mt-6 grid gap-6 rounded-3xl border p-5 shadow-sm sm:p-7 md:grid-cols-2 md:gap-0">
-        <div className="flex flex-col items-center justify-center gap-3 md:pe-7">
-          <span className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-full">
-            <UsersIcon className="size-5" />
-          </span>
-          <label htmlFor="price-guests" className="text-sm font-semibold">
-            {copy.guestsLabel}
-          </label>
+      <div className="border-border/60 bg-card/60 mt-10 rounded-[2rem] border p-4 shadow-sm sm:p-6">
+        <div className="grid md:grid-cols-2">
+          <div className="flex flex-col items-center justify-center gap-4 px-2 py-8 sm:px-6 md:pe-10">
+            <span className="bg-primary/10 text-primary flex size-14 items-center justify-center rounded-full">
+              <UsersIcon className="size-6" />
+            </span>
+            <label htmlFor="price-guests" className="text-lg font-semibold">
+              {copy.guestsLabel}
+            </label>
 
-          {/* Minus left, plus right in both directions — a number line
-              doesn't mirror, and the approved design keeps it that way. */}
-          <div className="border-border/70 bg-background flex w-full max-w-[19rem] items-center rounded-full border p-1.5 rtl:flex-row-reverse">
-            <button
-              type="button"
-              aria-label={copy.decrease}
-              onClick={() => setGuests((value) => clamp(value - STEP))}
-              disabled={guests <= MIN}
-              className="text-primary hover:bg-primary/10 focus-visible:ring-ring flex size-10 shrink-0 items-center justify-center rounded-full text-xl transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-35"
-            >
-              −
-            </button>
-            <input
-              id="price-guests"
-              type="number"
-              inputMode="numeric"
-              min={MIN}
-              max={MAX}
-              step={STEP}
-              value={guests}
-              onChange={(event) => setGuests(clamp(Number(event.target.value) || MIN))}
-              className="font-display w-full min-w-0 [appearance:textfield] border-0 bg-transparent text-center text-3xl tabular-nums focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-            />
-            <button
-              type="button"
-              aria-label={copy.increase}
-              onClick={() => setGuests((value) => clamp(value + STEP))}
-              disabled={guests >= MAX}
-              className="text-primary hover:bg-primary/10 focus-visible:ring-ring flex size-10 shrink-0 items-center justify-center rounded-full text-xl transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-35"
-            >
-              +
-            </button>
+            {/* Minus left, plus right in both directions — a number line
+                doesn't mirror, and the approved design keeps it that way. */}
+            <div className="border-border/70 bg-background flex w-full max-w-[21rem] items-center rounded-full border p-2 rtl:flex-row-reverse">
+              <button
+                type="button"
+                aria-label={copy.decrease}
+                onClick={() => setGuests((value) => clamp(value - STEP))}
+                disabled={guests <= MIN}
+                className={stepButton}
+              >
+                −
+              </button>
+              <input
+                id="price-guests"
+                type="number"
+                inputMode="numeric"
+                min={MIN}
+                max={MAX}
+                step={STEP}
+                value={guests}
+                onChange={(event) => setGuests(clamp(Number(event.target.value) || MIN))}
+                className="font-display w-full min-w-0 [appearance:textfield] border-0 bg-transparent text-center text-4xl font-bold tabular-nums focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              />
+              <button
+                type="button"
+                aria-label={copy.increase}
+                onClick={() => setGuests((value) => clamp(value + STEP))}
+                disabled={guests >= MAX}
+                className={stepButton}
+              >
+                +
+              </button>
+            </div>
+            <p className="text-muted-foreground text-sm">{copy.guestsUnit}</p>
           </div>
-          <p className="text-muted-foreground text-xs">{copy.guestsUnit}</p>
-        </div>
 
-        <div className="border-border/70 bg-muted/40 rounded-2xl border p-5 text-center md:ms-7">
-          <p className="text-muted-foreground text-sm">{copy.totalLabel}</p>
-          <p className="font-display mt-1 text-3xl tabular-nums">{guests}</p>
-          <p className="text-muted-foreground text-xs">{copy.totalUnit}</p>
+          {/* One hairline between the two halves on a wide screen, across
+              them when they stack — the same seam either way. */}
+          <div className="border-border/60 border-t pt-6 md:border-s md:border-t-0 md:ps-10 md:pt-0">
+            <div className="bg-muted/30 flex h-full flex-col justify-center rounded-[1.5rem] px-6 py-8 text-center sm:px-8">
+              <p className="text-muted-foreground text-sm">{copy.totalLabel}</p>
+              <p className="font-display mt-1 text-5xl font-bold tabular-nums">{guests}</p>
+              <p className="text-muted-foreground mt-1 text-sm">{copy.totalUnit}</p>
 
-          <hr className="border-border/70 my-4" />
+              <hr className="border-border/60 mx-auto my-7 w-full max-w-[16rem]" />
 
-          <p className="text-muted-foreground text-sm">{copy.priceLabel}</p>
-          <p className="text-primary font-display mt-1 flex items-baseline justify-center gap-1.5 text-4xl tabular-nums">
-            {price}
-            <span className="text-base font-normal">{copy.currency}</span>
-          </p>
-          {/* Every tier is still 0. Left unexplained, a "0" price reads as
-              "free" — which is a claim, not a placeholder. */}
-          <p className="text-muted-foreground mt-1 text-xs">{copy.pending}</p>
+              <p className="text-muted-foreground text-sm">{copy.priceLabel}</p>
+              <p className="text-primary font-display mt-1 flex items-baseline justify-center gap-2 text-6xl font-bold tabular-nums">
+                {price}
+                <span className="text-2xl font-normal">{copy.currency}</span>
+              </p>
+              {/* Every tier is still 0. Left unexplained, a "0" price reads
+                  as "free" — which is a claim, not a placeholder. */}
+              <p className="text-muted-foreground mt-2 text-xs">{copy.pending}</p>
 
-          <Link
-            href={href}
-            className="bg-primary text-primary-foreground focus-visible:ring-ring hover:bg-primary/90 mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold shadow-sm transition-colors focus-visible:ring-3 focus-visible:outline-none"
-          >
-            {copy.cta}
-            <ArrowIcon className="size-4" />
-          </Link>
+              <Link
+                href={href}
+                className="bg-primary text-primary-foreground focus-visible:ring-ring hover:bg-primary/90 mt-7 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl px-6 text-base font-semibold shadow-sm transition-colors focus-visible:ring-3 focus-visible:outline-none"
+              >
+                {copy.cta}
+                <ArrowIcon className="size-5" />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
 
-      <p className="text-muted-foreground mt-4 flex items-center justify-center gap-2 text-center text-xs">
-        <ShieldCheckIcon className="size-4 shrink-0" />
+      <p className="text-muted-foreground mt-5 flex items-center justify-center gap-2 text-center text-sm">
+        <ShieldCheckIcon className="text-primary size-4 shrink-0" />
         {copy.includes}
       </p>
     </section>

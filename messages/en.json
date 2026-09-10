@@ -117,15 +117,6 @@
       "chatStatus": "online",
       "chatInvitationText": "Hi Abdullah! You're invited to Sarah and Ahmed's wedding. Respond or open the venue location here."
     },
-    "how": {
-      "eyebrow": "Three steps",
-      "step1Title": "Add your invitation",
-      "step1Body": "Your invitation, with the date and the place.",
-      "step2Title": "Send it",
-      "step2Body": "To each guest by name on WhatsApp, or as one link you post.",
-      "step3Title": "Follow along",
-      "step3Body": "Who accepted, who declined, and who arrived."
-    },
     "faq": {
       "eyebrow": "Common questions",
       "q1Question": "What do I need to start?",

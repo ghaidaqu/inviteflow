@@ -89,7 +89,7 @@ export function TrackOptionsSelector({
           track sends nothing per guest. It carries its own call to action,
           so the plain one below is for the other track. */}
       {selectedOption?.key === 'invitation' && (
-        <div ref={pricingRef} className="mt-8">
+        <div ref={pricingRef} className="mt-8 scroll-mt-24">
           <PriceCalculator locale={locale} href={selectedOption.href} copy={pricing} />
         </div>
       )}

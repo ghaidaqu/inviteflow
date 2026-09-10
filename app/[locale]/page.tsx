@@ -4,7 +4,6 @@ import { HeroJourneys } from '@/components/marketing/hero-journeys';
 import { TrustStrip } from '@/components/marketing/trust-strip';
 import { TrackOptions } from '@/components/marketing/track-options';
 import { ProductPreview } from '@/components/marketing/product-preview';
-import { HowItWorks } from '@/components/marketing/how-it-works';
 import { TryBand } from '@/components/marketing/try-band';
 import { Faq } from '@/components/marketing/faq';
 import { ClosingStatement } from '@/components/marketing/closing-statement';
@@ -40,7 +39,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <ProductPreview />
         <TryBand />
         <TrustStrip />
-        <HowItWorks />
         <Faq />
         <ClosingStatement />
       </main>
