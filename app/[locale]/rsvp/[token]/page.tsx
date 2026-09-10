@@ -20,27 +20,15 @@ const loadRsvp = cache(async (token: string) => {
 });
 
 /**
- * Here for the status code, not the tags.
+ * Noindex, always — valid or not.
  *
- * A bad token used to render the right not-found page and answer HTTP
- * 200 — the shell had already begun streaming by the time the page
- * component called notFound(), so the status was committed. Doing the
- * check in generateMetadata, which runs before rendering starts, makes
- * the 404 real. (Two things previously tried and reverted, so nobody
- * repeats them: `dynamic = 'force-dynamic'` on this route, and a root
- * app/not-found.tsx, which renders its own <html> inside this segment's
- * layout and blanks the page.)
- *
- * The title stays generic on purpose: this URL is a guest's private
- * link, and its title should not name their event or them.
+ * A guest's RSVP link is private and should never be indexed, and a bad
+ * token renders the not-found page under an HTTP 200 that no amount of
+ * notFound() placement can change here (the full list of what was tried
+ * is in events/[slug]/page.tsx). Marking every response from this route
+ * noindex closes both at once.
  */
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ token: string }>;
-}): Promise<Metadata> {
-  const { token } = await params;
-  if (!(await loadRsvp(token))) notFound();
+export async function generateMetadata(): Promise<Metadata> {
   return { robots: { index: false, follow: false } };
 }
 

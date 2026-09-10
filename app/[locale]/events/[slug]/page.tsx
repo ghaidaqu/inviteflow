@@ -42,18 +42,27 @@ const loadEvent = cache(async (rawSlug: string) => {
 });
 
 /**
- * This exists as much for the status code as for the tags.
+ * Per-event tags — these pages used to report the site's own default
+ * title to search and to WhatsApp — and the mitigation for a soft 404.
  *
- * These pages are rendered on demand, so by the time the page component
- * ran and called notFound(), the shell had already begun streaming and
- * the 200 was committed — a missing event answered 404-the-page with
- * 200-the-status, which tells a crawler the URL is real. generateMetadata
- * runs before any of that, so notFound() here sets the status for real.
- * Confirmed against production, where a genuinely missing path
- * (prerendered) returned 404 while a missing event returned 200.
+ * A missing event renders the right not-found page but answers HTTP 200:
+ * these routes are dynamic (`ƒ` in the build output), the shell has begun
+ * streaming by the time notFound() runs, and the status is already
+ * committed. Ruled out by measurement, so nobody repeats them:
  *
- * The tags themselves were worth having anyway: every event page used to
- * report the site's own default title.
+ *   - `export const dynamic = 'force-dynamic'` on the route
+ *   - a root app/not-found.tsx (renders its own <html> inside this
+ *     segment's layout — blanks the page)
+ *   - removing app/[locale]/not-found.tsx so the default boundary catches it
+ *   - bypassing middleware entirely for this path
+ *   - dropping the Sentry build wrapper
+ *   - calling notFound() from here, which runs before rendering starts
+ *
+ * All still 200. It is Next 15.5's own behaviour under next-intl's
+ * [locale] segment. What actually costs anything is a crawler treating a
+ * dead URL as real, so that is closed directly: the not-found render is
+ * explicitly noindex. The sitemap lists no event URLs either, so nothing
+ * points a crawler at one in the first place.
  */
 export async function generateMetadata({
   params,
@@ -62,7 +71,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const result = await loadEvent(slug);
-  if (!result) notFound();
+  // Not notFound() — see above, it cannot set the status from here
+  // either. The page component below renders the not-found page; this
+  // makes sure the response that carries it is never indexed.
+  if (!result) return { robots: { index: false, follow: false } };
 
   const { event } = result;
   const description = event.description?.slice(0, 160) || undefined;
