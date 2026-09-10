@@ -49,13 +49,15 @@
       "guestsUnit": "guests",
       "decrease": "Fewer guests",
       "increase": "More guests",
+      "reserveLabel": "Add 10% reserve invitations",
+      "reserveHint": "Spare invitations that sit on the reserve list and go out automatically each time a guest declines — so your list stays full.",
+      "reserveAdded": "reserve invitations added",
       "totalLabel": "Invitations",
-      "totalUnit": "one per guest, in their name",
+      "totalUnit": "in total",
       "priceLabel": "Price",
-      "currency": "SAR",
       "pending": "Pricing is still being set — this figure is a placeholder.",
       "cta": "Start now",
-      "includes": "Includes WhatsApp delivery, reply tracking and entry passes."
+      "includes": "Includes delivery, reply tracking and entry passes."
     },
     "footer": {
       "tagline": "An invitation that opens doors.",
