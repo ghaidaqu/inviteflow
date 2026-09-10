@@ -31,15 +31,20 @@ export function TrackOptionsSelector({
   options: TrackOption[];
   pricing: PriceCalculatorCopy;
 }) {
-  const [selected, setSelected] = useState<JourneyKey | null>(null);
+  // Starts on the digital-invitation track, which means the price is on
+  // the page the moment it loads. Hiding it behind a click was the
+  // instruction — pricing belongs to this track and not to the link
+  // track — but in practice it just read as a site with no prices, three
+  // times over. Selecting the other track still hides it, so the rule
+  // holds; it is the default that changed, not the rule.
+  const [selected, setSelected] = useState<JourneyKey | null>('invitation');
   const pricingRef = useRef<HTMLDivElement>(null);
+  const hasChosen = useRef(false);
 
-  // The price only exists once a track is chosen, and it appears below
-  // the fold on a phone — so choosing has to take the visitor to it.
-  // Without this the calculator opened somewhere off-screen and read as
-  // "there is no pricing on this site".
+  // Scroll to the price when a visitor picks this track — but never on
+  // load, or the page would jump past the hero on its own.
   useEffect(() => {
-    if (selected !== 'invitation') return;
+    if (!hasChosen.current || selected !== 'invitation') return;
     pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [selected]);
   const selectedOption = options.find((option) => option.key === selected);
@@ -58,7 +63,10 @@ export function TrackOptionsSelector({
               type="button"
               role="radio"
               aria-checked={isSelected}
-              onClick={() => setSelected(option.key)}
+              onClick={() => {
+                hasChosen.current = true;
+                setSelected(option.key);
+              }}
               className={`bg-card/75 text-primary focus-visible:ring-ring/60 grid w-full grid-cols-[auto_1fr] items-center gap-4 rounded-2xl border p-5 text-start shadow-sm transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-3 focus-visible:outline-none sm:p-6 ${
                 isSelected
                   ? 'border-secondary ring-secondary/35 ring-3'

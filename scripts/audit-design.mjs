@@ -129,6 +129,11 @@ const IN_PAGE = () => {
     // background, which reads as 1:1 — a tool artefact, not a defect.
     // There is no text to read at 4% opacity either way.
     if (effOpacity(el) < 0.05) continue;
+    // Screen-reader-only text is clipped to a 1px box — it is not on
+    // screen, so its contrast is not a thing anyone can read. Measuring
+    // it flagged the tooltip's own hidden copy as a failure.
+    const box = el.getBoundingClientRect();
+    if (box.width <= 1 || box.height <= 1) continue;
     if (hero?.contains(el)) continue;
     const bg = painted(el);
     const c = toRGBA(cs.color);

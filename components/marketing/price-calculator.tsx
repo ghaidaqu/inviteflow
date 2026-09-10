@@ -162,7 +162,7 @@ export function PriceCalculator({
                 somebody declines, which is why the line below says "added"
                 rather than "invited". */}
             <div className="mt-2 flex w-full max-w-[21rem] items-center justify-center gap-3">
-              <span title={copy.reserveHint} className="text-primary/70 shrink-0">
+              <span title={copy.reserveHint} className="text-primary shrink-0">
                 <InfoIcon className="size-4" />
                 <span className="sr-only">{copy.reserveHint}</span>
               </span>

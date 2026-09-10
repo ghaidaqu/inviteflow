@@ -220,56 +220,70 @@ export function GuestJourneyScene({ copy, locale }: { copy: Copy; locale: string
 
           <div className="whatsapp-wallpaper absolute inset-x-0 top-[108px] bottom-[76px]" />
 
-          <div className="journey-screen journey-invite absolute inset-x-3 top-[108px] bottom-[76px] flex items-center">
-            <div className={`me-auto w-[285px] overflow-hidden bg-white ${bubble}`}>
-              <div className="relative aspect-square w-full overflow-hidden bg-[#f6efdc]">
-                <div className="absolute top-0 left-0 origin-top-left scale-[0.2639]">
-                  <SquareWeddingTemplate data={invitation} />
+          {/* One thread, filling up — not three screens taking turns.
+              Each message arrives under the last and the column slides up
+              to keep the newest in view, which is what a real chat does.
+              The cross-fade this replaces made every step look like a
+              different conversation. */}
+          <div className="absolute inset-x-3 top-[108px] bottom-[76px] overflow-hidden">
+            <div className="journey-thread flex flex-col gap-2 pt-2">
+              <div
+                className={`journey-msg journey-msg-1 me-auto w-[285px] overflow-hidden bg-white ${bubble}`}
+              >
+                <div className="relative aspect-square w-full overflow-hidden bg-[#f6efdc]">
+                  <div className="absolute top-0 left-0 origin-top-left scale-[0.2639]">
+                    <SquareWeddingTemplate data={invitation} />
+                  </div>
+                </div>
+                <p className="px-3 pt-2 pb-1.5 text-[14.5px] leading-[21px]">
+                  {copy.invitationText}
+                  <span className={`ms-2 ${rtl ? 'float-left' : 'float-right'} ${stamp}`}>
+                    {clock('12:20')}
+                  </span>
+                </p>
+                <div className="border-t border-[#e9edef]">
+                  {actions.map(([label, Icon]) => (
+                    <div
+                      key={String(label)}
+                      className="flex h-[42px] items-center justify-center gap-1.5 border-b border-[#e9edef] text-[15px] font-medium text-[#00a884] last:border-0"
+                    >
+                      <Icon className="size-[15px]" />
+                      {label}
+                    </div>
+                  ))}
                 </div>
               </div>
-              <p className="px-3 pt-2 pb-1.5 text-[14.5px] leading-[21px]">
-                {copy.invitationText}
-                <span className={`ms-2 ${rtl ? 'float-left' : 'float-right'} ${stamp}`}>
-                  {clock('12:20')}
-                </span>
-              </p>
-              <div className="border-t border-[#e9edef]">
-                {actions.map(([label, Icon]) => (
-                  <div
-                    key={String(label)}
-                    className="flex h-[42px] items-center justify-center gap-1.5 border-b border-[#e9edef] text-[15px] font-medium text-[#00a884] last:border-0"
-                  >
-                    <Icon className="size-[15px]" />
-                    {label}
-                  </div>
-                ))}
+
+              <div
+                className={`journey-msg journey-msg-2 ms-auto max-w-[70%] bg-[#d9fdd3] px-3 py-2 ${bubble}`}
+              >
+                <p className="text-[15px] leading-[20px]">{copy.confirmationReply}</p>
+                <p className={`${rtl ? 'text-left' : 'text-right'} ${stamp}`}>
+                  {clock('12:25')} ✓✓
+                </p>
               </div>
-            </div>
-          </div>
 
-          <div className="journey-screen journey-confirm absolute inset-x-3 top-[108px] bottom-[76px] flex flex-col justify-center gap-2">
-            <div className={`ms-auto max-w-[70%] bg-[#d9fdd3] px-3 py-2 ${bubble}`}>
-              <p className="text-[15px] leading-[20px]">{copy.confirmationReply}</p>
-              <p className={`${rtl ? 'text-left' : 'text-right'} ${stamp}`}>{clock('12:25')} ✓✓</p>
-            </div>
-            <div className={`me-auto max-w-[85%] bg-white px-3 py-2 ${bubble}`}>
-              <p className="text-[15px] leading-[21px]">{copy.confirmationReceipt}</p>
-              <p className={`${rtl ? 'text-left' : 'text-right'} ${stamp}`}>{clock('12:25')}</p>
-            </div>
-          </div>
+              <div
+                className={`journey-msg journey-msg-3 me-auto max-w-[85%] bg-white px-3 py-2 ${bubble}`}
+              >
+                <p className="text-[15px] leading-[21px]">{copy.confirmationReceipt}</p>
+                <p className={`${rtl ? 'text-left' : 'text-right'} ${stamp}`}>{clock('12:25')}</p>
+              </div>
 
-          <div className="journey-screen journey-pass absolute inset-x-3 top-[108px] bottom-[76px] flex items-center">
-            <div className={`me-auto w-[285px] overflow-hidden bg-white p-1.5 ${bubble}`}>
-              <Image
-                src="/images/marketing/entry-pass-example.png"
-                width={1024}
-                height={1536}
-                alt={`${copy.passTitle} — ${copy.passCaption}`}
-                className="h-auto w-full rounded-[6px]"
-              />
-              <p className={`px-1 pt-1 ${rtl ? 'text-left' : 'text-right'} ${stamp}`}>
-                {clock('12:26')}
-              </p>
+              <div
+                className={`journey-msg journey-msg-4 me-auto w-[285px] overflow-hidden bg-white p-1.5 ${bubble}`}
+              >
+                <Image
+                  src="/images/marketing/entry-pass-example.png"
+                  width={1024}
+                  height={1536}
+                  alt={`${copy.passTitle} — ${copy.passCaption}`}
+                  className="h-auto w-full rounded-[6px]"
+                />
+                <p className={`px-1 pt-1 ${rtl ? 'text-left' : 'text-right'} ${stamp}`}>
+                  {clock('12:26')}
+                </p>
+              </div>
             </div>
           </div>
 

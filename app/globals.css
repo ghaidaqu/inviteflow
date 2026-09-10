@@ -218,56 +218,7 @@ html[dir='rtl'] {
   }
 }
 
-/* A lightweight product walkthrough in the marketing phone preview. It
-   replaces a large GIF with real, sharp text and brand tokens while telling
-   the same three-beat story: invitation, reply, entry pass. */
-@keyframes journey-invite {
-  0%,
-  29% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  34%,
-  100% {
-    opacity: 0;
-    transform: translateY(-0.75rem);
-  }
-}
-@keyframes journey-confirm {
-  0%,
-  29%,
-  62%,
-  100% {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  35%,
-  56% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-@keyframes journey-pass {
-  0%,
-  57% {
-    opacity: 0;
-    transform: translateY(0.75rem);
-  }
-  64%,
-  94% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(0.75rem);
-  }
-}
-.journey-screen {
-  will-change: opacity, transform;
-}
-
-/* The phone photo is laid out at its own 1448x1086 pixels so everything
+/* The phone photo is laid out at its own 1312x1199 pixels so everything
    composited onto it — above all the projective transform that maps a
    390x844 screen onto the tilted screen in the photo — can be written in
    the photo's coordinates once and stay correct at every viewport. The
@@ -290,6 +241,133 @@ html[dir='rtl'] {
   height: 1199px;
   transform: scale(var(--stage-scale));
   transform-origin: top left;
+}
+
+/* The marketing phone preview plays one conversation filling up, the way
+   a real thread does: each message arrives under the last, and the column
+   slides up so the newest stays in view. It used to cross-fade three
+   separate screens, which read as three different conversations rather
+   than one story.
+
+   Every message runs the same 9s clock; what differs is where in that
+   clock it appears, so the sequence stays in step without JS. The slide
+   only happens at the end, when the entry pass pushes the thread past the
+   height of the screen — before that everything still fits. */
+@keyframes journey-msg-1 {
+  0%,
+  1% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  5%,
+  93% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  97%,
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+@keyframes journey-msg-2 {
+  0%,
+  27% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  32%,
+  93% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  97%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes journey-msg-3 {
+  0%,
+  45% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  50%,
+  93% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  97%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes journey-msg-4 {
+  0%,
+  63% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  68%,
+  93% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  97%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes journey-thread-scroll {
+  0%,
+  30% {
+    transform: translateY(0);
+  }
+  38%,
+  60% {
+    transform: translateY(-38px);
+  }
+  70%,
+  93% {
+    transform: translateY(-394px);
+  }
+  99%,
+  100% {
+    transform: translateY(0);
+  }
+}
+.journey-msg {
+  opacity: 0;
+  will-change: opacity, transform;
+  animation-duration: 9s;
+  animation-timing-function: var(--ease-out);
+  animation-iteration-count: infinite;
+}
+.journey-msg-1 {
+  animation-name: journey-msg-1;
+}
+.journey-msg-2 {
+  animation-name: journey-msg-2;
+}
+.journey-msg-3 {
+  animation-name: journey-msg-3;
+}
+.journey-msg-4 {
+  animation-name: journey-msg-4;
+}
+.journey-thread {
+  will-change: transform;
+  animation: journey-thread-scroll 9s var(--ease-in-out) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-thread {
+    animation: none;
+    transform: translateY(-394px);
+  }
+  .journey-msg {
+    animation: none;
+    opacity: 1;
+  }
 }
 .whatsapp-wallpaper {
   background-color: #efeae2;
