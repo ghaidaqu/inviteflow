@@ -60,7 +60,7 @@ function wrap(locale: Locale, bodyHtml: string): string {
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:${COLORS.card};border:1px solid ${COLORS.border};border-radius:24px;overflow:hidden;box-shadow:0 14px 40px rgba(38,25,20,.08);">
           <tr><td style="height:6px;background:${COLORS.primary};font-size:0;line-height:0;">&nbsp;</td></tr>
           <tr><td style="padding:30px 32px 12px;text-align:center;">
-            <img src="https://mhalli.co/brand/mhalli-official-icon-light.svg" width="28" height="28" alt="مهلّي" style="display:inline-block;width:28px;height:28px;vertical-align:middle;border:0;" />
+            <img src="https://mhalli.co/brand/mhalli-official-symbol-upright.svg" width="28" height="28" alt="مهلّي" style="display:inline-block;width:28px;height:28px;vertical-align:middle;border:0;" />
             <div style="margin-top:14px;color:${COLORS.primary};font-family:Georgia,Tahoma,serif;font-size:25px;font-weight:700;">مهلّي</div>
             <div style="margin-top:5px;color:${COLORS.muted};font-size:12px;letter-spacing:.08em;">${locale === 'ar' ? 'دعوتك تبدأ من هنا' : 'Your invitation starts here'}</div>
           </td></tr>

@@ -180,9 +180,8 @@ async function renderQrCard({
   const titleX = Math.round(CENTER_X - titleText.width / 2);
   const captionX = Math.round(CENTER_X - captionText.width / 2);
   const officialSymbol = await sharp(
-    path.join(process.cwd(), 'public/brand/mhalli-official-symbol.svg'),
+    path.join(process.cwd(), 'public/brand/mhalli-official-symbol-upright.svg'),
   )
-    .rotate(45, { background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .resize(DIAMOND_SIZE, DIAMOND_SIZE)
     .png()
     .toBuffer();
