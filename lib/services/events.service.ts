@@ -121,6 +121,7 @@ export async function createEvent(
       name: input.name,
       type: input.type,
       track: input.track ?? null,
+      guest_limit: input.guestLimit ?? null,
       description: input.description ?? null,
       event_date: input.eventDate ?? null,
       rsvp_deadline: input.rsvpDeadline ?? null,
@@ -183,6 +184,11 @@ export async function updateEvent(
       is_qr_enabled: input.isQrEnabled,
       password_hash: passwordHash,
       event_end_date: input.eventEndDate ?? null,
+      // Editable after the fact: an organizer who ends up inviting more
+      // people shouldn't have to recreate the event. Lowering it below
+      // the number already invited doesn't remove anyone — it only stops
+      // more being added until declines bring the count back down.
+      guest_limit: input.guestLimit ?? null,
       organization_name: input.organizationName ?? null,
       organization_logo_url: input.organizationLogoUrl ?? null,
     })
@@ -241,6 +247,7 @@ export async function updateEventSettings(
       allow_guest_edit: input.allowGuestEdit,
       require_phone: input.requirePhone,
       auto_broadcast_results: input.autoBroadcastResults,
+      auto_replace_declines: input.autoReplaceDeclines,
     })
     .eq('event_id', eventId)
     .select('*')

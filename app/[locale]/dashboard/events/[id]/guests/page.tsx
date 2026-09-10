@@ -62,6 +62,7 @@ export default async function EventGuestsPage({
         guests={guests}
         deliveries={deliveries}
         isLinkTrack={event.track === 'rsvp'}
+        guestLimit={event.guest_limit}
       />
     </main>
   );

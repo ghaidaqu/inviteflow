@@ -60,6 +60,13 @@ export type QuickStartDraft = {
   questions: QuestionInput[];
   guestName: string;
   guestPhone: string;
+  /** How many people are being invited, as typed. Empty means the
+   *  organizer skipped it, which leaves the main list uncapped. Only the
+   *  invitation track asks: the link track sends nothing per guest. */
+  guestLimit: string;
+  /** Whether a decline should hand the place to the next person on the
+   *  reserve list automatically. */
+  autoReplaceDeclines: boolean;
 };
 
 export type QuickStartResult = {
@@ -71,6 +78,12 @@ function canonicalPhone(raw: string): string | null {
   if (!trimmed) return null;
   const result = normalizePhone(trimmed);
   return result.ok ? result.e164 : normalizeDigits(trimmed);
+}
+
+function parseGuestLimit(value: string): number | undefined {
+  const n = Number(normalizeDigits(String(value ?? '')).trim());
+  if (!Number.isFinite(n) || n < 1) return undefined;
+  return Math.min(Math.floor(n), 100000);
 }
 
 function toIsoOrUndefined(value: string): string | undefined {
@@ -149,6 +162,7 @@ export async function createEventFromQuickStartAction(
       isPasswordProtected: false,
       password: undefined,
       eventEndDate: undefined,
+      guestLimit: draft.track === 'invitation' ? parseGuestLimit(draft.guestLimit) : undefined,
       organizationName: undefined,
       organizationLogoUrl: undefined,
     });
@@ -173,7 +187,7 @@ export async function createEventFromQuickStartAction(
   // (both response options on) the moment the event row is inserted
   // above — only touch it if the organizer actually changed something,
   // preserving the trigger's defaults for every other setting.
-  if (!draft.allowAttending || !draft.allowNotAttending) {
+  if (!draft.allowAttending || !draft.allowNotAttending || !draft.autoReplaceDeclines) {
     try {
       const settings = await getEventSettings(supabase, eventId);
       if (settings) {
@@ -186,6 +200,7 @@ export async function createEventFromQuickStartAction(
           allowGuestEdit: settings.allow_guest_edit,
           requirePhone: settings.require_phone,
           autoBroadcastResults: settings.auto_broadcast_results,
+          autoReplaceDeclines: draft.autoReplaceDeclines,
         });
       }
     } catch {

@@ -4,7 +4,12 @@ import { revalidatePath } from 'next/cache';
 import { reportActionError } from '@/lib/utils/report-error';
 import { getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
-import { deleteGuest, createGuestManually, updateGuest } from '@/lib/services/guests.service';
+import {
+  deleteGuest,
+  createGuestManually,
+  updateGuest,
+  countLiveMainGuests,
+} from '@/lib/services/guests.service';
 import { getCurrentOrganizationId, getEvent } from '@/lib/services/events.service';
 import { sendInvitationWhatsApp } from '@/lib/whatsapp/notify';
 import { normalizeDigits } from '@/lib/utils/digits';
@@ -26,6 +31,10 @@ export async function deleteGuestAction(eventId: string, guestId: string) {
 export type AddGuestsActionState = {
   error?: string;
   addedCount?: number;
+  /** Set with error 'guestLimitReached' — how many places are left, so
+   *  the dialog can say "you have room for 12 more" rather than just
+   *  refusing the batch. */
+  remaining?: number;
   /** Names whose row could not be added — an unusable phone number, or an
    *  insert that failed. Reported alongside addedCount so a partial import
    *  tells the organizer exactly who is missing. */
@@ -129,6 +138,19 @@ export async function addGuestsAction(
   const event = await getEvent(supabase, organizationId, eventId);
   if (!event) return { error: 'unknown' };
 
+  // The main list is capped at the number of guests the event was set up
+  // for; the reserve list isn't, because nobody on it has been invited.
+  // Refused as a batch rather than filling up to the limit and dropping
+  // the rest — a half-imported list is worse than a clear "there is room
+  // for 12 more", which is what the dialog shows.
+  if (!isWaitlisted && event.guest_limit != null) {
+    const used = await countLiveMainGuests(supabase, eventId);
+    const remaining = Math.max(0, event.guest_limit - used);
+    if (guestsToAdd.length > remaining) {
+      return { error: 'guestLimitReached', remaining };
+    }
+  }
+
   // Inserted one at a time so a single bad row can't lose the batch, but
   // the count is tracked: a failure partway used to return a bare
   // 'unknown' with no way for the organizer to tell who actually landed.
@@ -177,12 +199,33 @@ export async function updateGuestAction(
   } = await supabase.auth.getUser();
   if (!user) return { error: 'unauthorized' };
 
+  const isWaitlisted = readBoolean(formData.get('isWaitlisted'));
+
+  // Moving someone off the reserve list and onto the main one takes a
+  // place, so it goes through the same limit as adding a new guest.
+  // Without this the cap could be walked past one guest at a time.
+  if (!isWaitlisted) {
+    const organizationId = await getCurrentOrganizationId(supabase, user.id);
+    const event = organizationId ? await getEvent(supabase, organizationId, eventId) : null;
+    if (event?.guest_limit != null) {
+      const { data: current } = await supabase
+        .from('guests')
+        .select('is_waitlisted')
+        .eq('id', guestId)
+        .single();
+      if (current?.is_waitlisted) {
+        const used = await countLiveMainGuests(supabase, eventId);
+        if (used >= event.guest_limit) return { error: 'guestLimitReached' };
+      }
+    }
+  }
+
   try {
     await updateGuest(supabase, guestId, {
       name,
       phone: canonicalPhone(phoneRaw),
       expectedCompanions: parseCompanions(formData.get('expectedCompanions')),
-      isWaitlisted: readBoolean(formData.get('isWaitlisted')),
+      isWaitlisted,
     });
   } catch (error) {
     reportActionError('guests', error);

@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Field, FieldLabel, FieldError, FieldGroup } from '@/components/ui/field';
+import { Field, FieldLabel, FieldError, FieldGroup, FieldDescription } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { InlineQuestionsBuilder } from '@/components/dashboard/inline-questions-builder';
@@ -76,6 +76,7 @@ export function EventForm({
   const tTypes = useTranslations('Events.types');
   const tErrors = useTranslations('Events.errors');
   const tValidation = useTranslations('Events.validation');
+  const tSettings = useTranslations('EventSettings');
   // Cover image and QR are locked once published — see updateEventAction,
   // which enforces this server-side too (this is just the matching UI so
   // the form never promises something the server would then discard).
@@ -107,6 +108,7 @@ export function EventForm({
       isPasswordProtected: Boolean(event?.password_hash),
       password: '',
       eventEndDate: toDateTimeLocal(event?.event_end_date ?? null),
+      guestLimit: event?.guest_limit != null ? String(event.guest_limit) : '',
       organizationName: event?.organization_name ?? '',
       organizationLogoUrl: event?.organization_logo_url ?? '',
     },
@@ -141,6 +143,7 @@ export function EventForm({
     formData.set('isPasswordProtected', String(values.isPasswordProtected));
     formData.set('password', values.password ?? '');
     formData.set('eventEndDate', toIso(values.eventEndDate));
+    formData.set('guestLimit', String(values.guestLimit ?? ''));
     formData.set('organizationName', values.organizationName ?? '');
     formData.set('organizationLogoUrl', values.organizationLogoUrl ?? '');
 
@@ -332,6 +335,26 @@ export function EventForm({
             event created before this was the case. eventEndDate (for
             multi-day events) similarly has a column and round-trips, but
             no input control yet — not part of this pass. */}
+
+        {/* The number the invitation is priced on, and the ceiling on the
+            main guest list. Editable after the fact — raising it is how an
+            organizer whose list grew keeps going; lowering it never
+            removes anyone, it only stops more being added. Not shown on
+            the link track, which sends nothing per guest. */}
+        {track !== 'rsvp' && (
+          <Field>
+            <FieldLabel htmlFor="guestLimit">{tSettings('guestLimitLabel')}</FieldLabel>
+            <Input
+              id="guestLimit"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              placeholder={tSettings('guestLimitPlaceholder')}
+              {...register('guestLimit')}
+            />
+            <FieldDescription>{tSettings('guestLimitHint')}</FieldDescription>
+          </Field>
+        )}
 
         <Field orientation="horizontal">
           <FieldLabel htmlFor="isQrEnabled" className="flex-1 font-normal">

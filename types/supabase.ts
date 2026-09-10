@@ -128,6 +128,11 @@ export interface Database {
           // and app/api/cron/broadcast-results/route.ts) — null means "not
           // sent yet", the only signal that route needs to pick it up.
           results_broadcast_at: string | null;
+          /** How many live invitations the main guest list may hold. Null
+           *  means no limit — link-track events, and everything created
+           *  before the column existed. A guest who declines stops
+           *  counting, which is what lets the reserve list refill. */
+          guest_limit: number | null;
           /** Per-event secret behind the door-staff scanner link (see
            *  20260908000004). Not the event id on purpose: that one is in
            *  every dashboard URL, and this grants marking guests arrived. */
@@ -144,6 +149,7 @@ export interface Database {
           name: string;
           type: EventType;
           track?: 'invitation' | 'rsvp' | 'institutional' | null;
+          guest_limit?: number | null;
           description?: string | null;
           event_date?: string | null;
           rsvp_deadline?: string | null;
@@ -182,6 +188,9 @@ export interface Database {
           allow_guest_edit: boolean;
           require_phone: boolean;
           auto_broadcast_results: boolean;
+          /** A decline sends the invitation on to the next person on the
+           *  reserve list, without the organizer doing anything. */
+          auto_replace_declines: boolean;
           updated_at: string;
         };
         Insert: {
@@ -196,6 +205,7 @@ export interface Database {
           allow_guest_edit?: boolean;
           require_phone?: boolean;
           auto_broadcast_results?: boolean;
+          auto_replace_declines?: boolean;
           updated_at?: string;
         };
         Update: Partial<Database['public']['Tables']['event_settings']['Insert']>;

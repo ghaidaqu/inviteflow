@@ -57,6 +57,7 @@ export function EventSettingsForm({
       allowGuestEdit: settings.allow_guest_edit,
       requirePhone: settings.require_phone,
       autoBroadcastResults: settings.auto_broadcast_results,
+      autoReplaceDeclines: settings.auto_replace_declines,
     },
   });
 
@@ -75,6 +76,7 @@ export function EventSettingsForm({
     formData.set('allowGuestEdit', String(values.allowGuestEdit));
     formData.set('requirePhone', String(values.requirePhone));
     formData.set('autoBroadcastResults', String(values.autoBroadcastResults));
+    formData.set('autoReplaceDeclines', String(values.autoReplaceDeclines));
 
     startTransition(async () => {
       const result = await updateEventSettingsAction(eventId, {}, formData);
@@ -196,6 +198,28 @@ export function EventSettingsForm({
             render={({ field }) => (
               <Switch
                 id="autoBroadcastResults"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            )}
+          />
+        </Field>
+
+        {/* This is the switch behind the reserve list: with it off, a
+            decline is just a decline and the organizer decides who takes
+            the place. On an event with no reserve list it does nothing
+            either way. */}
+        <Field orientation="horizontal">
+          <FieldLabel htmlFor="autoReplaceDeclines" className="flex-1 font-normal">
+            {t('autoReplaceDeclinesLabel')}
+            <FieldDescription>{t('autoReplaceDeclinesHint')}</FieldDescription>
+          </FieldLabel>
+          <Controller
+            control={control}
+            name="autoReplaceDeclines"
+            render={({ field }) => (
+              <Switch
+                id="autoReplaceDeclines"
                 checked={field.value}
                 onCheckedChange={field.onChange}
               />

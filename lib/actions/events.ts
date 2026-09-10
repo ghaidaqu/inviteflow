@@ -45,6 +45,8 @@ function readFormInput(formData: FormData) {
     isPasswordProtected: formData.get('isPasswordProtected') === 'true',
     password: formData.get('password'),
     eventEndDate: formData.get('eventEndDate'),
+    // Blank means "no limit", which the schema turns into undefined.
+    guestLimit: (formData.get('guestLimit') as string | null) ?? '',
     // Only ever set on creation (see EventForm) — `|| undefined` turns
     // both "field never set" (null) and "" into the same "unknown" the
     // optional() schema below expects; edits never touch this at all.
@@ -220,6 +222,7 @@ export async function updateEventSettingsAction(
     allowGuestEdit: formData.get('allowGuestEdit') === 'true',
     requirePhone: formData.get('requirePhone') === 'true',
     autoBroadcastResults: formData.get('autoBroadcastResults') === 'true',
+    autoReplaceDeclines: formData.get('autoReplaceDeclines') === 'true',
   });
   if (!parsed.success) return { error: 'invalidInput' };
 

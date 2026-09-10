@@ -38,6 +38,38 @@ export async function listGuestsWithResponses(
 }
 
 /**
+ * How many places on the main list are actually taken.
+ *
+ * Reserve-list guests don't count — they haven't been invited yet — and
+ * neither does anyone who has declined: their place is exactly what the
+ * reserve list is there to refill. Counting declines would mean an event
+ * capped at 100 could never replace the first person who couldn't come.
+ */
+export async function countLiveMainGuests(supabase: Client, eventId: string): Promise<number> {
+  const { data, error } = await supabase
+    .from('guests')
+    .select('id')
+    .eq('event_id', eventId)
+    .eq('is_waitlisted', false)
+    .is('deleted_at', null);
+
+  if (error) throw error;
+  if (data.length === 0) return 0;
+
+  const { data: declined, error: declinedError } = await supabase
+    .from('rsvp_responses')
+    .select('guest_id')
+    .eq('status', 'not_attending')
+    .in(
+      'guest_id',
+      data.map((g) => g.id),
+    );
+
+  if (declinedError) throw declinedError;
+  return data.length - declined.length;
+}
+
+/**
  * Organizer-initiated guest creation — distinct from the public
  * `submit_rsvp` RPC (which creates a guest *and* their response together
  * when they respond themselves). A manually-added guest has no response

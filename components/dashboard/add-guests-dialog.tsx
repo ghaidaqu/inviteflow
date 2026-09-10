@@ -61,9 +61,14 @@ type Stage = 'input' | 'review';
 export function AddGuestsDialog({
   eventId,
   existingPhones,
+  remainingPlaces,
 }: {
   eventId: string;
   existingPhones: string[];
+  /** Places left on the main list, or null when the event has no limit.
+   *  Shown before the paste, and again if the server refuses the batch —
+   *  the refusal is the authority, this is only the warning. */
+  remainingPlaces?: number | null;
 }) {
   const t = useTranslations('Guests.addGuests');
   const tErrors = useTranslations('Guests.errors');
@@ -87,6 +92,7 @@ export function AddGuestsDialog({
   // A partial import used to report a single count and leave the organizer
   // no way to tell who was missing.
   const [rejectedNames, setRejectedNames] = useState<string[]>([]);
+  const [limitRemaining, setLimitRemaining] = useState<number | null>(null);
   const [isSaving, startSaving] = useTransition();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -217,6 +223,7 @@ export function AddGuestsDialog({
     startSaving(async () => {
       const result: AddGuestsActionState = await addGuestsAction(eventId, {}, formData);
       setRejectedNames(result.rejectedNames ?? []);
+      setLimitRemaining(result.error === 'guestLimitReached' ? (result.remaining ?? 0) : null);
       if (result.error) setError(result.error);
       else {
         setAddedCount(result.addedCount ?? 0);
@@ -249,7 +256,11 @@ export function AddGuestsDialog({
 
         {error && (
           <Alert variant="destructive">
-            <AlertDescription>{tErrors(error)}</AlertDescription>
+            <AlertDescription>
+              {limitRemaining === null
+                ? tErrors(error)
+                : tGuests('capacity.batchTooLarge', { n: limitRemaining })}
+            </AlertDescription>
           </Alert>
         )}
         {addedCount !== null && (
@@ -378,6 +389,15 @@ export function AddGuestsDialog({
                 <p className="text-muted-foreground text-xs">{tGuests('waitlist.toggleHint')}</p>
               </div>
             </div>
+
+            {/* The reserve list is uncapped, so this only applies to the
+                main list — and only there does a too-long paste get
+                refused. Said before the confirm, not after. */}
+            {!isWaitlisted && remainingPlaces != null && (
+              <p className="text-muted-foreground text-xs">
+                {tGuests('capacity.remaining', { n: remainingPlaces })}
+              </p>
+            )}
 
             <div className="flex flex-wrap gap-2 text-xs">
               <Badge variant="default">{t('summaryImportable', { n: summary.importable })}</Badge>

@@ -56,6 +56,14 @@ export const eventFormSchema = z.object({
   // event created before this existed, which keeps that event's track
   // honestly "unknown" rather than guessed at.
   track: z.enum(eventTracks).optional(),
+  // How many people are being invited. Decided at creation because the
+  // invitation is priced on it, and it caps the main guest list from
+  // then on. Empty means no limit — which is every link-track event and
+  // everything created before this field existed.
+  guestLimit: z
+    .union([z.literal(''), z.coerce.number().int().min(1).max(100000)])
+    .optional()
+    .transform((value) => (value === '' || value === undefined ? undefined : value)),
   // Institutional track only — see EventForm's `track` prop. Left
   // undefined/blank for the other two tracks.
   organizationName: optionalText,

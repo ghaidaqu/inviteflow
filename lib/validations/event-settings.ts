@@ -15,6 +15,10 @@ export const eventSettingsFormSchema = z.object({
   allowGuestEdit: z.boolean(),
   requirePhone: z.boolean(),
   autoBroadcastResults: z.boolean(),
+  // A decline hands the place to the next person on the reserve list,
+  // with no action from the organizer. Does nothing at all when the
+  // event has no reserve list.
+  autoReplaceDeclines: z.boolean(),
 });
 
 export type EventSettingsFormInput = z.input<typeof eventSettingsFormSchema>;

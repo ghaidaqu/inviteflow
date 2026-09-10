@@ -538,7 +538,12 @@
       "unauthorized": "You must be logged in to do this.",
       "unknown": "Something went wrong, please try again."
     },
-    "allowResponseLabel": "Allow accept or decline"
+    "allowResponseLabel": "Allow accept or decline",
+    "guestLimitLabel": "Number of guests",
+    "guestLimitPlaceholder": "e.g. 200",
+    "guestLimitHint": "The invitation is priced on this, and it caps the main guest list. Leave it blank if you have not decided yet.",
+    "autoReplaceDeclinesLabel": "Replace declines automatically",
+    "autoReplaceDeclinesHint": "When a guest declines, their place goes to the next person on the reserve list, in order. Turn it off to choose the replacement yourself."
   },
   "CheckIn": {
     "pageTitle": "QR Check-in",
@@ -723,13 +728,14 @@
       "invalidInput": "Please enter at least one guest name.",
       "unauthorized": "You must be logged in to do this.",
       "unknown": "Something went wrong, please try again.",
-      "vcfEmpty": "We couldn't find any contacts in that file."
+      "vcfEmpty": "We couldn't find any contacts in that file.",
+      "guestLimitReached": "The guest list is full. Raise the number in the event settings, or add the rest to the reserve list."
     },
     "a11yDeleteGuest": "Delete guest",
     "waitlist": {
       "badge": "Waitlist",
       "toggleLabel": "Add as reserve list",
-      "toggleHint": "They won't be invited now — an invitation is sent automatically only when a main-list guest declines."
+      "toggleHint": "They are not sent an invitation now. It goes out in order when a main-list guest declines, as long as \"Replace declines automatically\" is on in the event settings."
     },
     "delivery": {
       "accepted": "Sending",
@@ -743,6 +749,12 @@
         "blockedBySpamPolicy": "Not delivered — WhatsApp blocked it",
         "unknown": "Not delivered — check the number"
       }
+    },
+    "capacity": {
+      "used": "{used} of {limit} invitations",
+      "remaining": "Room for {n} more",
+      "reserve": "{n} on the reserve list",
+      "batchTooLarge": "That list is longer than the room left. There is space for {n} more — remove some names, or add them to the reserve list instead."
     }
   },
   "Notifications": {

@@ -76,6 +76,7 @@ export function GuestsTable({
   guests,
   deliveries,
   isLinkTrack,
+  guestLimit,
 }: {
   eventId: string;
   eventName: string;
@@ -89,6 +90,10 @@ export function GuestsTable({
    *  or sending them a WhatsApp invitation from us both belong to the
    *  Digital Invitation track only — this list is purely "who responded". */
   isLinkTrack?: boolean;
+  /** How many live invitations the main list may hold; null means no
+   *  limit. Only used to show what's left — the limit itself is enforced
+   *  server-side in addGuestsAction. */
+  guestLimit?: number | null;
 }) {
   const t = useTranslations('Guests');
   const tErrors = useTranslations('Guests.errors');
@@ -221,8 +226,32 @@ export function GuestsTable({
     URL.revokeObjectURL(url);
   }
 
+  // A guest who declined has given their place back, so they stop
+  // counting — the same arithmetic the server does, shown here so the
+  // organizer can see the room they have before they paste a list in.
+  const liveMainCount = guests.filter(
+    (g) => !g.is_waitlisted && g.response?.status !== 'not_attending',
+  ).length;
+  const reserveCount = guests.filter((g) => g.is_waitlisted).length;
+  const remaining = guestLimit != null ? Math.max(0, guestLimit - liveMainCount) : null;
+
   return (
     <div className="flex flex-col gap-4">
+      {guestLimit != null && (
+        <div className="bg-muted/30 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border px-3 py-2 text-sm">
+          <span className="font-medium">
+            {t('capacity.used', { used: liveMainCount, limit: guestLimit })}
+          </span>
+          <span className="text-muted-foreground">
+            {t('capacity.remaining', { n: remaining ?? 0 })}
+          </span>
+          {reserveCount > 0 && (
+            <span className="text-muted-foreground">
+              {t('capacity.reserve', { n: reserveCount })}
+            </span>
+          )}
+        </div>
+      )}
       <div className="flex flex-wrap items-center gap-2">
         <Input
           value={search}
@@ -246,6 +275,7 @@ export function GuestsTable({
           <AddGuestsDialog
             eventId={eventId}
             existingPhones={guests.map((g) => g.phone ?? '').filter(Boolean)}
+            remainingPlaces={remaining}
           />
         )}
         <Button variant="outline" onClick={handleExportCsv}>

@@ -41,6 +41,8 @@ type FormValues = {
   isQrEnabled: boolean;
   allowAttending: boolean;
   allowNotAttending: boolean;
+  guestLimit: string;
+  autoReplaceDeclines: boolean;
 };
 
 const STEP_IDS = ['basics', 'datetime', 'design', 'settings', 'trial'] as const;
@@ -134,6 +136,8 @@ export function QuickStartWizard({
       isQrEnabled: false,
       allowAttending: true,
       allowNotAttending: true,
+      guestLimit: '',
+      autoReplaceDeclines: true,
     },
   });
 
@@ -524,6 +528,50 @@ export function QuickStartWizard({
           <FieldGroup>
             {track === 'rsvp' && (
               <InlineQuestionsBuilder value={questions} onChange={setQuestions} />
+            )}
+
+            {/* Asked here, before any names are typed, because the
+                invitation is priced on this number and because it is what
+                caps the guest list afterwards. Optional: someone who
+                doesn't know yet can leave it blank and set it later from
+                the event's settings. */}
+            {track === 'invitation' && (
+              <Field>
+                <FieldLabel htmlFor="qs-guest-limit">{tSettings('guestLimitLabel')}</FieldLabel>
+                <Input
+                  id="qs-guest-limit"
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  placeholder={tSettings('guestLimitPlaceholder')}
+                  {...register('guestLimit')}
+                />
+                <p className="text-muted-foreground text-xs">{tSettings('guestLimitHint')}</p>
+              </Field>
+            )}
+
+            {track === 'invitation' && (
+              <Field orientation="horizontal">
+                <div className="flex-1">
+                  <FieldLabel htmlFor="qs-auto-replace" className="font-normal">
+                    {tSettings('autoReplaceDeclinesLabel')}
+                  </FieldLabel>
+                  <p className="text-muted-foreground text-xs">
+                    {tSettings('autoReplaceDeclinesHint')}
+                  </p>
+                </div>
+                <Controller
+                  control={control}
+                  name="autoReplaceDeclines"
+                  render={({ field }) => (
+                    <Switch
+                      id="qs-auto-replace"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  )}
+                />
+              </Field>
             )}
 
             {track === 'invitation' && (
