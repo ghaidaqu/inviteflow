@@ -98,7 +98,12 @@ export function TrackOptionsSelector({
           so the plain one below is for the other track. */}
       {selectedOption?.key === 'invitation' && (
         <div ref={pricingRef} className="mt-8 scroll-mt-24">
-          <PriceCalculator locale={locale} href={selectedOption.href} copy={pricing} />
+          <PriceCalculator
+            idPrefix="pricing-track"
+            locale={locale}
+            href={selectedOption.href}
+            copy={pricing}
+          />
         </div>
       )}
 

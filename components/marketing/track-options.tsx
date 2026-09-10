@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { TrackOptionsSelector } from '@/components/marketing/track-options-selector';
+import { pricingCopy } from '@/components/marketing/pricing-copy';
 
 type JourneyKey = 'invitation' | 'rsvp';
 
@@ -25,7 +26,6 @@ const JOURNEY_KEYS: JourneyKey[] = ['invitation', 'rsvp'];
 export async function TrackOptions({ locale }: { locale: string }) {
   const tw = await getTranslations('HomePage.ways');
   const tt = await getTranslations('HomePage.tracks');
-  const tp = await getTranslations('HomePage.pricing');
 
   return (
     <section id="options" className="section-y scroll-mt-20">
@@ -43,27 +43,7 @@ export async function TrackOptions({ locale }: { locale: string }) {
         <TrackOptionsSelector
           locale={locale}
           cta={tt('ctaStart')}
-          pricing={{
-            eyebrow: tp('eyebrow'),
-            title: tp('title'),
-            subtitle: tp('subtitle'),
-            guestsLabel: tp('guestsLabel'),
-            guestsUnit: tp('guestsUnit'),
-            decrease: tp('decrease'),
-            increase: tp('increase'),
-            totalLabel: tp('totalLabel'),
-            totalUnit: tp('totalUnit'),
-            reserveLabel: tp('reserveLabel'),
-            reserveHint: tp('reserveHint'),
-            reserveAdded: tp('reserveAdded'),
-            priceLabel: tp('priceLabel'),
-            perGuest: tp('perGuest'),
-            contactPrice: tp('contactPrice'),
-            contactHint: tp('contactHint'),
-            cta: tp('cta'),
-            contactCta: tp('contactCta'),
-            includes: tp('includes'),
-          }}
+          pricing={await pricingCopy()}
           options={JOURNEY_KEYS.map((key) => ({
             key,
             href: JOURNEY_STYLE[key].href,

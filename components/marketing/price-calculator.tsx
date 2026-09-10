@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -12,6 +11,7 @@ import {
 import { RiyalSign } from '@/components/riyal-sign';
 import { Switch } from '@/components/ui/switch';
 import { Link } from '@/i18n/navigation';
+import { usePricingState } from '@/components/marketing/pricing-state';
 
 /**
  * Price by guest count, for the digital-invitation track only — the link
@@ -55,6 +55,7 @@ export type PriceCalculatorCopy = {
   decrease: string;
   increase: string;
   reserveLabel: string;
+  reserveFree: string;
   reserveHint: string;
   reserveAdded: string;
   totalLabel: string;
@@ -82,13 +83,18 @@ export function PriceCalculator({
   locale,
   href,
   copy,
+  id,
+  idPrefix,
 }: {
   locale: string;
   href: string;
   copy: PriceCalculatorCopy;
+  /** Only one of the two calculators owns the #pricing anchor. */
+  id?: string;
+  /** Keeps the input and its label paired when both are on the page. */
+  idPrefix: string;
 }) {
-  const [guests, setGuests] = useState(300);
-  const [withReserve, setWithReserve] = useState(true);
+  const { guests, setGuests, withReserve, setWithReserve } = usePricingState();
   const ArrowIcon = locale === 'ar' ? ArrowLeftIcon : ArrowRightIcon;
   const clamp = (value: number) => Math.min(MAX, Math.max(MIN, value));
 
@@ -100,7 +106,7 @@ export function PriceCalculator({
     'text-primary bg-primary/8 hover:bg-primary/15 focus-visible:ring-ring flex size-12 shrink-0 items-center justify-center rounded-full text-2xl leading-none transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-30';
 
   return (
-    <section id="pricing" className="scroll-mt-24">
+    <section id={id} className="scroll-mt-24">
       <div className="text-center">
         <span className="bg-primary/40 mx-auto block h-px w-10" />
         <p className="text-primary mt-4 text-sm font-semibold tracking-wide">{copy.eyebrow}</p>
@@ -118,7 +124,7 @@ export function PriceCalculator({
             <span className="bg-primary/10 text-primary flex size-14 items-center justify-center rounded-full">
               <UsersIcon className="size-6" />
             </span>
-            <label htmlFor="price-guests" className="text-lg font-semibold">
+            <label htmlFor={`${idPrefix}-guests`} className="text-lg font-semibold">
               {copy.guestsLabel}
             </label>
 
@@ -135,7 +141,7 @@ export function PriceCalculator({
                 −
               </button>
               <input
-                id="price-guests"
+                id={`${idPrefix}-guests`}
                 type="number"
                 inputMode="numeric"
                 min={MIN}
@@ -166,10 +172,20 @@ export function PriceCalculator({
                 <InfoIcon className="size-4" />
                 <span className="sr-only">{copy.reserveHint}</span>
               </span>
-              <label htmlFor="price-reserve" className="cursor-pointer text-sm">
+              <label
+                htmlFor={`${idPrefix}-reserve`}
+                className="flex cursor-pointer items-center gap-2 text-sm"
+              >
                 {copy.reserveLabel}
+                <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-xs font-semibold">
+                  {copy.reserveFree}
+                </span>
               </label>
-              <Switch id="price-reserve" checked={withReserve} onCheckedChange={setWithReserve} />
+              <Switch
+                id={`${idPrefix}-reserve`}
+                checked={withReserve}
+                onCheckedChange={setWithReserve}
+              />
             </div>
 
             {/* Kept in the layout when it is off, so switching does not
