@@ -55,9 +55,12 @@
       "totalLabel": "Invitations",
       "totalUnit": "in total",
       "priceLabel": "Price",
-      "pending": "Pricing is still being set — this figure is a placeholder.",
       "cta": "Start now",
-      "includes": "Includes delivery, reply tracking and entry passes."
+      "includes": "Includes delivery, reply tracking and entry passes.",
+      "perGuest": "per guest",
+      "contactPrice": "Let's talk",
+      "contactHint": "Above 400 guests we put together a quote with you.",
+      "contactCta": "Get in touch"
     },
     "footer": {
       "tagline": "An invitation that opens doors.",

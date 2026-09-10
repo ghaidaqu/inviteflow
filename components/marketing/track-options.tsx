@@ -57,8 +57,11 @@ export async function TrackOptions({ locale }: { locale: string }) {
             reserveHint: tp('reserveHint'),
             reserveAdded: tp('reserveAdded'),
             priceLabel: tp('priceLabel'),
-            pending: tp('pending'),
+            perGuest: tp('perGuest'),
+            contactPrice: tp('contactPrice'),
+            contactHint: tp('contactHint'),
             cta: tp('cta'),
+            contactCta: tp('contactCta'),
             includes: tp('includes'),
           }}
           options={JOURNEY_KEYS.map((key) => ({

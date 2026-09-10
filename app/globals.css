@@ -92,10 +92,15 @@
   --border: #c7b285;
   --input: #c7b285;
   --ring: #6e2a2c;
+  /* The one place the identity cannot be a single colour: these three are
+     "coming", "not coming" and "no answer" side by side in the same pie,
+     and #6e2a2c against #8d5557 was 1.76:1 — an organizer could not tell
+     the slices apart. Still entirely inside the warm family, just pushed
+     far enough apart to be readable: every pair is now at least 2.4:1. */
   --chart-1: #6e2a2c;
-  --chart-2: #8d5557;
+  --chart-2: #b0714a;
   --chart-3: #7c3a1f;
-  --chart-4: #9c8863;
+  --chart-4: #d8c9a3;
   --chart-5: #345762;
   --radius: 0.5rem;
   --sidebar: #f6efdc;

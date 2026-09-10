@@ -18,21 +18,24 @@ import { Link } from '@/i18n/navigation';
  * track has no per-guest send, so a per-guest price would be meaningless
  * there.
  *
- * The tiers are the shape the pricing will take: one flat price up to a
- * ceiling, so an organizer sending 180 invitations pays the 200 price
- * rather than being metered. They are keyed on invitations sent, not on
- * guests named, because the reserve invitations go out too.
+ * One flat price up to a ceiling rather than a per-head meter: an
+ * organizer inviting 180 pays the 200 price. The numbers are the ones
+ * Sultan set — 50/249, 100/449, 200/749, 400/1299 — and they are keyed
+ * on **guests**, the way that table is written, not on invitations sent.
+ * That matters: 50 guests with the 10% reserve is 55 invitations, and
+ * pricing those 55 against the 100-guest tier would charge someone the
+ * next bracket up for a box they ticked. The reserve rides along free.
  *
- * **The amounts are deliberately 0** — the numbers aren't decided yet, and
- * this ships the calculator so only the table below has to change when
- * they are. Nothing else in the component needs touching.
+ * Above 400 the price is deliberately absent — no bracket was set that
+ * high, and inventing one would put a number on the site that nobody
+ * decided. That case sends the organizer to the institutional route.
  */
-const TIERS: Array<{ upTo: number; price: number }> = [
-  { upTo: 50, price: 0 },
-  { upTo: 100, price: 0 },
-  { upTo: 200, price: 0 },
-  { upTo: 400, price: 0 },
-  { upTo: Number.POSITIVE_INFINITY, price: 0 },
+const TIERS: Array<{ upTo: number; price: number | null }> = [
+  { upTo: 50, price: 249 },
+  { upTo: 100, price: 449 },
+  { upTo: 200, price: 749 },
+  { upTo: 400, price: 1299 },
+  { upTo: Number.POSITIVE_INFINITY, price: null },
 ];
 
 const MIN = 50;
@@ -57,13 +60,22 @@ export type PriceCalculatorCopy = {
   totalLabel: string;
   totalUnit: string;
   priceLabel: string;
-  pending: string;
+  perGuest: string;
+  contactPrice: string;
+  contactHint: string;
   cta: string;
+  contactCta: string;
   includes: string;
 };
 
-function priceFor(invitations: number) {
-  return (TIERS.find((tier) => invitations <= tier.upTo) ?? TIERS[TIERS.length - 1]).price;
+function priceFor(guests: number) {
+  return (TIERS.find((tier) => guests <= tier.upTo) ?? TIERS[TIERS.length - 1]).price;
+}
+
+/** What it works out to per guest — the figure an organizer actually
+ *  compares against a competitor. One decimal, and no trailing ".0". */
+function perGuest(price: number, guests: number) {
+  return (Math.round((price / guests) * 10) / 10).toString();
 }
 
 export function PriceCalculator({
@@ -82,7 +94,7 @@ export function PriceCalculator({
 
   const reserve = withReserve ? Math.round(guests * RESERVE_RATE) : 0;
   const invitations = guests + reserve;
-  const price = priceFor(invitations);
+  const price = priceFor(guests);
 
   const stepButton =
     'text-primary bg-primary/8 hover:bg-primary/15 focus-visible:ring-ring flex size-12 shrink-0 items-center justify-center rounded-full text-2xl leading-none transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-30';
@@ -186,19 +198,34 @@ export function PriceCalculator({
               <hr className="border-border/60 mx-auto my-7 w-full max-w-[16rem]" />
 
               <p className="text-muted-foreground text-sm">{copy.priceLabel}</p>
-              <p className="text-primary font-display mt-1 flex items-center justify-center gap-2 text-6xl font-bold tabular-nums">
-                {price}
-                <RiyalSign className="inline-block size-[0.42em] translate-y-[0.06em]" />
-              </p>
-              {/* Every tier is still 0. Left unexplained, a "0" price reads
-                  as "free" — which is a claim, not a placeholder. */}
-              <p className="text-muted-foreground mt-2 text-xs">{copy.pending}</p>
+              {price === null ? (
+                <>
+                  <p className="text-primary font-display mt-1 text-4xl font-bold">
+                    {copy.contactPrice}
+                  </p>
+                  <p className="text-muted-foreground mt-2 text-xs">{copy.contactHint}</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-primary font-display mt-1 flex items-center justify-center gap-2 text-6xl font-bold tabular-nums">
+                    {price}
+                    <RiyalSign className="inline-block size-[0.42em] translate-y-[0.06em]" />
+                  </p>
+                  {/* The number an organizer compares against a quote from
+                      anyone else, so it is worked out for them. */}
+                  <p className="text-muted-foreground mt-2 text-xs">
+                    ≈ <span className="tabular-nums">{perGuest(price, guests)}</span>{' '}
+                    <RiyalSign className="inline-block size-[0.85em] translate-y-[0.1em]" />{' '}
+                    {copy.perGuest}
+                  </p>
+                </>
+              )}
 
               <Link
-                href={href}
+                href={price === null ? '/institutional' : href}
                 className="bg-primary text-primary-foreground focus-visible:ring-ring hover:bg-primary/90 mt-7 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl px-6 text-base font-semibold shadow-sm transition-colors focus-visible:ring-3 focus-visible:outline-none"
               >
-                {copy.cta}
+                {price === null ? copy.contactCta : copy.cta}
                 <ArrowIcon className="size-5" />
               </Link>
             </div>
