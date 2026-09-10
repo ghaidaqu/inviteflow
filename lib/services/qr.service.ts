@@ -182,6 +182,7 @@ async function renderQrCard({
   const officialSymbol = await sharp(
     path.join(process.cwd(), 'public/brand/mhalli-official-symbol.svg'),
   )
+    .rotate(45, { background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .resize(DIAMOND_SIZE, DIAMOND_SIZE)
     .png()
     .toBuffer();

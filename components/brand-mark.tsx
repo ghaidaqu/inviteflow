@@ -1,9 +1,9 @@
 import type { CSSProperties } from 'react';
 import Image from 'next/image';
 
-/** The approved Mhalli symbol. Keeping this as the source asset rather
- * than redrawing its petals in JSX means every small use stays identical
- * to the official icon used in WhatsApp, invitations and social cards. */
+/** The approved Mhalli symbol, turned to its upright flower orientation.
+ * At its source angle the four petals read as a multiplication sign in
+ * small placements; the 45° rotation makes the mark read vertically. */
 export function BrandMark({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
     <Image
@@ -14,7 +14,7 @@ export function BrandMark({ className, style }: { className?: string; style?: CS
       alt=""
       aria-hidden="true"
       className={className}
-      style={style}
+      style={{ ...style, transform: `${style?.transform ?? ''} rotate(45deg)`.trim() }}
     />
   );
 }
