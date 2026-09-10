@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon, LinkIcon, MailIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { PriceCalculator, type PriceCalculatorCopy } from '@/components/marketing/price-calculator';
@@ -32,6 +32,16 @@ export function TrackOptionsSelector({
   pricing: PriceCalculatorCopy;
 }) {
   const [selected, setSelected] = useState<JourneyKey | null>(null);
+  const pricingRef = useRef<HTMLDivElement>(null);
+
+  // The price only exists once a track is chosen, and it appears below
+  // the fold on a phone — so choosing has to take the visitor to it.
+  // Without this the calculator opened somewhere off-screen and read as
+  // "there is no pricing on this site".
+  useEffect(() => {
+    if (selected !== 'invitation') return;
+    pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [selected]);
   const selectedOption = options.find((option) => option.key === selected);
   const ArrowIcon = locale === 'ar' ? ArrowLeftIcon : ArrowRightIcon;
 
@@ -79,7 +89,7 @@ export function TrackOptionsSelector({
           track sends nothing per guest. It carries its own call to action,
           so the plain one below is for the other track. */}
       {selectedOption?.key === 'invitation' && (
-        <div className="mt-8">
+        <div ref={pricingRef} className="mt-8">
           <PriceCalculator locale={locale} href={selectedOption.href} copy={pricing} />
         </div>
       )}

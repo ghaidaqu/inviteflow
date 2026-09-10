@@ -36,11 +36,13 @@ const PHOTO_H = 1086;
 /**
  * How much closer the crop sits than "fit the whole photo in the frame".
  * The photograph is a wide scene and the phone is a small part of it; at
- * 1.0 the chat was legible only if you leaned in. This trims a slice off
- * the man on the right and off the marble at the bottom — neither of
- * which is what the section is about — and gives that room to the screen.
+ * 1.0 the chat was legible only if you leaned in, and at 1.34 the coffee
+ * cup still read as big as the phone. The section is about what arrives
+ * on the screen, so the scene is cropped down to the hand holding it —
+ * the cup, the marble and the man on the right leave the frame or become
+ * a sliver, and that room goes to the conversation.
  */
-const CROP_ZOOM = 1.34;
+const CROP_ZOOM = 1.75;
 
 /**
  * Maps a real 390×844 iPhone screen onto the screen in the photograph.

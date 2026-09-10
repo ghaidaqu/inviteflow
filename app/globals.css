@@ -269,18 +269,19 @@ html[dir='rtl'] {
    scale is measured in JS because CSS can't divide one length by another
    to produce the unitless number scale() needs.
 
-   The frame is anchored on a point in the photo rather than on the
-   photo's own centre: the composition is a phone in a hand, and it is
-   the phone that has to stay put and stay large at every size. Anchoring
-   on the centre instead let the crop drift across the man on the right
-   and the marble at the bottom while the phone shrank between them. */
+   The frame is anchored on the middle of the phone's own screen —
+   (645, 520) in the photo — rather than on the photo's centre: the
+   composition is a phone in a hand, and it is the phone that has to stay
+   put and stay large at every size. Anchoring on the photo's centre let
+   the crop drift across the man on the right and the marble at the
+   bottom while the phone shrank between them. */
 .phone-frame {
   --stage-scale: 1;
 }
 .phone-stage {
   position: absolute;
-  left: calc(50% - 690px * var(--stage-scale));
-  top: calc(50% - 500px * var(--stage-scale));
+  left: calc(50% - 645px * var(--stage-scale));
+  top: calc(50% - 520px * var(--stage-scale));
   width: 1448px;
   height: 1086px;
   transform: scale(var(--stage-scale));

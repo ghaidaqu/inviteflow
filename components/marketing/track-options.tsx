@@ -33,9 +33,12 @@ export async function TrackOptions({ locale }: { locale: string }) {
         {/* Was an eyebrow + a title restating "دعوة رقمية، أو دعوة
             برابط" — redundant once the two rows right below already say
             exactly that, so this is just the one heading now. */}
-        <h2 className="text-primary mb-7 text-center text-xl font-bold sm:text-2xl">
-          {tw('eyebrow')}
-        </h2>
+        <h2 className="text-primary text-center text-xl font-bold sm:text-2xl">{tw('eyebrow')}</h2>
+        {/* Says out loud that choosing is what reveals the price — the
+            calculator lives inside the digital-invitation track, and with
+            nothing selected the section looked like a site with no
+            pricing at all. */}
+        <p className="text-muted-foreground mt-2 mb-7 text-center text-sm">{tw('hint')}</p>
 
         <TrackOptionsSelector
           locale={locale}

@@ -92,7 +92,8 @@
       "cta": "Start your invitation"
     },
     "ways": {
-      "eyebrow": "Choose how to invite"
+      "eyebrow": "Choose how to invite",
+      "hint": "Choose \"One invitation per guest\" to see the price for your guest count."
     },
     "preview": {
       "eyebrow": "What your guest receives",
