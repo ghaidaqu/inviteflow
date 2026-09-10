@@ -94,6 +94,21 @@ const IN_PAGE = () => {
     return o;
   };
 
+  // True when the element, or anything above it, is part of a running
+  // animation. A snapshot can land halfway through a fade, where the
+  // composited colour is neither the start nor the end state — the chat
+  // preview's messages fade in and out on a 9s loop, and catching one at
+  // 30% opacity reported its timestamp as failing contrast it passes at
+  // rest. Opacity alone is not enough to tell that apart from something
+  // deliberately set to 0.7, which is worth measuring.
+  const midAnimation = (el) => {
+    for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
+      const cs = getComputedStyle(e);
+      if (cs.animationName !== 'none' && parseFloat(cs.opacity || 1) < 0.99) return true;
+    }
+    return false;
+  };
+
   const out = { rhythm: [], scale: {}, contrast: [], lineLength: [], overflow: [], hero: null };
 
   // 1. Vertical rhythm — every seam between top-level sections.
@@ -128,7 +143,7 @@ const IN_PAGE = () => {
     // A layer faded out mid-animation composites to exactly its own
     // background, which reads as 1:1 — a tool artefact, not a defect.
     // There is no text to read at 4% opacity either way.
-    if (effOpacity(el) < 0.05) continue;
+    if (effOpacity(el) < 0.05 || midAnimation(el)) continue;
     // Screen-reader-only text is clipped to a 1px box — it is not on
     // screen, so its contrast is not a thing anyone can read. Measuring
     // it flagged the tooltip's own hidden copy as a failure.
