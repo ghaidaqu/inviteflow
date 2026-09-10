@@ -1,3 +1,5 @@
+import { cache } from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
@@ -9,19 +11,39 @@ import { PublicFormShell } from '@/components/public/public-form-shell';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { MailIcon } from 'lucide-react';
 
+/** Looked up once per request and shared with the page — cache() dedupes
+ *  it, so the status check below costs no extra query. */
+const loadRsvp = cache(async (token: string) => {
+  if (!isSupabaseConfigured()) return null;
+  const supabase = await createClient();
+  return getRsvpByToken(supabase, token);
+});
+
 /**
- * A missing token/slug renders the correct not-found page but answers
- * HTTP 200 rather than 404 — a soft 404, still unfixed.
+ * Here for the status code, not the tags.
  *
- * notFound() is called correctly and the page a guest sees is right
- * (verified in a browser). The status is committed before notFound()
- * runs. Already ruled out: `export const dynamic = 'force-dynamic'` on
- * this route, and a root app/not-found.tsx — that one renders its own
- * <html> inside this segment's layout, so don't.
+ * A bad token used to render the right not-found page and answer HTTP
+ * 200 — the shell had already begun streaming by the time the page
+ * component called notFound(), so the status was committed. Doing the
+ * check in generateMetadata, which runs before rendering starts, makes
+ * the 404 real. (Two things previously tried and reverted, so nobody
+ * repeats them: `dynamic = 'force-dynamic'` on this route, and a root
+ * app/not-found.tsx, which renders its own <html> inside this segment's
+ * layout and blanks the page.)
  *
- * The cost is SEO only, on links that are private and should not be
- * indexed. Worth another look, but not by repeating either of those.
+ * The title stays generic on purpose: this URL is a guest's private
+ * link, and its title should not name their event or them.
  */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}): Promise<Metadata> {
+  const { token } = await params;
+  if (!(await loadRsvp(token))) notFound();
+  return { robots: { index: false, follow: false } };
+}
+
 export default async function RsvpEditPage({
   params,
 }: {
@@ -30,11 +52,10 @@ export default async function RsvpEditPage({
   const { locale, token } = await params;
   setRequestLocale(locale);
 
-  if (!isSupabaseConfigured()) notFound();
+  const data = await loadRsvp(token);
+  if (!data) notFound();
 
   const supabase = await createClient();
-  const data = await getRsvpByToken(supabase, token);
-  if (!data) notFound();
 
   const { data: settings, error: settingsError } = await supabase
     .from('event_settings')

@@ -65,10 +65,16 @@ export async function HeroJourneys() {
         {/* A form card here covered the photograph and made the opening
             feel busy — the try-it hook earns its own calm section further
             down (TryBand) instead, and the hero goes back to doing the
-            one thing it does well. */}
+            one thing it does well.
+
+            Solid, not glass. The frosted version read as a disabled
+            control: 28% cream over a pale photograph gave the most
+            important button on the site less presence than the small
+            "try free" button in the nav, which is filled. Glass needs a
+            dark or busy ground to sit on; this hero is neither. */}
         <Button
           size="lg"
-          className="text-primary mt-1 border border-white/65 bg-[rgb(248_243_236/0.28)] px-10 shadow-[0_10px_30px_rgb(56_38_22/0.12)] backdrop-blur-xl hover:bg-[rgb(248_243_236/0.44)] hover:shadow-[0_14px_34px_rgb(56_38_22/0.18)]"
+          className="mt-1 px-10 shadow-[0_10px_30px_rgb(56_38_22/0.22)]"
           nativeButton={false}
           render={<Link href="#options" />}
         >

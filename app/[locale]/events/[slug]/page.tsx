@@ -1,3 +1,5 @@
+import { cache } from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { formatDateTime } from '@/lib/utils/format-date';
 import { cookies } from 'next/headers';
@@ -28,6 +30,53 @@ import { CalendarIcon, MapPinIcon, ClockIcon } from 'lucide-react';
  * The cost is SEO only, on links that are private and should not be
  * indexed. Worth another look, but not by repeating either of those.
  */
+/**
+ * Looked up once per request and shared with the page below — React's
+ * cache() dedupes it, so adding generateMetadata does not double every
+ * public event page's database work.
+ */
+const loadEvent = cache(async (rawSlug: string) => {
+  if (!isSupabaseConfigured()) return null;
+  const supabase = await createClient();
+  return getPublicEventBySlug(supabase, decodeURIComponent(rawSlug));
+});
+
+/**
+ * This exists as much for the status code as for the tags.
+ *
+ * These pages are rendered on demand, so by the time the page component
+ * ran and called notFound(), the shell had already begun streaming and
+ * the 200 was committed — a missing event answered 404-the-page with
+ * 200-the-status, which tells a crawler the URL is real. generateMetadata
+ * runs before any of that, so notFound() here sets the status for real.
+ * Confirmed against production, where a genuinely missing path
+ * (prerendered) returned 404 while a missing event returned 200.
+ *
+ * The tags themselves were worth having anyway: every event page used to
+ * report the site's own default title.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const result = await loadEvent(slug);
+  if (!result) notFound();
+
+  const { event } = result;
+  const description = event.description?.slice(0, 160) || undefined;
+  return {
+    title: event.name,
+    description,
+    openGraph: {
+      title: event.name,
+      description,
+      images: event.cover_image_url ? [event.cover_image_url] : undefined,
+    },
+  };
+}
+
 export default async function PublicEventPage({
   params,
 }: {
@@ -36,22 +85,15 @@ export default async function PublicEventPage({
   const { locale, slug: rawSlug } = await params;
   setRequestLocale(locale);
 
-  if (!isSupabaseConfigured()) notFound();
-
-  const supabase = await createClient();
   // Confirmed directly in production: a non-ASCII slug (any Arabic event
   // name, since generateUniqueSlug() only transliterates spaces to
   // hyphens and otherwise keeps the name's own script) arrives here still
   // percent-encoded — e.g. literally the string "%D9%86", not the decoded
   // "ن" — even though the exact same query with the real decoded value
-  // matches a row fine (checked directly against both the anon and
-  // service-role clients). Something upstream of this page (next-intl's
-  // middleware rewrite, most likely) isn't decoding the dynamic segment
-  // the way Next.js normally does for an ASCII slug. Decoding here is a
-  // no-op for an already-decoded ASCII slug and fixes the Arabic case
-  // either way, without needing to chase the exact upstream cause.
+  // matches a row fine. Decoding happens inside loadEvent above; it is a
+  // no-op for an already-decoded ASCII slug and fixes the Arabic case.
   const slug = decodeURIComponent(rawSlug);
-  const result = await getPublicEventBySlug(supabase, slug);
+  const result = await loadEvent(rawSlug);
   if (!result) notFound();
 
   const { event, settings, design, hasPassword } = result;
