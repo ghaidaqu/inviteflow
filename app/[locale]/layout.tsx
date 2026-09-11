@@ -48,8 +48,14 @@ export async function generateMetadata({
           // Absolute and https, with the type spelled out: WhatsApp's
           // crawler is the fussiest of the lot about a preview image, and
           // some versions look for og:image:secure_url specifically.
-          url: `${appUrl}/images/marketing/og-card.jpg`,
-          secureUrl: `${appUrl}/images/marketing/og-card.jpg`,
+          //
+          // The filename carries a version because the artwork changed
+          // under the old one. Meta caches a preview against the URL it
+          // scraped, so replacing the bytes behind an unchanged path can
+          // leave a stale card — or none — in circulation. A new path has
+          // nothing cached against it. Bump it again if the art changes.
+          url: `${appUrl}/images/marketing/og-card-v2.jpg`,
+          secureUrl: `${appUrl}/images/marketing/og-card-v2.jpg`,
           type: 'image/jpeg',
           width: 1200,
           height: 630,
@@ -61,7 +67,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: t('title'),
       description: t('description'),
-      images: [`${appUrl}/images/marketing/og-card.jpg`],
+      images: [`${appUrl}/images/marketing/og-card-v2.jpg`],
     },
   };
 }

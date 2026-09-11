@@ -85,6 +85,7 @@ export function PriceCalculator({
   copy,
   id,
   idPrefix,
+  compact,
 }: {
   locale: string;
   href: string;
@@ -93,6 +94,11 @@ export function PriceCalculator({
   id?: string;
   /** Keeps the input and its label paired when both are on the page. */
   idPrefix: string;
+  /** The copy under the track choice, where this opens inside a section
+   *  that already has its own heading and is followed by the rest of the
+   *  page. Same calculator, dialled down so it reads as one step rather
+   *  than taking the whole screen. The full-size one lives near the end. */
+  compact?: boolean;
 }) {
   const { guests, setGuests, withReserve, setWithReserve } = usePricingState();
   const ArrowIcon = locale === 'ar' ? ArrowLeftIcon : ArrowRightIcon;
@@ -102,35 +108,62 @@ export function PriceCalculator({
   const invitations = guests + reserve;
   const price = priceFor(guests);
 
-  const stepButton =
-    'text-primary bg-primary/8 hover:bg-primary/15 focus-visible:ring-ring flex size-12 shrink-0 items-center justify-center rounded-full text-2xl leading-none transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-30';
+  const stepButton = `text-primary bg-primary/8 hover:bg-primary/15 focus-visible:ring-ring flex ${
+    compact ? 'size-9 text-xl' : 'size-12 text-2xl'
+  } shrink-0 items-center justify-center rounded-full leading-none transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-30`;
 
   return (
     <section id={id} className="scroll-mt-24">
-      <div className="text-center">
-        <span className="bg-primary/40 mx-auto block h-px w-10" />
-        <p className="text-primary mt-4 text-sm font-semibold tracking-wide">{copy.eyebrow}</p>
-        {/* The heading carries this section — it is the question every
-            visitor arrives with. Sized like one, not like a caption. */}
-        <h3 className="font-display mt-2 text-3xl font-bold text-balance sm:text-4xl">
-          {copy.title}
-        </h3>
-        <p className="text-muted-foreground mx-auto mt-3 max-w-md text-base">{copy.subtitle}</p>
-      </div>
+      {compact ? (
+        // No second big heading here: the section above already says
+        // "choose how to invite", and repeating a 36px title inside it
+        // made the choice feel like it had landed on a whole new page.
+        <p className="text-muted-foreground text-center text-sm">{copy.subtitle}</p>
+      ) : (
+        <div className="text-center">
+          <span className="bg-primary/40 mx-auto block h-px w-10" />
+          <p className="text-primary mt-4 text-sm font-semibold tracking-wide">{copy.eyebrow}</p>
+          {/* The heading carries this section — it is the question every
+              visitor arrives with. Sized like one, not like a caption. */}
+          <h3 className="font-display mt-2 text-3xl font-bold text-balance sm:text-4xl">
+            {copy.title}
+          </h3>
+          <p className="text-muted-foreground mx-auto mt-3 max-w-md text-base">{copy.subtitle}</p>
+        </div>
+      )}
 
-      <div className="border-border/60 bg-card/60 mt-10 rounded-[2rem] border p-4 shadow-sm sm:p-6">
+      <div
+        className={`border-border/60 bg-card/60 border shadow-sm ${
+          compact ? 'mt-4 rounded-3xl p-3 sm:p-4' : 'mt-10 rounded-[2rem] p-4 sm:p-6'
+        }`}
+      >
         <div className="grid md:grid-cols-2">
-          <div className="flex flex-col items-center gap-4 px-2 py-8 sm:px-6 md:pe-10">
-            <span className="bg-primary/10 text-primary flex size-14 items-center justify-center rounded-full">
-              <UsersIcon className="size-6" />
+          <div
+            className={`flex flex-col items-center px-2 sm:px-6 ${
+              compact ? 'gap-3 py-4 md:pe-7' : 'gap-4 py-8 md:pe-10'
+            }`}
+          >
+            <span
+              className={`bg-primary/10 text-primary flex items-center justify-center rounded-full ${
+                compact ? 'size-10' : 'size-14'
+              }`}
+            >
+              <UsersIcon className={compact ? 'size-5' : 'size-6'} />
             </span>
-            <label htmlFor={`${idPrefix}-guests`} className="text-lg font-semibold">
+            <label
+              htmlFor={`${idPrefix}-guests`}
+              className={compact ? 'text-base font-semibold' : 'text-lg font-semibold'}
+            >
               {copy.guestsLabel}
             </label>
 
             {/* Minus left, plus right in both directions — a number line
                 doesn't mirror, and the approved design keeps it that way. */}
-            <div className="border-border/70 bg-background flex w-full max-w-[21rem] items-center rounded-full border p-2 rtl:flex-row-reverse">
+            <div
+              className={`border-border/70 bg-background flex w-full items-center rounded-full border rtl:flex-row-reverse ${
+                compact ? 'max-w-[17rem] p-1.5' : 'max-w-[21rem] p-2'
+              }`}
+            >
               <button
                 type="button"
                 aria-label={copy.decrease}
@@ -149,7 +182,9 @@ export function PriceCalculator({
                 step={STEP}
                 value={guests}
                 onChange={(event) => setGuests(clamp(Number(event.target.value) || MIN))}
-                className="font-display w-full min-w-0 [appearance:textfield] border-0 bg-transparent text-center text-4xl font-bold tabular-nums focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                className={`font-display w-full min-w-0 [appearance:textfield] border-0 bg-transparent text-center font-bold tabular-nums focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${
+                  compact ? 'text-3xl' : 'text-4xl'
+                }`}
               />
               <button
                 type="button"
@@ -167,7 +202,11 @@ export function PriceCalculator({
                 guests — they go to the reserve list and are only sent once
                 somebody declines, which is why the line below says "added"
                 rather than "invited". */}
-            <div className="mt-2 flex w-full max-w-[21rem] items-center justify-center gap-3">
+            <div
+              className={`flex w-full items-center justify-center gap-3 ${
+                compact ? 'mt-1 max-w-[17rem]' : 'mt-2 max-w-[21rem]'
+              }`}
+            >
               <span title={copy.reserveHint} className="text-primary shrink-0">
                 <InfoIcon className="size-4" />
                 <span className="sr-only">{copy.reserveHint}</span>
@@ -191,9 +230,9 @@ export function PriceCalculator({
             {/* Kept in the layout when it is off, so switching does not
                 make the card jump by the height of one row. */}
             <p
-              className={`bg-muted/50 text-muted-foreground flex w-full max-w-[21rem] items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm transition-opacity ${
-                withReserve ? 'opacity-100' : 'opacity-0'
-              }`}
+              className={`bg-muted/50 text-muted-foreground flex w-full items-center justify-center gap-2 rounded-xl transition-opacity ${
+                compact ? 'max-w-[17rem] px-3 py-2 text-xs' : 'max-w-[21rem] px-4 py-3 text-sm'
+              } ${withReserve ? 'opacity-100' : 'opacity-0'}`}
               aria-hidden={!withReserve}
             >
               <span className="bg-primary text-primary-foreground flex size-5 shrink-0 items-center justify-center rounded-full">
@@ -205,13 +244,29 @@ export function PriceCalculator({
 
           {/* One hairline between the two halves on a wide screen, across
               them when they stack — the same seam either way. */}
-          <div className="border-border/60 border-t pt-6 md:border-s md:border-t-0 md:ps-10 md:pt-0">
-            <div className="bg-muted/30 flex h-full flex-col justify-center rounded-[1.5rem] px-6 py-8 text-center sm:px-8">
+          <div
+            className={`border-border/60 border-t md:border-s md:border-t-0 md:pt-0 ${
+              compact ? 'pt-4 md:ps-7' : 'pt-6 md:ps-10'
+            }`}
+          >
+            <div
+              className={`bg-muted/30 flex h-full flex-col justify-center text-center ${
+                compact ? 'rounded-2xl px-4 py-5 sm:px-6' : 'rounded-[1.5rem] px-6 py-8 sm:px-8'
+              }`}
+            >
               <p className="text-muted-foreground text-sm">{copy.totalLabel}</p>
-              <p className="font-display mt-1 text-5xl font-bold tabular-nums">{invitations}</p>
+              <p
+                className={`font-display mt-1 font-bold tabular-nums ${
+                  compact ? 'text-3xl' : 'text-5xl'
+                }`}
+              >
+                {invitations}
+              </p>
               <p className="text-muted-foreground mt-1 text-sm">{copy.totalUnit}</p>
 
-              <hr className="border-border/60 mx-auto my-7 w-full max-w-[16rem]" />
+              <hr
+                className={`border-border/60 mx-auto w-full max-w-[16rem] ${compact ? 'my-4' : 'my-7'}`}
+              />
 
               <p className="text-muted-foreground text-sm">{copy.priceLabel}</p>
               {price === null ? (
@@ -223,7 +278,11 @@ export function PriceCalculator({
                 </>
               ) : (
                 <>
-                  <p className="text-primary font-display mt-1 flex items-center justify-center gap-2 text-6xl font-bold tabular-nums">
+                  <p
+                    className={`text-primary font-display mt-1 flex items-center justify-center gap-2 font-bold tabular-nums ${
+                      compact ? 'text-4xl' : 'text-6xl'
+                    }`}
+                  >
                     {price}
                     <RiyalSign className="inline-block size-[0.42em] translate-y-[0.06em]" />
                   </p>
@@ -239,7 +298,9 @@ export function PriceCalculator({
 
               <Link
                 href={price === null ? '/institutional' : href}
-                className="bg-primary text-primary-foreground focus-visible:ring-ring hover:bg-primary/90 mt-7 inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl px-6 text-base font-semibold shadow-sm transition-colors focus-visible:ring-3 focus-visible:outline-none"
+                className={`bg-primary text-primary-foreground focus-visible:ring-ring hover:bg-primary/90 inline-flex w-full items-center justify-center gap-2 rounded-xl px-6 font-semibold shadow-sm transition-colors focus-visible:ring-3 focus-visible:outline-none ${
+                  compact ? 'mt-4 min-h-11 text-sm' : 'mt-7 min-h-13 text-base'
+                }`}
               >
                 {price === null ? copy.contactCta : copy.cta}
                 <ArrowIcon className="size-5" />
@@ -249,7 +310,11 @@ export function PriceCalculator({
         </div>
       </div>
 
-      <p className="text-muted-foreground mt-5 flex items-center justify-center gap-2 text-center text-sm">
+      <p
+        className={`text-muted-foreground flex items-center justify-center gap-2 text-center ${
+          compact ? 'mt-3 text-xs' : 'mt-5 text-sm'
+        }`}
+      >
         <ShieldCheckIcon className="text-primary size-4 shrink-0" />
         {copy.includes}
       </p>
