@@ -22,8 +22,8 @@ import { usePricingState } from '@/components/marketing/pricing-state';
  * organizer inviting 180 pays the 200 price. The numbers are the ones
  * Sultan set — 50/249, 100/449, 200/749, 400/1299 — and they are keyed
  * on **guests**, the way that table is written, not on invitations sent.
- * That matters: 50 guests with the 10% reserve is 55 invitations, and
- * pricing those 55 against the 100-guest tier would charge someone the
+ * That matters: 50 guests with the 15% reserve is 58 invitations, and
+ * pricing those 58 against the 100-guest tier would charge someone the
  * next bracket up for a box they ticked. The reserve rides along free.
  *
  * Above 400 the price is deliberately absent — no bracket was set that
@@ -42,9 +42,8 @@ const MIN = 50;
 const MAX = 1000;
 const STEP = 50;
 
-/** Spare invitations held back for the reserve list — one in ten, which
- *  is about the decline rate an event this size plans around. */
-const RESERVE_RATE = 0.1;
+/** Spare invitations held back for the reserve list. */
+const RESERVE_RATE = 0.15;
 
 export type PriceCalculatorCopy = {
   eyebrow: string;
@@ -143,13 +142,13 @@ export function PriceCalculator({
               compact ? 'gap-3 py-4 md:pe-7' : 'gap-4 py-8 md:pe-10'
             }`}
           >
-            <span
-              className={`bg-primary/10 text-primary flex items-center justify-center rounded-full ${
-                compact ? 'size-10' : 'size-14'
-              }`}
-            >
-              <UsersIcon className={compact ? 'size-5' : 'size-6'} />
-            </span>
+            {/* Decoration, and on a phone it costs a whole row of the
+                one screen this has to fit in. */}
+            {!compact && (
+              <span className="bg-primary/10 text-primary flex size-14 items-center justify-center rounded-full">
+                <UsersIcon className="size-6" />
+              </span>
+            )}
             <label
               htmlFor={`${idPrefix}-guests`}
               className={compact ? 'text-base font-semibold' : 'text-lg font-semibold'}
@@ -196,7 +195,7 @@ export function PriceCalculator({
                 +
               </button>
             </div>
-            <p className="text-muted-foreground text-sm">{copy.guestsUnit}</p>
+            {!compact && <p className="text-muted-foreground text-sm">{copy.guestsUnit}</p>}
 
             {/* Spare invitations, priced up front. They are not extra
                 guests — they go to the reserve list and are only sent once
@@ -230,13 +229,19 @@ export function PriceCalculator({
             {/* Kept in the layout when it is off, so switching does not
                 make the card jump by the height of one row. */}
             <p
-              className={`bg-muted/50 text-muted-foreground flex w-full items-center justify-center gap-2 rounded-xl transition-opacity ${
-                compact ? 'max-w-[17rem] px-3 py-2 text-xs' : 'max-w-[21rem] px-4 py-3 text-sm'
+              className={`text-muted-foreground flex w-full items-center justify-center gap-2 transition-opacity ${
+                compact
+                  ? 'max-w-[17rem] text-xs'
+                  : 'bg-muted/50 max-w-[21rem] rounded-xl px-4 py-3 text-sm'
               } ${withReserve ? 'opacity-100' : 'opacity-0'}`}
               aria-hidden={!withReserve}
             >
-              <span className="bg-primary text-primary-foreground flex size-5 shrink-0 items-center justify-center rounded-full">
-                <CheckIcon className="size-3" />
+              <span
+                className={`bg-primary text-primary-foreground flex shrink-0 items-center justify-center rounded-full ${
+                  compact ? 'size-4' : 'size-5'
+                }`}
+              >
+                <CheckIcon className={compact ? 'size-2.5' : 'size-3'} />
               </span>
               <span className="tabular-nums">{reserve}</span> {copy.reserveAdded}
             </p>
@@ -254,45 +259,78 @@ export function PriceCalculator({
                 compact ? 'rounded-2xl px-4 py-5 sm:px-6' : 'rounded-[1.5rem] px-6 py-8 sm:px-8'
               }`}
             >
-              <p className="text-muted-foreground text-sm">{copy.totalLabel}</p>
-              <p
-                className={`font-display mt-1 font-bold tabular-nums ${
-                  compact ? 'text-3xl' : 'text-5xl'
-                }`}
-              >
-                {invitations}
-              </p>
-              <p className="text-muted-foreground mt-1 text-sm">{copy.totalUnit}</p>
-
-              <hr
-                className={`border-border/60 mx-auto w-full max-w-[16rem] ${compact ? 'my-4' : 'my-7'}`}
-              />
-
-              <p className="text-muted-foreground text-sm">{copy.priceLabel}</p>
-              {price === null ? (
-                <>
-                  <p className="text-primary font-display mt-1 text-4xl font-bold">
-                    {copy.contactPrice}
-                  </p>
-                  <p className="text-muted-foreground mt-2 text-xs">{copy.contactHint}</p>
-                </>
+              {compact ? (
+                // Side by side, split by the same hairline turned upright.
+                // Stacked, these two blocks were most of the scrolling on
+                // a phone; this fits them on one line at the same size.
+                <div className="grid grid-cols-2 items-center">
+                  <div>
+                    <p className="text-muted-foreground text-xs">{copy.totalLabel}</p>
+                    <p className="font-display mt-0.5 text-2xl font-bold tabular-nums">
+                      {invitations}
+                    </p>
+                    <p className="text-muted-foreground text-xs">{copy.totalUnit}</p>
+                  </div>
+                  <div className="border-border/60 border-s">
+                    <p className="text-muted-foreground text-xs">{copy.priceLabel}</p>
+                    {price === null ? (
+                      <p className="text-primary font-display mt-0.5 text-xl font-bold">
+                        {copy.contactPrice}
+                      </p>
+                    ) : (
+                      <p className="text-primary font-display mt-0.5 flex items-center justify-center gap-1.5 text-3xl font-bold tabular-nums">
+                        {price}
+                        <RiyalSign className="inline-block size-[0.42em] translate-y-[0.06em]" />
+                      </p>
+                    )}
+                    <p className="text-muted-foreground text-xs">
+                      {price === null ? (
+                        copy.contactHint
+                      ) : (
+                        <>
+                          ≈ <span className="tabular-nums">{perGuest(price, guests)}</span>{' '}
+                          <RiyalSign className="inline-block size-[0.85em] translate-y-[0.1em]" />{' '}
+                          {copy.perGuest}
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </div>
               ) : (
                 <>
-                  <p
-                    className={`text-primary font-display mt-1 flex items-center justify-center gap-2 font-bold tabular-nums ${
-                      compact ? 'text-4xl' : 'text-6xl'
-                    }`}
-                  >
-                    {price}
-                    <RiyalSign className="inline-block size-[0.42em] translate-y-[0.06em]" />
-                  </p>
-                  {/* The number an organizer compares against a quote from
+                  <p className="text-muted-foreground text-sm">{copy.totalLabel}</p>
+                  <p className="font-display mt-1 text-5xl font-bold tabular-nums">{invitations}</p>
+                  <p className="text-muted-foreground mt-1 text-sm">{copy.totalUnit}</p>
+
+                  <hr className="border-border/60 mx-auto my-7 w-full max-w-[16rem]" />
+
+                  <p className="text-muted-foreground text-sm">{copy.priceLabel}</p>
+                  {price === null ? (
+                    <>
+                      <p className="text-primary font-display mt-1 text-4xl font-bold">
+                        {copy.contactPrice}
+                      </p>
+                      <p className="text-muted-foreground mt-2 text-xs">{copy.contactHint}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p
+                        className={`text-primary font-display mt-1 flex items-center justify-center gap-2 font-bold tabular-nums ${
+                          compact ? 'text-4xl' : 'text-6xl'
+                        }`}
+                      >
+                        {price}
+                        <RiyalSign className="inline-block size-[0.42em] translate-y-[0.06em]" />
+                      </p>
+                      {/* The number an organizer compares against a quote from
                       anyone else, so it is worked out for them. */}
-                  <p className="text-muted-foreground mt-2 text-xs">
-                    ≈ <span className="tabular-nums">{perGuest(price, guests)}</span>{' '}
-                    <RiyalSign className="inline-block size-[0.85em] translate-y-[0.1em]" />{' '}
-                    {copy.perGuest}
-                  </p>
+                      <p className="text-muted-foreground mt-2 text-xs">
+                        ≈ <span className="tabular-nums">{perGuest(price, guests)}</span>{' '}
+                        <RiyalSign className="inline-block size-[0.85em] translate-y-[0.1em]" />{' '}
+                        {copy.perGuest}
+                      </p>
+                    </>
+                  )}
                 </>
               )}
 
