@@ -232,6 +232,7 @@ export async function createEventFromQuickStartAction(
   if (sendTrial && draft.track === 'invitation' && draft.guestName.trim() && guestPhone) {
     const trialAllowed = await checkRateLimit({
       action: 'quick-start-trial-send',
+      onError: 'deny' as const,
       scope: user.id,
       maxHits: 3,
       windowSeconds: 60 * 60 * 24 * 365,

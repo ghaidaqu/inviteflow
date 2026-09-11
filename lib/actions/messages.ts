@@ -50,6 +50,7 @@ export async function sendBulkMessageAction(
   // normal; this only guards against a runaway loop or abuse, not real use.
   const allowed = await checkRateLimit({
     action: 'bulk-message',
+    onError: 'deny' as const,
     scope: eventId,
     maxHits: 5,
     windowSeconds: 3600,

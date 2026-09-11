@@ -53,6 +53,7 @@ export async function uploadCoverImageAction(
   const rateLimitScope = user ? user.id : `anon:${await getClientIp()}`;
   const allowed = await checkRateLimit({
     action: 'cover-upload',
+    onError: 'deny' as const,
     scope: rateLimitScope,
     maxHits: user ? 20 : 5,
     windowSeconds: 600,

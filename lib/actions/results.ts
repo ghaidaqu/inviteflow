@@ -33,6 +33,7 @@ export async function broadcastResultsAction(
   // Meta's per-conversation rate. Same ceiling sendBulkMessageAction uses.
   const allowed = await checkRateLimit({
     action: 'broadcast-results',
+    onError: 'deny' as const,
     scope: eventId,
     maxHits: 3,
     windowSeconds: 60 * 60,

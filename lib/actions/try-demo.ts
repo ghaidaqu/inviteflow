@@ -106,6 +106,7 @@ export async function sendTryDemoInvitationAction(
   // checkRateLimit already does.
   const withinLimit = await checkRateLimit({
     action: 'try-demo',
+    onError: 'deny' as const,
     scope: phone.e164,
     maxHits: 3,
     windowSeconds: 60 * 60 * 24,

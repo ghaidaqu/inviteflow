@@ -24,6 +24,11 @@ type RateLimitOptions = {
   scope?: string;
   maxHits: number;
   windowSeconds: number;
+  /** What to answer when the limiter itself cannot be reached. 'allow'
+   *  keeps real users moving through a database hiccup; 'deny' is for the
+   *  paths where an outage would hand an abuser unlimited sends or
+   *  uploads on our bill. */
+  onError?: 'allow' | 'deny';
 };
 
 /**
@@ -37,6 +42,7 @@ export async function checkRateLimit({
   scope,
   maxHits,
   windowSeconds,
+  onError = 'allow',
 }: RateLimitOptions): Promise<boolean> {
   // Deliberately the admin client, not whichever client the caller happens
   // to hold. Callers on public paths pass the anon client, and that forced
@@ -56,6 +62,17 @@ export async function checkRateLimit({
     p_window_seconds: windowSeconds,
   });
 
-  if (error) return true;
+  // What to do when the limiter itself is unavailable.
+  //
+  // Open by default, because the alternative locks real people out of
+  // logging in over a database hiccup — a worse outcome than a brief
+  // window with no cap. But the paths that spend money or fill storage
+  // ask for the opposite: an outage there is exactly when an abuser
+  // would get unlimited WhatsApp sends or unlimited uploads on our bill,
+  // and a few legitimate people retrying in a minute costs nothing.
+  if (error) {
+    console.error('[rate-limit] check failed', { action, onError, error });
+    return onError === 'allow';
+  }
   return data === true;
 }
