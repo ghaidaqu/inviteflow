@@ -36,7 +36,7 @@
     "jsqr": "^1.4.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.29.0",
-    "next": "^15.5.23",
+    "next": "^15.5.25",
     "next-intl": "^4.13.5",
     "qrcode": "^1.5.4",
     "react": "19.2.8",
@@ -76,5 +76,8 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "postcss": "^8.5.26"
   }
 }
