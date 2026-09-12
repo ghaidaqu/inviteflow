@@ -1,4 +1,5 @@
 import 'server-only';
+import { OTP_TEMPLATE_LANGUAGE, OTP_TEMPLATE_NAME } from '@/lib/whatsapp/send-otp';
 
 /**
  * Whether signing in with a phone number is live.
@@ -10,14 +11,9 @@ import 'server-only';
  *      send-otp.ts sends. Creating it needs the business to have passed
  *      Meta's Business Verification — before that the Graph API answers
  *      "does not have permission to create message template" (subcode
- *      2388185, and the WABA's health_status carries error 141010). The
- *      request, once Meta allows it:
- *        POST /{WHATSAPP_BUSINESS_ACCOUNT_ID}/message_templates
- *        { name: "login_otp_ar", language: "ar", category: "AUTHENTICATION",
- *          components: [
- *            { type: "BODY", add_security_recommendation: true },
- *            { type: "BUTTONS", buttons: [
- *                { type: "OTP", otp_type: "COPY_CODE", text: "نسخ الرمز" } ] } ] }
+ *      2388185, and the WABA's health_status carries error 141010).
+ *      Nobody has to remember this: app/api/cron/meta-verification asks
+ *      Meta daily and submits LOGIN_OTP_TEMPLATE below the day it passes.
  *   2. Supabase → Authentication → Sign In / Providers: Phone enabled.
  *   3. Supabase → Authentication → Hooks: a Send SMS hook over HTTPS to
  *      https://mhalli.co/api/auth/send-sms-hook, its generated secret in
@@ -34,3 +30,16 @@ import 'server-only';
 export function isPhoneLoginEnabled(): boolean {
   return process.env.PHONE_LOGIN_ENABLED === 'true' && Boolean(process.env.SEND_SMS_HOOK_SECRET);
 }
+
+/** The request body for POST /{WABA}/message_templates. Authentication
+ *  templates have no free text: Meta writes the body around the code, and
+ *  the security line and copy button are the only choices. */
+export const LOGIN_OTP_TEMPLATE = {
+  name: OTP_TEMPLATE_NAME,
+  language: OTP_TEMPLATE_LANGUAGE,
+  category: 'AUTHENTICATION',
+  components: [
+    { type: 'BODY', add_security_recommendation: true },
+    { type: 'BUTTONS', buttons: [{ type: 'OTP', otp_type: 'COPY_CODE', text: 'نسخ الرمز' }] },
+  ],
+};

@@ -24,8 +24,8 @@ const GRAPH_API_VERSION = 'v21.0';
  * here in that case; it starts working the moment the template is
  * approved, with no code change needed.
  */
-const OTP_TEMPLATE_NAME = 'login_otp_ar';
-const OTP_TEMPLATE_LANGUAGE = 'ar';
+export const OTP_TEMPLATE_NAME = 'login_otp_ar';
+export const OTP_TEMPLATE_LANGUAGE = 'ar';
 
 export async function sendWhatsAppOtp(to: string, code: string): Promise<void> {
   const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
