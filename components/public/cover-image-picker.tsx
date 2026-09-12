@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { CoverImageUpload } from '@/components/dashboard/cover-image-upload';
 import { CoverTemplateEditor } from '@/components/public/cover-template-editor';
+import { CoverTextEditor } from '@/components/public/cover-text-editor';
 import {
   SquareWeddingTemplate,
   RectangleWeddingTemplate,
@@ -12,9 +13,9 @@ import {
   WEDDING_TEMPLATE_DIMENSIONS,
   type WeddingTemplateId,
 } from '@/components/public/wedding-invitation-templates';
-import { ImageUpIcon, SparklesIcon } from 'lucide-react';
+import { ImageUpIcon, SparklesIcon, TypeIcon } from 'lucide-react';
 
-export type CoverPickerMode = 'upload' | 'gallery' | { editing: WeddingTemplateId };
+export type CoverPickerMode = 'upload' | 'gallery' | 'text' | { editing: WeddingTemplateId };
 
 const GALLERY_ITEMS: Array<{ id: WeddingTemplateId; Component: typeof SquareWeddingTemplate }> = [
   { id: 'square', Component: SquareWeddingTemplate },
@@ -62,6 +63,18 @@ export function CoverImagePicker({
   const mode = controlledMode ?? internalMode;
   const setMode = onModeChange ?? setInternalMode;
 
+  if (mode === 'text') {
+    return (
+      <CoverTextEditor
+        onBack={() => setMode('upload')}
+        onApply={(url) => {
+          onChange(url);
+          setMode('upload');
+        }}
+      />
+    );
+  }
+
   if (typeof mode === 'object') {
     return (
       <CoverTemplateEditor
@@ -75,29 +88,53 @@ export function CoverImagePicker({
     );
   }
 
+  // Three ways in, offered as one choice rather than a strip of tabs with
+  // a newcomer bolted on the end. An organizer arrives already knowing
+  // which of these they are — they have a design, they want one of ours,
+  // or they have written the words and want those sent — so the question
+  // is asked once, up front, with all three weighted the same.
+  const CHOICES = [
+    { id: 'text' as const, Icon: TypeIcon, label: t('textTab'), hint: t('textChoiceHint') },
+    {
+      id: 'upload' as const,
+      Icon: ImageUpIcon,
+      label: t('uploadTab'),
+      hint: t('uploadChoiceHint'),
+    },
+    {
+      id: 'gallery' as const,
+      Icon: SparklesIcon,
+      label: t('galleryTab'),
+      hint: t('galleryChoiceHint'),
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-3">
-      <div className="bg-muted inline-flex w-fit gap-1 rounded-full p-1">
-        <button
-          type="button"
-          onClick={() => setMode('upload')}
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-            mode === 'upload' ? 'bg-card shadow-sm' : 'text-muted-foreground'
-          }`}
-        >
-          <ImageUpIcon className="size-4" />
-          {t('uploadTab')}
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode('gallery')}
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-            mode === 'gallery' ? 'bg-card shadow-sm' : 'text-muted-foreground'
-          }`}
-        >
-          <SparklesIcon className="size-4" />
-          {t('galleryTab')}
-        </button>
+      <div className="grid gap-2 sm:grid-cols-3" role="radiogroup" aria-label={t('chooseLabel')}>
+        {CHOICES.map(({ id, Icon, label, hint }) => {
+          const active = mode === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              role="radio"
+              aria-checked={active}
+              onClick={() => setMode(id)}
+              className={`focus-visible:ring-ring flex flex-col items-start gap-1 rounded-xl border p-3 text-start transition-colors focus-visible:ring-2 focus-visible:outline-none ${
+                active
+                  ? 'border-primary bg-primary/5 text-primary'
+                  : 'border-border/70 hover:border-primary/50'
+              }`}
+            >
+              <span className="flex items-center gap-1.5 text-sm font-semibold">
+                <Icon className="size-4" />
+                {label}
+              </span>
+              <span className="text-muted-foreground text-xs leading-snug">{hint}</span>
+            </button>
+          );
+        })}
       </div>
 
       {mode === 'upload' ? (

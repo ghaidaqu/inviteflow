@@ -300,7 +300,17 @@
         "closingLineLabel": "جملة الختام",
         "dateLabel": "التاريخ",
         "timeLabel": "الوقت",
-        "locationLabel": "الموقع"
+        "locationLabel": "الموقع",
+        "textTab": "نص فقط",
+        "textLabel": "اكتب دعوتك",
+        "textPlaceholder": "يشرفنا حضوركم حفل زواج…",
+        "textHint": "تُرسل كبطاقة بهوية مهلّي — واتساب يشترط صورة في الدعوة، فنرسم نصّك عليها.",
+        "applyText": "اعتماد النص",
+        "back": "رجوع",
+        "chooseLabel": "كيف تريد دعوتك؟",
+        "textChoiceHint": "اكتبها بنفسك ونرسمها على بطاقة",
+        "uploadChoiceHint": "صورة أو فيديو جاهز عندك",
+        "galleryChoiceHint": "اختر تصميمًا وعدّله"
       },
       "primaryLocaleLabel": "اللغة الأساسية",
       "localeAr": "العربية",
@@ -739,7 +749,8 @@
         "needsTemplate": "لم تصل — يحتاج قالب معتمد من واتساب",
         "notOnWhatsApp": "لم تصل — الرقم غير مسجّل في واتساب",
         "blockedBySpamPolicy": "لم تصل — أوقفها واتساب مؤقتًا",
-        "unknown": "لم تصل — تحقق من الرقم"
+        "unknown": "لم تصل — تحقق من الرقم",
+        "dailyLimitReached": "لم تصل — بلغنا حد الإرسال اليومي، تُعاد المحاولة لاحقًا"
       }
     },
     "capacity": {

@@ -300,7 +300,17 @@
         "closingLineLabel": "Closing line",
         "dateLabel": "Date",
         "timeLabel": "Time",
-        "locationLabel": "Location"
+        "locationLabel": "Location",
+        "textTab": "Text only",
+        "textLabel": "Write your invitation",
+        "textPlaceholder": "We would be honoured by your presence…",
+        "textHint": "Sent as a Mhalli card — WhatsApp requires an image on an invitation, so we set your words on one.",
+        "applyText": "Use this text",
+        "back": "Back",
+        "chooseLabel": "How do you want your invitation?",
+        "textChoiceHint": "Write it yourself and we set it on a card",
+        "uploadChoiceHint": "An image or video you already have",
+        "galleryChoiceHint": "Pick one of ours and edit it"
       },
       "primaryLocaleLabel": "Primary language",
       "localeAr": "Arabic",
@@ -739,7 +749,8 @@
         "needsTemplate": "Not delivered — needs an approved WhatsApp template",
         "notOnWhatsApp": "Not delivered — that number is not on WhatsApp",
         "blockedBySpamPolicy": "Not delivered — WhatsApp blocked it",
-        "unknown": "Not delivered — check the number"
+        "unknown": "Not delivered — check the number",
+        "dailyLimitReached": "Not delivered — daily send limit reached, try again later"
       }
     },
     "capacity": {

@@ -145,6 +145,15 @@ export function deliveryFailureReason(errorCode: number | null): string {
     case 131048:
     case 131049:
       return 'blockedBySpamPolicy';
+    // The account's own daily cap, not anything wrong with the guest.
+    // It matters because an unverified business starts at TIER_250 — 250
+    // unique recipients per rolling 24 hours — and a single 300-guest
+    // event walks straight into it. Left unmapped, the organizer saw
+    // "unknown" against a perfectly good number and had no idea the send
+    // would succeed if they simply waited.
+    case 130429:
+    case 131056:
+      return 'dailyLimitReached';
     default:
       return 'unknown';
   }
