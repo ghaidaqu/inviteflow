@@ -15,6 +15,7 @@ import {
   emailOtpRequestSchema,
   emailOtpVerifySchema,
 } from '@/lib/validations/auth';
+import { isPhoneLoginEnabled } from '@/lib/whatsapp/phone-login';
 
 export type AuthActionState = {
   error?: string;
@@ -77,17 +78,19 @@ async function defaultPostAuthPath(
 // code-storage table needed, so session issuance stays fully inside
 // Supabase's own, already-audited auth code instead of anything bespoke).
 //
-// Phone/WhatsApp specifically needs Twilio (or Twilio Verify) configured
-// as the SMS provider in the Supabase dashboard, with WhatsApp selected as
-// the channel — Supabase only supports WhatsApp delivery through Twilio.
-// Until that's set up, signInWithOtp below will error and the user sees a
-// translated message rather than a silent failure.
+// Phone codes don't go through Twilio: Supabase's Send SMS hook hands the
+// code to app/api/auth/send-sms-hook, which delivers it from our own
+// WhatsApp number. That needs a Meta-approved login template first, so the
+// whole phone path stays switched off until then — lib/whatsapp/phone-login.ts.
 
 export async function requestPhoneOtpAction(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
   if (!isSupabaseConfigured()) return NOT_CONFIGURED;
+  // The form isn't rendered while this is off; this covers a stale page or
+  // a hand-built request, which would otherwise still reach Supabase.
+  if (!isPhoneLoginEnabled()) return { error: 'phoneOtpRequestFailed' };
 
   const parsed = phoneOtpRequestSchema.safeParse({ phone: formData.get('phone') });
   if (!parsed.success) return { error: 'invalidInput' };
@@ -111,12 +114,9 @@ export async function requestPhoneOtpAction(
     // The generic translated message is deliberately vague (Supabase's
     // own error text isn't user-facing quality), but that vagueness was
     // hiding real causes from us too — capture the actual error so a
-    // provider-config issue (e.g. WhatsApp/Twilio not set up) shows up
-    // instead of just "it broke" reports with no lead. Plain
-    // console.error alongside Sentry — NEXT_PUBLIC_SENTRY_DSN isn't set
-    // in this environment, so Sentry.captureException is a silent no-op
-    // right now; `railway logs` is the only place this is actually
-    // visible until that's configured.
+    // provider-config issue (e.g. the Send SMS hook failing) shows up
+    // instead of just "it broke" reports with no lead. Logged as well as
+    // captured, so it is in `railway logs` too.
     console.error('[auth] requestPhoneOtpAction failed', error);
     Sentry.captureException(error, { tags: { action: 'requestPhoneOtpAction' } });
     return { error: isProviderOutageError(error) ? 'authProviderOutage' : 'phoneOtpRequestFailed' };

@@ -9,9 +9,10 @@ describe('email visual identity', () => {
       editUrl: 'https://mhalli.co/ar/rsvp/example',
     });
 
-    expect(html).toContain('#f6efdc');
-    expect(html).toContain('#96471f');
-    expect(html).toContain('#3d6576');
+    // The approved palette from lib/email/templates.ts — canvas, maroon, border.
+    expect(html).toContain('#f8f3ec');
+    expect(html).toContain('#6e2a2c');
+    expect(html).toContain('#dfd2ba');
     expect(html).toContain('مهلّي');
     expect(html).toContain('تعديل الرد');
   });

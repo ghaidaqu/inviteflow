@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuthCard } from '@/components/auth/auth-card';
 import { LoginMethods } from '@/components/auth/login-methods';
+import { isPhoneLoginEnabled } from '@/lib/whatsapp/phone-login';
 
 // "Start free" and "Log in" are the same page in disguise: with OTP auth,
 // creating an account and signing in are the same action (enter a phone or
@@ -22,7 +23,7 @@ export default async function RegisterPage({
 
   return (
     <AuthCard title={t('title')} subtitle={t('subtitle')}>
-      <LoginMethods next={next} />
+      <LoginMethods next={next} phoneEnabled={isPhoneLoginEnabled()} />
     </AuthCard>
   );
 }

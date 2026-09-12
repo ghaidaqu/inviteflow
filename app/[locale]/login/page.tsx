@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AuthCard } from '@/components/auth/auth-card';
 import { LoginMethods } from '@/components/auth/login-methods';
+import { isPhoneLoginEnabled } from '@/lib/whatsapp/phone-login';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default async function LoginPage({
@@ -27,7 +28,7 @@ export default async function LoginPage({
           <AlertDescription>{tErrors('authConfirmFailed')}</AlertDescription>
         </Alert>
       )}
-      <LoginMethods next={next} />
+      <LoginMethods next={next} phoneEnabled={isPhoneLoginEnabled()} />
     </AuthCard>
   );
 }

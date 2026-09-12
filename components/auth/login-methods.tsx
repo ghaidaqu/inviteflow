@@ -15,10 +15,16 @@ type Mode = 'phone' | 'email';
  * to also offer a separate password-based path alongside it — it only
  * added a second, weaker account-recovery surface (forgot/reset
  * password) nothing else in the app pointed to.
+ *
+ * `phoneEnabled` comes from the server (lib/whatsapp/phone-login.ts).
+ * While phone codes cannot be delivered there is nothing to choose
+ * between, so there is no tab bar either — email is the whole form.
  */
-export function LoginMethods({ next }: { next?: string }) {
+export function LoginMethods({ next, phoneEnabled }: { next?: string; phoneEnabled: boolean }) {
   const t = useTranslations('Auth.otp');
-  const [mode, setMode] = useState<Mode>('phone');
+  const [mode, setMode] = useState<Mode>(phoneEnabled ? 'phone' : 'email');
+
+  if (!phoneEnabled) return <OtpLoginForm method="email" next={next} />;
 
   return (
     <div className="flex flex-col gap-5">

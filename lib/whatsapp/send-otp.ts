@@ -54,8 +54,8 @@ export async function sendWhatsAppOtp(to: string, code: string): Promise<void> {
           components: [
             // Authentication templates take the code twice: once to fill
             // the (Meta-authored, non-editable) body text, once more for
-            // the "Copy code" button — see the template definition itself
-            // in lib/whatsapp/send-otp.ts's sibling setup script.
+            // the "Copy code" button — the template definition is in
+            // lib/whatsapp/phone-login.ts.
             { type: 'body', parameters: [{ type: 'text', text: code }] },
             {
               type: 'button',

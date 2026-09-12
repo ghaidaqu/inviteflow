@@ -31,10 +31,8 @@ type Step = 'request' | 'verify';
  * session issuance stays inside Supabase's audited auth code rather than
  * anything bespoke here.
  *
- * Phone/WhatsApp specifically only works once Twilio (with WhatsApp as the
- * channel) is configured as the SMS provider in the Supabase dashboard —
- * until then, requesting a code surfaces a translated error pointing at
- * the email tab instead of failing silently.
+ * The phone method is only rendered once codes can actually be delivered —
+ * LoginMethods decides that from lib/whatsapp/phone-login.ts.
  */
 export function OtpLoginForm({ method, next }: { method: Method; next?: string }) {
   const t = useTranslations('Auth.otp');
